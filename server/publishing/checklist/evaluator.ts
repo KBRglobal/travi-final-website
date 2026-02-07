@@ -46,7 +46,7 @@ const CHECKS = {
     category: "content" as ChecklistCategory,
     priority: "required" as const,
     check: (content: ContentData): CheckResult => {
-      const blocks = content.blocks as unknown[] | null;
+      const blocks = content.blocks;
       if (!blocks || blocks.length === 0) {
         return { status: "fail", message: "Content has no body blocks" };
       }

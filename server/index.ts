@@ -96,8 +96,16 @@ app.disable("x-powered-by");
 app.use((req: Request, res: Response, next: NextFunction) => {
   const host = req.hostname || req.headers.host || "";
   if (host.startsWith("www.")) {
-    const newHost = host.replace(/^www\./, "");
-    return res.redirect(301, `https://${newHost}${req.originalUrl}`);
+    const newHost = host.replace(/^www\./, "").replace(/:\d+$/, "");
+    // Security: only redirect to known domains to prevent open-redirect
+    const allowedHosts = ["travi.world", "localhost"];
+    const baseHost = newHost.split(":")[0];
+    if (!allowedHosts.includes(baseHost)) {
+      return next();
+    }
+    // Security: ensure path is relative (starts with /) to prevent protocol-relative open redirects
+    const safePath = req.originalUrl.startsWith("/") ? req.originalUrl : "/";
+    return res.redirect(301, `https://${newHost}${safePath}`);
   }
   next();
 });

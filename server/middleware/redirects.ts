@@ -66,6 +66,9 @@ function getCanonicalHost(host: string): string {
   return host.replace(/^www\./, "").replace(/:\d+$/, "");
 }
 
+// Allowed hosts for redirect destinations (prevents open-redirect attacks)
+const ALLOWED_REDIRECT_HOSTS = new Set(["travi.world", "localhost"]);
+
 export function redirectMiddleware(req: Request, res: Response, next: NextFunction): void {
   const host = req.get("host") || "";
   const path = req.path;
@@ -73,8 +76,15 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
 
   if (host.startsWith("www.")) {
     const canonicalHost = getCanonicalHost(host);
+    // Security: only redirect to known hosts to prevent open-redirect
+    const baseHost = canonicalHost.split(":")[0];
+    if (!ALLOWED_REDIRECT_HOSTS.has(baseHost)) {
+      return next();
+    }
     const protocol = getProtocol(req);
-    const newUrl = `${protocol}://${canonicalHost}${fullUrl}`;
+    // Security: ensure path starts with / to prevent protocol-relative open redirects
+    const safePath = fullUrl.startsWith("/") ? fullUrl : "/";
+    const newUrl = `${protocol}://${canonicalHost}${safePath}`;
 
     res.redirect(301, newUrl);
     return;

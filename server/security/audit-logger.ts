@@ -69,49 +69,41 @@ export interface SecurityEvent {
   errorMessage?: string;
 }
 
+function maskEmail(data: string): string {
+  const [localPart, domain] = data.split("@");
+  if (!localPart || !domain) return "[masked]";
+  const maskedLocal = localPart.length > 2 ? localPart.substring(0, 2) + "***" : "***";
+  return `${maskedLocal}@${domain}`;
+}
+
+function maskPhone(data: string): string {
+  const digits = data.replaceAll(/\D/g, "");
+  return digits.length < 4 ? "***" : "***" + digits.slice(-4);
+}
+
+function maskIp(data: string): string {
+  if (data.includes(".")) {
+    const parts = data.split(".");
+    if (parts.length === 4) return `${parts[0]}.${parts[1]}.${parts[2]}.***`;
+  } else if (data.includes(":")) {
+    const parts = data.split(":");
+    if (parts.length > 2) return parts.slice(0, -2).join(":") + ":***:***";
+  }
+  return "[masked]";
+}
+
 /**
  * Mask PII data for logging
  */
 export function maskPii(data: string, type: "email" | "phone" | "ip"): string {
   if (!data) return "[masked]";
 
-  switch (type) {
-    case "email": {
-      // Keep first 2 chars and domain, mask the rest
-      const [localPart, domain] = data.split("@");
-      if (!localPart || !domain) return "[masked]";
-      const maskedLocal = localPart.length > 2 ? localPart.substring(0, 2) + "***" : "***";
-      return `${maskedLocal}@${domain}`;
-    }
-
-    case "phone": {
-      // Keep last 4 digits, mask the rest
-      const digits = data.replaceAll(/\D/g, "");
-      if (digits.length < 4) return "***";
-      return "***" + digits.slice(-4);
-    }
-
-    case "ip": {
-      // Mask last octet of IPv4 or last segments of IPv6
-      if (data.includes(".")) {
-        // IPv4
-        const parts = data.split(".");
-        if (parts.length === 4) {
-          return `${parts[0]}.${parts[1]}.${parts[2]}.***`;
-        }
-      } else if (data.includes(":")) {
-        // IPv6
-        const parts = data.split(":");
-        if (parts.length > 2) {
-          return parts.slice(0, -2).join(":") + ":***:***";
-        }
-      }
-      return "[masked]";
-    }
-
-    default:
-      return "[masked]";
-  }
+  const maskers: Record<string, (d: string) => string> = {
+    email: maskEmail,
+    phone: maskPhone,
+    ip: maskIp,
+  };
+  return (maskers[type] ?? (() => "[masked]"))(data);
 }
 
 /**

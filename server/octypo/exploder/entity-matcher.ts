@@ -116,9 +116,7 @@ export class EntityMatcher {
           name: typedRow.name,
           normalizedName: typedRow.normalized_name,
           matchScore: typedRow.score,
-          matchType: (typedRow.score >= this.FUZZY_THRESHOLD ? "fuzzy" : "partial") as
-            | "fuzzy"
-            | "partial",
+          matchType: typedRow.score >= this.FUZZY_THRESHOLD ? "fuzzy" : "partial",
         };
       });
     } catch {

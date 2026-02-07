@@ -19,6 +19,65 @@ const WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_EVENTS = 10000; // Cap memory usage
 const CLEANUP_INTERVAL_MS = 60 * 60 * 1000; // Cleanup every hour
 
+/** Determine health status from zero-result rate */
+function determineHealth(zeroResultRate: number): {
+  status: "healthy" | "warning" | "critical";
+  message: string;
+} {
+  const pct = (zeroResultRate * 100).toFixed(1);
+  if (zeroResultRate > 0.3) {
+    return {
+      status: "critical",
+      message: `Critical: ${pct}% of searches return zero results. Review search index and fallback chain.`,
+    };
+  }
+  if (zeroResultRate > 0.2) {
+    return {
+      status: "warning",
+      message: `Warning: ${pct}% of searches return zero results (threshold: 20%). Consider expanding dictionary.`,
+    };
+  }
+  return { status: "healthy", message: `Search quality is healthy. Zero result rate: ${pct}%` };
+}
+
+/** Aggregate search events into summary counts */
+function aggregateEvents(events: SearchEvent[]) {
+  const queryFrequency = new Map<string, number>();
+  const zeroResultQueries = new Set<string>();
+  let zeroResultCount = 0;
+  let fallbackCount = 0;
+  let totalResultCount = 0;
+  let totalResponseTime = 0;
+  let responseTimeCount = 0;
+
+  for (const event of events) {
+    const normalizedQuery = event.query.toLowerCase().trim();
+    if (normalizedQuery) {
+      queryFrequency.set(normalizedQuery, (queryFrequency.get(normalizedQuery) || 0) + 1);
+    }
+    if (event.resultCount === 0) {
+      zeroResultCount++;
+      if (normalizedQuery) zeroResultQueries.add(normalizedQuery);
+    }
+    if (event.fallback) fallbackCount++;
+    totalResultCount += event.resultCount;
+    if (event.responseTimeMs !== undefined) {
+      totalResponseTime += event.responseTimeMs;
+      responseTimeCount++;
+    }
+  }
+
+  return {
+    queryFrequency,
+    zeroResultQueries,
+    zeroResultCount,
+    fallbackCount,
+    totalResultCount,
+    totalResponseTime,
+    responseTimeCount,
+  };
+}
+
 class SearchTelemetry {
   private events: SearchEvent[] = [];
   private cleanupTimer: NodeJS.Timeout | null = null;
@@ -82,6 +141,8 @@ class SearchTelemetry {
   getMetrics(): SearchMetrics {
     const cutoff = Date.now() - WINDOW_MS;
     const recentEvents = this.events.filter(e => e.timestamp > cutoff);
+    const periodStart = new Date(cutoff).toISOString();
+    const periodEnd = new Date().toISOString();
 
     if (recentEvents.length === 0) {
       return {
@@ -94,84 +155,38 @@ class SearchTelemetry {
         averageResponseTimeMs: 0,
         topQueries: [],
         zeroResultQueries: [],
-        periodStart: new Date(cutoff).toISOString(),
-        periodEnd: new Date().toISOString(),
+        periodStart,
+        periodEnd,
         healthStatus: "healthy",
         healthMessage: "No search data in the last 24 hours",
       };
     }
 
-    const queryFrequency = new Map<string, number>();
-    const zeroResultQueries = new Set<string>();
-    let zeroResultCount = 0;
-    let fallbackCount = 0;
-    let totalResultCount = 0;
-    let totalResponseTime = 0;
-    let responseTimeCount = 0;
+    const agg = aggregateEvents(recentEvents);
+    const total = recentEvents.length;
+    const zeroResultRate = agg.zeroResultCount / total;
+    const health = determineHealth(zeroResultRate);
 
-    for (const event of recentEvents) {
-      const normalizedQuery = event.query.toLowerCase().trim();
-
-      if (normalizedQuery) {
-        queryFrequency.set(normalizedQuery, (queryFrequency.get(normalizedQuery) || 0) + 1);
-      }
-
-      if (event.resultCount === 0) {
-        zeroResultCount++;
-        if (normalizedQuery) {
-          zeroResultQueries.add(normalizedQuery);
-        }
-      }
-
-      if (event.fallback) {
-        fallbackCount++;
-      }
-
-      totalResultCount += event.resultCount;
-
-      if (event.responseTimeMs !== undefined) {
-        totalResponseTime += event.responseTimeMs;
-        responseTimeCount++;
-      }
-    }
-
-    const topQueries = Array.from(queryFrequency.entries())
+    const topQueries = Array.from(agg.queryFrequency.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 20)
       .map(([query, count]) => ({ query, count }));
 
-    const zeroResultRate = recentEvents.length > 0 ? zeroResultCount / recentEvents.length : 0;
-    const fallbackRate = recentEvents.length > 0 ? fallbackCount / recentEvents.length : 0;
-
-    // Determine health status based on zero result rate
-    let healthStatus: "healthy" | "warning" | "critical";
-    let healthMessage: string;
-
-    if (zeroResultRate > 0.3) {
-      healthStatus = "critical";
-      healthMessage = `Critical: ${(zeroResultRate * 100).toFixed(1)}% of searches return zero results. Review search index and fallback chain.`;
-    } else if (zeroResultRate > 0.2) {
-      healthStatus = "warning";
-      healthMessage = `Warning: ${(zeroResultRate * 100).toFixed(1)}% of searches return zero results (threshold: 20%). Consider expanding dictionary.`;
-    } else {
-      healthStatus = "healthy";
-      healthMessage = `Search quality is healthy. Zero result rate: ${(zeroResultRate * 100).toFixed(1)}%`;
-    }
-
     return {
-      totalSearches: recentEvents.length,
-      uniqueQueries: queryFrequency.size,
-      zeroResultCount,
+      totalSearches: total,
+      uniqueQueries: agg.queryFrequency.size,
+      zeroResultCount: agg.zeroResultCount,
       zeroResultRate,
-      fallbackRate,
-      averageResultCount: recentEvents.length > 0 ? totalResultCount / recentEvents.length : 0,
-      averageResponseTimeMs: responseTimeCount > 0 ? totalResponseTime / responseTimeCount : 0,
+      fallbackRate: agg.fallbackCount / total,
+      averageResultCount: agg.totalResultCount / total,
+      averageResponseTimeMs:
+        agg.responseTimeCount > 0 ? agg.totalResponseTime / agg.responseTimeCount : 0,
       topQueries,
-      zeroResultQueries: Array.from(zeroResultQueries).slice(0, 50),
-      periodStart: new Date(cutoff).toISOString(),
-      periodEnd: new Date().toISOString(),
-      healthStatus,
-      healthMessage,
+      zeroResultQueries: Array.from(agg.zeroResultQueries).slice(0, 50),
+      periodStart,
+      periodEnd,
+      healthStatus: health.status,
+      healthMessage: health.message,
     };
   }
 

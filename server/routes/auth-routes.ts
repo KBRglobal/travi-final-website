@@ -254,48 +254,44 @@ export function registerAuthRoutes(app: Express): void {
             id: user.id,
           };
 
-          req.login(sessionUser, (err: any) => {
-            if (err) {
-              return res.status(500).json({ error: "Failed to create session" });
-            }
-            req.session.save((saveErr: any) => {
-              if (saveErr) {
-                return res.status(500).json({ error: "Failed to save session" });
-              }
+          await new Promise<void>((resolve, reject) => {
+            req.login(sessionUser, (err: any) => (err ? reject(err) : resolve()));
+          });
+          await new Promise<void>((resolve, reject) => {
+            req.session.save((err: any) => (err ? reject(err) : resolve()));
+          });
 
-              // Enterprise Security: Reset backoff on successful login
-              (res as any).resetBackoff?.();
+          // Enterprise Security: Reset backoff on successful login
+          (res as any).resetBackoff?.();
 
-              // Log successful login with enterprise security details
-              logSecurityEvent({
-                action: "login",
-                resourceType: "auth",
-                userId: user.id,
-                userEmail: user.username || undefined,
-                ip,
-                userAgent: req.get("User-Agent"),
-                details: {
-                  method: "password",
-                  role: user.role,
-                  isNewDevice,
-                  riskScore: contextResult.riskScore,
-                  deviceTrusted: deviceInfo.isTrusted,
-                  geo: geo ? { country: geo.country, city: geo.city } : null,
-                },
-              });
+          // Log successful login with enterprise security details
+          logSecurityEvent({
+            action: "login",
+            resourceType: "auth",
+            userId: user.id,
+            userEmail: user.username || undefined,
+            ip,
+            userAgent: req.get("User-Agent"),
+            details: {
+              method: "password",
+              role: user.role,
+              isNewDevice,
+              riskScore: contextResult.riskScore,
+              deviceTrusted: deviceInfo.isTrusted,
+              geo: geo ? { country: geo.country, city: geo.city } : null,
+            },
+          });
 
-              res.json({
-                success: true,
-                user,
-                requiresMfa: false,
-                isNewDevice,
-                riskScore: contextResult.riskScore,
-                securityContext: {
-                  deviceTrusted: deviceInfo.isTrusted,
-                  country: geo?.country,
-                },
-              });
-            });
+          res.json({
+            success: true,
+            user,
+            requiresMfa: false,
+            isNewDevice,
+            riskScore: contextResult.riskScore,
+            securityContext: {
+              deviceTrusted: deviceInfo.isTrusted,
+              country: geo?.country,
+            },
           });
         };
 

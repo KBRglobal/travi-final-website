@@ -1267,7 +1267,7 @@ export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
     }
 
     // Check if hostname is an IP address and validate it
-    const ipMatch = hostname.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^\[(.+)\]$/);
+    const ipMatch = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^\[(.+)\]$/.exec(hostname);
     if (ipMatch) {
       const ip = ipMatch[1] || ipMatch[2];
       if (isPrivateIP(ip)) {

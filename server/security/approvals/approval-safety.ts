@@ -431,6 +431,33 @@ function checkPrivilegeEscalation(request: ApprovalRequest): ApprovalViolation |
 // MAIN SAFETY CHECK
 // ============================================================================
 
+const SEVERITY_SCORES: Record<string, number> = {
+  critical: 40,
+  high: 25,
+  medium: 10,
+  low: 5,
+};
+
+function calculateRiskScore(violations: ApprovalViolation[]): number {
+  const raw = violations.reduce((sum, v) => sum + (SEVERITY_SCORES[v.severity] || 0), 0);
+  return Math.min(100, raw);
+}
+
+const VIOLATION_RECOMMENDATIONS: Partial<Record<ApprovalViolationType, string>> = {
+  self_approval: "Request approval from a different team member",
+  circular_chain: "Use a third-party approver to break circular pattern",
+  rubber_stamping: "Review request details before approving",
+  collusion_suspected: "Rotate approvers to maintain separation of duties",
+  insufficient_separation: "Request approval from senior team member",
+};
+
+function generateRecommendations(violations: ApprovalViolation[]): string[] {
+  const violationTypes = new Set(violations.map(v => v.type));
+  return (Object.entries(VIOLATION_RECOMMENDATIONS) as [ApprovalViolationType, string][])
+    .filter(([type]) => violationTypes.has(type))
+    .map(([, msg]) => msg);
+}
+
 /**
  * Perform comprehensive approval safety check
  */
@@ -440,81 +467,29 @@ export function checkApprovalSafety(
   approverRole: string,
   approvalTimeMs: number
 ): ApprovalSafetyResult {
-  const violations: ApprovalViolation[] = [];
-  const recommendations: string[] = [];
-
-  // Run all checks
-  const selfApproval = checkSelfApproval(request.requesterId, approverId);
-  if (selfApproval) violations.push(selfApproval);
-
   const recentApprovals = approvalHistory.getRecentApprovals(
     approverId,
     APPROVAL_SAFETY_CONFIG.diversityWindowHours
   );
 
-  const circular = checkCircularChain(request.requesterId, approverId, recentApprovals);
-  if (circular) violations.push(circular);
+  // Run all checks, collecting violations
+  const checks = [
+    checkSelfApproval(request.requesterId, approverId),
+    checkCircularChain(request.requesterId, approverId, recentApprovals),
+    checkRubberStamping(approverId, approvalTimeMs),
+    checkApprovalFlooding(approverId),
+    checkCollusion(request.requesterId, approverId),
+    checkApproverDiversity(request.requesterId),
+    checkRoleSeparation(request.requesterRole, approverRole),
+    checkPrivilegeEscalation(request),
+  ];
+  const violations = checks.filter((v): v is ApprovalViolation => v !== null);
 
-  const rubberStamp = checkRubberStamping(approverId, approvalTimeMs);
-  if (rubberStamp) violations.push(rubberStamp);
+  const riskScore = calculateRiskScore(violations);
+  const recommendations = generateRecommendations(violations);
+  const criticalCount = violations.filter(v => v.severity === "critical").length;
+  const allowed = criticalCount === 0;
 
-  const flooding = checkApprovalFlooding(approverId);
-  if (flooding) violations.push(flooding);
-
-  const collusion = checkCollusion(request.requesterId, approverId);
-  if (collusion) violations.push(collusion);
-
-  const diversity = checkApproverDiversity(request.requesterId);
-  if (diversity) violations.push(diversity);
-
-  const roleSep = checkRoleSeparation(request.requesterRole, approverRole);
-  if (roleSep) violations.push(roleSep);
-
-  const privEsc = checkPrivilegeEscalation(request);
-  if (privEsc) violations.push(privEsc);
-
-  // Calculate risk score
-  let riskScore = 0;
-  for (const v of violations) {
-    switch (v.severity) {
-      case "critical":
-        riskScore += 40;
-        break;
-      case "high":
-        riskScore += 25;
-        break;
-      case "medium":
-        riskScore += 10;
-        break;
-      case "low":
-        riskScore += 5;
-        break;
-    }
-  }
-  riskScore = Math.min(100, riskScore);
-
-  // Generate recommendations
-  if (violations.some(v => v.type === "self_approval")) {
-    recommendations.push("Request approval from a different team member");
-  }
-  if (violations.some(v => v.type === "circular_chain")) {
-    recommendations.push("Use a third-party approver to break circular pattern");
-  }
-  if (violations.some(v => v.type === "rubber_stamping")) {
-    recommendations.push("Review request details before approving");
-  }
-  if (violations.some(v => v.type === "collusion_suspected")) {
-    recommendations.push("Rotate approvers to maintain separation of duties");
-  }
-  if (violations.some(v => v.type === "insufficient_separation")) {
-    recommendations.push("Request approval from senior team member");
-  }
-
-  // Determine if approval should be allowed
-  const criticalViolations = violations.filter(v => v.severity === "critical");
-  const allowed = criticalViolations.length === 0;
-
-  // Log the safety check
   if (!allowed || riskScore > 50) {
     logAdminEvent(
       approverId,
@@ -525,18 +500,13 @@ export function checkApprovalSafety(
         allowed,
         riskScore,
         violationCount: violations.length,
-        criticalCount: criticalViolations.length,
+        criticalCount,
         requestId: request.id,
       }
     );
   }
 
-  return {
-    allowed,
-    violations,
-    riskScore,
-    recommendations,
-  };
+  return { allowed, violations, riskScore, recommendations };
 }
 
 /**

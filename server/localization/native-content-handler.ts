@@ -201,6 +201,24 @@ function buildNativeContentRow(
   };
 }
 
+/** Attempt to update the search index (non-critical, errors are swallowed) */
+async function tryUpdateSearchIndex(content: any, locale: string): Promise<void> {
+  try {
+    const { updateSearchIndex } = await import("./publish-hooks");
+    await updateSearchIndex(content, locale);
+  } catch {
+    // Non-critical
+  }
+}
+
+/** Mark an existing native content row as failed */
+async function markExistingAsFailed(existingId: string, errorMsg: string): Promise<void> {
+  await db
+    .update(nativeLocalizedContent)
+    .set({ status: "failed", failureReason: errorMsg, updatedAt: new Date() } as any)
+    .where(eq(nativeLocalizedContent.id, existingId));
+}
+
 async function handleNativeContentJob(data: NativeContentJobData): Promise<JobResult> {
   logger.info("Processing native content job", {
     contentId: data.contentId,
@@ -264,10 +282,7 @@ async function handleNativeContentJob(data: NativeContentJobData): Promise<JobRe
     if (!result.success || !result.content) {
       const errorMsg = result.error || "Generation failed";
       if (existing) {
-        await db
-          .update(nativeLocalizedContent)
-          .set({ status: "failed", failureReason: errorMsg, updatedAt: new Date() } as any)
-          .where(eq(nativeLocalizedContent.id, existing.id));
+        await markExistingAsFailed(existing.id, errorMsg);
       }
       return { success: false, result: { error: errorMsg } };
     }
@@ -315,12 +330,7 @@ async function handleNativeContentJob(data: NativeContentJobData): Promise<JobRe
 
     dailyCostUsd += COST_PER_GENERATION_USD;
 
-    try {
-      const { updateSearchIndex } = await import("./publish-hooks");
-      await updateSearchIndex(content, data.locale);
-    } catch {
-      // Non-critical
-    }
+    await tryUpdateSearchIndex(content, data.locale);
 
     logger.info("Native content generated", {
       contentId: data.contentId,

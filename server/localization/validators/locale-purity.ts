@@ -97,7 +97,7 @@ export function calculateLocalePurity(
   const scriptRegex = SCRIPT_REGEX[primaryScript] || SCRIPT_REGEX.latin;
 
   // Count characters in target script
-  const scriptMatches = cleanText.match(scriptRegex) || [];
+  const scriptMatches = Array.from(cleanText.matchAll(scriptRegex));
   const scriptCharCount = scriptMatches.length;
 
   // Count total non-whitespace characters

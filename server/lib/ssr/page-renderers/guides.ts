@@ -162,9 +162,9 @@ export async function renderGuidePage(
   // Extract guide content - use rewritten_content if available, fall back to sections
   const title = guide.title || slug;
   const summary = guide.metaDescription || "";
-  const rewrittenContent = guide.rewrittenContent as string | null;
-  const originalContent = guide.originalContent as string | null;
-  const faqs = guide.faqs as Array<{ question: string; answer: string }> | null;
+  const rewrittenContent: string | null = guide.rewrittenContent;
+  const originalContent: string | null = guide.originalContent;
+  const faqs: Array<{ question: string; answer: string }> | null = guide.faqs;
 
   // For backwards compatibility, also check sections
   const sections = guide.sections as any;

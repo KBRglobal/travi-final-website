@@ -43,6 +43,30 @@ function getMemoryStatus(): {
   };
 }
 
+/** Run a health check with timeout guard */
+async function runCheckWithTimeout<T>(
+  name: string,
+  check: () => Promise<T>,
+  timeout: number
+): Promise<{ success: boolean; result?: T; error?: string; latency: number }> {
+  const checkStart = Date.now();
+  try {
+    const result = await Promise.race([
+      check(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`${name} check timeout`)), timeout)
+      ),
+    ]);
+    return { success: true, result, latency: Date.now() - checkStart };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+      latency: Date.now() - checkStart,
+    };
+  }
+}
+
 // Helper: format cache check result
 function formatCacheCheck(cacheCheck: { success: boolean; result?: any; error?: string }): {
   status: string;
@@ -112,29 +136,6 @@ export function registerHealthRoutes(app: Express): void {
         memory: { status: "healthy", usage: 0 },
         eventLoop: { status: "healthy", latency: 0 },
       },
-    };
-
-    const runCheckWithTimeout = async <T>(
-      name: string,
-      check: () => Promise<T>,
-      timeout: number
-    ): Promise<{ success: boolean; result?: T; error?: string; latency: number }> => {
-      const checkStart = Date.now();
-      try {
-        const result = await Promise.race([
-          check(),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error(`${name} check timeout`)), timeout)
-          ),
-        ]);
-        return { success: true, result, latency: Date.now() - checkStart };
-      } catch (error) {
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : "Unknown error",
-          latency: Date.now() - checkStart,
-        };
-      }
     };
 
     // Database check

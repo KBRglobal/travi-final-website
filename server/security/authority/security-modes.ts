@@ -328,54 +328,53 @@ export interface AutonomyImpact {
   recommendations: string[];
 }
 
+/** Resolve operation permission based on allowed/approval flags */
+function resolvePermission(isAllowed: boolean, requiresApproval: boolean): OperationPermission {
+  if (isAllowed) return "allowed";
+  if (requiresApproval) return "approval_required";
+  return "blocked";
+}
+
+const MODE_RECOMMENDATIONS: Record<string, string[]> = {
+  lockdown: [
+    "Review threat status before deactivating lockdown",
+    "Ensure all critical issues are resolved",
+    "Consider scheduling return to enforce mode",
+  ],
+  enforce: ["Monitor audit logs for approval requests", "Review override usage periodically"],
+};
+
+const DEFAULT_RECOMMENDATIONS = [
+  "Consider switching to enforce mode for production",
+  "Review security events for potential issues",
+];
+
 export function getAutonomyImpact(): AutonomyImpact {
   const mode = SecurityModeManager.getMode();
   const restrictions = mode.restrictions;
 
-  let bulkOpsStatus: OperationPermission;
-  if (restrictions.bulkOperationsAllowed) bulkOpsStatus = "allowed";
-  else if (restrictions.requireApprovalForAll) bulkOpsStatus = "approval_required";
-  else bulkOpsStatus = "blocked";
-
-  let deploymentsStatus: OperationPermission;
-  if (restrictions.deploymentAllowed) deploymentsStatus = "allowed";
-  else if (restrictions.requireApprovalForAll) deploymentsStatus = "approval_required";
-  else deploymentsStatus = "blocked";
-
-  let contentPubStatus: OperationPermission;
-  if (restrictions.destructiveActionsAllowed) contentPubStatus = "allowed";
-  else if (restrictions.requireApprovalForAll) contentPubStatus = "approval_required";
-  else contentPubStatus = "allowed";
+  const autopilotState: AutopilotState = restrictions.autopilotAllowed ? "running" : "blocked";
 
   const impacts: AutonomyImpact["impacts"] = {
-    dataAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
-    seoAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
-    opsAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
-    bulkOperations: bulkOpsStatus,
-    deployments: deploymentsStatus,
-    contentPublishing: contentPubStatus,
+    dataAutopilot: autopilotState,
+    seoAutopilot: autopilotState,
+    opsAutopilot: autopilotState,
+    bulkOperations: resolvePermission(
+      restrictions.bulkOperationsAllowed,
+      restrictions.requireApprovalForAll
+    ),
+    deployments: resolvePermission(
+      restrictions.deploymentAllowed,
+      restrictions.requireApprovalForAll
+    ),
+    contentPublishing: resolvePermission(
+      restrictions.destructiveActionsAllowed,
+      restrictions.requireApprovalForAll
+    ),
     externalApis: restrictions.externalApiCallsAllowed ? "allowed" : "blocked",
   };
 
-  const recommendations: string[] = [];
-
-  if (mode.mode === "lockdown") {
-    recommendations.push(
-      "Review threat status before deactivating lockdown",
-      "Ensure all critical issues are resolved",
-      "Consider scheduling return to enforce mode"
-    );
-  } else if (mode.mode === "enforce") {
-    recommendations.push(
-      "Monitor audit logs for approval requests",
-      "Review override usage periodically"
-    );
-  } else {
-    recommendations.push(
-      "Consider switching to enforce mode for production",
-      "Review security events for potential issues"
-    );
-  }
+  const recommendations = MODE_RECOMMENDATIONS[mode.mode] ?? DEFAULT_RECOMMENDATIONS;
 
   return {
     mode: mode.mode,

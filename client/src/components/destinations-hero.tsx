@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -137,23 +137,25 @@ export function DestinationsHero({
     }
   }, [currentIndex, displayDestinations, hasSlides]);
 
+  const advanceSlide = useCallback(() => {
+    setCurrentIndex(prev => (prev + 1) % displayDestinations.length);
+    setIsAnimating(false);
+  }, [displayDestinations.length]);
+
   useEffect(() => {
     if (!shouldAnimate || !hasSlides) return;
 
     let animationTimeout: NodeJS.Timeout;
     const timer = setInterval(() => {
       setIsAnimating(true);
-      animationTimeout = setTimeout(() => {
-        setCurrentIndex(prev => (prev + 1) % displayDestinations.length);
-        setIsAnimating(false);
-      }, 500);
+      animationTimeout = setTimeout(advanceSlide, 500);
     }, 5000);
 
     return () => {
       clearInterval(timer);
       clearTimeout(animationTimeout);
     };
-  }, [shouldAnimate, displayDestinations.length, hasSlides]);
+  }, [shouldAnimate, hasSlides, advanceSlide]);
 
   const goTo = (index: number): void => {
     if (index !== currentIndex && !isAnimating && hasSlides) {

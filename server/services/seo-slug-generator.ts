@@ -66,8 +66,9 @@ export function generateSeoSlug(title: string, cityName: string): string {
 
   // Remove city name if it appears more than once or at the end
   const cityLower = cityName.toLowerCase();
-  const cityCount = (slug.match(new RegExp(String.raw`\b` + cityLower + String.raw`\b`, "g")) || [])
-    .length;
+  const cityCount = Array.from(
+    slug.matchAll(new RegExp(String.raw`\b` + cityLower + String.raw`\b`, "g"))
+  ).length;
   if (cityCount > 1) {
     // Remove all but first occurrence
     let found = false;

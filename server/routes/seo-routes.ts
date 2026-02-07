@@ -9,6 +9,13 @@ import { autoFixSEO, AutoFixResult } from "../services/seo-auto-fixer";
 import { requirePermission } from "../security";
 import { logger } from "../services/log-service";
 
+/** Map tier name to severity label */
+function tierToSeverity(tierName: string): "critical" | "warning" | "info" {
+  if (tierName === "tier1_critical") return "critical";
+  if (tierName === "tier2_essential") return "warning";
+  return "info";
+}
+
 export function registerSEORoutes(app: Express) {
   /**
    * POST /api/seo/validate
@@ -78,11 +85,7 @@ export function registerSEORoutes(app: Express) {
               .map(c => ({
                 field: c.name,
                 issue: c.message,
-                severity: (() => {
-                  if (tierName === "tier1_critical") return "critical" as const;
-                  if (tierName === "tier2_essential") return "warning" as const;
-                  return "info" as const;
-                })(),
+                severity: tierToSeverity(tierName),
                 fixable: c.autoFixable || false,
                 suggestion: c.fixSuggestion,
               })),

@@ -43,7 +43,7 @@ function checkPatterns(
   promises: BrokenPromise[]
 ): void {
   for (const pattern of patterns.filter(p => p.type === filterType)) {
-    const match = sourceText.match(pattern.pattern);
+    const match = pattern.pattern.exec(sourceText);
     if (!match) continue;
     const promise = detectPromise(pattern, match, sourceText, body);
     if (promise) {
@@ -59,7 +59,7 @@ function checkH1Patterns(
   contentId: string,
   promises: BrokenPromise[]
 ): void {
-  const h1Match = body.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+  const h1Match = /<h1[^>]*>([^<]+)<\/h1>/i.exec(body);
   if (!h1Match) return;
   const h1Text = h1Match[1];
   checkPatterns(patterns, "h1", h1Text, body, contentId, promises);
@@ -102,125 +102,135 @@ export async function analyzeContent(contentId: string): Promise<PromiseAnalysis
   return analysis;
 }
 
+/** Detect a numbered-list promise (e.g. "Top 10...") */
+function detectNumberedListPromise(
+  pattern: { type: PromiseType },
+  match: RegExpMatchArray,
+  body: string
+): Omit<BrokenPromise, "id" | "contentId"> {
+  const promisedCount = Number.parseInt(match[1]);
+  const deliveredCount = Math.max(countListItems(body), countHeadings(body));
+
+  let status: PromiseStatus = "kept";
+  let severity: PromiseSeverity = "minor";
+  let confidence = 80;
+
+  if (deliveredCount < promisedCount * 0.5) {
+    status = "broken";
+    severity = "critical";
+    confidence = 90;
+  } else if (deliveredCount < promisedCount) {
+    status = "partial";
+    severity = "major";
+    confidence = 85;
+  }
+
+  return {
+    type: pattern.type,
+    promise: `Promised ${promisedCount} items: "${match[0]}"`,
+    delivery: `Found ${deliveredCount} items in content`,
+    severity,
+    status,
+    confidence,
+    recommendation: recommendationByStatus(
+      status,
+      `Add ${promisedCount - deliveredCount} more items or update the title`,
+      "Consider adding more items or adjusting the promised count",
+      "Promise fulfilled"
+    ),
+    detectedAt: new Date(),
+  };
+}
+
+/** Detect a how-to promise */
+function detectHowToPromise(
+  pattern: { type: PromiseType },
+  match: RegExpMatchArray,
+  body: string
+): Omit<BrokenPromise, "id" | "contentId"> {
+  const hasSteps = /<(ol|ul)[^>]*>/.test(body) || /step\s+\d/i.test(body);
+  const hasInstructions = /\b(first|then|next|finally|after|before)\b/i.test(body);
+
+  let status: PromiseStatus = "kept";
+  if (!hasSteps && !hasInstructions) status = "broken";
+  else if (!hasSteps || !hasInstructions) status = "partial";
+
+  return {
+    type: pattern.type,
+    promise: `How-to content promised: "${match[0]}"`,
+    delivery: hasSteps
+      ? "Content contains step-by-step instructions"
+      : "Content lacks clear step-by-step format",
+    severity: status === "broken" ? "major" : "minor",
+    status,
+    confidence: 75,
+    recommendation: recommendationByStatus(
+      status,
+      "Add numbered steps or clear instructions",
+      "Consider adding more explicit step formatting",
+      "How-to format is adequate"
+    ),
+    detectedAt: new Date(),
+  };
+}
+
+/** Detect a comprehensive/ultimate/definitive content promise */
+function detectComprehensivePromise(
+  pattern: { type: PromiseType },
+  match: RegExpMatchArray,
+  body: string
+): Omit<BrokenPromise, "id" | "contentId"> {
+  const wordCount = body.split(/\s+/).length;
+  const headingCount = countHeadings(body);
+
+  let status: PromiseStatus = "kept";
+  let severity: PromiseSeverity = "minor";
+
+  if (wordCount < 500 || headingCount < 3) {
+    status = "broken";
+    severity = "critical";
+  } else if (wordCount < 1500 || headingCount < 5) {
+    status = "partial";
+    severity = "major";
+  }
+
+  return {
+    type: pattern.type,
+    promise: `Comprehensive content promised: "${match[0]}"`,
+    delivery: `Content has ${wordCount} words and ${headingCount} sections`,
+    severity,
+    status,
+    confidence: 70,
+    recommendation: recommendationByStatus(
+      status,
+      "Add more content sections to fulfill comprehensive promise",
+      "Consider expanding content depth",
+      "Content appears comprehensive"
+    ),
+    detectedAt: new Date(),
+  };
+}
+
+const COMPREHENSIVE_KEYWORDS = ["Comprehensive", "Ultimate", "Definitive"];
+
 /**
  * Detect a promise and validate if it's kept
  */
 function detectPromise(
   pattern: { pattern: RegExp; type: PromiseType; description: string },
   match: RegExpMatchArray,
-  promiseText: string,
+  _promiseText: string,
   body: string
 ): Omit<BrokenPromise, "id" | "contentId"> | null {
-  // Check for numbered list promises
-  const numberMatch = match[1];
-  if (numberMatch && /^\d+$/.test(numberMatch)) {
-    const promisedCount = Number.parseInt(numberMatch);
-    const actualCount = countListItems(body);
-    const headingCount = countHeadings(body);
-
-    // Use the higher of list items or headings as the actual count
-    const deliveredCount = Math.max(actualCount, headingCount);
-
-    let status: PromiseStatus = "kept";
-    let severity: PromiseSeverity = "minor";
-    let confidence = 80;
-
-    if (deliveredCount < promisedCount * 0.5) {
-      status = "broken";
-      severity = "critical";
-      confidence = 90;
-    } else if (deliveredCount < promisedCount) {
-      status = "partial";
-      severity = "major";
-      confidence = 85;
-    }
-
-    return {
-      type: pattern.type,
-      promise: `Promised ${promisedCount} items: "${match[0]}"`,
-      delivery: `Found ${deliveredCount} items in content`,
-      severity,
-      status,
-      confidence,
-      recommendation: recommendationByStatus(
-        status,
-        `Add ${promisedCount - deliveredCount} more items or update the title`,
-        "Consider adding more items or adjusting the promised count",
-        "Promise fulfilled"
-      ),
-      detectedAt: new Date(),
-    };
+  if (match[1] && /^\d+$/.test(match[1])) {
+    return detectNumberedListPromise(pattern, match, body);
   }
-
-  // Check for how-to promises
   if (pattern.description.includes("How-to")) {
-    const hasSteps = /<(ol|ul)[^>]*>/.test(body) || /step\s+\d/i.test(body);
-    const hasInstructions = /\b(first|then|next|finally|after|before)\b/i.test(body);
-
-    let status: PromiseStatus = "kept";
-    if (!hasSteps && !hasInstructions) {
-      status = "broken";
-    } else if (!hasSteps || !hasInstructions) {
-      status = "partial";
-    }
-
-    return {
-      type: pattern.type,
-      promise: `How-to content promised: "${match[0]}"`,
-      delivery: hasSteps
-        ? "Content contains step-by-step instructions"
-        : "Content lacks clear step-by-step format",
-      severity: status === "broken" ? "major" : "minor",
-      status,
-      confidence: 75,
-      recommendation: recommendationByStatus(
-        status,
-        "Add numbered steps or clear instructions",
-        "Consider adding more explicit step formatting",
-        "How-to format is adequate"
-      ),
-      detectedAt: new Date(),
-    };
+    return detectHowToPromise(pattern, match, body);
   }
-
-  // Check for comprehensive promises
-  if (
-    pattern.description.includes("Comprehensive") ||
-    pattern.description.includes("Ultimate") ||
-    pattern.description.includes("Definitive")
-  ) {
-    const wordCount = body.split(/\s+/).length;
-    const headingCount = countHeadings(body);
-
-    let status: PromiseStatus = "kept";
-    let severity: PromiseSeverity = "minor";
-
-    // Comprehensive content should be substantial
-    if (wordCount < 500 || headingCount < 3) {
-      status = "broken";
-      severity = "critical";
-    } else if (wordCount < 1500 || headingCount < 5) {
-      status = "partial";
-      severity = "major";
-    }
-
-    return {
-      type: pattern.type,
-      promise: `Comprehensive content promised: "${match[0]}"`,
-      delivery: `Content has ${wordCount} words and ${headingCount} sections`,
-      severity,
-      status,
-      confidence: 70,
-      recommendation: recommendationByStatus(
-        status,
-        "Add more content sections to fulfill comprehensive promise",
-        "Consider expanding content depth",
-        "Content appears comprehensive"
-      ),
-      detectedAt: new Date(),
-    };
+  if (COMPREHENSIVE_KEYWORDS.some(kw => pattern.description.includes(kw))) {
+    return detectComprehensivePromise(pattern, match, body);
   }
-
   return null;
 }
 

@@ -11,6 +11,7 @@ import {
   ValidationIssue,
   GeneratedAttractionContent,
   BLUEPRINT_REQUIREMENTS,
+  ContentSection,
 } from "../types";
 
 const VALIDATOR_PERSONAS: AgentPersona[] = [
@@ -90,135 +91,136 @@ export class ValidatorAgent extends BaseAgent {
     return this.performLLMValidation(task);
   }
 
+  /** Check a section's word count against min/max requirements */
+  private validateWordCount(
+    text: string,
+    sectionName: ContentSection | "overall",
+    req: { min: number; max: number },
+    shortFix: string,
+    issues: ValidationIssue[]
+  ): void {
+    const words = this.countWords(text);
+    if (words < req.min) {
+      issues.push({
+        severity: "major",
+        section: sectionName,
+        message: `${sectionName} too short: ${words} words (need ${req.min}-${req.max})`,
+        fix: shortFix,
+      });
+    } else if (words > req.max) {
+      issues.push({
+        severity: "minor",
+        section: sectionName,
+        message: `${sectionName} too long: ${words} words (target ${req.min}-${req.max})`,
+        fix: `Remove ${words - req.max} words from ${sectionName}`,
+      });
+    }
+  }
+
+  /** Check a char-length field (meta title/description) */
+  private validateCharLength(
+    text: string,
+    sectionName: ContentSection | "overall",
+    req: { min: number; max: number },
+    shortFix: string,
+    longFix: string,
+    issues: ValidationIssue[]
+  ): void {
+    const len = text.length;
+    if (len < req.min || len > req.max) {
+      issues.push({
+        severity: "major",
+        section: sectionName,
+        message: `${sectionName} wrong length: ${len} chars (need ${req.min}-${req.max})`,
+        fix: len < req.min ? shortFix : longFix,
+      });
+    }
+  }
+
   private performDataValidation(content: GeneratedAttractionContent): ValidationResult {
     const issues: ValidationIssue[] = [];
     const suggestions: string[] = [];
+    const reqs = BLUEPRINT_REQUIREMENTS;
 
-    const introWords = this.countWords(content.introduction);
-    if (introWords < BLUEPRINT_REQUIREMENTS.introduction.min) {
+    this.validateWordCount(
+      content.introduction,
+      "introduction",
+      reqs.introduction,
+      `Add more words to introduction`,
+      issues
+    );
+    this.validateWordCount(
+      content.whatToExpect,
+      "whatToExpect",
+      reqs.whatToExpect,
+      `Add more words with sensory details`,
+      issues
+    );
+    this.validateWordCount(
+      content.visitorTips,
+      "visitorTips",
+      reqs.visitorTips,
+      `Add more visitor tips with Best Time/Pro Tips/Save Money sections`,
+      issues
+    );
+    this.validateWordCount(
+      content.howToGetThere,
+      "howToGetThere",
+      reqs.howToGetThere,
+      `Add Metro/Taxi/Car options with specific prices`,
+      issues
+    );
+
+    if (content.faqs.length < reqs.faq.min) {
       issues.push({
         severity: "major",
-        section: "introduction",
-        message: `Introduction too short: ${introWords} words (need ${BLUEPRINT_REQUIREMENTS.introduction.min}-${BLUEPRINT_REQUIREMENTS.introduction.max})`,
-        fix: `Add ${BLUEPRINT_REQUIREMENTS.introduction.min - introWords} more words to introduction`,
-      });
-    } else if (introWords > BLUEPRINT_REQUIREMENTS.introduction.max) {
-      issues.push({
-        severity: "minor",
-        section: "introduction",
-        message: `Introduction too long: ${introWords} words (target ${BLUEPRINT_REQUIREMENTS.introduction.min}-${BLUEPRINT_REQUIREMENTS.introduction.max})`,
-        fix: `Remove ${introWords - BLUEPRINT_REQUIREMENTS.introduction.max} words from introduction`,
-      });
-    }
-
-    const expectWords = this.countWords(content.whatToExpect);
-    if (expectWords < BLUEPRINT_REQUIREMENTS.whatToExpect.min) {
-      issues.push({
-        severity: "major",
-        section: "whatToExpect",
-        message: `What to Expect too short: ${expectWords} words (need ${BLUEPRINT_REQUIREMENTS.whatToExpect.min}-${BLUEPRINT_REQUIREMENTS.whatToExpect.max})`,
-        fix: `Add ${BLUEPRINT_REQUIREMENTS.whatToExpect.min - expectWords} more words with sensory details`,
-      });
-    }
-
-    const tipsWords = this.countWords(content.visitorTips);
-    if (tipsWords < BLUEPRINT_REQUIREMENTS.visitorTips.min) {
-      issues.push({
-        severity: "major",
-        section: "visitorTips",
-        message: `Visitor Tips too short: ${tipsWords} words (need ${BLUEPRINT_REQUIREMENTS.visitorTips.min}-${BLUEPRINT_REQUIREMENTS.visitorTips.max})`,
-        fix: `Add more visitor tips with Best Time/Pro Tips/Save Money sections`,
-      });
-    }
-
-    const directionsWords = this.countWords(content.howToGetThere);
-    if (directionsWords < BLUEPRINT_REQUIREMENTS.howToGetThere.min) {
-      issues.push({
-        severity: "major",
-        section: "howToGetThere",
-        message: `How to Get There too short: ${directionsWords} words (need ${BLUEPRINT_REQUIREMENTS.howToGetThere.min}-${BLUEPRINT_REQUIREMENTS.howToGetThere.max})`,
-        fix: `Add Metro/Taxi/Car options with specific prices`,
-      });
-    }
-
-    const faqCount = content.faqs.length;
-    if (faqCount < BLUEPRINT_REQUIREMENTS.faq.min) {
-      issues.push({
-        severity: "major", // Changed from critical to major - more lenient
         section: "faq",
-        message: `Not enough FAQs: ${faqCount} (need ${BLUEPRINT_REQUIREMENTS.faq.min}-${BLUEPRINT_REQUIREMENTS.faq.max})`,
-        fix: `Add ${BLUEPRINT_REQUIREMENTS.faq.min - faqCount} more FAQ questions`,
+        message: `Not enough FAQs: ${content.faqs.length} (need ${reqs.faq.min}-${reqs.faq.max})`,
+        fix: `Add ${reqs.faq.min - content.faqs.length} more FAQ questions`,
       });
     }
 
     for (let i = 0; i < content.faqs.length; i++) {
-      const faq = content.faqs[i];
-      const answerWords = this.countWords(faq.answer);
-      if (answerWords < BLUEPRINT_REQUIREMENTS.faq.answerMin) {
-        issues.push({
-          severity: "major",
-          section: "faq",
-          message: `FAQ ${i + 1} answer too short: ${answerWords} words (need ${BLUEPRINT_REQUIREMENTS.faq.answerMin}-${BLUEPRINT_REQUIREMENTS.faq.answerMax})`,
-          fix: `Expand FAQ answer to ${BLUEPRINT_REQUIREMENTS.faq.answerMin} words using Answer Capsule method`,
-        });
-      } else if (answerWords > BLUEPRINT_REQUIREMENTS.faq.answerMax) {
-        issues.push({
-          severity: "minor",
-          section: "faq",
-          message: `FAQ ${i + 1} answer too long: ${answerWords} words (target ${BLUEPRINT_REQUIREMENTS.faq.answerMin}-${BLUEPRINT_REQUIREMENTS.faq.answerMax})`,
-          fix: `Trim FAQ answer to ${BLUEPRINT_REQUIREMENTS.faq.answerMax} words`,
-        });
-      }
+      this.validateWordCount(
+        content.faqs[i].answer,
+        "faq",
+        { min: reqs.faq.answerMin, max: reqs.faq.answerMax },
+        `Expand FAQ answer to ${reqs.faq.answerMin} words using Answer Capsule method`,
+        issues
+      );
     }
 
-    const titleLength = content.metaTitle.length;
-    if (
-      titleLength < BLUEPRINT_REQUIREMENTS.metaTitle.min ||
-      titleLength > BLUEPRINT_REQUIREMENTS.metaTitle.max
-    ) {
-      issues.push({
-        severity: "major",
-        section: "metaTitle",
-        message: `Meta title wrong length: ${titleLength} chars (need ${BLUEPRINT_REQUIREMENTS.metaTitle.min}-${BLUEPRINT_REQUIREMENTS.metaTitle.max})`,
-        fix:
-          titleLength < BLUEPRINT_REQUIREMENTS.metaTitle.min
-            ? "Add year and price to meta title"
-            : "Shorten meta title",
-      });
-    }
+    this.validateCharLength(
+      content.metaTitle,
+      "metaTitle",
+      reqs.metaTitle,
+      "Add year and price to meta title",
+      "Shorten meta title",
+      issues
+    );
+    this.validateCharLength(
+      content.metaDescription,
+      "metaDescription",
+      reqs.metaDescription,
+      "Add CTA to meta description",
+      "Shorten meta description",
+      issues
+    );
 
-    const descLength = content.metaDescription.length;
-    if (
-      descLength < BLUEPRINT_REQUIREMENTS.metaDescription.min ||
-      descLength > BLUEPRINT_REQUIREMENTS.metaDescription.max
-    ) {
-      issues.push({
-        severity: "major",
-        section: "metaDescription",
-        message: `Meta description wrong length: ${descLength} chars (need ${BLUEPRINT_REQUIREMENTS.metaDescription.min}-${BLUEPRINT_REQUIREMENTS.metaDescription.max})`,
-        fix:
-          descLength < BLUEPRINT_REQUIREMENTS.metaDescription.min
-            ? "Add CTA to meta description"
-            : "Shorten meta description",
-      });
-    }
-
-    const limitationCount = content.honestLimitations?.length || 0;
-    if (limitationCount < BLUEPRINT_REQUIREMENTS.honestLimitations.min) {
+    if ((content.honestLimitations?.length || 0) < reqs.honestLimitations.min) {
       issues.push({
         severity: "major",
         section: "overall",
-        message: `Not enough honest limitations: ${limitationCount} (need ${BLUEPRINT_REQUIREMENTS.honestLimitations.min}-${BLUEPRINT_REQUIREMENTS.honestLimitations.max})`,
+        message: `Not enough honest limitations: ${content.honestLimitations?.length || 0} (need ${reqs.honestLimitations.min}-${reqs.honestLimitations.max})`,
         fix: "Add honest limitations about crowds, costs, or accessibility",
       });
     }
 
-    const sensoryCount = content.sensoryDescriptions?.length || 0;
-    if (sensoryCount < BLUEPRINT_REQUIREMENTS.whatToExpect.sensoryDescriptions) {
+    if ((content.sensoryDescriptions?.length || 0) < reqs.whatToExpect.sensoryDescriptions) {
       issues.push({
         severity: "major",
         section: "whatToExpect",
-        message: `Not enough sensory descriptions: ${sensoryCount} (need ${BLUEPRINT_REQUIREMENTS.whatToExpect.sensoryDescriptions}+)`,
+        message: `Not enough sensory descriptions: ${content.sensoryDescriptions?.length || 0} (need ${reqs.whatToExpect.sensoryDescriptions}+)`,
         fix: "Add sensory details (what you see, hear, smell, feel)",
       });
     }

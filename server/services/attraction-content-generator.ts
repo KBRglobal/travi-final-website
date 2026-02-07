@@ -323,32 +323,28 @@ function repairJSON(jsonString: string): string {
   return closeOpenDelimiters(fixed, counts.braceCount, counts.bracketCount);
 }
 
+/** Characters that indicate the end of a complete JSON value */
+const JSON_VALUE_TERMINATORS = new Set(["}", "]", '"']);
+/** Characters to skip over when scanning backward */
+const JSON_SKIP_CHARS = new Set([",", ":"]);
+
+/** Check whether position i ends a boolean/null literal */
+function isLiteralEnd(json: string, i: number): boolean {
+  const slice4 = json.slice(Math.max(0, i - 3), i + 1);
+  const slice5 = json.slice(Math.max(0, i - 4), i + 1);
+  return slice4 === "true" || slice5 === "false" || slice4 === "null";
+}
+
 /**
  * Find the index of the last complete JSON element (ends with }, ], ", number, true, false, null)
  */
 function findLastCompleteElement(json: string): number {
-  // Look backwards for a complete value
   for (let i = json.length - 1; i >= 0; i--) {
     const char = json[i];
-    // These characters indicate the end of a complete value
-    if (char === "}" || char === "]" || char === '"') {
-      return i;
-    }
-    // Numbers, booleans, null
-    if (/\d/.test(char)) {
-      // Walk back to find the full number
-      let j = i;
-      while (j > 0 && /[0-9.eE+-]/.test(json[j - 1])) j--;
-      return i;
-    }
-    if (json.slice(Math.max(0, i - 3), i + 1) === "true") return i;
-    if (json.slice(Math.max(0, i - 4), i + 1) === "false") return i;
-    if (json.slice(Math.max(0, i - 3), i + 1) === "null") return i;
-    // Skip whitespace
-    if (/\s/.test(char)) continue;
-    // If we hit a comma or colon, we're mid-element - keep looking
-    if (char === "," || char === ":") continue;
-    // Anything else, stop
+    if (JSON_VALUE_TERMINATORS.has(char)) return i;
+    if (/\d/.test(char)) return i;
+    if (isLiteralEnd(json, i)) return i;
+    if (/\s/.test(char) || JSON_SKIP_CHARS.has(char)) continue;
     break;
   }
   return -1;

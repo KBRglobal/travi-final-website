@@ -278,6 +278,72 @@ export default function NotFound() {
       stamps.push(s);
     }
 
+    function updateObstacle(o: any, speed: number): boolean {
+      o.x -= speed;
+      for (const e of o.elements) (e as HTMLElement).style.left = o.x + "px";
+      const dL = 60,
+        dR = 60 + DUCK_SIZE - 18,
+        dT = duckY + 12,
+        dB = duckY + DUCK_SIZE - 12;
+      const oL = o.x + 8,
+        oR = o.x + OBSTACLE_WIDTH - 8;
+      if (dR > oL && dL < oR && (dT < o.gapY - o.gapHeight / 2 || dB > o.gapY + o.gapHeight / 2)) {
+        gameOver();
+        return false;
+      }
+      if (!o.passed && o.x + OBSTACLE_WIDTH < 50) {
+        o.passed = true;
+        score++;
+        scoreEl.textContent = score.toString();
+      }
+      if (o.x < -OBSTACLE_WIDTH) {
+        for (const e of o.elements) (e as HTMLElement).remove();
+        return false;
+      }
+      return true;
+    }
+
+    function updateStamp(s: any, speed: number): boolean {
+      s.x -= speed * 0.85;
+      if (s.element) s.element.style.left = s.x + "px";
+      if (!s.collected) {
+        const dx = 60 + DUCK_SIZE / 2 - (s.x + STAMP_SIZE / 2);
+        const dy = duckY + DUCK_SIZE / 2 - (s.y + STAMP_SIZE / 2);
+        if (Math.hypot(dx, dy) < (DUCK_SIZE + STAMP_SIZE) / 2) {
+          s.collected = true;
+          score += 3;
+          scoreEl.textContent = score.toString();
+          createParticles(s.x + STAMP_SIZE / 2, s.y + STAMP_SIZE / 2, "⭐", 4);
+          if (s.element) {
+            s.element.style.transform = "scale(1.5)";
+            s.element.style.opacity = "0";
+            const el = s.element;
+            setTimeout(() => el?.remove(), 200);
+          }
+          return false;
+        }
+      }
+      if (s.x < -STAMP_SIZE) {
+        s.element?.remove();
+        return false;
+      }
+      return true;
+    }
+
+    function updateParticle(p: any): boolean {
+      const life = p.life - 1;
+      if (life <= 0) {
+        p.element.remove();
+        return false;
+      }
+      p.element.style.left = Number.parseFloat(p.element.style.left) + p.vx + "px";
+      p.element.style.top = Number.parseFloat(p.element.style.top) + p.vy + "px";
+      p.element.style.opacity = (life / 25).toString();
+      p.life = life;
+      p.vy = p.vy + 0.15;
+      return true;
+    }
+
     function runGameLoop() {
       if (gameState !== "playing") return;
       frameCount++;
@@ -296,74 +362,9 @@ export default function NotFound() {
 
       const speed = 3 + Math.min(score / 20, 2);
 
-      obstacles = obstacles.filter(o => {
-        o.x -= speed;
-        o.elements.forEach((e: HTMLElement) => (e.style.left = o.x + "px"));
-        const dL = 60,
-          dR = 60 + DUCK_SIZE - 18,
-          dT = duckY + 12,
-          dB = duckY + DUCK_SIZE - 12;
-        const oL = o.x + 8,
-          oR = o.x + OBSTACLE_WIDTH - 8;
-        if (
-          dR > oL &&
-          dL < oR &&
-          (dT < o.gapY - o.gapHeight / 2 || dB > o.gapY + o.gapHeight / 2)
-        ) {
-          gameOver();
-          return false;
-        }
-        if (!o.passed && o.x + OBSTACLE_WIDTH < 50) {
-          o.passed = true;
-          score++;
-          scoreEl.textContent = score.toString();
-        }
-        if (o.x < -OBSTACLE_WIDTH) {
-          o.elements.forEach((e: HTMLElement) => e.remove());
-          return false;
-        }
-        return true;
-      });
-
-      stamps = stamps.filter(s => {
-        s.x -= speed * 0.85;
-        if (s.element) s.element.style.left = s.x + "px";
-        if (!s.collected) {
-          const dx = 60 + DUCK_SIZE / 2 - (s.x + STAMP_SIZE / 2);
-          const dy = duckY + DUCK_SIZE / 2 - (s.y + STAMP_SIZE / 2);
-          if (Math.hypot(dx, dy) < (DUCK_SIZE + STAMP_SIZE) / 2) {
-            s.collected = true;
-            score += 3;
-            scoreEl.textContent = score.toString();
-            createParticles(s.x + STAMP_SIZE / 2, s.y + STAMP_SIZE / 2, "⭐", 4);
-            if (s.element) {
-              s.element.style.transform = "scale(1.5)";
-              s.element.style.opacity = "0";
-              setTimeout(() => s.element?.remove(), 200);
-            }
-            return false;
-          }
-        }
-        if (s.x < -STAMP_SIZE) {
-          s.element?.remove();
-          return false;
-        }
-        return true;
-      });
-
-      particles = particles.filter(p => {
-        const life = p.life - 1;
-        if (life <= 0) {
-          p.element.remove();
-          return false;
-        }
-        p.element.style.left = Number.parseFloat(p.element.style.left) + p.vx + "px";
-        p.element.style.top = Number.parseFloat(p.element.style.top) + p.vy + "px";
-        p.element.style.opacity = (life / 25).toString();
-        p.life = life;
-        p.vy = p.vy + 0.15;
-        return true;
-      });
+      obstacles = obstacles.filter(o => updateObstacle(o, speed));
+      stamps = stamps.filter(s => updateStamp(s, speed));
+      particles = particles.filter(updateParticle);
 
       gameLoop = requestAnimationFrame(runGameLoop);
     }

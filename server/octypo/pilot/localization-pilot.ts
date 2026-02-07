@@ -238,7 +238,7 @@ export function calculateLocalePurity(
   if (cleanText.length === 0) return 1;
 
   const charPattern = LOCALE_CHAR_PATTERNS[targetLocale] || /[a-zA-Z]/g;
-  const matchedChars = (cleanText.match(charPattern) || []).length;
+  const matchedChars = Array.from(cleanText.matchAll(charPattern)).length;
   const totalChars = cleanText.replaceAll(/\s/g, "").length;
 
   if (totalChars === 0) return 1;
@@ -511,6 +511,23 @@ async function atomicWrite(
 // MAIN PILOT GENERATION FUNCTION
 // ============================================================================
 
+/** Collect failure reasons from validation results */
+function collectFailureReasons(validationResults: PilotValidationResults): string[] {
+  const reasons: string[] = [];
+  const { completeness, localePurity, blueprint, seoAeo } = validationResults;
+  if (!completeness.passed) {
+    reasons.push(`Completeness: missing ${completeness.missingSections.join(", ")}`);
+  }
+  if (!localePurity.passed) {
+    reasons.push(
+      `LocalePurity: ${(localePurity.score * 100).toFixed(1)}% < ${localePurity.threshold * 100}%`
+    );
+  }
+  if (!blueprint.passed) reasons.push(`Blueprint: ${blueprint.issues.join("; ")}`);
+  if (!seoAeo.passed) reasons.push(`SEO/AEO: ${seoAeo.issues.join("; ")}`);
+  return reasons;
+}
+
 export async function generatePilotContent(
   request: PilotGenerationRequest,
   attractionData: AttractionData
@@ -607,20 +624,7 @@ export async function generatePilotContent(
 
     if (!allPassed) {
       // ATOMIC: Validation failed - write NOTHING to content, only failure record
-      const failureReasons: string[] = [];
-      if (!completenessResult.passed)
-        failureReasons.push(
-          `Completeness: missing ${completenessResult.missingSections.join(", ")}`
-        );
-      if (!localePurityResult.passed)
-        failureReasons.push(
-          `LocalePurity: ${(localePurityResult.score * 100).toFixed(1)}% < ${localePurityResult.threshold * 100}%`
-        );
-      if (!blueprintResult.passed)
-        failureReasons.push(`Blueprint: ${blueprintResult.issues.join("; ")}`);
-      if (!seoAeoResult.passed) failureReasons.push(`SEO/AEO: ${seoAeoResult.issues.join("; ")}`);
-
-      const failureReason = failureReasons.join(" | ");
+      const failureReason = collectFailureReasons(validationResults).join(" | ");
 
       // Record failure in DB (no content written)
       await db
@@ -770,7 +774,7 @@ export function calculateLocalePurityExtended(
   const scriptRegex = SCRIPT_REGEX[primaryScript] || SCRIPT_REGEX.latin;
 
   // Count characters in target script
-  const scriptMatches = cleanText.match(scriptRegex) || [];
+  const scriptMatches = Array.from(cleanText.matchAll(scriptRegex));
   const scriptCharCount = scriptMatches.length;
 
   // Count total non-whitespace characters

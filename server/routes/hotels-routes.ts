@@ -1,6 +1,12 @@
 import type { Express, Request, Response } from "express";
 import { generateHotelDescription } from "../ai/hotel-description-generator";
 
+/** Check if a hotel's amenities match any of the requested filters */
+function hasMatchingAmenity(amenities: string[], filters: string[]): boolean {
+  const lowerAmenities = amenities.map(a => a.toLowerCase());
+  return filters.some(af => lowerAmenities.some(ha => ha.includes(af)));
+}
+
 // Sample hotel data for fallback
 const sampleHotels = [
   {
@@ -236,10 +242,9 @@ export function registerHotelsRoutes(app: Express): void {
         );
       }
       if (amenitiesFilter.length > 0) {
-        hotels = hotels.filter((h: any) => {
-          const hotelAmenities = (h.amenities || []).map((a: string) => a.toLowerCase());
-          return amenitiesFilter.some(af => hotelAmenities.some((ha: string) => ha.includes(af)));
-        });
+        hotels = hotels.filter((h: any) =>
+          hasMatchingAmenity((h.amenities || []) as string[], amenitiesFilter)
+        );
       }
 
       const total = hotels.length;

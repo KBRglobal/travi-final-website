@@ -6,6 +6,19 @@ import { requireAuth } from "../../security";
 
 type AIProviderName = "anthropic" | "openai" | "gemini" | "openrouter" | "deepseek" | "perplexity";
 
+/** Truncate text to a maximum length, breaking at word boundary when possible */
+function truncateToLength(text: string, maxLen: number): string {
+  if (!text || text.length <= maxLen) return text || "";
+  const truncated = text.slice(0, maxLen - 3);
+  const lastSpace = truncated.lastIndexOf(" ");
+  return (lastSpace > maxLen - 30 ? truncated.slice(0, lastSpace) : truncated) + "...";
+}
+
+/** Convert a string UUID to a numeric hash for octypoState compatibility */
+function stringToNumericId(id: string): number {
+  return Math.abs(id.split("").reduce((a, b) => (a << 5) - a + b.codePointAt(0)!, 0));
+}
+
 /** Raw attraction row from pg query for Octypo processing */
 interface TiqetsAttractionRow {
   id: string;
@@ -1021,16 +1034,6 @@ export function registerAdminTiqetsRoutes(app: Express): void {
                 schemaPayload: content.schemaPayload || {},
               };
 
-              // Truncate meta fields to fit database constraints
-              const truncateToLength = (text: string, maxLen: number): string => {
-                if (!text || text.length <= maxLen) return text || "";
-                const truncated = text.slice(0, maxLen - 3);
-                const lastSpace = truncated.lastIndexOf(" ");
-                return (
-                  (lastSpace > maxLen - 30 ? truncated.slice(0, lastSpace) : truncated) + "..."
-                );
-              };
-
               const safeMetaTitle = truncateToLength(content.metaTitle || "", 60);
               const safeMetaDescription = truncateToLength(content.metaDescription || "", 160);
 
@@ -1071,24 +1074,18 @@ export function registerAdminTiqetsRoutes(app: Express): void {
 
               // Report success for adaptive concurrency
               octypoState.reportSuccess();
-              // Note: octypoState uses number IDs, but tiqets uses string UUIDs
-              // Using hash for compatibility
-              const numericId = Math.abs(
-                attr.id.split("").reduce((a, b) => (a << 5) - a + b.codePointAt(0)!, 0)
-              );
-              octypoState.removeFromFailedQueue(numericId);
+              octypoState.removeFromFailedQueue(stringToNumericId(attr.id));
             } else {
               errors++;
-              const numericId = Math.abs(
-                attr.id.split("").reduce((a, b) => (a << 5) - a + b.codePointAt(0)!, 0)
+              octypoState.addToFailedQueue(
+                stringToNumericId(attr.id),
+                attr.title || "Unknown",
+                "Generation failed"
               );
-              octypoState.addToFailedQueue(numericId, attr.title || "Unknown", "Generation failed");
             }
           } catch (err: unknown) {
             errors++;
-            const numericId = Math.abs(
-              attr.id.split("").reduce((a, b) => (a << 5) - a + b.codePointAt(0)!, 0)
-            );
+            const numericId = stringToNumericId(attr.id);
             const errorMessage = err instanceof Error ? err.message : "Unknown error";
             octypoState.addToFailedQueue(numericId, attr.title || "Unknown", errorMessage);
           }

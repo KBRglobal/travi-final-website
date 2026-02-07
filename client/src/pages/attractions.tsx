@@ -348,23 +348,25 @@ export default function Attractions() {
   }, [currentIndex]);
 
   // Auto-rotation with animation timing - respects reduced motion
+  const advanceSlide = useCallback(() => {
+    setCurrentIndex(prev => (prev + 1) % HERO_ATTRACTIONS.length);
+    setIsAnimating(false);
+  }, []);
+
   useEffect(() => {
     if (!shouldAnimate) return;
 
     let animationTimeout: NodeJS.Timeout;
     const timer = setInterval(() => {
       setIsAnimating(true);
-      animationTimeout = setTimeout(() => {
-        setCurrentIndex(prev => (prev + 1) % HERO_ATTRACTIONS.length);
-        setIsAnimating(false);
-      }, 500);
+      animationTimeout = setTimeout(advanceSlide, 500);
     }, 5000);
 
     return () => {
       clearInterval(timer);
       clearTimeout(animationTimeout);
     };
-  }, [shouldAnimate]);
+  }, [shouldAnimate, advanceSlide]);
 
   const goTo = (index: number): void => {
     if (index !== currentIndex && !isAnimating) {

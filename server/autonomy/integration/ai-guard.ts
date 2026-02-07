@@ -60,7 +60,7 @@ export function wrapProviderWithEnforcement(provider: UnifiedAIProvider): Unifie
 
       // Check if degraded
       if ("isDegraded" in result) {
-        const degraded = result as DegradedResponse<AICompletionResult>;
+        const degraded = result;
 
         return degraded.fallbackData;
       }

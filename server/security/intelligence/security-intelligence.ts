@@ -531,7 +531,7 @@ class CorrelationEngine {
     if (!impossibleTravel) return;
 
     anomalies.push(impossibleTravel);
-    threatScorer.updateScore(event.userId!, impossibleTravel);
+    threatScorer.updateScore(event.userId, impossibleTravel);
   }
 
   processEvent(event: BufferedEvent): SecurityAnomaly[] {

@@ -134,15 +134,15 @@ export default function DestinationHubPage() {
         </TabsList>
 
         <TabsContent value="hero" className="mt-6">
-          <DestinationHeroTab destinationId={slug!} destination={destination} />
+          <DestinationHeroTab destinationId={slug} destination={destination} />
         </TabsContent>
 
         <TabsContent value="mobility" className="mt-6">
-          <DestinationMobilityTab destinationId={slug!} destination={destination} />
+          <DestinationMobilityTab destinationId={slug} destination={destination} />
         </TabsContent>
 
         <TabsContent value="seo" className="mt-6">
-          <DestinationSeoTab destinationId={slug!} destination={destination} />
+          <DestinationSeoTab destinationId={slug} destination={destination} />
         </TabsContent>
       </Tabs>
     </div>

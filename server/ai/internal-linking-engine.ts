@@ -354,8 +354,9 @@ function calculateRelevance(keyword: string, target: LinkableContent, content: s
   if (target.type === "destination") score += 15;
 
   // Multiple mentions increase relevance
-  const mentions = (content.toLowerCase().match(new RegExp(keyword.toLowerCase(), "g")) || [])
-    .length;
+  const mentions = Array.from(
+    content.toLowerCase().matchAll(new RegExp(keyword.toLowerCase(), "g"))
+  ).length;
   score += Math.min(mentions * 5, 20);
 
   // Keyword appears early in content (likely more important)

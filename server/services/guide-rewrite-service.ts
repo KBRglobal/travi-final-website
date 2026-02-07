@@ -966,8 +966,9 @@ YOUR COMPREHENSIVE REWRITE:`;
     const allMatches: string[] = [];
     for (const tag of blockTags) {
       const regex = new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, "gi");
-      const matches = content.match(regex);
-      if (matches) allMatches.push(...matches);
+      for (const m of content.matchAll(regex)) {
+        allMatches.push(m[0]);
+      }
     }
     return allMatches;
   }

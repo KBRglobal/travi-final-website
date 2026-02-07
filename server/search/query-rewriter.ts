@@ -156,7 +156,7 @@ export const queryRewriter = {
     let wasTransformed = false;
 
     for (const { pattern, transform } of QUERY_PATTERNS) {
-      const match = currentQuery.match(pattern);
+      const match = pattern.exec(currentQuery);
       if (match) {
         currentQuery = transform(match);
         wasTransformed = true;
@@ -180,7 +180,7 @@ export const queryRewriter = {
 
     // Add pattern-based suggestions
     for (const { pattern, transform } of QUERY_PATTERNS) {
-      const match = query.match(pattern);
+      const match = pattern.exec(query);
       if (match) {
         const transformed = transform(match);
         if (transformed !== query) {

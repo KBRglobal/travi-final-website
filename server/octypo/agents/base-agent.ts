@@ -47,6 +47,25 @@ export abstract class BaseAgent {
     return EngineRegistry.getNextFromQueue(excludeIds);
   }
 
+  private throwNoEngineError(triedEngines: Set<string>, lastError: Error | null): never {
+    const healthyCount = EngineRegistry.getAllEngines().filter(e => e.isHealthy).length;
+    throw new Error(
+      `No available engine for agent ${this.name} (tried ${triedEngines.size}, healthy: ${healthyCount}). Last error: ${lastError?.message}`
+    );
+  }
+
+  private async callEngineWithTimeout(
+    engine: any,
+    systemPrompt: string,
+    userPrompt: string,
+    timeoutMs: number
+  ): Promise<string> {
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error(`LLM call timeout after ${timeoutMs}ms`)), timeoutMs);
+    });
+    return Promise.race([generateWithEngine(engine, systemPrompt, userPrompt), timeoutPromise]);
+  }
+
   protected async callLLM(
     systemPrompt: string,
     userPrompt: string,
@@ -58,44 +77,24 @@ export abstract class BaseAgent {
 
     for (let attempt = 0; attempt < MAX_ENGINE_RETRIES; attempt++) {
       const engine = this.getPreferredEngine(triedEngines);
-      if (!engine) {
-        const healthyCount = EngineRegistry.getAllEngines().filter(e => e.isHealthy).length;
-        throw new Error(
-          `No available engine for agent ${this.name} (tried ${triedEngines.size}, healthy: ${healthyCount}). Last error: ${lastError?.message}`
-        );
-      }
+      if (!engine) this.throwNoEngineError(triedEngines, lastError);
 
       triedEngines.add(engine.id);
-
-      // Health check RIGHT BEFORE API call - prevents concurrent workers from hitting suspended engine
-      if (!engine.isHealthy) {
-        continue;
-      }
+      if (!engine.isHealthy) continue;
 
       try {
-        const timeoutPromise = new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error(`LLM call timeout after ${timeoutMs}ms`)), timeoutMs);
-        });
-
-        const response = await Promise.race([
-          generateWithEngine(engine, systemPrompt, userPrompt),
-          timeoutPromise,
-        ]);
-
+        const response = await this.callEngineWithTimeout(
+          engine,
+          systemPrompt,
+          userPrompt,
+          timeoutMs
+        );
         EngineRegistry.reportSuccess(engine.id);
         return response;
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : "Unknown error";
         lastError = error instanceof Error ? error : new Error(errorMsg);
         EngineRegistry.reportError(engine.id, errorMsg);
-
-        const isRateLimit =
-          errorMsg.includes("429") ||
-          errorMsg.includes("rate limit") ||
-          errorMsg.includes("RATELIMIT");
-        if (isRateLimit) {
-          continue;
-        }
       }
     }
 
