@@ -84,7 +84,7 @@ export default {
         // TRAVI Brand Colors
         "travi-purple": "hsl(var(--travi-purple) / <alpha-value>)",
         "travi-orange": "hsl(var(--travi-orange) / <alpha-value>)",
-        "travi-pink": "hsl(var(--travi-pink) / <alpha-value>)",
+
         "travi-green": "hsl(var(--travi-green) / <alpha-value>)",
         // TRAVI Neutral Colors
         "travi-neutral-black": "hsl(var(--travi-neutral-black) / <alpha-value>)",

@@ -80,6 +80,15 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
     return;
   }
 
+  // Server-side 301 redirect for bare "/" to "/en" (replaces slow client-side redirect)
+  // Preserves query strings (e.g., ?ref=betalist) for tracking/attribution
+  if (path === "/") {
+    const queryIndex = fullUrl.indexOf("?");
+    const query = queryIndex !== -1 ? fullUrl.substring(queryIndex) : "";
+    res.redirect(301, `/en${query}`);
+    return;
+  }
+
   const normalizedSearchPath = path.toLowerCase().replace(/\/+$/, "") || "/";
   if (normalizedSearchPath === "/search" && req.query.q) {
     res.redirect(301, "/search");

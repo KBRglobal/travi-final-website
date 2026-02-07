@@ -75,7 +75,7 @@
 
   /* TRAVI Brand Colors - from brand palette */
   --travi-purple: 251 89% 61%; /* #6443F4 - Primary brand purple */
-  /* --travi-pink: DEPRECATED - Use --travi-purple instead */
+
   --travi-yellow: 44 88% 61%; /* #F4C542 - Warm golden yellow */
   --travi-green: 153 98% 33%; /* Keep existing green */
 
@@ -371,27 +371,6 @@
   color: hsl(var(--travi-purple));
 }
 
-/* TRAVI Brand Gradients - DISABLED (NO GRADIENTS except SubtleSkyBackground)
-.brand-gradient {
-  background: linear-gradient(135deg, #6443F4 0%, #7C5DF7 50%, #9577FA 100%);
-}
-
-.brand-gradient-vertical {
-  background: linear-gradient(180deg, #6443F4 0%, #7C5DF7 50%, #9577FA 100%);
-}
-
-.brand-gradient-soft {
-  background: linear-gradient(135deg, rgba(100, 67, 244, 0.9) 0%, rgba(124, 93, 247, 0.9) 50%, rgba(149, 119, 250, 0.9) 100%);
-}
-
-.brand-gradient-text {
-  background: linear-gradient(135deg, #6443F4 0%, #7C5DF7 50%, #9577FA 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-*/
-
 /* Brand Gold Text */
 .text-brand-gold {
   color: #facc15;
@@ -475,10 +454,10 @@
     background-color: var(--elevate-2);
   }
 
-  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
-  .border.active-elevate:not(.no-active-interaction-elevate)::after,
-  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
-  .border.active-elevate-2:not(.no-active-interaction-elevate)::after {
+  .border.hover-elevate:not(.no-default-hover-elevate)::after,
+  .border.active-elevate:not(.no-default-active-elevate)::after,
+  .border.hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .border.active-elevate-2:not(.no-default-active-elevate)::after {
     inset: -1px;
   }
 }
@@ -489,6 +468,8 @@
 
 .skip-link:focus {
   position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
   width: auto !important;
   height: auto !important;
   padding: 0.5rem 1rem !important;
