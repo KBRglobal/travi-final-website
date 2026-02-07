@@ -262,6 +262,7 @@ export function setupSecurityMiddleware(app: Express): void {
             "https://*.emrld.ltd", // Travelpayouts subdomains
             "https://us.i.posthog.com", // PostHog analytics ingestion
             "https://us-assets.i.posthog.com", // PostHog assets
+            "https://static.cloudflareinsights.com", // Cloudflare Web Analytics beacon POST
             "wss:", // WebSocket connections
           ],
           // Explicit frame-src - controls what can be loaded in iframes

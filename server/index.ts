@@ -92,6 +92,17 @@ app.use((req, res, next) => {
 // Disable X-Powered-By header globally
 app.disable("x-powered-by");
 
+// Redirect www to non-www (preserve path and query string)
+// Fixes 404s for high-authority backlinks pointing to www.travi.world
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const host = req.hostname || req.headers.host || "";
+  if (host.startsWith("www.")) {
+    const newHost = host.replace(/^www\./, "");
+    return res.redirect(301, `https://${newHost}${req.originalUrl}`);
+  }
+  next();
+});
+
 // Correlation ID — assign unique request ID for tracing (early in chain)
 import { correlationIdMiddleware } from "./shared/middleware/correlation-id";
 app.use(correlationIdMiddleware);
