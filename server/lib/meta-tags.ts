@@ -4,7 +4,7 @@
  */
 
 import type { ContentWithRelations, Locale } from "@shared/schema";
-import { RTL_LOCALES, SUPPORTED_LOCALES } from "@shared/schema";
+import { SUPPORTED_LOCALES } from "@shared/schema";
 
 const BASE_URL = "https://travi.world";
 const SITE_NAME = "TRAVI";

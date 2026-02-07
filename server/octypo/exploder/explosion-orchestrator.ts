@@ -10,13 +10,7 @@ import { getEntityExtractor } from "./entity-extractor";
 import { getEntityMatcher } from "./entity-matcher";
 import { getArticleIdeation } from "./article-ideation";
 import { getOctypoOrchestrator } from "../orchestration/orchestrator";
-import {
-  ExplosionConfig,
-  ExplosionResult,
-  ExplosionJobProgress,
-  ExplodedArticleType,
-  ARTICLE_TYPE_METADATA,
-} from "./types";
+import { ExplosionConfig, ExplosionResult, ExplosionJobProgress } from "./types";
 import { GeneratedAttractionContent } from "../types";
 
 export class ExplosionOrchestrator {

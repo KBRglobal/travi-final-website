@@ -13,7 +13,6 @@ import {
   contentPurchases,
   businessListings as businessListingsTable,
   leads as leadsTable,
-  type ContentPurchase as ContentPurchaseRow,
   type BusinessListing as BusinessListingRow,
   type Lead as LeadRow,
 } from "@shared/schema";

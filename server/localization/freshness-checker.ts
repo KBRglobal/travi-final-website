@@ -11,7 +11,7 @@
  */
 
 import { db } from "../db";
-import { contents, translations, type Translation } from "@shared/schema";
+import { contents, translations } from "@shared/schema";
 
 import { eq, and } from "drizzle-orm";
 import { log } from "../lib/logger";

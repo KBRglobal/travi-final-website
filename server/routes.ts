@@ -29,7 +29,6 @@ import * as path from "node:path";
 // AI client providers (single source of truth)
 // AI generators (stub modules - originals replaced by Octypo pipeline)
 // Security validators (single source of truth for sanitization)
-import { sanitizeHtml as sanitizeHtmlContent } from "./security/validators";
 
 // Rate limiter for auth endpoints (magic-link, TOTP) - excludes login which has its own limiter
 // Security audit logger for critical auth events (failed logins, password changes, role changes)
@@ -208,8 +207,6 @@ function getModelForProvider(provider: string, task: "chat" | "image" = "chat"):
       return "gpt-4o-mini";
   }
 }
-
-// sanitizeHtmlContent imported from ./security/validators (uses DOMPurify)
 
 // Persist DALL-E image to storage (DALL-E URLs expire in ~1 hour)
 async function persistImageToStorage(imageUrl: string, filename: string): Promise<string | null> {

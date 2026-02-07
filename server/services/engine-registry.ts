@@ -1,7 +1,4 @@
-import type Anthropic from "@anthropic-ai/sdk";
-import type OpenAI from "openai";
 import type { GoogleGenAI } from "@google/genai";
-import type Groq from "groq-sdk";
 
 // Lazy-loaded SDK constructors to avoid heavy imports at server startup
 let _Anthropic: typeof import("@anthropic-ai/sdk").default | null = null;

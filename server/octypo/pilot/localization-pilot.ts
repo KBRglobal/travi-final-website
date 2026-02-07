@@ -30,7 +30,6 @@ import { OctypoOrchestrator } from "../orchestration/orchestrator";
 import type { AttractionData, GeneratedAttractionContent } from "../types";
 import { EngineRegistry } from "../../services/engine-registry";
 import { getCulturalContext, getAllSupportedLocales } from "../../localization/cultural-contexts";
-import { validateLocalePurity as validateLocalePurityExternal } from "../../localization/validators/locale-purity";
 
 type PilotLocale = "en" | "ar" | "fr";
 
