@@ -455,227 +455,25 @@ export async function generateAllSitemaps(): Promise<Map<string, string>> {
   return sitemaps;
 }
 
-// Generate robots.txt with smart bot access control
-// Updated to only reference ACTIVE locale sitemaps
+// Generate robots.txt
+// Clean, standards-compliant format for maximum crawlability
 export function generateRobotsTxt(): string {
-  // Only include sitemaps for ACTIVE locales
-  const activeSitemapLines = getActiveLocales()
-    .map(l => `Sitemap: ${BASE_URL}/sitemap-${l.code}.xml`)
-    .join("\n");
-
-  // Get list of INACTIVE locales to block
-  const inactiveLocalePaths = SUPPORTED_LOCALES.filter(l => !isLocaleActive(l.code as Locale))
-    .map(l => `Disallow: /${l.code}/`)
-    .join("\n");
-
-  return `# ===========================================
-# TRAVI.World - robots.txt
-# Updated: January 2026
-# Strategy: SEO-first + AI Search Visibility
-# ===========================================
-
-# ===========================================
-# SEARCH ENGINES (Primary)
-# ===========================================
-User-agent: Googlebot
+  return `User-agent: *
+Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /auth/
 Disallow: /private/
 
-User-agent: Googlebot-Image
-Disallow: /admin/
-Disallow: /api/
-
-User-agent: Googlebot-News
-Disallow: /admin/
-Disallow: /api/
-
-User-agent: Bingbot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-Disallow: /private/
-
-User-agent: Slurp
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-
-User-agent: DuckDuckBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-
-User-agent: Baiduspider
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-
-User-agent: YandexBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-
-# ===========================================
-# AI SEARCH CRAWLERS (ALLOW)
-# These power AI-generated answers
-# ===========================================
-User-agent: OAI-SearchBot
+User-agent: GPTBot
 Allow: /
 
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Claude-User
-Allow: /
-
-User-agent: Claude-SearchBot
+User-agent: ClaudeBot
 Allow: /
 
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: Amazonbot
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-User-agent: YouBot
-Allow: /
-
-# ===========================================
-# AI TRAINING CRAWLERS (BLOCK)
-# Prevents model training, not search
-# ===========================================
-User-agent: GPTBot
-Disallow: /
-
-User-agent: ClaudeBot
-Disallow: /
-
-User-agent: anthropic-ai
-Disallow: /
-
-User-agent: Google-Extended
-Disallow: /
-
-User-agent: Applebot-Extended
-Disallow: /
-
-User-agent: Meta-ExternalAgent
-Disallow: /
-
-User-agent: Meta-ExternalFetcher
-Disallow: /
-
-User-agent: CCBot
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: cohere-ai
-Disallow: /
-
-User-agent: Diffbot
-Disallow: /
-
-User-agent: Omgilibot
-Disallow: /
-
-User-agent: FacebookBot
-Disallow: /
-
-# ===========================================
-# SOCIAL MEDIA PREVIEW BOTS (ALLOW)
-# ===========================================
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-User-agent: Pinterest
-Allow: /
-
-User-agent: WhatsApp
-Allow: /
-
-User-agent: TelegramBot
-Allow: /
-
-User-agent: Slackbot
-Allow: /
-
-User-agent: Discordbot
-Allow: /
-
-# ===========================================
-# SEO TOOLS (ALLOW)
-# ===========================================
-User-agent: AhrefsBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-
-User-agent: SemrushBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-
-User-agent: DotBot
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-
-User-agent: Screaming Frog SEO Spider
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-
-# ===========================================
-# TRAVEL PARTNERS (ALLOW)
-# ===========================================
-User-agent: TripAdvisor
-Allow: /
-
-User-agent: Viator
-Allow: /
-
-User-agent: GetYourGuide
-Allow: /
-
-User-agent: Klook
-Allow: /
-
-User-agent: Expedia
-Allow: /
-
-# ===========================================
-# BLOCK INACTIVE LANGUAGE PATHS
-# January 2026: All 30 locales are now active
-# ===========================================
-${inactiveLocalePaths}
-
-# ===========================================
-# DEFAULT RULE
-# ===========================================
-User-agent: *
-Disallow: /admin/
-Disallow: /api/
-Disallow: /auth/
-Disallow: /private/
-
-# ===========================================
-# SITEMAPS
-# Only active locales included
-# ===========================================
 Sitemap: ${BASE_URL}/sitemap.xml
-${activeSitemapLines}
 `;
 }

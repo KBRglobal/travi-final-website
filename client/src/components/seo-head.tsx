@@ -84,7 +84,8 @@ export function SEOHead({
     return canonicalMappings[path] || path;
   };
 
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://travi.world";
+  // Always use production URL for canonical and hreflang (SEO requirement)
+  const baseUrl = "https://travi.world";
   const normalizedCanonicalPath = getCanonicalPath(canonicalPath);
   const canonicalUrl = `${baseUrl}${getLocalizedUrl(normalizedCanonicalPath, locale)}`;
 

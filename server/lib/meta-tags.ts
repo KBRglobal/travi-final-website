@@ -125,9 +125,11 @@ export function generateMetaTags(options: MetaTagsOptions): string {
 
   SUPPORTED_LOCALES.forEach(({ code }) => {
     const altUrl = getCanonicalUrl(url.replace(BASE_URL, "").replace(`/${locale}/`, "/"), code);
-    const hreflang = code === "en" ? "x-default" : code;
-    metaTags.push(`<link rel="alternate" hreflang="${hreflang}" href="${altUrl}">`);
+    metaTags.push(`<link rel="alternate" hreflang="${code}" href="${altUrl}">`);
   });
+  // x-default points to English version
+  const xDefaultUrl = getCanonicalUrl(url.replace(BASE_URL, "").replace(`/${locale}/`, "/"), "en");
+  metaTags.push(`<link rel="alternate" hreflang="x-default" href="${xDefaultUrl}">`);
 
   return metaTags.join("\n    ");
 }
@@ -358,14 +360,19 @@ export function generateStructuredData(options: StructuredDataOptions): string {
           url: getCanonicalUrl(`/events/${content.slug}`, locale),
           startDate: eventInfo.startDate || content.publishedAt?.toISOString(),
           ...(eventInfo.endDate && { endDate: eventInfo.endDate }),
-          location: eventInfo.venue || eventInfo.location ? {
-            "@type": "Place",
-            name: eventInfo.venue || eventInfo.location,
-            address: eventInfo.location ? {
-              "@type": "PostalAddress",
-              addressLocality: eventInfo.location,
-            } : undefined,
-          } : undefined,
+          location:
+            eventInfo.venue || eventInfo.location
+              ? {
+                  "@type": "Place",
+                  name: eventInfo.venue || eventInfo.location,
+                  address: eventInfo.location
+                    ? {
+                        "@type": "PostalAddress",
+                        addressLocality: eventInfo.location,
+                      }
+                    : undefined,
+                }
+              : undefined,
           organizer: {
             "@type": "Organization",
             name: SITE_NAME,

@@ -23,6 +23,7 @@ import { PublicFooter } from "@/components/public-footer";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { SUPPORTED_LOCALES } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -293,6 +294,8 @@ function DestinationChip({ destination, index }: { destination: Destination; ind
             })}
             title={`${destination.name} attractions`}
             className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
+            width={36}
+            height={36}
             loading="lazy"
             decoding="async"
           />
@@ -548,6 +551,21 @@ export default function Attractions() {
           content="Skip-the-line tickets to Eiffel Tower, Colosseum, Burj Khalifa and more"
         />
 
+        {/* Hreflang tags */}
+        <link rel="alternate" hrefLang="x-default" href={`${BASE_URL}/attractions`} />
+        {SUPPORTED_LOCALES.map(lang => (
+          <link
+            key={lang.code}
+            rel="alternate"
+            hrefLang={lang.code}
+            href={
+              lang.code === "en"
+                ? `${BASE_URL}/attractions`
+                : `${BASE_URL}/${lang.code}/attractions`
+            }
+          />
+        ))}
+
         <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
       </Helmet>
 
@@ -761,6 +779,10 @@ export default function Attractions() {
                                       src={result.image}
                                       alt={result.title}
                                       className="w-14 h-14 rounded-lg object-cover"
+                                      width={56}
+                                      height={56}
+                                      loading="lazy"
+                                      decoding="async"
                                     />
                                   )}
                                   <div className="flex-1 min-w-0">
@@ -996,7 +1018,7 @@ export default function Attractions() {
                             key={i}
                             onClick={() => goTo(i)}
                             className={cn(
-                              "thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-[#6443F4]/20",
+                              "thumb-item w-14 h-14 sm:w-16 sm:h-16 min-w-[44px] min-h-[44px] rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-[#6443F4]/20",
                               currentIndex === i
                                 ? "ring-[#6443F4] active"
                                 : "ring-transparent hover:ring-[#6443F4]/50"
@@ -1013,6 +1035,8 @@ export default function Attractions() {
                               src={attraction.image}
                               alt={`${attraction.name} ${attraction.city}`}
                               className="w-full h-full object-cover"
+                              width={64}
+                              height={64}
                               loading="lazy"
                               decoding="async"
                             />
@@ -1144,6 +1168,8 @@ export default function Attractions() {
                               alt={`Things to do in ${dest.name}, ${dest.country}`}
                               title={`${dest.name} attractions`}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              width={400}
+                              height={300}
                               loading="lazy"
                               decoding="async"
                               onError={e => {

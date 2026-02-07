@@ -60,25 +60,9 @@ interface APIDestination {
   moodPrimaryColor: string | null;
 }
 
-const SUPPORTED_LANGUAGES = [
-  { code: "en", label: "English" },
-  { code: "ar", label: "العربية" },
-  { code: "he", label: "Hebrew" },
-  { code: "es", label: "Español" },
-  { code: "fr", label: "Français" },
-  { code: "de", label: "Deutsch" },
-  { code: "it", label: "Italiano" },
-  { code: "pt", label: "Português" },
-  { code: "ru", label: "Русский" },
-  { code: "ja", label: "日本語" },
-  { code: "ko", label: "한국어" },
-  { code: "zh", label: "中文" },
-  { code: "th", label: "ไทย" },
-  { code: "tr", label: "Türkçe" },
-  { code: "nl", label: "Nederlands" },
-  { code: "pl", label: "Polski" },
-  { code: "vi", label: "Tiếng Việt" },
-];
+// Use canonical locale list from shared schema for complete hreflang coverage
+import { SUPPORTED_LOCALES as SCHEMA_LOCALES } from "@shared/schema";
+const SUPPORTED_LANGUAGES = SCHEMA_LOCALES.map(l => ({ code: l.code, label: l.nativeName }));
 
 const FAQ_KEYS = ["1", "2", "3", "4"] as const;
 
@@ -104,8 +88,10 @@ function DestinationChip({ destination, index }: { destination: APIDestination; 
         >
           <img
             src={destination.cardImage || `/cards/${destination.id}.webp`}
-            alt={destination.name}
+            alt={`${destination.name} travel destination`}
             className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
+            width={36}
+            height={36}
             loading="lazy"
             decoding="async"
             onError={e => {
@@ -230,13 +216,17 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
                 <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                   <div className="text-center lg:text-left flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6443F4]/10 to-[#E84C9A]/10 flex items-center justify-center">
-                      <stat.icon className="w-5 h-5 text-[#6443F4]" />
+                      <stat.icon className="w-5 h-5 text-[#6443F4]" aria-hidden="true" />
                     </div>
                     <div>
+                      <dt className="sr-only">{stat.label}</dt>
                       <dd className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-white font-chillax">
                         {stat.num}
                       </dd>
-                      <div className="text-[10px] sm:text-[11px] text-slate-400 tracking-wider">
+                      <div
+                        className="text-[10px] sm:text-[11px] text-slate-400 tracking-wider"
+                        aria-hidden="true"
+                      >
                         {stat.label}
                       </div>
                     </div>
@@ -415,7 +405,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
           size="icon"
           variant="ghost"
           onClick={goPrev}
-          className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md text-white border border-white/25 hover:bg-white/25 transition-all duration-200"
+          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/15 backdrop-blur-md text-white border border-white/25 hover:bg-white/25 transition-all duration-200"
           aria-label={t("destinations.carousel.previous")}
         >
           <ChevronLeft className="w-4 h-4" aria-hidden="true" />
@@ -430,23 +420,29 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
               key={idx}
               onClick={() => goTo(idx)}
               className={cn(
-                "h-2 rounded-full transition-all duration-300",
-                idx === currentIndex
-                  ? "w-7 bg-gradient-to-r from-[#6443F4] to-[#E84C9A]"
-                  : "w-2 bg-white/50 hover:bg-white/70"
+                "min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-all duration-300"
               )}
               role="tab"
               aria-selected={idx === currentIndex}
               aria-label={t("destinations.carousel.goTo", { name: dest.name })}
               data-testid={`carousel-dot-${idx}`}
-            />
+            >
+              <span
+                className={cn(
+                  "h-2 rounded-full transition-all duration-300 block",
+                  idx === currentIndex
+                    ? "w-7 bg-gradient-to-r from-[#6443F4] to-[#E84C9A]"
+                    : "w-2 bg-white/50 hover:bg-white/70"
+                )}
+              />
+            </button>
           ))}
         </div>
         <Button
           size="icon"
           variant="ghost"
           onClick={goNext}
-          className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md text-white border border-white/25 hover:bg-white/25 transition-all duration-200"
+          className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/15 backdrop-blur-md text-white border border-white/25 hover:bg-white/25 transition-all duration-200"
           aria-label={t("destinations.carousel.next")}
         >
           <ChevronRight className="w-4 h-4" aria-hidden="true" />
@@ -712,8 +708,8 @@ export default function DestinationsPage() {
       <Helmet>
         {pageSeo?.metaTitle && <title>{pageSeo.metaTitle}</title>}
         {pageSeo?.metaDescription && <meta name="description" content={pageSeo.metaDescription} />}
-        {pageSeo?.canonicalUrl && <link rel="canonical" href={pageSeo.canonicalUrl} />}
-        {pageSeo?.robotsMeta && <meta name="robots" content={pageSeo.robotsMeta} />}
+        <link rel="canonical" href={pageSeo?.canonicalUrl || "https://travi.world/destinations"} />
+        <meta name="robots" content={pageSeo?.robotsMeta || "index, follow"} />
 
         {/* Open Graph from database */}
         {pageSeo?.ogTitle && <meta property="og:title" content={pageSeo.ogTitle} />}
@@ -735,14 +731,18 @@ export default function DestinationsPage() {
         )}
         {pageSeo?.ogImage && <meta name="twitter:image" content={pageSeo.ogImage} />}
 
-        {/* Hreflang tags */}
+        {/* Hreflang tags - English at root, others at /{locale}/destinations */}
         <link rel="alternate" hrefLang="x-default" href="https://travi.world/destinations" />
         {SUPPORTED_LANGUAGES.map(lang => (
           <link
             key={lang.code}
             rel="alternate"
             hrefLang={lang.code}
-            href={`https://travi.world/${lang.code}/destinations`}
+            href={
+              lang.code === "en"
+                ? "https://travi.world/destinations"
+                : `https://travi.world/${lang.code}/destinations`
+            }
           />
         ))}
 

@@ -167,8 +167,12 @@ function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; ind
           <div className="relative h-56 overflow-hidden">
             <img
               src={cardImage}
-              alt={guide.title}
+              alt={`${guide.title} - comprehensive travel guide with local tips and recommendations`}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              width={800}
+              height={600}
+              loading="lazy"
+              decoding="async"
               onError={e => {
                 const target = e.currentTarget;
                 const fallbackUrl =
@@ -196,7 +200,7 @@ function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; ind
             {/* Language badge */}
             {guide.availableLocales.length > 1 && (
               <Badge className="absolute top-4 right-4 bg-white/95 text-slate-700 backdrop-blur-sm border-0 shadow-lg">
-                <Languages className="h-3 w-3 mr-1.5" />
+                <Languages className="h-3 w-3 mr-1.5" aria-hidden="true" />
                 {guide.availableLocales.length} languages
               </Badge>
             )}
@@ -253,8 +257,12 @@ function FeaturedGuideCard({ guide, locale }: { guide: Guide; locale: string }) 
           <div className="relative h-64 md:h-96 overflow-hidden">
             <img
               src={cardImage}
-              alt={guide.title}
+              alt={`${guide.title} - featured travel destination guide`}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              width={1200}
+              height={900}
+              loading="lazy"
+              decoding="async"
               onError={e => {
                 const target = e.currentTarget;
                 const fallbackUrl =
@@ -395,16 +403,6 @@ export default function TravelGuidesPage() {
         />
 
         <Helmet>
-          <link rel="canonical" href="https://travi.world/guides" />
-          {SUPPORTED_LANGUAGES.map(lang => (
-            <link
-              key={lang.code}
-              rel="alternate"
-              hrefLang={lang.code}
-              href={`https://travi.world/guides?locale=${lang.code}`}
-            />
-          ))}
-          <link rel="alternate" hrefLang="x-default" href="https://travi.world/guides" />
           <script type="application/ld+json">{JSON.stringify(itemListSchema)}</script>
         </Helmet>
 
@@ -599,13 +597,17 @@ export default function TravelGuidesPage() {
                         role="tab"
                         aria-selected={currentIndex === i}
                         aria-label={`View ${d.name} guide`}
-                        className={cn(
-                          "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
-                          currentIndex === i
-                            ? "w-8 bg-gradient-to-r from-[#6443F4] to-[#8B5CF6]"
-                            : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
-                        )}
-                      />
+                        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full border-none cursor-pointer"
+                      >
+                        <span
+                          className={cn(
+                            "h-2.5 rounded-full transition-all duration-500 block",
+                            currentIndex === i
+                              ? "w-8 bg-gradient-to-r from-[#6443F4] to-[#8B5CF6]"
+                              : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
+                          )}
+                        />
+                      </button>
                     ))}
                   </motion.div>
                 </div>
@@ -696,7 +698,7 @@ export default function TravelGuidesPage() {
                           aria-selected={currentIndex === i}
                           aria-label={`View ${guide.name} guide`}
                           className={cn(
-                            "w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-300",
+                            "w-14 h-14 min-w-[44px] min-h-[44px] rounded-lg overflow-hidden border-2 transition-all duration-300",
                             currentIndex === i
                               ? "border-[#6443F4] ring-2 ring-[#6443F4]/30 scale-110"
                               : "border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-100"
@@ -704,8 +706,12 @@ export default function TravelGuidesPage() {
                         >
                           <img
                             src={guide.image}
-                            alt={guide.name}
+                            alt={`${guide.name} travel guide thumbnail`}
                             className="w-full h-full object-cover"
+                            width={56}
+                            height={56}
+                            loading="lazy"
+                            decoding="async"
                           />
                         </button>
                       ))}

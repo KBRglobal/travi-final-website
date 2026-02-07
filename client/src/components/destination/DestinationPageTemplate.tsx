@@ -84,20 +84,11 @@ export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) 
       <SEOHead
         title={data.seo.metaTitle}
         description={data.seo.metaDescription}
-        canonicalPath={data.seo.canonicalUrl}
+        canonicalPath={data.seo.canonicalUrl.replace("https://travi.world", "")}
         ogImage={data.seo.ogImage || undefined}
       />
 
       <Helmet>
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href={data.seo.canonicalUrl} />
-        <meta property="og:title" content={data.seo.metaTitle} />
-        <meta property="og:description" content={data.seo.metaDescription} />
-        {data.seo.ogImage && <meta property="og:image" content={data.seo.ogImage} />}
-        <meta property="og:url" content={data.seo.canonicalUrl} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-
         {/* TravelDestination Schema.org structured data */}
         <script type="application/ld+json">
           {JSON.stringify({

@@ -408,6 +408,7 @@ export default function NotFound() {
         title="Page Coming Soon | Travi"
         description="This page is still being built. Travi is actively expanding with new destinations and contents."
         canonicalPath="/404"
+        noIndex={true}
       />
 
       <div className="min-h-screen w-full flex flex-col bg-white dark:bg-slate-900">
