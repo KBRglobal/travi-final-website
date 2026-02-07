@@ -26,15 +26,16 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Runtime: vips for sharp, build tools for bcrypt compile
-RUN apk add --no-cache vips python3 make g++
+# Build tools for native modules + vips-dev for sharp compilation
+RUN apk add --no-cache vips-dev python3 make g++
 
 COPY package.json package-lock.json ./
 RUN npm pkg delete scripts.prepare && \
     npm ci --omit=dev --ignore-scripts && \
     npm install --no-save node-gyp && \
-    npm rebuild bcrypt && \
-    apk del python3 make g++
+    npm rebuild bcrypt sharp && \
+    apk del python3 make g++ vips-dev && \
+    apk add --no-cache vips
 
 COPY --from=builder /app/dist ./dist
 
