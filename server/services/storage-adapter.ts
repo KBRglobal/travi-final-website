@@ -3,13 +3,6 @@
  * Provides consistent interface for R2 (Cloudflare) and Local Filesystem
  */
 
-import {
-  S3Client,
-  PutObjectCommand,
-  DeleteObjectCommand,
-  GetObjectCommand,
-  HeadObjectCommand,
-} from "@aws-sdk/client-s3";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -22,32 +15,54 @@ export interface StorageAdapter {
 }
 
 /**
- * Cloudflare R2 Storage Adapter (S3-compatible)
+ * Cloudflare R2 Storage Adapter (via Cloudflare REST API)
+ * Uses the Cloudflare API directly — no S3 credentials needed.
  */
 export class R2StorageAdapter implements StorageAdapter {
-  private client: S3Client;
+  private accountId: string;
   private bucket: string;
   private publicUrl: string;
+  private apiKey: string;
+  private apiEmail: string;
   private initialized: boolean = false;
   private initPromise: Promise<void> | null = null;
 
   constructor() {
-    const endpoint = process.env.R2_ENDPOINT;
-    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+    this.accountId = process.env.R2_ACCOUNT_ID || "";
     this.bucket = process.env.R2_BUCKET_NAME || "travi";
     this.publicUrl = process.env.R2_PUBLIC_URL || "https://cdn.travi.world";
+    this.apiKey = process.env.CLOUDFLARE_API_KEY || "";
+    this.apiEmail = process.env.CLOUDFLARE_EMAIL || "";
 
-    if (!endpoint || !accessKeyId || !secretAccessKey) {
+    if (!this.accountId || !this.apiKey || !this.apiEmail) {
       throw new Error(
-        "R2 credentials not configured: R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY required"
+        "R2 credentials not configured: R2_ACCOUNT_ID, CLOUDFLARE_API_KEY, CLOUDFLARE_EMAIL required"
       );
     }
+  }
 
-    this.client = new S3Client({
-      region: "auto",
-      endpoint,
-      credentials: { accessKeyId, secretAccessKey },
+  private get baseUrl(): string {
+    return `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/r2/buckets/${this.bucket}/objects`;
+  }
+
+  private async r2Fetch(
+    key: string,
+    method: string,
+    body?: Buffer,
+    contentType?: string
+  ): Promise<Response> {
+    const url = `${this.baseUrl}/${encodeURIComponent(key)}`;
+    const headers: Record<string, string> = {
+      "X-Auth-Email": this.apiEmail,
+      "X-Auth-Key": this.apiKey,
+    };
+    if (contentType) {
+      headers["Content-Type"] = contentType;
+    }
+    return fetch(url, {
+      method,
+      headers,
+      body: body ? new Uint8Array(body) : undefined,
     });
   }
 
@@ -58,19 +73,12 @@ export class R2StorageAdapter implements StorageAdapter {
       this.initPromise = (async () => {
         const testKey = `.storage-test-${Date.now()}`;
         try {
-          await this.client.send(
-            new PutObjectCommand({
-              Bucket: this.bucket,
-              Key: testKey,
-              Body: Buffer.from("test"),
-            })
-          );
-          await this.client.send(
-            new DeleteObjectCommand({
-              Bucket: this.bucket,
-              Key: testKey,
-            })
-          );
+          const res = await this.r2Fetch(testKey, "PUT", Buffer.from("test"), "text/plain");
+          if (!res.ok) {
+            const body = await res.text();
+            throw new Error(`Upload test failed (${res.status}): ${body}`);
+          }
+          await this.r2Fetch(testKey, "DELETE");
           this.initialized = true;
         } catch (error) {
           throw new Error(`R2 connection test failed: ${error}`);
@@ -95,27 +103,19 @@ export class R2StorageAdapter implements StorageAdapter {
       mp4: "video/mp4",
       webm: "video/webm",
     };
-    await this.client.send(
-      new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: key,
-        Body: buffer,
-        ContentType: contentTypes[ext] || "application/octet-stream",
-        CacheControl: "public, max-age=31536000",
-      })
-    );
+    const ct = contentTypes[ext] || "application/octet-stream";
+    const res = await this.r2Fetch(key, "PUT", buffer, ct);
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`R2 upload failed (${res.status}): ${body}`);
+    }
     return this.getUrl(key);
   }
 
   async delete(key: string): Promise<void> {
     try {
       await this.ensureInitialized();
-      await this.client.send(
-        new DeleteObjectCommand({
-          Bucket: this.bucket,
-          Key: key,
-        })
-      );
+      await this.r2Fetch(key, "DELETE");
     } catch (error) {
       console.error(error);
     }
@@ -124,13 +124,8 @@ export class R2StorageAdapter implements StorageAdapter {
   async exists(key: string): Promise<boolean> {
     try {
       await this.ensureInitialized();
-      await this.client.send(
-        new HeadObjectCommand({
-          Bucket: this.bucket,
-          Key: key,
-        })
-      );
-      return true;
+      const res = await this.r2Fetch(key, "HEAD");
+      return res.ok;
     } catch {
       return false;
     }
@@ -139,18 +134,10 @@ export class R2StorageAdapter implements StorageAdapter {
   async download(key: string): Promise<Buffer | null> {
     try {
       await this.ensureInitialized();
-      const response = await this.client.send(
-        new GetObjectCommand({
-          Bucket: this.bucket,
-          Key: key,
-        })
-      );
-      if (!response.Body) return null;
-      const chunks: Uint8Array[] = [];
-      for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
-        chunks.push(chunk);
-      }
-      return Buffer.concat(chunks);
+      const res = await this.r2Fetch(key, "GET");
+      if (!res.ok) return null;
+      const ab = await res.arrayBuffer();
+      return Buffer.from(ab);
     } catch {
       return null;
     }
@@ -288,9 +275,9 @@ export class StorageManager {
 
     // Check if R2 Object Storage should be enabled (lazy initialization)
     this.objectStorageEnabled = !!(
-      process.env.R2_ACCESS_KEY_ID &&
-      process.env.R2_SECRET_ACCESS_KEY &&
-      process.env.R2_ENDPOINT
+      process.env.R2_ACCOUNT_ID &&
+      process.env.CLOUDFLARE_API_KEY &&
+      process.env.CLOUDFLARE_EMAIL
     );
 
     if (this.objectStorageEnabled) {
