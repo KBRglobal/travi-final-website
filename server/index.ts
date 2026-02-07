@@ -319,7 +319,7 @@ app.get("/health/db", async (_req, res) => {
 app.get("/sitemap", async (_req, res) => {
   try {
     // Fetch live destinations with failsafe
-    let liveDestinations: { id: string; name: string; slug: string }[] = [];
+    let liveDestinations: { id: number; name: string; slug: string | null }[] = [];
     try {
       liveDestinations = await db
         .select({

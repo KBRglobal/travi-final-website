@@ -4,9 +4,11 @@ import {
   text,
   varchar,
   integer,
+  serial,
   boolean,
   timestamp,
   jsonb,
+  numeric,
   index,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
@@ -97,30 +99,40 @@ export type FeaturedSectionsUpdate = z.infer<typeof featuredSectionsUpdateSchema
 
 // Destinations table - stores all travel destinations with content health metrics
 // CMS Contract: Enforces Country -> City -> Area hierarchy with separate image slots
+// NOTE: id is serial (integer) in the live DB — do NOT change to varchar
 export const destinations = pgTable(
   "destinations",
   {
-    id: varchar("id").primaryKey(),
+    id: serial("id").primaryKey(),
     name: varchar("name").notNull(),
     country: varchar("country").notNull(),
-    slug: varchar("slug").notNull(),
+    slug: varchar("slug"),
+    // Legacy columns that exist in live DB
+    continent: varchar("continent"),
+    image: varchar("image"),
+    rating: numeric("rating").default("4.5"),
+    reviews: integer("reviews").default(0),
+    trending: boolean("trending").default(false),
+    description: text("description"),
+    countrySlug: varchar("country_slug"),
     // Normalized name for indexed lookup (lowercase, punctuation-stripped)
     normalizedName: varchar("normalized_name"),
     // CMS Contract: Hierarchy fields
-    destinationLevel: destinationLevelEnum("destination_level").notNull().default("city"),
+    destinationLevel: destinationLevelEnum("destination_level").default("city"),
     parentDestinationId: varchar("parent_destination_id"),
     // CMS Contract: Summary for card preview (300 chars max)
     summary: text("summary"),
     // CMS Contract: Brand color (optional accent, NOT for CTAs)
     brandColor: varchar("brand_color"),
-    isActive: boolean("is_active").notNull().default(false),
-    status: destinationStatusEnum("status").notNull().default("empty"),
-    hasPage: boolean("has_page").notNull().default(false),
-    seoScore: integer("seo_score").notNull().default(0),
-    wordCount: integer("word_count").notNull().default(0),
-    internalLinks: integer("internal_links").notNull().default(0),
-    externalLinks: integer("external_links").notNull().default(0),
-    h2Count: integer("h2_count").notNull().default(0),
+    isActive: boolean("is_active").default(false),
+    // status is varchar in live DB (values like 'published'), not an enum
+    status: varchar("status").default("published"),
+    hasPage: boolean("has_page").default(false),
+    seoScore: integer("seo_score").default(0),
+    wordCount: integer("word_count").default(0),
+    internalLinks: integer("internal_links").default(0),
+    externalLinks: integer("external_links").default(0),
+    h2Count: integer("h2_count").default(0),
     metaTitle: varchar("meta_title"),
     metaDescription: text("meta_description"),
     primaryKeyword: varchar("primary_keyword"),
@@ -136,7 +148,7 @@ export const destinations = pgTable(
     heroCTAText: varchar("hero_cta_text"),
     heroCTALink: varchar("hero_cta_link"),
     // CMS Contract: Destination mood/vibe for visual theming
-    moodVibe: varchar("mood_vibe"), // luxury, cultural, adventure, romantic, tropical, modern
+    moodVibe: varchar("mood_vibe"),
     moodTagline: varchar("mood_tagline"),
     moodPrimaryColor: varchar("mood_primary_color"),
     moodGradientFrom: varchar("mood_gradient_from"),
@@ -144,7 +156,7 @@ export const destinations = pgTable(
     // CMS Contract: Open Graph fields
     ogTitle: varchar("og_title"),
     ogDescription: text("og_description"),
-    ogImage: varchar("og_image"), // Selected from hero images
+    ogImage: varchar("og_image"),
     canonicalUrl: varchar("canonical_url"),
     // CMS Contract: Card image (grids/listings ONLY, never reuse hero)
     cardImage: text("card_image"),
@@ -188,9 +200,7 @@ export const destinationContent = pgTable("destination_content", {
   id: varchar("id")
     .primaryKey()
     .default(sql`gen_random_uuid()`),
-  destinationId: varchar("destination_id")
-    .notNull()
-    .references(() => destinations.id),
+  destinationId: varchar("destination_id").notNull(),
   contentType: varchar("content_type").notNull(), // hero, attractions, districts, hotels, restaurants, tips, events
   content: jsonb("content").notNull(),
   seoValidation: jsonb("seo_validation"),
@@ -223,9 +233,7 @@ export const categoryPages = pgTable(
       .default(sql`gen_random_uuid()`),
     name: varchar("name", { length: 40 }).notNull(),
     slug: varchar("slug").notNull(),
-    destinationId: varchar("destination_id")
-      .notNull()
-      .references(() => destinations.id),
+    destinationId: varchar("destination_id").notNull(),
     metaTitle: varchar("meta_title", { length: 60 }),
     metaDescription: text("meta_description"),
     // CMS Contract: Optional decorative image (NOT hero)

@@ -604,7 +604,10 @@ export function registerAdminHomepageRoutes(app: Express): void {
         const { id, name, summary, country, slug, cardImage, cardImageAlt, isActive } = req.body;
 
         // Check if destination with this ID already exists
-        const existing = await db.select().from(destinations).where(eq(destinations.id, id));
+        const existing = await db
+          .select()
+          .from(destinations)
+          .where(eq(destinations.id, Number(id)));
         if (existing.length > 0) {
           return res.status(400).json({ error: "Destination with this ID already exists" });
         }
@@ -660,13 +663,16 @@ export function registerAdminHomepageRoutes(app: Express): void {
               ...structuralUpdates,
               updatedAt: new Date(),
             })
-            .where(eq(destinations.id, id));
+            .where(eq(destinations.id, Number(id)));
         }
 
         // Store translations
         await setTranslations("destination" as any, id, locale, { name, summary });
 
-        const [dest] = await db.select().from(destinations).where(eq(destinations.id, id));
+        const [dest] = await db
+          .select()
+          .from(destinations)
+          .where(eq(destinations.id, Number(id)));
         const trans = await getTranslations("destination" as any, id, locale);
 
         res.json({
@@ -688,7 +694,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
       try {
         const id = req.params.id;
         await deleteEntityTranslations("destination" as any, id);
-        await db.delete(destinations).where(eq(destinations.id, id));
+        await db.delete(destinations).where(eq(destinations.id, Number(id)));
         res.json({ success: true });
       } catch (error) {
         res.status(500).json({ error: "Failed to delete destination" });

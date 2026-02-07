@@ -97,15 +97,8 @@ export const pilotEntityTypes = ["attraction"] as const;
 // Topic Clusters - For RSS aggregation of similar articles
 // ============================================================================
 
-// Forward declaration for contents reference (will be imported from content-base)
-declare const contents: {
-  id: ReturnType<typeof varchar>;
-};
-
-// Forward declaration for rssFeeds reference
-declare const rssFeeds: {
-  id: ReturnType<typeof varchar>;
-};
+import { contents } from "./content-base";
+import { rssFeeds } from "./content-support";
 
 export const topicClusters = pgTable("topic_clusters", {
   id: varchar("id")

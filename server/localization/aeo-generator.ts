@@ -242,7 +242,7 @@ async function gatherEntityData(content: Content): Promise<{
       const [dest] = await db
         .select()
         .from(destinations)
-        .where(eq(destinations.id, hotel.destinationId));
+        .where(eq(destinations.id, Number(hotel.destinationId)));
       if (dest) {
         entityData.destination = {
           name: dest.name,
@@ -265,7 +265,7 @@ async function gatherEntityData(content: Content): Promise<{
       const [dest] = await db
         .select()
         .from(destinations)
-        .where(eq(destinations.id, attraction.destinationId));
+        .where(eq(destinations.id, Number(attraction.destinationId)));
       if (dest) {
         entityData.destination = {
           name: dest.name,

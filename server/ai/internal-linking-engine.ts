@@ -543,7 +543,7 @@ export async function loadLinkableContentFromDB(): Promise<LinkableContent[]> {
 
     for (const dest of dbDestinations) {
       linkableContent.push({
-        id: dest.id,
+        id: String(dest.id),
         type: "destination",
         slug: `/destinations/${dest.slug}`,
         title: `${dest.name} Travel Guide`,

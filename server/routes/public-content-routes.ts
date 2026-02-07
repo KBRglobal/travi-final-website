@@ -178,7 +178,7 @@ export function registerPublicContentRoutes(app: Express): void {
       // Create lookup map by normalized name
       const metaMap = new Map<string, (typeof destinationMeta)[0]>();
       for (const d of destinationMeta) {
-        metaMap.set(d.id, d);
+        metaMap.set(String(d.id), d);
       }
 
       // City-to-country fallback mapping for cities not in destinations table
@@ -306,7 +306,7 @@ export function registerPublicContentRoutes(app: Express): void {
       const [destination] = await db
         .select()
         .from(destinations)
-        .where(eq(destinations.id, id))
+        .where(eq(destinations.id, Number(id)))
         .limit(1);
 
       if (!destination) {

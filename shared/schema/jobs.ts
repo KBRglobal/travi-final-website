@@ -13,11 +13,8 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 import { jobStatusEnum, jobTypeEnum, webhookEventEnum } from "./enums";
-
-// Forward reference placeholders to avoid circular dependencies
-// Actual foreign key constraints exist at database level
-declare const users: { id: any };
-declare const contents: { id: any };
+import { contents } from "./content-base";
+import { users } from "./auth";
 
 // ============================================================================
 // BACKGROUND JOBS TABLE

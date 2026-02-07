@@ -15,10 +15,8 @@ import { z } from "zod";
 import { contentTypeEnum } from "./enums";
 import type { ContentBlock, SeoIssue, SeoSuggestion } from "./types";
 
-// Forward reference placeholders for circular dependencies
-// These avoid circular dependency - actual foreign key constraints exist at database level
-declare const users: { id: any };
-declare const contents: { id: any };
+import { users } from "./auth";
+import { contents } from "./content-base";
 
 // ============================================================================
 // TAGS TABLE

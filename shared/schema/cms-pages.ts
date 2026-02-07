@@ -21,12 +21,8 @@ import {
 } from "./enums";
 import type { StaticPageTranslation } from "./types";
 
-// Forward reference placeholder for users table (use varchar without actual reference)
-// This avoids circular dependency - actual foreign key constraint exists at database level
-declare const users: { id: any };
-
-// Forward reference placeholder for contents table
-declare const contents: { id: any };
+import { users } from "./auth";
+import { contents } from "./content-base";
 
 // ============================================================================
 // PAGE LAYOUTS - VISUAL PAGE BUILDER SYSTEM

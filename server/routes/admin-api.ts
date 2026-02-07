@@ -737,7 +737,10 @@ export function registerAdminApiRoutes(app: Express): void {
         const locale = (req.query.locale as string) || "en";
         const { id, name, summary, country, slug, cardImage, cardImageAlt, isActive } = req.body;
 
-        const existing = await db.select().from(destinations).where(eq(destinations.id, id));
+        const existing = await db
+          .select()
+          .from(destinations)
+          .where(eq(destinations.id, Number(id)));
         if (existing.length > 0) {
           return res.status(400).json({ error: "Destination with this ID already exists" });
         }
@@ -790,12 +793,15 @@ export function registerAdminApiRoutes(app: Express): void {
               ...structuralUpdates,
               updatedAt: new Date(),
             })
-            .where(eq(destinations.id, id));
+            .where(eq(destinations.id, Number(id)));
         }
 
         await setTranslations("destination" as any, id, locale, { name, summary });
 
-        const [dest] = await db.select().from(destinations).where(eq(destinations.id, id));
+        const [dest] = await db
+          .select()
+          .from(destinations)
+          .where(eq(destinations.id, Number(id)));
         const trans = await getTranslations("destination" as any, id, locale);
 
         res.json({
@@ -817,7 +823,7 @@ export function registerAdminApiRoutes(app: Express): void {
       try {
         const id = req.params.id;
         await deleteEntityTranslations("destination" as any, id);
-        await db.delete(destinations).where(eq(destinations.id, id));
+        await db.delete(destinations).where(eq(destinations.id, Number(id)));
         res.json({ success: true });
       } catch (error) {
         res.status(500).json({ error: "Failed to delete destination" });
@@ -1923,7 +1929,7 @@ export function registerAdminApiRoutes(app: Express): void {
         const [destination] = await db
           .select()
           .from(destinations)
-          .where(eq(destinations.id, destinationId));
+          .where(eq(destinations.id, Number(destinationId)));
         if (!destination) {
           return res.status(404).json({ error: "Destination not found" });
         }
@@ -1970,7 +1976,7 @@ export function registerAdminApiRoutes(app: Express): void {
             cardImageAlt: alt,
             updatedAt: new Date(),
           } as any)
-          .where(eq(destinations.id, destinationId));
+          .where(eq(destinations.id, Number(destinationId)));
 
         res.json({
           filename,
@@ -2005,7 +2011,7 @@ export function registerAdminApiRoutes(app: Express): void {
             cardImageAlt: alt,
             updatedAt: new Date(),
           } as any)
-          .where(eq(destinations.id, destinationId))
+          .where(eq(destinations.id, Number(destinationId)))
           .returning();
 
         if (!updated) {
