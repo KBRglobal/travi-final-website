@@ -6,7 +6,7 @@
  *
  * PROBLEM:
  * The vite.config.ts manualChunks function creates a circular dependency:
- * react-vendor → destination-page → react-vendor
+ * react-vendor -> destination-page -> react-vendor
  *
  * This happens because:
  * 1. vite.config.ts groups react/react-dom/wouter into react-vendor but NOT scheduler/use-sync-external-store
@@ -38,6 +38,8 @@ import path from "path";
  * Key differences from vite.config.ts:
  * 1. react-vendor includes scheduler, use-sync-external-store, i18next, react-i18next
  * 2. destination-page is NOT manually chunked (Rollup decides its placement)
+ * 3. Admin pages split more granularly to reduce largest chunk size
+ * 4. Homepage and public pages have dedicated chunks for faster initial load
  */
 function fixedManualChunks(id: string): string | undefined {
   // React core, routing, AND their essential dependencies
@@ -51,7 +53,8 @@ function fixedManualChunks(id: string): string | undefined {
     id.includes("node_modules/scheduler/") ||
     id.includes("node_modules/use-sync-external-store/") ||
     id.includes("node_modules/i18next") ||
-    id.includes("node_modules/react-i18next")
+    id.includes("node_modules/react-i18next") ||
+    id.includes("node_modules/react-helmet-async/")
   ) {
     return "react-vendor";
   }
@@ -71,28 +74,24 @@ function fixedManualChunks(id: string): string | undefined {
   if (id.includes("node_modules/@tanstack/react-query")) {
     return "query-vendor";
   }
-  // Icons
+  // Icons - lucide
   if (id.includes("node_modules/lucide-react/")) {
     return "icons-vendor";
   }
-  // DnD kit
-  if (id.includes("node_modules/@dnd-kit/")) {
-    return "dnd-vendor";
+  // react-icons (separate from lucide to avoid bloating main icon chunk)
+  if (id.includes("node_modules/react-icons/")) {
+    return "react-icons-vendor";
   }
   // Animation library
   if (id.includes("node_modules/framer-motion/")) {
     return "animation-vendor";
-  }
-  // Charts - only needed in admin/analytics
-  if (id.includes("node_modules/recharts/") || id.includes("node_modules/d3-")) {
-    return "charts-vendor";
   }
   // Date utilities
   if (id.includes("node_modules/date-fns/")) {
     return "date-vendor";
   }
   // NOTE: i18n (i18next, react-i18next) is now in react-vendor to prevent circular dependencies
-  // Editor libraries - heavy, separate chunk
+  // Editor libraries - heavy, admin only
   if (id.includes("node_modules/@tiptap/") || id.includes("node_modules/prosemirror")) {
     return "editor-vendor";
   }
@@ -100,42 +99,59 @@ function fixedManualChunks(id: string): string | undefined {
   if (id.includes("node_modules/posthog-js/")) {
     return "analytics-vendor";
   }
-  // Admin pages - split into smaller chunks by feature
+  // DOMPurify - used for sanitization
+  if (id.includes("node_modules/dompurify/")) {
+    return "sanitize-vendor";
+  }
+  // NOTE: react-helmet-async is in react-vendor to prevent circular dependencies
+  // Homepage - separate chunk for fast initial load
+  if (id.includes("/pages/homepage") || id.includes("/components/homepage/")) {
+    return "homepage";
+  }
+  // Admin pages - split by feature for granular loading
   if (id.includes("/pages/admin/")) {
-    // Governance pages
-    if (id.includes("/admin/governance/")) {
-      return "admin-governance";
+    // Destinations management
+    if (id.includes("/admin/destinations/")) {
+      return "admin-destinations";
     }
-    // Analytics/Dashboard pages
-    if (id.includes("/admin/growth-dashboard") || id.includes("/admin/destination-intelligence")) {
-      return "admin-analytics";
+    // Gatekeeper / access control
+    if (id.includes("/admin/gatekeeper/")) {
+      return "admin-gatekeeper";
+    }
+    // Octypo content engine
+    if (id.includes("/admin/octypo/")) {
+      return "admin-octypo";
+    }
+    // Tiqets integration
+    if (id.includes("/admin/tiqets")) {
+      return "admin-tiqets";
     }
     // Content management pages
     if (id.includes("/admin/homepage-editor") || id.includes("/admin/static-page-editor")) {
       return "admin-content";
     }
-    // QA and monitoring pages
-    if (id.includes("/admin/qa-dashboard") || id.includes("/admin/octypo")) {
-      return "admin-qa";
-    }
-    // Remaining admin pages
+    // Remaining admin pages (dashboard, rss-feeds, site-settings)
     return "admin-pages";
   }
   // Content editor - large page
   if (id.includes("/pages/content-editor")) {
     return "content-editor";
   }
-  // Static page editor - large page
-  if (id.includes("/pages/admin/static-page-editor")) {
-    return "static-page-editor";
-  }
   // NOTE: destination-page is intentionally NOT in manual chunks
   // Let Rollup naturally place it to avoid circular dependencies
   // The CJS helper will be placed in a shared chunk or react-vendor
 
-  // Guide and attraction pages
+  // Destination components (shared across destination pages)
+  if (id.includes("/components/destination/")) {
+    return "destination-components";
+  }
+  // Guide and attraction detail pages
   if (id.includes("/pages/guide-detail") || id.includes("/pages/attraction-detail")) {
     return "travel-details";
+  }
+  // Attractions listing page
+  if (id.includes("/pages/attractions") || id.includes("/pages/destination-attractions")) {
+    return "attractions";
   }
   // Travel style articles
   if (id.includes("/pages/travel-style-article")) {
@@ -144,6 +160,14 @@ function fixedManualChunks(id: string): string | undefined {
   // Public off-plan and content viewer
   if (id.includes("/pages/public-off-plan") || id.includes("/pages/public-content-viewer")) {
     return "public-content";
+  }
+  // Destinations landing page
+  if (id.includes("/pages/destinations")) {
+    return "destinations-landing";
+  }
+  // Travel guides listing page
+  if (id.includes("/pages/travel-guides")) {
+    return "travel-guides";
   }
   return undefined;
 }
@@ -168,13 +192,10 @@ async function buildApp() {
     build: {
       outDir: path.resolve(import.meta.dirname, "../dist/public"),
       emptyOutDir: true,
-      minify: "terser",
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-        },
-      },
+      // Use esbuild for faster minification
+      minify: "esbuild",
+      // Target modern browsers to reduce polyfill overhead
+      target: "es2020",
       cssMinify: true,
       cssCodeSplit: true,
       rollupOptions: {
@@ -221,7 +242,7 @@ async function buildApp() {
       "./vite.config",
       "@vitejs/*",
       "@replit/*",
-      // Heavy runtime deps — resolved from node_modules at runtime
+      // Heavy runtime deps -- resolved from node_modules at runtime
       "googleapis",
       "openai",
       "@anthropic-ai/sdk",

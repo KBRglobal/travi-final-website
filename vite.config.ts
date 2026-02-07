@@ -28,27 +28,31 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    // Enable minification for better performance
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.log in production
-        drop_debugger: true,
-      },
-    },
+    // Use esbuild for faster minification (terser is slower with marginal gains)
+    minify: "esbuild",
     // CSS optimization
     cssMinify: true,
     cssCodeSplit: true,
+    // Target modern browsers to reduce polyfill overhead
+    target: "es2020",
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // React core and routing
+          // React core, routing, and essential React dependencies
+          // Including scheduler and use-sync-external-store prevents circular deps
           if (
             id.includes("node_modules/react/") ||
             id.includes("node_modules/react-dom/") ||
-            id.includes("node_modules/wouter/")
+            id.includes("node_modules/wouter/") ||
+            id.includes("node_modules/scheduler/") ||
+            id.includes("node_modules/use-sync-external-store/") ||
+            id.includes("node_modules/react-helmet-async/")
           ) {
             return "react-vendor";
+          }
+          // i18n - internationalization (kept separate from react-vendor for caching)
+          if (id.includes("node_modules/i18next") || id.includes("node_modules/react-i18next")) {
+            return "i18n-vendor";
           }
           // Radix UI components
           if (id.includes("node_modules/@radix-ui/")) {
@@ -66,31 +70,23 @@ export default defineConfig({
           if (id.includes("node_modules/@tanstack/react-query")) {
             return "query-vendor";
           }
-          // Icons
+          // Icons - lucide
           if (id.includes("node_modules/lucide-react/")) {
             return "icons-vendor";
           }
-          // DnD kit
-          if (id.includes("node_modules/@dnd-kit/")) {
-            return "dnd-vendor";
+          // react-icons (separate from lucide to avoid bloating main icon chunk)
+          if (id.includes("node_modules/react-icons/")) {
+            return "react-icons-vendor";
           }
           // Animation library
           if (id.includes("node_modules/framer-motion/")) {
             return "animation-vendor";
           }
-          // Charts - only needed in admin/analytics
-          if (id.includes("node_modules/recharts/") || id.includes("node_modules/d3-")) {
-            return "charts-vendor";
-          }
           // Date utilities
           if (id.includes("node_modules/date-fns/")) {
             return "date-vendor";
           }
-          // i18n - internationalization
-          if (id.includes("node_modules/i18next") || id.includes("node_modules/react-i18next")) {
-            return "i18n-vendor";
-          }
-          // Editor libraries - heavy, separate chunk
+          // Editor libraries - heavy, admin only
           if (id.includes("node_modules/@tiptap/") || id.includes("node_modules/prosemirror")) {
             return "editor-vendor";
           }
@@ -98,45 +94,59 @@ export default defineConfig({
           if (id.includes("node_modules/posthog-js/")) {
             return "analytics-vendor";
           }
-          // Admin pages - split into smaller chunks by feature
+          // DOMPurify - used for sanitization
+          if (id.includes("node_modules/dompurify/")) {
+            return "sanitize-vendor";
+          }
+          // NOTE: react-helmet-async is in react-vendor to prevent circular dependencies
+          // Homepage - separate chunk for fast initial load
+          if (id.includes("/pages/homepage") || id.includes("/components/homepage/")) {
+            return "homepage";
+          }
+          // Admin pages - split by feature for granular loading
           if (id.includes("/pages/admin/")) {
-            // Governance pages
-            if (id.includes("/admin/governance/")) {
-              return "admin-governance";
+            // Destinations management
+            if (id.includes("/admin/destinations/")) {
+              return "admin-destinations";
             }
-            // Analytics/Dashboard pages
-            if (
-              id.includes("/admin/growth-dashboard") ||
-              id.includes("/admin/destination-intelligence")
-            ) {
-              return "admin-analytics";
+            // Gatekeeper / access control
+            if (id.includes("/admin/gatekeeper/")) {
+              return "admin-gatekeeper";
+            }
+            // Octypo content engine
+            if (id.includes("/admin/octypo/")) {
+              return "admin-octypo";
+            }
+            // Tiqets integration
+            if (id.includes("/admin/tiqets")) {
+              return "admin-tiqets";
             }
             // Content management pages
             if (id.includes("/admin/homepage-editor") || id.includes("/admin/static-page-editor")) {
               return "admin-content";
             }
-            // QA and monitoring pages
-            if (id.includes("/admin/qa-dashboard") || id.includes("/admin/octypo")) {
-              return "admin-qa";
-            }
-            // Remaining admin pages
+            // Remaining admin pages (dashboard, rss-feeds, site-settings)
             return "admin-pages";
           }
           // Content editor - large page
           if (id.includes("/pages/content-editor")) {
             return "content-editor";
           }
-          // Static page editor - large page
-          if (id.includes("/pages/admin/static-page-editor")) {
-            return "static-page-editor";
-          }
           // Destination page - complex public page
           if (id.includes("/pages/destination-page")) {
             return "destination-page";
           }
-          // Guide and attraction pages
+          // Destination components (shared across destination pages)
+          if (id.includes("/components/destination/")) {
+            return "destination-components";
+          }
+          // Guide and attraction detail pages
           if (id.includes("/pages/guide-detail") || id.includes("/pages/attraction-detail")) {
             return "travel-details";
+          }
+          // Attractions listing page
+          if (id.includes("/pages/attractions") || id.includes("/pages/destination-attractions")) {
+            return "attractions";
           }
           // Travel style articles
           if (id.includes("/pages/travel-style-article")) {
@@ -148,6 +158,14 @@ export default defineConfig({
             id.includes("/pages/public-content-viewer")
           ) {
             return "public-content";
+          }
+          // Destinations landing page
+          if (id.includes("/pages/destinations")) {
+            return "destinations-landing";
+          }
+          // Travel guides listing page
+          if (id.includes("/pages/travel-guides")) {
+            return "travel-guides";
           }
         },
       },
