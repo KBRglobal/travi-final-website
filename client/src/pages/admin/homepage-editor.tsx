@@ -525,7 +525,7 @@ function ServerImagePicker({
         const baseName = file.name
           .replace(/\.[^.]+$/, "")
           .toLowerCase()
-          .replace(/[^a-z0-9\-_]/g, "-");
+          .replaceAll(/[^a-z0-9\-_]/g, "-");
         setCustomFilename(baseName);
       }
     }
@@ -601,7 +601,9 @@ function ServerImagePicker({
                   <Input
                     value={customFilename}
                     onChange={e =>
-                      setCustomFilename(e.target.value.toLowerCase().replace(/[^a-z0-9\-_]/g, "-"))
+                      setCustomFilename(
+                        e.target.value.toLowerCase().replaceAll(/[^a-z0-9\-_]/g, "-")
+                      )
                     }
                     placeholder="my-image-name"
                     data-testid="input-custom-filename"

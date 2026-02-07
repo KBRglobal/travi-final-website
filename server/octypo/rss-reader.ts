@@ -323,9 +323,9 @@ class RSSReader {
    */
   private stripHtml(html: string): string {
     return html
-      .replace(/<!\[CDATA\[(.*?)\]\]>/gs, "$1")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
+      .replaceAll(/<!\[CDATA\[(.*?)\]\]>/gs, "$1")
+      .replaceAll(/<[^>]+>/g, " ")
+      .replaceAll(/\s+/g, " ")
       .trim();
   }
 

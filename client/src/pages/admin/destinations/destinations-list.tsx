@@ -161,13 +161,13 @@ export default function DestinationsListPage() {
                 <Globe className="w-5 h-5 text-muted-foreground" />
                 <h2
                   className="text-lg font-semibold text-foreground"
-                  data-testid={`heading-country-${country.toLowerCase().replace(/\s+/g, "-")}`}
+                  data-testid={`heading-country-${country.toLowerCase().replaceAll(/\s+/g, "-")}`}
                 >
                   {country}
                 </h2>
                 <Badge
                   variant="secondary"
-                  data-testid={`badge-count-${country.toLowerCase().replace(/\s+/g, "-")}`}
+                  data-testid={`badge-count-${country.toLowerCase().replaceAll(/\s+/g, "-")}`}
                 >
                   {dests.length}
                 </Badge>

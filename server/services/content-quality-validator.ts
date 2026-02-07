@@ -183,7 +183,7 @@ function findDuplicateParagraphs(text: string): number {
   let duplicates = 0;
 
   for (const p of paragraphs) {
-    const normalized = p.trim().toLowerCase().replace(/\s+/g, " ");
+    const normalized = p.trim().toLowerCase().replaceAll(/\s+/g, " ");
     if (seen.has(normalized)) {
       duplicates++;
     } else {

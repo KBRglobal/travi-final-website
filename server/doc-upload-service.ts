@@ -74,7 +74,7 @@ function isHeading(text: string): boolean {
   if (firstLine.length > 80 || firstLine.split(".").length > 2) return false;
 
   // ALL CAPS detection (must have at least 3 letter characters)
-  const letters = firstLine.replace(/[^A-Za-z]/g, "");
+  const letters = firstLine.replaceAll(/[^A-Za-z]/g, "");
   if (letters.length >= 3 && firstLine === firstLine.toUpperCase() && /[A-Z]/.test(firstLine)) {
     return true;
   }
@@ -158,8 +158,8 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
       const escapedContent = s.content
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
-        .replace(/\n\n+/g, "</p><p>")
-        .replace(/\n/g, " "); // Single newlines become spaces, not <br>
+        .replaceAll(/\n\n+/g, "</p><p>")
+        .replaceAll("\n", " "); // Single newlines become spaces, not <br>
       return `<h${s.level}>${escapedHeading}</h${s.level}><p>${escapedContent}</p>`;
     })
     .join("");
@@ -337,7 +337,7 @@ function extractLists(
  */
 function stripHtml(html: string): string {
   return html
-    .replace(/<[^>]*>/g, "")
+    .replaceAll(/<[^>]*>/g, "")
     .replaceAll("&nbsp;", " ")
     .replaceAll("&amp;", "&")
     .replaceAll("&lt;", "<")

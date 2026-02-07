@@ -29,10 +29,10 @@ function isValidPathSegment(name: string): boolean {
 function sanitizePathSegment(name: string): string {
   return name
     .toLowerCase()
-    .replace(/\s+/g, "-") // Convert spaces to hyphens
-    .replace(/[^a-z0-9\-_.]/g, "") // Remove any non-safe characters
-    .replace(/\.{2,}/g, ".") // Prevent multiple dots
-    .replace(/(?:^\.+)|(?:\.+$)/g, ""); // Remove leading/trailing dots
+    .replaceAll(/\s+/g, "-") // Convert spaces to hyphens
+    .replaceAll(/[^a-z0-9\-_.]/g, "") // Remove any non-safe characters
+    .replaceAll(/\.{2,}/g, ".") // Prevent multiple dots
+    .replaceAll(/(?:^\.+)|(?:\.+$)/g, ""); // Remove leading/trailing dots
 }
 
 export function registerGoogleDriveRoutes(app: Express): void {

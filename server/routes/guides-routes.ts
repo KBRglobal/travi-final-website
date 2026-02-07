@@ -232,7 +232,7 @@ router.post(
 
       const destName = destinationId
         .replaceAll("-", " ")
-        .replace(/\b\w/g, (c: string) => c.toUpperCase());
+        .replaceAll(/\b\w/g, (c: string) => c.toUpperCase());
       const targetLocales = locales || getAvailableLocales();
 
       const result = await (importWikivoyageGuide as any)(destinationId, destName, targetLocales);

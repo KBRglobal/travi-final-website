@@ -86,7 +86,7 @@ export function maskPii(data: string, type: "email" | "phone" | "ip"): string {
 
     case "phone": {
       // Keep last 4 digits, mask the rest
-      const digits = data.replace(/\D/g, "");
+      const digits = data.replaceAll(/\D/g, "");
       if (digits.length < 4) return "***";
       return "***" + digits.slice(-4);
     }

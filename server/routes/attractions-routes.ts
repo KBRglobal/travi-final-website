@@ -13,7 +13,7 @@ import {
  * Get country from city name by looking up in tiqetsDestinations
  */
 function getCountryFromCity(cityName: string): string {
-  const citySlug = cityName.toLowerCase().replace(/\s+/g, "-");
+  const citySlug = cityName.toLowerCase().replaceAll(/\s+/g, "-");
   const destInfo = tiqetsDestinations[citySlug];
   if (destInfo) {
     return destInfo.country;
@@ -118,7 +118,7 @@ export function registerAttractionsRoutes(app: Express): void {
       }
 
       const attr = attraction[0];
-      const citySlug = attr.cityName.toLowerCase().replace(/\s+/g, "-");
+      const citySlug = attr.cityName.toLowerCase().replaceAll(/\s+/g, "-");
 
       // Return with redirect hint if different from canonical URL
       const canonicalSlug = attr.seoSlug || attr.slug;

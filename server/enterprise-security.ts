@@ -903,13 +903,12 @@ export const exponentialBackoff = {
    * Express middleware for rate limiting with backoff
    */
   middleware(keyPrefix: string) {
-    const self = this;
     return async (req: Request, res: Response, next: NextFunction) => {
       const ip = req.ip || req.socket?.remoteAddress || "unknown";
       const userId = (req as Request & { user?: { claims?: { sub?: string } } }).user?.claims?.sub;
       const key = `${keyPrefix}:${userId || ip}`;
 
-      const status = self.isBlocked(key);
+      const status = this.isBlocked(key);
 
       if (status.blocked) {
         res.setHeader("Retry-After", Math.ceil((status.retryAfterMs || 0) / 1000));
@@ -922,11 +921,11 @@ export const exponentialBackoff = {
 
       // Attach failure handler to response using res.locals
       res.locals.recordFailure = () => {
-        return self.recordFailure(key);
+        return this.recordFailure(key);
       };
 
       res.locals.resetBackoff = () => {
-        self.reset(key);
+        this.reset(key);
       };
 
       next();

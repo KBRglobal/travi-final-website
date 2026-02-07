@@ -15,7 +15,7 @@ import { eq } from "drizzle-orm";
  */
 export function generateETag(updatedAt: Date | string): string {
   const timestamp = updatedAt instanceof Date ? updatedAt.toISOString() : updatedAt;
-  const hash = Buffer.from(timestamp).toString("base64").replace(/=/g, "");
+  const hash = Buffer.from(timestamp).toString("base64").replaceAll("=", "");
   return `"${hash}"`;
 }
 
@@ -24,7 +24,7 @@ export function generateETag(updatedAt: Date | string): string {
  */
 export function parseETag(etag: string | undefined): string | null {
   if (!etag) return null;
-  return etag.replace(/^["']|["']$/g, "");
+  return etag.replaceAll(/^["']|["']$/g, "");
 }
 
 /**

@@ -737,10 +737,10 @@ export function isPublishReady(result: QualityCheckResult): boolean {
 
 function extractPlainText(html: string): string {
   return html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
+    .replaceAll(/<script[\s\S]*?<\/script>/gi, "")
+    .replaceAll(/<style[\s\S]*?<\/style>/gi, "")
+    .replaceAll(/<[^>]+>/g, " ")
+    .replaceAll(/\s+/g, " ")
     .trim();
 }
 
@@ -759,7 +759,7 @@ function countSyllables(text: string): number {
 }
 
 function countWordSyllables(word: string): number {
-  word = word.toLowerCase().replace(/[^a-z]/g, "");
+  word = word.toLowerCase().replaceAll(/[^a-z]/g, "");
   if (word.length === 0) return 0;
   if (word.length <= 3) return 1;
 

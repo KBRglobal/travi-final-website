@@ -638,19 +638,17 @@ class UnifiedEvidenceCollector {
       `Security Score: ${bundle.summary.securityScore}/100`,
       ""
     );
-    lines.push("Key Metrics:");
-    for (const [key, value] of Object.entries(bundle.summary.metrics)) {
-      lines.push(`  - ${key}: ${value}`);
-    }
-    lines.push("", "Key Findings:");
-    for (const finding of bundle.summary.keyFindings) {
-      lines.push(`  • ${finding}`);
-    }
-    lines.push("", "Recommendations:");
-    for (const rec of bundle.summary.recommendations) {
-      lines.push(`  → ${rec}`);
-    }
-    lines.push("");
+    lines.push(
+      "Key Metrics:",
+      ...Object.entries(bundle.summary.metrics).map(([key, value]) => `  - ${key}: ${value}`),
+      "",
+      "Key Findings:",
+      ...bundle.summary.keyFindings.map((finding: string) => `  • ${finding}`),
+      "",
+      "Recommendations:",
+      ...bundle.summary.recommendations.map((rec: string) => `  → ${rec}`),
+      ""
+    );
 
     for (const [, section] of Object.entries(bundle.evidence)) {
       lines.push(

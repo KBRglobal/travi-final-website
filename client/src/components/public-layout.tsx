@@ -154,7 +154,7 @@ export function ContentCard({
         "group overflow-visible bg-card rounded-[16px] p-0 shadow-[var(--shadow-level-1)] hover-elevate transition-all duration-300",
         className
       )}
-      data-testid={`contents-card-${title.toLowerCase().replace(/\s+/g, "-")}`}
+      data-testid={`contents-card-${title.toLowerCase().replaceAll(/\s+/g, "-")}`}
     >
       {/* Image Container */}
       {image && (
@@ -211,7 +211,7 @@ export function ContentCard({
       <Link
         href={localePath(href)}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6443F4] rounded-[16px]"
-        data-testid={`contents-card-link-${title.toLowerCase().replace(/\s+/g, "-")}`}
+        data-testid={`contents-card-link-${title.toLowerCase().replaceAll(/\s+/g, "-")}`}
       >
         {cardContent}
       </Link>

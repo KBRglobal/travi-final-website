@@ -433,7 +433,7 @@ export function registerSecurityRoutes(app: Express): void {
         const username = preAuthContext.username;
 
         // Clean the code (remove spaces and dashes)
-        const cleanCode = String(code).replace(/[\s-]/g, "").trim();
+        const cleanCode = String(code).replaceAll(/[\s-]/g, "").trim();
 
         // Rate limiting check
         const now = Date.now();

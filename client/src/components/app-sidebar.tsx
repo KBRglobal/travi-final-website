@@ -205,7 +205,7 @@ function CollapsibleNavGroup({
                   <SidebarMenuButton
                     asChild
                     isActive={isActive(item.url)}
-                    data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, "-")}`}
+                    data-testid={`nav-${item.title.toLowerCase().replaceAll(/\s+/g, "-")}`}
                     className="h-8"
                   >
                     <Link href={item.url}>

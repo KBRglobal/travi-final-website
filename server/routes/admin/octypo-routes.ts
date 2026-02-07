@@ -499,7 +499,7 @@ router.get("/destinations", async (_req: Request, res: Response) => {
       else status = "New";
 
       return {
-        id: row.city_name.toLowerCase().replace(/\s+/g, "-"),
+        id: row.city_name.toLowerCase().replaceAll(/\s+/g, "-"),
         name: row.city_name,
         health,
         status,

@@ -12,21 +12,21 @@ export function sanitizeHtml(input: string): string {
   if (!input || typeof input !== "string") return "";
 
   return input
-    .replace(SCRIPT_PATTERN, "")
-    .replace(EVENT_HANDLER_PATTERN, "")
-    .replace(DANGEROUS_ATTRS, "")
-    .replace(STYLE_EXPRESSION, "")
-    .replace(/<iframe[^>]*>.*?<\/iframe>/gi, "")
-    .replace(/<object[^>]*>.*?<\/object>/gi, "")
-    .replace(/<embed[^>]*>/gi, "")
-    .replace(/<link[^>]*>/gi, "");
+    .replaceAll(SCRIPT_PATTERN, "")
+    .replaceAll(EVENT_HANDLER_PATTERN, "")
+    .replaceAll(DANGEROUS_ATTRS, "")
+    .replaceAll(STYLE_EXPRESSION, "")
+    .replaceAll(/<iframe[^>]*>.*?<\/iframe>/gi, "")
+    .replaceAll(/<object[^>]*>.*?<\/object>/gi, "")
+    .replaceAll(/<embed[^>]*>/gi, "")
+    .replaceAll(/<link[^>]*>/gi, "");
 }
 
 export function sanitizeText(input: string, maxLength: number = 10000): string {
   if (!input || typeof input !== "string") return "";
 
   return input
-    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
+    .replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
     .slice(0, maxLength)
     .trim();
 }
@@ -35,11 +35,11 @@ export function sanitizeForPrompt(input: string, maxLength: number = 500): strin
   if (!input || typeof input !== "string") return "";
 
   return input
-    .replace(/\n{2,}/g, " ")
-    .replace(/[<>{}[\]]/g, "")
-    .replace(/ignore\s+(all\s+)?(previous|above|prior)/gi, "")
-    .replace(/forget\s+(all\s+)?(previous|above|prior)/gi, "")
-    .replace(/disregard\s+(all\s+)?(previous|above|prior)/gi, "")
+    .replaceAll(/\n{2,}/g, " ")
+    .replaceAll(/[<>{}[\]]/g, "")
+    .replaceAll(/ignore\s+(all\s+)?(previous|above|prior)/gi, "")
+    .replaceAll(/forget\s+(all\s+)?(previous|above|prior)/gi, "")
+    .replaceAll(/disregard\s+(all\s+)?(previous|above|prior)/gi, "")
     .slice(0, maxLength)
     .trim();
 }
@@ -96,8 +96,8 @@ export function sanitizeEntityName(name: string): string {
   if (!name || typeof name !== "string") return "";
 
   return name
-    .replace(/[<>{}[\]"'`]/g, "")
-    .replace(/\n/g, " ")
+    .replaceAll(/[<>{}[\]"'`]/g, "")
+    .replaceAll("\n", " ")
     .slice(0, 200)
     .trim();
 }

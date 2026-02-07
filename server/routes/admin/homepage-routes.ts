@@ -202,17 +202,17 @@ export function registerAdminHomepageRoutes(app: Express): void {
         if (customFilename) {
           customFilename = customFilename
             .toLowerCase()
-            .replace(/[^a-z0-9\-_]/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+            .replaceAll(/[^a-z0-9\-_]/g, "-")
+            .replaceAll(/-+/g, "-")
+            .replaceAll(/^-|-$/g, "");
         } else {
           // Use original filename without extension
           customFilename = req.file.originalname
             .replace(/\.[^.]+$/, "")
             .toLowerCase()
-            .replace(/[^a-z0-9\-_]/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+            .replaceAll(/[^a-z0-9\-_]/g, "-")
+            .replaceAll(/-+/g, "-")
+            .replaceAll(/^-|-$/g, "");
         }
 
         if (!customFilename) {
@@ -616,9 +616,9 @@ export function registerAdminHomepageRoutes(app: Express): void {
         const normalizedName = name
           .toLowerCase()
           .trim()
-          .replace(/[^\w\s-]/g, "")
-          .replace(/\s+/g, "-")
-          .replace(/-+/g, "-");
+          .replaceAll(/[^\w\s-]/g, "")
+          .replaceAll(/\s+/g, "-")
+          .replaceAll(/-+/g, "-");
 
         const [destination] = await db
           .insert(destinations)

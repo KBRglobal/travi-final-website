@@ -369,8 +369,8 @@ export class ExplosionOrchestrator {
   private generateSlug(title: string): string {
     return title
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
+      .replaceAll(/[^a-z0-9]+/g, "-")
+      .replaceAll(/^-|-$/g, "")
       .substring(0, 100);
   }
 

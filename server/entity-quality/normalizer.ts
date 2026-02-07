@@ -8,29 +8,31 @@
 // ============================================================================
 
 export function normalizeText(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    // Remove common suffixes/prefixes
-    .replace(/^the\s+/i, '')
-    .replace(/\s+(hotel|restaurant|cafe|bar|lounge|beach|club)$/i, '')
-    // Remove special characters except spaces
-    .replace(/[^a-z0-9\s]/g, '')
-    // Collapse multiple spaces
-    .replace(/\s+/g, ' ')
-    .trim();
+  return (
+    text
+      .toLowerCase()
+      .trim()
+      // Remove common suffixes/prefixes
+      .replace(/^the\s+/i, "")
+      .replace(/\s+(hotel|restaurant|cafe|bar|lounge|beach|club)$/i, "")
+      // Remove special characters except spaces
+      .replaceAll(/[^a-z0-9\s]/g, "")
+      // Collapse multiple spaces
+      .replaceAll(/\s+/g, " ")
+      .trim()
+  );
 }
 
 export function normalizePhone(phone: string): string {
-  return phone.replace(/[^0-9+]/g, '');
+  return phone.replaceAll(/[^0-9+]/g, "");
 }
 
 export function normalizeWebsite(url: string): string {
   return url
     .toLowerCase()
-    .replace(/^https?:\/\//, '')
-    .replace(/^www\./, '')
-    .replace(/\/$/, '');
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/\/$/, "");
 }
 
 // ============================================================================
@@ -81,19 +83,13 @@ function levenshteinDistance(s1: string, s2: string): number {
 /**
  * Haversine formula for distance between two points
  */
-export function geoDistance(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-): number {
+export function geoDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371; // Earth radius in km
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
@@ -153,8 +149,8 @@ export function websiteSimilarity(url1: string | undefined, url2: string | undef
   if (normalized1 === normalized2) return 1;
 
   // Extract domain only
-  const domain1 = normalized1.split('/')[0];
-  const domain2 = normalized2.split('/')[0];
+  const domain1 = normalized1.split("/")[0];
+  const domain2 = normalized2.split("/")[0];
 
   if (domain1 === domain2) return 0.95;
 

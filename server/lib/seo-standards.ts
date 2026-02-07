@@ -514,7 +514,7 @@ function validateSEOMetaFields(
   }
 
   const wordCountResult = validateWordCount(
-    content.htmlContent.replace(/<[^>]+>/g, " "),
+    content.htmlContent.replaceAll(/<[^>]+>/g, " "),
     contentType
   );
   if (!wordCountResult.valid) {
@@ -643,7 +643,7 @@ export function validateContent(
   // Check keyword density if primary keyword provided
   if (content.primaryKeyword) {
     const density = calculateKeywordDensity(
-      content.htmlContent.replace(/<[^>]+>/g, " "),
+      content.htmlContent.replaceAll(/<[^>]+>/g, " "),
       content.primaryKeyword
     );
     if (density < SEO_REQUIREMENTS.keywordDensity.primary.min) {

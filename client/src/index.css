@@ -321,7 +321,7 @@
   }
 
   html {
-    font-family: "Satoshi";
+    font-family: "Satoshi", sans-serif;
     background-color: #d4e6f0;
   }
 
@@ -402,8 +402,10 @@
   }
 
   .no-default-hover-elevate {
+    /* Intentionally empty: marker class to disable default hover elevation */
   }
   .no-default-active-elevate {
+    /* Intentionally empty: marker class to disable default active elevation */
   }
 
   .toggle-elevate::before,

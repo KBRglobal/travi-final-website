@@ -492,7 +492,7 @@ export class VamsService {
     if (parts.length < 3) {
       const titleWords = requirements.title
         .toLowerCase()
-        .replace(/[^\w\s]/g, "")
+        .replaceAll(/[^\w\s]/g, "")
         .split(/\s+/)
         .filter(w => w.length > 3 && !["the", "and", "for", "with"].includes(w))
         .slice(0, 3);

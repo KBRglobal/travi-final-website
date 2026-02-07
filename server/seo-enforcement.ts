@@ -121,13 +121,13 @@ function replaceTitleCliches(title: string): string {
   for (const [cliche, replacement] of Object.entries(TITLE_CLICHE_REPLACEMENTS)) {
     const regex = new RegExp(cliche, "gi");
     if (regex.test(fixed)) {
-      fixed = fixed.replace(regex, replacement).replace(/\s+/g, " ").trim();
+      fixed = fixed.replace(regex, replacement).replaceAll(/\s+/g, " ").trim();
     }
   }
   return fixed
-    .replace(/:\s*$/g, "")
-    .replace(/\|\s*$/g, "")
-    .replace(/\s+/g, " ")
+    .replaceAll(/:\s*$/g, "")
+    .replaceAll(/\|\s*$/g, "")
+    .replaceAll(/\s+/g, " ")
     .trim();
 }
 
@@ -203,17 +203,17 @@ export function fixMetaDescription(metaDesc: string, fallbackText?: string): str
   // Remove clichés first
   for (const [cliche, replacement] of Object.entries(CLICHE_REPLACEMENTS)) {
     const regex = new RegExp(cliche, "gi");
-    metaDesc = metaDesc.replace(regex, replacement);
+    metaDesc = metaDesc.replaceAll(regex, replacement);
   }
 
   // Clean up
-  metaDesc = metaDesc.replace(/\s+/g, " ").trim();
+  metaDesc = metaDesc.replaceAll(/\s+/g, " ").trim();
 
   // If too short, pad with fallback text
   if (metaDesc.length < SEO_REQUIREMENTS.metaDescMinLength && fallbackText) {
     const cleanFallback = fallbackText
-      .replace(/<[^>]*>/g, "")
-      .replace(/\s+/g, " ")
+      .replaceAll(/<[^>]*>/g, "")
+      .replaceAll(/\s+/g, " ")
       .trim();
     const neededChars = SEO_REQUIREMENTS.metaDescMinLength - metaDesc.length - 2;
     if (neededChars > 0 && cleanFallback.length > 0) {
@@ -263,7 +263,7 @@ export function removeClichesFromText(text: string): string {
   // For plain text, apply replacements directly
   for (const [cliche, replacement] of Object.entries(CLICHE_REPLACEMENTS)) {
     const regex = new RegExp(String.raw`\b` + escapeRegex(cliche) + String.raw`\b`, "gi");
-    text = text.replace(regex, replacement);
+    text = text.replaceAll(regex, replacement);
   }
 
   return text;
@@ -273,7 +273,7 @@ export function removeClichesFromText(text: string): string {
  * Escape special regex characters
  */
 function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+  return str.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 }
 
 /**
@@ -515,7 +515,7 @@ function ensureArticleFallbacks(result: any): void {
 export function enforceArticleSEO(article: any): any {
   if (!article) return article;
 
-  const result = JSON.parse(JSON.stringify(article));
+  const result = structuredClone(article);
 
   fixArticleMeta(result);
   fixArticleContent(result);
@@ -658,7 +658,7 @@ function fixWriterContentObject(content: any): void {
 export function enforceWriterEngineSEO(result: any): any {
   if (!result) return result;
 
-  const enforced = JSON.parse(JSON.stringify(result));
+  const enforced = structuredClone(result);
 
   fixWriterTopLevel(enforced);
   fixWriterContentObject(enforced.content);

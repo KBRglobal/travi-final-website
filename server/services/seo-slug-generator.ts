@@ -71,7 +71,7 @@ export function generateSeoSlug(title: string, cityName: string): string {
   if (cityCount > 1) {
     // Remove all but first occurrence
     let found = false;
-    slug = slug.replace(new RegExp(String.raw`\b` + cityLower + String.raw`\b`, "g"), match => {
+    slug = slug.replaceAll(new RegExp(String.raw`\b` + cityLower + String.raw`\b`, "g"), match => {
       if (!found) {
         found = true;
         return match;
@@ -82,15 +82,15 @@ export function generateSeoSlug(title: string, cityName: string): string {
 
   // Clean up: remove special characters, multiple spaces
   slug = slug
-    .replace(/[^a-z0-9\s-]/g, "") // Remove special chars
-    .replace(/\s+/g, " ") // Multiple spaces to single
+    .replaceAll(/[^a-z0-9\s-]/g, "") // Remove special chars
+    .replaceAll(/\s+/g, " ") // Multiple spaces to single
     .trim()
-    .replace(/\s/g, "-") // Spaces to hyphens
-    .replace(/-+/g, "-") // Multiple hyphens to single
-    .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+    .replaceAll(/\s/g, "-") // Spaces to hyphens
+    .replaceAll(/-+/g, "-") // Multiple hyphens to single
+    .replaceAll(/^-|-$/g, ""); // Remove leading/trailing hyphens
 
   // City name as slug (with hyphens instead of spaces)
-  const citySlug = cityName.toLowerCase().replace(/\s+/g, "-");
+  const citySlug = cityName.toLowerCase().replaceAll(/\s+/g, "-");
 
   // Add city if not present
   if (!slug.includes(citySlug)) {

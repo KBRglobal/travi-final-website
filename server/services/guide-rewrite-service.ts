@@ -139,14 +139,14 @@ function stripHtmlContent(html: string): string {
   return html
     .replace(/<script[^>]*>.*?<\/script>/gis, "")
     .replace(/<style[^>]*>.*?<\/style>/gis, "")
-    .replace(/<[^>]+>/g, " ")
+    .replaceAll(/<[^>]+>/g, " ")
     .replaceAll("&nbsp;", " ")
     .replaceAll("&amp;", "&")
     .replaceAll("&lt;", "<")
     .replaceAll("&gt;", ">")
     .replaceAll("&quot;", '"')
     .replaceAll("&#39;", "'")
-    .replace(/\s+/g, " ")
+    .replaceAll(/\s+/g, " ")
     .trim();
 }
 
@@ -604,7 +604,7 @@ export class GuideRewriteService {
 
     // Plaintext format
     const headingPattern = mainSections
-      .map(h => h.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`))
+      .map(h => h.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`))
       .join("|");
     const plaintextHeadingRegex = new RegExp(
       String.raw`^\s*(` + headingPattern + String.raw`)\s*[:.]?\s*$`,
@@ -1175,7 +1175,7 @@ Return ONLY valid JSON in this exact format:
   "metaDescription": "Discover ${destination} in ${year}: honest costs, best hotels, local tips. Realistic guide for visitors with top attractions and insider advice.",
   "focusKeyword": "${destination} travel guide",
   "secondaryKeywords": ["things to do in ${destination}", "${destination} travel tips", "best time to visit ${destination}", "${destination} hotels", "visiting ${destination}"],
-  "urlSlug": "${destination.toLowerCase().replace(/\s+/g, "-")}-travel-guide-${year}"
+  "urlSlug": "${destination.toLowerCase().replaceAll(/\s+/g, "-")}-travel-guide-${year}"
 }
 
 Requirements:
@@ -1208,7 +1208,7 @@ Requirements:
         `${destination} travel tips`,
         `best time to visit ${destination}`,
       ],
-      urlSlug: `${destination.toLowerCase().replace(/\s+/g, "-")}-travel-guide-${year}`,
+      urlSlug: `${destination.toLowerCase().replaceAll(/\s+/g, "-")}-travel-guide-${year}`,
     };
   }
 

@@ -81,7 +81,7 @@ function normalizeText(text: string): string {
 
   return text
     .toLowerCase()
-    .replace(/[^\w\s]/g, " ") // Remove punctuation
+    .replaceAll(/[^\w\s]/g, " ") // Remove punctuation
     .split(/\s+/)
     .filter(word => word.length > 2 && !stopWords.has(word))
     .join(" ")

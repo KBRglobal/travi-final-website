@@ -706,11 +706,9 @@ export class ImageSEOService {
       promptParts.push(timeDescriptions[context.timeOfDay] || "");
     }
 
-    // Style based on content type
-    promptParts.push(config.promptStyle);
-
-    // Technical requirements, Dubai specific elements, and avoid problematic elements
+    // Style based on content type, technical requirements, Dubai specific elements, and avoid problematic elements
     promptParts.push(
+      config.promptStyle,
       "high resolution, 4K quality, sharp focus, professional composition",
       "realistic photography style, not AI-looking, natural colors",
       "Middle Eastern luxury aesthetic, modern architecture, pristine condition",
@@ -831,9 +829,9 @@ ${schema}
     return text
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
+      .replaceAll(/[^\w\s-]/g, "")
+      .replaceAll(/[\s_-]+/g, "-")
+      .replaceAll(/^-+|-+$/g, "");
   }
 }
 

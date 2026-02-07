@@ -47,7 +47,7 @@ self.addEventListener('install', (event) => {
           console.warn('Failed to cache some static assets:', error);
         });
       })
-      .then(() => self.skipWaiting())
+      .then(() => globalThis.skipWaiting())
       .catch((error) => {
         console.error('[SW Install] Failed to install service worker:', error);
       })
@@ -64,7 +64,7 @@ self.addEventListener('activate', (event) => {
             .map((name) => caches.delete(name))
         );
       })
-      .then(() => self.clients.claim())
+      .then(() => globalThis.clients.claim())
       .catch((error) => {
         console.error('[SW Activate] Failed to activate service worker:', error);
       })
@@ -212,8 +212,8 @@ async function staleWhileRevalidate(request, cacheName) {
   return cachedResponse || fetchPromise;
 }
 
-self.addEventListener('message', (event) => {
+globalThis.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+    globalThis.skipWaiting();
   }
 });

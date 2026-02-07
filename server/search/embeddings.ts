@@ -1,6 +1,6 @@
 /**
  * Embedding Generator
- * 
+ *
  * Creates vector embeddings for content and queries
  * using OpenAI text-embedding-3-small ($0.02 per 1M tokens)
  */
@@ -22,7 +22,7 @@ export const embeddings = {
    */
   async generate(text: string): Promise<EmbeddingResult> {
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    
+
     const response = await openai.embeddings.create({
       model: EMBEDDING_MODEL,
       input: text.slice(0, 8000), // Max ~8K tokens
@@ -42,22 +42,24 @@ export const embeddings = {
   async generateBatch(texts: string[]): Promise<EmbeddingResult[]> {
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const results: EmbeddingResult[] = [];
-    
+
     // Process in batches of 100 (API limit)
     for (let i = 0; i < texts.length; i += 100) {
       const batch = texts.slice(i, i + 100).map(t => t.slice(0, 8000));
-      
+
       const response = await openai.embeddings.create({
         model: EMBEDDING_MODEL,
         input: batch,
         dimensions: EMBEDDING_DIMENSIONS,
       });
 
-      results.push(...response.data.map((d, idx) => ({
-        vector: d.embedding,
-        tokens: Math.ceil(response.usage.total_tokens / batch.length),
-        model: EMBEDDING_MODEL,
-      })));
+      results.push(
+        ...response.data.map((d, idx) => ({
+          vector: d.embedding,
+          tokens: Math.ceil(response.usage.total_tokens / batch.length),
+          model: EMBEDDING_MODEL,
+        }))
+      );
     }
 
     return results;
@@ -95,7 +97,7 @@ function extractPlainText(blocks: any[]): string {
       return "";
     })
     .join(" ")
-    .replace(/<[^>]*>/g, "") // Strip HTML
-    .replace(/\s+/g, " ")
+    .replaceAll(/<[^>]*>/g, "") // Strip HTML
+    .replaceAll(/\s+/g, " ")
     .trim();
 }

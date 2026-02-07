@@ -14,8 +14,8 @@ import crypto from "node:crypto";
 
 // Fingerprint generator for content deduplication
 function generateFingerprint(title: string, url?: string): string {
-  const normalizedTitle = title.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const normalizedUrl = url ? url.toLowerCase().replace(/[^a-z0-9]/g, "") : "";
+  const normalizedTitle = title.toLowerCase().replaceAll(/[^a-z0-9]/g, "");
+  const normalizedUrl = url ? url.toLowerCase().replaceAll(/[^a-z0-9]/g, "") : "";
   return crypto
     .createHash("sha256")
     .update(`${normalizedTitle}-${normalizedUrl}`)
@@ -246,8 +246,8 @@ export function registerRssFeedRoutes(app: Express): void {
         for (const item of newItems) {
           const slug = item.title
             .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-|-$/g, "");
+            .replaceAll(/[^a-z0-9]+/g, "-")
+            .replaceAll(/^-|-$/g, "");
 
           const content = await storage.createContent({
             title: item.title,

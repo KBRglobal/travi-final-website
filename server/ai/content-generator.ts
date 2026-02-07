@@ -203,7 +203,7 @@ function buildTemplateBasedPrompt(template: ArticleTemplate, options: Generation
     destination: options.destination,
     year: String(year),
     primary_keyword: options.targetKeyword || options.topic,
-    ...(options.templateVariables ?? {}),
+    ...options.templateVariables,
   };
 
   // Generate template structure for AI
@@ -458,7 +458,7 @@ function parseAndValidateResponse(
   }
 
   // Calculate word count
-  const textContent = htmlContent.replace(/<[^>]+>/g, " ");
+  const textContent = htmlContent.replaceAll(/<[^>]+>/g, " ");
   const wordCount = textContent.split(/\s+/).filter(Boolean).length;
 
   // Generate proper meta title and description if they don't meet requirements

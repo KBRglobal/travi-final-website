@@ -676,7 +676,7 @@ export const webhooksService = {
           "X-Webhook-Signature": signature,
           "X-Webhook-Event": event,
           "X-Webhook-Attempt": String(attempt),
-          ...((webhook.headers as Record<string, string>) || {}),
+          ...(webhook.headers as Record<string, string>),
         },
         body: JSON.stringify({ event, payload, timestamp: new Date().toISOString() }),
       });

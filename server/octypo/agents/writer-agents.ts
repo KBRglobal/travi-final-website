@@ -381,7 +381,7 @@ Example format: {"introduction":"...", "whatToExpect":"...", "visitorTips":"..."
       jsonString = jsonMatch[0];
     }
 
-    jsonString = jsonString.replace(/,(\s*[}\]])/g, "$1");
+    jsonString = jsonString.replaceAll(/,(\s*[}\]])/g, "$1");
 
     const parsed = JSON.parse(jsonString);
 

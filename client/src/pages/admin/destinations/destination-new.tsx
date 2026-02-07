@@ -23,12 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  ArrowLeft,
-  MapPin,
-  Save,
-  Loader2,
-} from "lucide-react";
+import { ArrowLeft, MapPin, Save, Loader2 } from "lucide-react";
 
 const COUNTRIES = [
   "Australia",
@@ -49,7 +44,10 @@ const COUNTRIES = [
 ];
 
 const createDestinationSchema = z.object({
-  name: z.string().min(1, "Destination name is required").min(2, "Name must be at least 2 characters"),
+  name: z
+    .string()
+    .min(1, "Destination name is required")
+    .min(2, "Name must be at least 2 characters"),
   country: z.string().min(1, "Country is required"),
   destinationLevel: z.enum(["country", "city", "area"]),
 });
@@ -76,7 +74,7 @@ export default function DestinationNewPage() {
         body: data,
       });
     },
-    onSuccess: async (response) => {
+    onSuccess: async response => {
       const newDestination = await response.json();
       queryClient.invalidateQueries({ queryKey: ["/api/admin/destinations"] });
       toast({
@@ -128,7 +126,11 @@ export default function DestinationNewPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" data-testid="form-create-destination">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-6"
+              data-testid="form-create-destination"
+            >
               <FormField
                 control={form.control}
                 name="name"
@@ -160,11 +162,11 @@ export default function DestinationNewPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {COUNTRIES.map((c) => (
-                          <SelectItem 
-                            key={c} 
+                        {COUNTRIES.map(c => (
+                          <SelectItem
+                            key={c}
                             value={c}
-                            data-testid={`select-country-option-${c.toLowerCase().replace(/\s+/g, '-')}`}
+                            data-testid={`select-country-option-${c.toLowerCase().replaceAll(/\s+/g, "-")}`}
                           >
                             {c}
                           </SelectItem>
@@ -189,9 +191,15 @@ export default function DestinationNewPage() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="country" data-testid="select-level-option-country">Country</SelectItem>
-                        <SelectItem value="city" data-testid="select-level-option-city">City</SelectItem>
-                        <SelectItem value="area" data-testid="select-level-option-area">Area / District</SelectItem>
+                        <SelectItem value="country" data-testid="select-level-option-country">
+                          Country
+                        </SelectItem>
+                        <SelectItem value="city" data-testid="select-level-option-city">
+                          City
+                        </SelectItem>
+                        <SelectItem value="area" data-testid="select-level-option-area">
+                          Area / District
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage data-testid="error-level" />
@@ -200,8 +208,8 @@ export default function DestinationNewPage() {
               />
 
               <div className="flex items-center gap-3 pt-4">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={createMutation.isPending}
                   data-testid="button-create-destination"
                 >

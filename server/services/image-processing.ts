@@ -242,8 +242,8 @@ export function generateUniqueFilename(originalFilename: string, prefix?: string
   const random = Math.random().toString(36).substring(2, 8);
   const baseName = getBaseFilename(originalFilename)
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, "-")
-    .replace(/-+/g, "-")
+    .replaceAll(/[^a-z0-9]/g, "-")
+    .replaceAll(/-+/g, "-")
     .substring(0, 50);
 
   const parts = [prefix, timestamp, random, baseName].filter(Boolean);

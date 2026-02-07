@@ -293,10 +293,10 @@ export function validateSlug(slug: string): ValidationResult {
   if (INVALID_SLUG_CHARS.test(sanitized)) {
     const original = sanitized;
     sanitized = sanitized
-      .replace(/[^a-z0-9\s-]/g, "") // Remove special chars
-      .replace(/\s+/g, "-") // Replace spaces with hyphens
-      .replace(/-+/g, "-") // Collapse multiple hyphens
-      .replace(/(?:^-)|(?:-$)/g, ""); // Remove leading/trailing hyphens
+      .replaceAll(/[^a-z0-9\s-]/g, "") // Remove special chars
+      .replaceAll(/\s+/g, "-") // Replace spaces with hyphens
+      .replaceAll(/-+/g, "-") // Collapse multiple hyphens
+      .replaceAll(/(?:^-)|(?:-$)/g, ""); // Remove leading/trailing hyphens
     warnings.push(
       `Slug contained invalid characters. Sanitized from "${original}" to "${sanitized}"`
     );
@@ -304,13 +304,13 @@ export function validateSlug(slug: string): ValidationResult {
 
   // Check for consecutive hyphens
   if (/--+/.test(sanitized)) {
-    sanitized = sanitized.replace(/-+/g, "-");
+    sanitized = sanitized.replaceAll(/-+/g, "-");
     warnings.push("Removed consecutive hyphens from slug");
   }
 
   // Check leading/trailing hyphens
   if (sanitized.startsWith("-") || sanitized.endsWith("-")) {
-    sanitized = sanitized.replace(/(?:^-+)|(?:-+$)/g, "");
+    sanitized = sanitized.replaceAll(/(?:^-+)|(?:-+$)/g, "");
     warnings.push("Removed leading/trailing hyphens from slug");
   }
 

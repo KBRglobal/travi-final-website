@@ -54,7 +54,7 @@ export function LanguageSwitcher({ variant = "nav", className }: Readonly<Langua
     const newPath = `/${newLocale}${cleanPath === "/" ? "" : cleanPath}`;
 
     setLocale(newLocale);
-    setLocation(newPath.replace(/\/+/g, "/") || `/${newLocale}`);
+    setLocation(newPath.replaceAll(/\/+/g, "/") || `/${newLocale}`);
   };
 
   const popularLocales = SUPPORTED_LOCALES.filter(l => POPULAR_LOCALES.has(l.code));

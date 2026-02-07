@@ -78,7 +78,7 @@ export function escapeHtml(text: string): string {
     '"': "&quot;",
     "'": "&#039;",
   };
-  return text.replace(/[&<>"']/g, m => map[m] || m);
+  return text.replaceAll(/[&<>"']/g, m => map[m] || m);
 }
 
 /**
@@ -89,7 +89,7 @@ export function sanitizeText(text: string): string {
   // Escape HTML entities
   let result = escapeHtml(text);
   // Remove control characters except newlines and tabs
-  result = result.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  result = result.replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
   return result.trim();
 }
 
@@ -172,16 +172,16 @@ export function sanitizeFilename(filename: string): string {
   if (!filename) return "";
 
   // Remove path traversal attempts
-  let safe = filename.replace(/\.\./g, "");
+  let safe = filename.replaceAll("..", "");
 
   // Remove path separators
-  safe = safe.replace(/[/\\]/g, "");
+  safe = safe.replaceAll(/[/\\]/g, "");
 
   // Remove dangerous and special characters (keep only alphanumeric, dash, underscore, dot)
-  safe = safe.replace(/[^a-zA-Z0-9._-]/g, "");
+  safe = safe.replaceAll(/[^a-zA-Z0-9._-]/g, "");
 
   // Remove leading/trailing dots and spaces
-  safe = safe.replace(/^[\s.]+|[\s.]+$/g, "");
+  safe = safe.replaceAll(/^[\s.]+|[\s.]+$/g, "");
 
   // Limit length
   if (safe.length > 255) {
@@ -203,5 +203,5 @@ export function sanitizeFilename(filename: string): string {
 export function removeControlCharacters(text: string): string {
   if (!text) return "";
   // Remove ASCII control characters except \t (0x09), \n (0x0A), \r (0x0D)
-  return text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  return text.replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
 }

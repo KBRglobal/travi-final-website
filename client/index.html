@@ -78,7 +78,7 @@
             }).catch(function(err) {
               console.error('[SW Cleanup] Failed to get registrations:', err);
             });
-            if ('caches' in window) {
+            if ('caches' in globalThis) {
               caches.keys().then(function(names) {
                 names.forEach(function(name) {
                   caches.delete(name);
@@ -88,26 +88,28 @@
               });
             }
           }
-        } catch (e) {}
+        } catch (e) {
+          // Service worker cleanup is best-effort; errors are non-critical
+        }
       });
     </script>
 
     <!-- Travelpayouts Affiliate Verification Script - deferred via requestIdleCallback/setTimeout -->
     <script>
-      if (typeof requestIdleCallback !== 'undefined') {
-        requestIdleCallback(function() {
-          var s = document.createElement("script");
-          s.async = 1;
-          s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
-          document.head.appendChild(s);
-        });
-      } else {
+      if (typeof requestIdleCallback === 'undefined') {
         setTimeout(function() {
           var s = document.createElement("script");
           s.async = 1;
           s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
           document.head.appendChild(s);
         }, 3000);
+      } else {
+        requestIdleCallback(function() {
+          var s = document.createElement("script");
+          s.async = 1;
+          s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
+          document.head.appendChild(s);
+        });
       }
     </script>
   </body>

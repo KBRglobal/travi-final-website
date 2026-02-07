@@ -271,7 +271,7 @@ export const exitIntent = {
       if (popup.targetPages && popup.targetPages.length > 0) {
         const matches = popup.targetPages.some(pattern => {
           if (pattern.includes("*")) {
-            const regex = new RegExp(pattern.replace(/\*/g, ".*"));
+            const regex = new RegExp(pattern.replaceAll("*", ".*"));
             return regex.test(content.slug);
           }
           return pattern === content.slug;

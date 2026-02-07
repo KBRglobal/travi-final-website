@@ -1020,16 +1020,16 @@ function escapeHtml(str: string): string {
     "'": "&#x27;",
     "/": "&#x2F;",
   };
-  return str.replace(/[&<>"'/]/g, char => htmlEscapes[char]);
+  return str.replaceAll(/[&<>"'/]/g, char => htmlEscapes[char]);
 }
 
 // Remove null bytes and other dangerous characters
 function sanitizeString(value: string): string {
   // Remove null bytes
-  let sanitized = value.replace(/\0/g, "");
+  let sanitized = value.replaceAll("\0", "");
 
   // Remove other control characters (except newline and tab)
-  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  sanitized = sanitized.replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
 
   return sanitized.trim();
 }
@@ -1059,7 +1059,9 @@ function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
         sanitized[key] = sanitizeString(value);
       } else {
         // For longer content (like body/content), just remove dangerous control chars
-        sanitized[key] = value.replace(/\0/g, "").replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+        sanitized[key] = value
+          .replaceAll("\0", "")
+          .replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
       }
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map(item => {

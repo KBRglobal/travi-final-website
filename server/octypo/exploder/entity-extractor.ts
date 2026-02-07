@@ -220,7 +220,7 @@ export class EntityExtractor {
    * Normalize entity type to valid enum value
    */
   private normalizeEntityType(type: string): EntityType {
-    const normalized = type.toLowerCase().replace(/[^a-z]/g, "");
+    const normalized = type.toLowerCase().replaceAll(/[^a-z]/g, "");
     const validTypes: EntityType[] = [
       "hotel",
       "restaurant",
@@ -277,7 +277,7 @@ export class EntityExtractor {
    * Count mentions of entity in text
    */
   private countMentions(text: string, entityName: string): number {
-    const regex = new RegExp(entityName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`), "gi");
+    const regex = new RegExp(entityName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`), "gi");
     const matches = text.match(regex);
     return matches ? matches.length : 0;
   }
@@ -304,7 +304,7 @@ export class EntityExtractor {
    */
   private async saveEntities(contentId: string, entities: ExtractedEntity[]): Promise<void> {
     for (const entity of entities) {
-      const normalizedName = entity.name.toLowerCase().trim().replace(/\s+/g, " ");
+      const normalizedName = entity.name.toLowerCase().trim().replaceAll(/\s+/g, " ");
 
       // Check for existing entity with same normalized name
       const existing = await db

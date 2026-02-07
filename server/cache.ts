@@ -64,7 +64,7 @@ class MemoryCache {
   }
 
   async keys(pattern: string): Promise<string[]> {
-    const regex = new RegExp("^" + pattern.replace(/\*/g, ".*") + "$");
+    const regex = new RegExp("^" + pattern.replaceAll("*", ".*") + "$");
     return Array.from(this.cache.keys()).filter(key => regex.test(key));
   }
 

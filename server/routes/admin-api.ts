@@ -345,16 +345,16 @@ export function registerAdminApiRoutes(app: Express): void {
         if (customFilename) {
           customFilename = customFilename
             .toLowerCase()
-            .replace(/[^a-z0-9\-_]/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+            .replaceAll(/[^a-z0-9\-_]/g, "-")
+            .replaceAll(/-+/g, "-")
+            .replaceAll(/^-|-$/g, "");
         } else {
           customFilename = req.file.originalname
             .replace(/\.[^.]+$/, "")
             .toLowerCase()
-            .replace(/[^a-z0-9\-_]/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+            .replaceAll(/[^a-z0-9\-_]/g, "-")
+            .replaceAll(/-+/g, "-")
+            .replaceAll(/^-|-$/g, "");
         }
 
         if (!customFilename) {
@@ -748,9 +748,9 @@ export function registerAdminApiRoutes(app: Express): void {
         const normalizedName = name
           .toLowerCase()
           .trim()
-          .replace(/[^\w\s-]/g, "")
-          .replace(/\s+/g, "-")
-          .replace(/-+/g, "-");
+          .replaceAll(/[^\w\s-]/g, "")
+          .replaceAll(/\s+/g, "-")
+          .replaceAll(/-+/g, "-");
 
         const [destination] = await db
           .insert(destinations)
@@ -1849,8 +1849,8 @@ export function registerAdminApiRoutes(app: Express): void {
         const ext = file.mimetype.split("/")[1];
         const sanitizedName = (req.body.alt || "destinations-hero")
           .toLowerCase()
-          .replace(/[^a-z0-9-]/g, "-")
-          .replace(/-+/g, "-")
+          .replaceAll(/[^a-z0-9-]/g, "-")
+          .replaceAll(/-+/g, "-")
           .slice(0, 50);
         const timestamp = Date.now();
         const filename = `destinations-index-hero-${sanitizedName}-${timestamp}.${ext}`;
@@ -1945,8 +1945,8 @@ export function registerAdminApiRoutes(app: Express): void {
         const ext = file.mimetype.split("/")[1];
         const sanitizedName = destination.name
           .toLowerCase()
-          .replace(/[^a-z0-9-]/g, "-")
-          .replace(/-+/g, "-")
+          .replaceAll(/[^a-z0-9-]/g, "-")
+          .replaceAll(/-+/g, "-")
           .slice(0, 50);
         const timestamp = Date.now();
         const filename = `destination-card-${sanitizedName}-${timestamp}.${ext}`;

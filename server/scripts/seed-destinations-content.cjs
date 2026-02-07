@@ -656,7 +656,7 @@ async function run() {
       paramIdx++;
 
       // Set hero_image placeholder
-      const heroUrl = `https://cdn.travi.world/hero/${destinations.find(d => d.id === id) ? dest.meta_title.split('|')[0].trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : 'default'}.webp`;
+      // heroUrl computed but not used - the actual URL is set from the array below
       setClauses.push(`hero_image = COALESCE(hero_image, $${paramIdx})`);
       values.push(`https://cdn.travi.world/hero/${['abu-dhabi','amsterdam','bangkok','barcelona','dubai','hong-kong','istanbul','las-vegas','london','los-angeles','miami','new-york','paris','ras-al-khaimah','rome','singapore','tokyo'][id-1]}.webp`);
       paramIdx++;
@@ -671,9 +671,11 @@ async function run() {
       paramIdx++;
 
       // OG fields
-      setClauses.push(`og_title = COALESCE(og_title, meta_title)`);
-      setClauses.push(`og_description = COALESCE(og_description, meta_description)`);
-      setClauses.push(`og_image = COALESCE(og_image, hero_image)`);
+      setClauses.push(
+        `og_title = COALESCE(og_title, meta_title)`,
+        `og_description = COALESCE(og_description, meta_description)`,
+        `og_image = COALESCE(og_image, hero_image)`
+      );
 
       // word_count and seo_score
       const wordCount = dest.description.split(/\s+/).length;

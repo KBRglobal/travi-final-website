@@ -29,7 +29,11 @@ export async function createBackup(name?: string): Promise<BackupResult> {
   try {
     ensureBackupsDir();
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-").replace("T", "T").slice(0, 19);
+    const timestamp = new Date()
+      .toISOString()
+      .replaceAll(/[:.]/g, "-")
+      .replace("T", "T")
+      .slice(0, 19);
     const filename = name ? `backup-${name}-${timestamp}.sql.gz` : `backup-${timestamp}.sql.gz`;
     const filepath = path.join(BACKUPS_DIR, filename);
 

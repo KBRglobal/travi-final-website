@@ -163,10 +163,10 @@ export const ObjectStorageAdapter = R2StorageAdapter;
 function sanitizePath(key: string): string {
   // Remove any path traversal attempts
   return key
-    .replace(/\.\./g, "")
+    .replaceAll("..", "")
     .replace(/^\/+/, "")
-    .replace(/[<>:"|?*]/g, "")
-    .replace(/\\/g, "/");
+    .replaceAll(/[<>:"|?*]/g, "")
+    .replaceAll("\\", "/");
 }
 
 /**

@@ -57,7 +57,7 @@ function normalizeHighlightsData(data: Record<string, unknown>): Record<string, 
 function normalizeTipsData(data: Record<string, unknown>): Record<string, unknown> {
   const tipsArray = (data as any).tips || (data as any).items;
   if (Array.isArray(tipsArray) && tipsArray.length > 0) {
-    return { ...data, content: tipsArray.map((tip: unknown) => String(tip)).join("\n") };
+    return { ...data, content: tipsArray.map(String).join("\n") };
   }
   if (typeof (data as any).content === "string" && (data as any).content.length > 0) return data;
   return {

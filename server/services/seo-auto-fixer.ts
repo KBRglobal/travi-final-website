@@ -671,7 +671,7 @@ export class SEOAutoFixer {
       const filename = (image.filename as string) || (image.url as string) || "";
 
       // Extract context from filename
-      const nameParts = filename.replace(/[-_.]/g, " ").toLowerCase();
+      const nameParts = filename.replaceAll(/[-_.]/g, " ").toLowerCase();
 
       const altText = `${title} - ${nameParts.substring(0, 50)} photography`.substring(0, 125);
 
@@ -748,14 +748,14 @@ export class SEOAutoFixer {
       if (slug) {
         const cleanSlug = slug
           .toLowerCase()
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/\s+/g, "-");
+          .replaceAll(/[^a-z0-9-]/g, "")
+          .replaceAll(/\s+/g, "-");
         canonical = `/${category}/${cleanSlug}`;
       } else {
         const cleanSlug = title
           .toLowerCase()
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/\s+/g, "-")
+          .replaceAll(/[^a-z0-9-]/g, "")
+          .replaceAll(/\s+/g, "-")
           .substring(0, 50);
         canonical = `/${category}/${cleanSlug}`;
       }

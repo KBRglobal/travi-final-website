@@ -718,8 +718,8 @@ export function registerEmailMarketingRoutes(app: Express): void {
 
         // Replace personalization tokens
         const firstName = subscriber.firstName || "there";
-        htmlContent = htmlContent.replace(/\{\{firstName\}\}/g, firstName);
-        htmlContent = htmlContent.replace(/\{\{email\}\}/g, subscriber.email);
+        htmlContent = htmlContent.replaceAll("{{firstName}}", firstName);
+        htmlContent = htmlContent.replaceAll("{{email}}", subscriber.email);
 
         await resend.emails.send({
           from: "Dubai Travel <noreply@dubaitravel.com>",

@@ -15,8 +15,8 @@ export function generateBlockId(): string {
 export function generateSlug(title: string): string {
   return title
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
+    .replaceAll(/[^a-z0-9\s-]/g, "")
+    .replaceAll(/\s+/g, "-")
+    .replaceAll(/-+/g, "-")
     .trim();
 }

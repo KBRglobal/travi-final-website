@@ -180,7 +180,7 @@ function ClickableStatsCard({
 
   return (
     <Card
-      data-testid={`card-stat-${title.toLowerCase().replace(/\s+/g, "-")}`}
+      data-testid={`card-stat-${title.toLowerCase().replaceAll(/\s+/g, "-")}`}
       className={cn("transition-all", href && "cursor-pointer hover-elevate")}
       onClick={href ? handleClick : undefined}
     >

@@ -345,8 +345,8 @@ function normalizeQuery(query: string): string {
   return query
     .trim()
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s]/gu, " ") // Keep letters, numbers, spaces
-    .replace(/\s+/g, " ")
+    .replaceAll(/[^\p{L}\p{N}\s]/gu, " ") // Keep letters, numbers, spaces
+    .replaceAll(/\s+/g, " ")
     .trim();
 }
 

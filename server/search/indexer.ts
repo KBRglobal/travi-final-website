@@ -143,7 +143,7 @@ export const searchIndexer = {
       parts.push(content.tags.join(" "));
     }
 
-    return parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim().slice(0, 5000); // Limit to reasonable size
+    return parts.filter(Boolean).join(" ").replaceAll(/\s+/g, " ").trim().slice(0, 5000); // Limit to reasonable size
   },
 
   /**
@@ -167,8 +167,8 @@ export const searchIndexer = {
         return "";
       })
       .join(" ")
-      .replace(/<[^>]*>/g, "") // Strip HTML
-      .replace(/\s+/g, " ")
+      .replaceAll(/<[^>]*>/g, "") // Strip HTML
+      .replaceAll(/\s+/g, " ")
       .trim();
   },
 };

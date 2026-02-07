@@ -21,8 +21,8 @@ export function registerObjectStorageRoutes(app: Express): void {
 
     const sanitizedKey = key
       .replace(/^\/+/, "")
-      .replace(/[<>:"|?*]/g, "")
-      .replace(/\\/g, "/");
+      .replaceAll(/[<>:"|?*]/g, "")
+      .replaceAll("\\", "/");
 
     if (!sanitizedKey) {
       res.status(400).send("Invalid path");

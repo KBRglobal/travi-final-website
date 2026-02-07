@@ -40,9 +40,11 @@ export async function parseRssFeed(url: string): Promise<RssFeedItem[]> {
 
     if (titleMatch && linkMatch) {
       // Sanitize all content from RSS to prevent XSS attacks
-      const rawTitle = titleMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "");
-      const rawLink = linkMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "");
-      const rawDescription = descMatch ? descMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "") : "";
+      const rawTitle = titleMatch[1].trim().replaceAll(/<!\[CDATA\[|\]\]>/g, "");
+      const rawLink = linkMatch[1].trim().replaceAll(/<!\[CDATA\[|\]\]>/g, "");
+      const rawDescription = descMatch
+        ? descMatch[1].trim().replaceAll(/<!\[CDATA\[|\]\]>/g, "")
+        : "";
 
       items.push({
         title: sanitizeHtmlContent(rawTitle),

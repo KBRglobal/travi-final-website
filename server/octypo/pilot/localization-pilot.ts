@@ -226,20 +226,20 @@ export function calculateLocalePurity(
   // Remove dynamic exemptions (attraction name, venue name, etc.)
   for (const exemption of exemptions) {
     if (exemption?.trim()) {
-      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+      const escapedExemption = exemption.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }
 
   // Remove punctuation and numbers
-  cleanText = cleanText.replace(/[0-9.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/\-–—]/g, " ");
+  cleanText = cleanText.replaceAll(/[0-9.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/\-–—]/g, " ");
   cleanText = cleanText.trim();
 
   if (cleanText.length === 0) return 1;
 
   const charPattern = LOCALE_CHAR_PATTERNS[targetLocale] || /[a-zA-Z]/g;
   const matchedChars = (cleanText.match(charPattern) || []).length;
-  const totalChars = cleanText.replace(/\s/g, "").length;
+  const totalChars = cleanText.replaceAll(/\s/g, "").length;
 
   if (totalChars === 0) return 1;
   return matchedChars / totalChars;
@@ -753,13 +753,13 @@ export function calculateLocalePurityExtended(
   // Remove dynamic exemptions
   for (const exemption of exemptions) {
     if (exemption?.trim()) {
-      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+      const escapedExemption = exemption.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }
 
   // Remove punctuation and numbers
-  cleanText = cleanText.replace(/[0-9.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/\-–—]/g, " ");
+  cleanText = cleanText.replaceAll(/[0-9.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/\-–—]/g, " ");
   cleanText = cleanText.trim();
 
   if (cleanText.length === 0) return 1;
@@ -774,7 +774,7 @@ export function calculateLocalePurityExtended(
   const scriptCharCount = scriptMatches.length;
 
   // Count total non-whitespace characters
-  const totalChars = cleanText.replace(/\s/g, "").length;
+  const totalChars = cleanText.replaceAll(/\s/g, "").length;
 
   if (totalChars === 0) return 1;
   return scriptCharCount / totalChars;

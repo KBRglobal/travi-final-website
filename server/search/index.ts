@@ -204,7 +204,7 @@ export const searchEngine = {
       return results.map((r, idx) => {
         const images = r.tiqetsImages as Array<{ medium?: string; large?: string }> | null;
         const thumbnail = images?.[0]?.medium || images?.[0]?.large || null;
-        const citySlug = r.cityName?.toLowerCase().replace(/\s+/g, "-") || "attraction";
+        const citySlug = r.cityName?.toLowerCase().replaceAll(/\s+/g, "-") || "attraction";
 
         return {
           contentId: r.id,

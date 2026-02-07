@@ -221,10 +221,10 @@ export class EntityMatcher {
     return name
       .toLowerCase()
       .trim()
-      .replace(/[\u2018\u2019`]/g, "'")
-      .replace(/[\u201c\u201d]/g, '"')
-      .replace(/\s+/g, " ")
-      .replace(/[^\w\s'-]/g, "");
+      .replaceAll(/[\u2018\u2019`]/g, "'")
+      .replaceAll(/[\u201c\u201d]/g, '"')
+      .replaceAll(/\s+/g, " ")
+      .replaceAll(/[^\w\s'-]/g, "");
   }
 
   /**

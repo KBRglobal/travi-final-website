@@ -88,8 +88,8 @@ export const queryProcessor = {
     // Basic normalization
     let normalized = original
       .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s]/gu, " ") // Keep letters, numbers, spaces
-      .replace(/\s+/g, " ")
+      .replaceAll(/[^\p{L}\p{N}\s]/gu, " ") // Keep letters, numbers, spaces
+      .replaceAll(/\s+/g, " ")
       .trim();
 
     // Detect language
@@ -128,9 +128,9 @@ export const queryProcessor = {
     let cleaned = query.toLowerCase().trim();
 
     // Remove common search patterns
-    cleaned = cleaned.replace(/\b(best|top|good|great|find|search|show|get)\s+/gi, "");
-    cleaned = cleaned.replace(/\b(in|at|near)\s+dubai\b/gi, "dubai");
-    cleaned = cleaned.replace(/\s+/g, " ").trim();
+    cleaned = cleaned.replaceAll(/\b(best|top|good|great|find|search|show|get)\s+/gi, "");
+    cleaned = cleaned.replaceAll(/\b(in|at|near)\s+dubai\b/gi, "dubai");
+    cleaned = cleaned.replaceAll(/\s+/g, " ").trim();
 
     return cleaned;
   },
@@ -160,7 +160,7 @@ export const queryProcessor = {
    * Normalize whitespace and special characters
    */
   normalizeWhitespace(text: string): string {
-    return text.replace(/\s+/g, " ").trim();
+    return text.replaceAll(/\s+/g, " ").trim();
   },
 
   /**

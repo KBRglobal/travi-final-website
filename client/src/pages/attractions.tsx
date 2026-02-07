@@ -433,7 +433,7 @@ export default function Attractions() {
               id: a.id,
               title: a.title,
               subtitle: a.cityName,
-              href: `/${a.cityName.toLowerCase().replace(/\s+/g, "-")}/attractions/${a.slug}`,
+              href: `/${a.cityName.toLowerCase().replaceAll(/\s+/g, "-")}/attractions/${a.slug}`,
               image: a.tiqetsImages?.[0]?.medium,
               rating: a.tiqetsRating ? Number(a.tiqetsRating) : undefined,
               duration: a.duration,

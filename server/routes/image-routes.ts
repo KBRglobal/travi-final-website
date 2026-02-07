@@ -799,8 +799,8 @@ export function registerImageRoutes(app: Express) {
         // Create slug from entity name
         const entitySlug = (contentTitle || "dubai-image")
           .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-|-$/g, "");
+          .replaceAll(/[^a-z0-9]+/g, "-")
+          .replaceAll(/^-|-$/g, "");
 
         const seoContext: ImageSEOContext = {
           contentType: (contentType || "article") as ContentType,

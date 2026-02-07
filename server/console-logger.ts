@@ -26,21 +26,19 @@ class ConsoleLogger extends EventEmitter {
   }
 
   start() {
-    const self = this;
-
     console.log = (...args: unknown[]) => {
-      self.originalConsoleLog(...args);
-      self.captureLog("info", args);
+      this.originalConsoleLog(...args);
+      this.captureLog("info", args);
     };
 
     console.warn = (...args: unknown[]) => {
-      self.originalConsoleWarn(...args);
-      self.captureLog("warn", args);
+      this.originalConsoleWarn(...args);
+      this.captureLog("warn", args);
     };
 
     console.error = (...args: unknown[]) => {
-      self.originalConsoleError(...args);
-      self.captureLog("error", args);
+      this.originalConsoleError(...args);
+      this.captureLog("error", args);
     };
   }
 

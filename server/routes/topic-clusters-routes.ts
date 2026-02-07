@@ -12,8 +12,8 @@ import type { ContentBlock } from "@shared/schema";
 
 // Fingerprint generator for content deduplication
 function generateFingerprint(title: string, url?: string): string {
-  const normalizedTitle = title.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const normalizedUrl = url ? url.toLowerCase().replace(/[^a-z0-9]/g, "") : "";
+  const normalizedTitle = title.toLowerCase().replaceAll(/[^a-z0-9]/g, "");
+  const normalizedUrl = url ? url.toLowerCase().replaceAll(/[^a-z0-9]/g, "") : "";
   return crypto
     .createHash("sha256")
     .update(`${normalizedTitle}-${normalizedUrl}`)
@@ -259,8 +259,8 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
         // Create merged content with enhanced data
         const slug = (mergedData.title || cluster.topic)
           .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-|-$/g, "")
+          .replaceAll(/[^a-z0-9]+/g, "-")
+          .replaceAll(/^-|-$/g, "")
           .substring(0, 80);
 
         // Build content blocks from the generated content
@@ -350,7 +350,7 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
         // Calculate word count
         const textContent = mergedData.content || "";
         const wordCount = textContent
-          .replace(/<[^>]*>/g, "")
+          .replaceAll(/<[^>]*>/g, "")
           .split(/\s+/)
           .filter((w: string) => w.length > 0).length;
 

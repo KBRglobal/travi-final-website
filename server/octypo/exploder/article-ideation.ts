@@ -290,7 +290,7 @@ Return ${maxIdeas} article ideas as a JSON array.`;
     type: string,
     allowedTypes?: ExplodedArticleType[]
   ): ExplodedArticleType {
-    const normalized = type.toLowerCase().replace(/[^a-z-]/g, "");
+    const normalized = type.toLowerCase().replaceAll(/[^a-z-]/g, "");
     const valid = Object.keys(ARTICLE_TYPE_METADATA) as ExplodedArticleType[];
 
     if (valid.includes(normalized as ExplodedArticleType)) {
@@ -336,7 +336,7 @@ Return ${maxIdeas} article ideas as a JSON array.`;
 
     for (const idea of ideas) {
       // Create signature for deduplication
-      const signature = `${idea.title.toLowerCase().replace(/[^a-z0-9]/g, "")}`;
+      const signature = `${idea.title.toLowerCase().replaceAll(/[^a-z0-9]/g, "")}`;
 
       if (!seen.has(signature)) {
         seen.add(signature);

@@ -763,7 +763,7 @@ export class SEOValidationAgent {
 
   private countWords(text: string): number {
     return text
-      .replace(/<[^>]*>/g, "")
+      .replaceAll(/<[^>]*>/g, "")
       .split(/\s+/)
       .filter(w => w.length > 0).length;
   }

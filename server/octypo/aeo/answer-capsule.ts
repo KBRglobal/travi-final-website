@@ -183,8 +183,8 @@ export class SchemaGenerator {
   private slugify(text: string): string {
     return text
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
+      .replaceAll(/[^a-z0-9]+/g, "-")
+      .replaceAll(/^-|-$/g, "");
   }
 
   private getCountryCode(cityName: string): string {

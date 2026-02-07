@@ -137,7 +137,7 @@ export function generateSafeFilename(originalFilename: string, fileType: string)
   const ext = path
     .extname(originalFilename)
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, "");
+    .replaceAll(/[^a-z0-9]/g, "");
   const validExt = ext || fileType;
 
   // Create safe filename: hash + extension

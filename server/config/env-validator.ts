@@ -188,7 +188,7 @@ export function getEnvNumber(key: string, defaultValue?: number): number {
   }
   const num = Number.parseInt(value, 10);
   if (Number.isNaN(num)) {
-    throw new Error(`Environment variable ${key} must be a number, got: ${value}`);
+    throw new TypeError(`Environment variable ${key} must be a number, got: ${value}`);
   }
   return num;
 }

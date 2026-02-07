@@ -302,8 +302,8 @@ export class AttractionDetector {
       // Generate a slug
       const slug = detection.attractionName
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
+        .replaceAll(/[^a-z0-9]+/g, "-")
+        .replaceAll(/^-|-$/g, "");
 
       // Create draft attraction
       const [newAttraction] = await db
@@ -502,7 +502,7 @@ export class AttractionDetector {
       "other",
     ];
 
-    const normalized = type?.toLowerCase().replace(/\s+/g, "_");
+    const normalized = type?.toLowerCase().replaceAll(/\s+/g, "_");
     return validTypes.includes(normalized as AttractionType)
       ? (normalized as AttractionType)
       : "other";

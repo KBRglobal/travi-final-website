@@ -82,8 +82,8 @@ async function handleWriteJob(
     // Generate unique slug
     const baseSlug = data.title
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
+      .replaceAll(/[^a-z0-9]+/g, "-")
+      .replaceAll(/^-|-$/g, "")
       .substring(0, 80);
     const slug = `${baseSlug}-${Date.now().toString(36)}`;
 
@@ -457,8 +457,8 @@ async function handleAttractionWriteJob(
     // Generate unique slug
     const baseSlug = data.attractionName
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
+      .replaceAll(/[^a-z0-9]+/g, "-")
+      .replaceAll(/^-|-$/g, "")
       .substring(0, 80);
     const slug = `${baseSlug}-${Date.now().toString(36)}`;
 

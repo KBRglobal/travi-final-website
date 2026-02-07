@@ -105,8 +105,8 @@ function evaluateConsistency(content: any): DimensionScore {
   const titleSlug =
     content.title
       ?.toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "") || "";
+      .replaceAll(/[^a-z0-9]+/g, "-")
+      .replaceAll(/^-|-$/g, "") || "";
   const slugMatch = content.slug?.includes(titleSlug.substring(0, 20)) ? 50 : 25;
   components.push({ name: "slugConsistency", score: slugMatch, max: 50 });
 

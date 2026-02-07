@@ -27,8 +27,8 @@ function cleanJsonFromMarkdown(content: string): string {
   }
   cleaned = cleaned.trim() || "{}";
 
-  cleaned = cleaned.replace(/"([^"\\]|\\.)*"/g, match => {
-    return match.replace(/[\x00-\x1F\x7F]/g, char => {
+  cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
+    return match.replaceAll(/[\x00-\x1F\x7F]/g, char => {
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
       if (code === 0x0a) return String.raw`\n`;
@@ -179,7 +179,7 @@ function normalizeHighlightsData(data: Record<string, unknown>): Record<string, 
 function normalizeTipsData(data: Record<string, unknown>): Record<string, unknown> {
   const tipsArray = (data as any).tips || (data as any).items;
   if (Array.isArray(tipsArray) && tipsArray.length > 0) {
-    return { ...data, content: tipsArray.map((tip: unknown) => String(tip)).join("\n") };
+    return { ...data, content: tipsArray.map(String).join("\n") };
   }
   if (typeof (data as any).content === "string" && (data as any).content.length > 0) return data;
   return {
@@ -703,8 +703,8 @@ Create engaging, informative content that would appeal to travelers. Return vali
         generated.slug ||
         topic.title
           .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-|-$/g, "");
+          .replaceAll(/[^a-z0-9]+/g, "-")
+          .replaceAll(/^-|-$/g, "");
 
       // Generate hero image for the article and persist to storage
       let heroImageUrl = null;
@@ -886,8 +886,8 @@ RULES:
           generated.slug ||
           topic.title
             .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-|-$/g, "");
+            .replaceAll(/[^a-z0-9]+/g, "-")
+            .replaceAll(/^-|-$/g, "");
 
         // Generate hero image
         let heroImageUrl = null;
@@ -1017,8 +1017,8 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             generated.slug ||
             topic.title
               .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")
-              .replace(/^-|-$/g, "");
+              .replaceAll(/[^a-z0-9]+/g, "-")
+              .replaceAll(/^-|-$/g, "");
 
           // Validate and normalize blocks to ensure all required sections exist
           const blocks = validateAndNormalizeBlocks(

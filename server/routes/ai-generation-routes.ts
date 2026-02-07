@@ -32,8 +32,8 @@ function cleanJsonFromMarkdown(content: string): string {
   }
   cleaned = cleaned.trim() || "{}";
 
-  cleaned = cleaned.replace(/"([^"\\]|\\.)*"/g, match => {
-    return match.replace(/[\x00-\x1F\x7F]/g, char => {
+  cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
+    return match.replaceAll(/[\x00-\x1F\x7F]/g, char => {
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
       if (code === 0x0a) return String.raw`\n`;
@@ -577,7 +577,7 @@ Generate a complete, SEO-optimized article ready for publication.`;
         // Generate a filename from the prompt
         const slug = prompt
           .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
+          .replaceAll(/[^a-z0-9]+/g, "-")
           .substring(0, 50);
         const filename = `${slug}-${Date.now()}.jpg`;
 
