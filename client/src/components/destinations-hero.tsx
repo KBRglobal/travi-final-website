@@ -327,6 +327,8 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                       alt={dest.alt}
                       title={t("destinations.hero.exploreTitle", { name: dest.name })}
                       className="w-full h-full object-cover"
+                      width={800}
+                      height={600}
                       initial={{ opacity: 0, scale: 1.1 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0 }}
@@ -417,6 +419,8 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                           src={destination.heroImage}
                           alt={`${destination.alt || destination.name} - thumbnail`}
                           className="w-full h-full object-cover"
+                          width={64}
+                          height={64}
                           loading="lazy"
                           decoding="async"
                         />

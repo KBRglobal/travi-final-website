@@ -107,6 +107,10 @@ export default function TermsPage() {
                       src={termsMascot}
                       alt="TRAVI mascot duck character in sunglasses reviewing legal documents and terms of service paperwork"
                       className="w-64 h-64 object-cover rounded-2xl"
+                      width={256}
+                      height={256}
+                      loading="lazy"
+                      decoding="async"
                     />
 
                     {/* Badge overlay */}

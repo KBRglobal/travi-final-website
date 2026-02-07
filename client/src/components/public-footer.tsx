@@ -58,7 +58,7 @@ export function PublicFooter() {
                     <li key={link.href}>
                       <Link
                         href={localePath(link.href)}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 inline-flex items-center min-h-[44px]"
                         data-testid={`link-footer-${link.href.replace("/", "")}`}
                       >
                         {t(link.key)}
@@ -77,7 +77,7 @@ export function PublicFooter() {
                     <li key={link.href}>
                       <Link
                         href={localePath(link.href)}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 inline-flex items-center min-h-[44px]"
                         data-testid={`link-footer-${link.href.replace("/", "")}`}
                       >
                         {t(link.key)}
@@ -96,7 +96,7 @@ export function PublicFooter() {
                     <li key={link.href}>
                       <Link
                         href={localePath(link.href)}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 inline-flex items-center min-h-[44px]"
                         data-testid={`link-footer-${link.href.replace("/", "")}`}
                       >
                         {t(link.key)}
@@ -106,7 +106,7 @@ export function PublicFooter() {
                   <li>
                     <button
                       onClick={openCookieSettings}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer text-start"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer text-start inline-flex items-center min-h-[44px]"
                       data-testid="button-cookie-settings"
                     >
                       {t("footer.cookieSettings")}

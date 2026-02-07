@@ -456,8 +456,12 @@ export default function RasAlKhaimahPage() {
                     <div className="relative aspect-[4/3] overflow-hidden">
                       <img
                         src={zone.image}
-                        alt={zone.name}
+                        alt={`${zone.name} - ${zone.subtitle}`}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        width={400}
+                        height={300}
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div
                         className={`absolute inset-0 bg-gradient-to-t ${zone.color} opacity-60 mix-blend-multiply`}
@@ -527,8 +531,12 @@ export default function RasAlKhaimahPage() {
                       <div className="relative aspect-[3/2] overflow-hidden">
                         <img
                           src={article.image}
-                          alt={article.title}
+                          alt={`${article.title} - ${article.category} guide`}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          width={600}
+                          height={400}
+                          loading="lazy"
+                          decoding="async"
                         />
                         <div className="absolute top-4 left-4">
                           <span className="px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-amber-600 dark:text-amber-400 text-xs font-semibold">

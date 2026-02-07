@@ -329,7 +329,7 @@ function RegionFilter({
           key={key}
           onClick={() => onRegionChange(key)}
           className={cn(
-            "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 cursor-pointer",
+            "flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 cursor-pointer",
             selectedRegion === key
               ? "bg-primary text-white shadow-lg shadow-primary/25"
               : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 hover:border-gray-300"
@@ -340,6 +340,10 @@ function RegionFilter({
               src={region.image}
               alt={region.name}
               className="w-5 h-5 rounded-full object-cover"
+              width={20}
+              height={20}
+              loading="lazy"
+              decoding="async"
             />
           )}
           {region.name}
@@ -365,7 +369,7 @@ function CategoryFilter({
             key={category.id}
             onClick={() => onCategoryChange(category.id)}
             className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 cursor-pointer",
+              "flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 cursor-pointer",
               selectedCategory === category.id
                 ? "bg-gray-900 text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -397,12 +401,20 @@ function FeaturedArticle({ article }: { article: Article }) {
               src={article.heroImage}
               alt={article.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              width={1200}
+              height={500}
+              loading="eager"
+              decoding="async"
             />
           ) : destination?.image ? (
             <img
               src={destination.image}
               alt={article.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              width={1200}
+              height={500}
+              loading="eager"
+              decoding="async"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-600" />
@@ -476,16 +488,24 @@ function ArticleCard({ article, index = 0 }: { article: Article; index?: number 
               src={article.heroImage}
               alt={article.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              width={600}
+              height={400}
+              loading="lazy"
+              decoding="async"
             />
           ) : destination?.image ? (
             <img
               src={destination.image}
               alt={article.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              width={600}
+              height={400}
+              loading="lazy"
+              decoding="async"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <Globe2 className="w-12 h-12 text-gray-300" />
+              <Globe2 className="w-12 h-12 text-gray-300" aria-hidden="true" />
             </div>
           )}
 
@@ -577,8 +597,12 @@ function DestinationCard({
     >
       <img
         src={destination.image}
-        alt={destination.name}
+        alt={`${destination.name} travel news`}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        width={400}
+        height={128}
+        loading="lazy"
+        decoding="async"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20 group-hover:from-black/80 transition-colors" />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-white">

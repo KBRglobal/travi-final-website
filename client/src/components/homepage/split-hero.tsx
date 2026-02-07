@@ -322,13 +322,17 @@ export function SplitHero({
                 role="tab"
                 aria-selected={currentIndex === i}
                 aria-label={t("home.hero.viewDestination", { name: d.name, tagline: d.tagline })}
-                className={cn(
-                  "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
-                  currentIndex === i
-                    ? "w-8 bg-gradient-to-r from-travi-purple to-[#8B5CF6]"
-                    : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
-                )}
-              />
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full border-none cursor-pointer"
+              >
+                <span
+                  className={cn(
+                    "h-2.5 rounded-full transition-all duration-500 block",
+                    currentIndex === i
+                      ? "w-8 bg-gradient-to-r from-travi-purple to-[#8B5CF6]"
+                      : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
+                  )}
+                />
+              </button>
             ))}
           </div>
         </div>

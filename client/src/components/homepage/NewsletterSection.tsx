@@ -91,7 +91,16 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
     <section className="relative py-20 md:py-28 overflow-hidden" data-testid="newsletter-section">
       {/* Full-bleed Background Image */}
       <div className="absolute inset-0 z-0">
-        <img src={backgroundImage} alt="" className="w-full h-full object-cover" loading="lazy" />
+        <img
+          src={backgroundImage}
+          alt=""
+          aria-hidden="true"
+          className="w-full h-full object-cover"
+          width={1920}
+          height={600}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
       {/* Content Container - Positioned left to keep character visible on right */}

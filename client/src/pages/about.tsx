@@ -153,8 +153,12 @@ export default function AboutPage() {
                   <div className="relative bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-3xl p-3 border border-white/20 dark:border-white/10 shadow-2xl">
                     <img
                       src="/hero/travi-world-mascot-colorful-pool-arches.webp"
-                      alt="TRAVI mascot exploring the world"
+                      alt="TRAVI mascot exploring the world - a colorful duck character at a scenic pool with arches"
                       className="w-full max-w-md rounded-2xl object-cover"
+                      width={448}
+                      height={336}
+                      loading="lazy"
+                      decoding="async"
                       data-testid="img-mascot"
                     />
                   </div>

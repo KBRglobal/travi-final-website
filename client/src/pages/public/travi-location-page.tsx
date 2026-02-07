@@ -132,8 +132,10 @@ function LocationHero({
       <div className="absolute inset-0">
         <img
           src={heroImage}
-          alt={name}
+          alt={`${name} - scenic view of the travel destination`}
           className="w-full h-full object-cover"
+          width={1920}
+          height={1080}
           loading="eager"
           {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
           onError={e => {
@@ -316,6 +318,8 @@ function ImageGallery({ images }: { images: TraviLocationImage[] }) {
               src={image.imageUrl}
               alt={image.altText || `Gallery image ${index + 1}`}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              width={400}
+              height={300}
               loading="lazy"
               decoding="async"
             />
@@ -337,8 +341,10 @@ function ImageGallery({ images }: { images: TraviLocationImage[] }) {
             <div className="relative">
               <img
                 src={displayImages[selectedIndex]?.imageUrl}
-                alt={displayImages[selectedIndex]?.altText || ""}
+                alt={displayImages[selectedIndex]?.altText || "Full-size gallery image"}
                 className="w-full h-auto max-h-[80vh] object-contain"
+                width={1200}
+                height={800}
               />
               <Button
                 size="icon"

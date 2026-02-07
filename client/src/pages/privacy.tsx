@@ -109,6 +109,10 @@ export default function PrivacyPage() {
                       src={privacyMascot}
                       alt="TRAVI mascot duck character standing on security shield with padlock representing data protection and privacy"
                       className="w-64 h-64 object-cover rounded-2xl"
+                      width={256}
+                      height={256}
+                      loading="lazy"
+                      decoding="async"
                     />
 
                     {/* Shield badge overlay */}

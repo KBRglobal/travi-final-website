@@ -83,8 +83,12 @@ export default function SecurityPage() {
                 <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/30">
                   <img
                     src="/hero/travi-world-mascot-colorful-pool-arches.webp"
-                    alt="TRAVI mascot ensuring your security"
+                    alt="TRAVI mascot ensuring your security with a shield representing data protection"
                     className="w-64 h-64 object-cover rounded-2xl"
+                    width={256}
+                    height={256}
+                    loading="lazy"
+                    decoding="async"
                   />
 
                   {/* Security badge overlay */}

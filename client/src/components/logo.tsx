@@ -8,12 +8,12 @@ interface LogoProps {
   linkTo?: string | null;
 }
 
-export function Logo({ 
-  className = "", 
-  variant = "primary", 
+export function Logo({
+  className = "",
+  variant = "primary",
   type = "logotype",
   height = 32,
-  linkTo = "/"
+  linkTo = "/",
 }: LogoProps) {
   const getLogoSrc = () => {
     if (type === "full") {
@@ -26,16 +26,18 @@ export function Logo({
   };
 
   const logoContent = (
-    <div 
+    <div
       className={`flex items-center ${className}`}
       style={{ height: `${height}px` }}
       data-testid="img-logo"
     >
-      <img 
+      <img
         src={getLogoSrc()}
-        alt="TRAVI"
+        alt="TRAVI - Travel guide platform"
         style={{ height: `${height}px`, width: "auto" }}
         className="flex-shrink-0"
+        width={height * 3}
+        height={height}
       />
     </div>
   );
@@ -51,21 +53,23 @@ export function Logo({
   return logoContent;
 }
 
-export function Mascot({ 
-  className = "", 
+export function Mascot({
+  className = "",
   variant = "light-bg",
-  size = 48
-}: { 
-  className?: string; 
+  size = 48,
+}: {
+  className?: string;
   variant?: "dark-bg" | "light-bg";
   size?: number;
 }) {
   return (
-    <img 
+    <img
       src="/logos/Mascot_for_Dark_Background.png"
       alt="Travi the Duck mascot"
       style={{ width: `${size}px`, height: `${size}px` }}
       className={`object-contain ${className}`}
+      width={size}
+      height={size}
       data-testid="img-mascot"
     />
   );

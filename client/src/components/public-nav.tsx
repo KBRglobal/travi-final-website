@@ -160,7 +160,7 @@ export function PublicNav({
                   <Link
                     key={item.href}
                     href={localePath(item.href)}
-                    className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                    className={`px-4 py-2 min-h-[44px] inline-flex items-center text-sm font-medium rounded-full transition-all ${
                       active
                         ? "text-white bg-white/20"
                         : "text-white/70 hover:text-white hover:bg-white/10"
@@ -183,7 +183,7 @@ export function PublicNav({
                   href="https://www.instagram.com/travi_world"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/70 hover:text-[#E4405F] transition-colors"
+                  className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] text-white/70 hover:text-[#E4405F] transition-colors rounded-full"
                   data-testid="link-social-instagram"
                   aria-label={t("nav.followInstagram")}
                 >
@@ -193,7 +193,7 @@ export function PublicNav({
                   href="https://www.tiktok.com/@travi.world"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/70 hover:text-white transition-colors"
+                  className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] text-white/70 hover:text-white transition-colors rounded-full"
                   data-testid="link-social-tiktok"
                   aria-label={t("nav.followTikTok")}
                 >

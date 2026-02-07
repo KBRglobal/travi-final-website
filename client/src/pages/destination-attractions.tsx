@@ -1022,8 +1022,10 @@ function DestinationAttractionsPage() {
                     <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
                       <img
                         src={attraction.image}
-                        alt={attraction.name}
+                        alt={`${attraction.name} - top attraction`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        width={400}
+                        height={300}
                         loading="lazy"
                         decoding="async"
                         onError={e => {
@@ -1032,7 +1034,10 @@ function DestinationAttractionsPage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-                      <div className="absolute top-4 left-4 w-10 h-10 rounded-full bg-[#6443F4] text-white font-bold flex items-center justify-center text-lg shadow-lg">
+                      <div
+                        className="absolute top-4 left-4 w-10 h-10 rounded-full bg-[#6443F4] text-white font-bold flex items-center justify-center text-lg shadow-lg"
+                        aria-hidden="true"
+                      >
                         #{index + 1}
                       </div>
 
@@ -1103,8 +1108,10 @@ function DestinationAttractionsPage() {
                           <div className="aspect-[16/10] relative overflow-hidden">
                             <img
                               src={attraction.image}
-                              alt={attraction.name}
+                              alt={`${attraction.name} - attraction to visit`}
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              width={400}
+                              height={250}
                               loading="lazy"
                               decoding="async"
                               onError={e => {

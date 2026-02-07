@@ -96,6 +96,10 @@ export default function CookiesPage() {
                     src={cookiesMascot}
                     alt="TRAVI mascot duck character relaxing on pink floatie eating chocolate chip cookies with coconut drink"
                     className="w-64 h-64 object-cover rounded-2xl"
+                    width={256}
+                    height={256}
+                    loading="lazy"
+                    decoding="async"
                   />
 
                   {/* Cookie badge overlay */}

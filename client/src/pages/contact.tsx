@@ -144,8 +144,12 @@ export default function ContactPage() {
 
                 <img
                   src="/hero/travi-world-mascot-canyon-viewpoint.webp"
-                  alt="Travi mascot at a scenic canyon viewpoint"
+                  alt="Travi mascot at a scenic canyon viewpoint overlooking a natural landscape"
                   className="relative w-full max-w-md mx-auto rounded-2xl shadow-xl"
+                  width={448}
+                  height={336}
+                  loading="lazy"
+                  decoding="async"
                   data-testid="img-mascot"
                 />
 

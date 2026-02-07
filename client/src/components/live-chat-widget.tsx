@@ -135,6 +135,8 @@ export function LiveChatWidget({
                 alt=""
                 aria-hidden="true"
                 className="w-8 h-8 object-contain"
+                width={32}
+                height={32}
               />
               <span className="font-medium text-white">Chat with us</span>
             </div>

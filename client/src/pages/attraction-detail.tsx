@@ -171,6 +171,8 @@ function HeroSection({
           src={heroImage}
           alt={attraction.title}
           className="w-full h-full object-cover"
+          width={1920}
+          height={1080}
           loading="eager"
           {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
           onError={e => {
@@ -785,6 +787,8 @@ function WhatToExpectSection({ attraction }: { attraction: TiqetsAttraction }) {
                     src={image}
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    width={400}
+                    height={300}
                     loading="lazy"
                     decoding="async"
                     onError={e => {
@@ -1119,6 +1123,8 @@ function RelatedAttractionsSection({
                       src={image}
                       alt={attraction.title}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      width={400}
+                      height={300}
                       loading="lazy"
                       decoding="async"
                       onError={e => {
