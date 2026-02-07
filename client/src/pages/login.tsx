@@ -31,7 +31,7 @@ export default function Login() {
 
   return (
     <>
-      <SEOHead 
+      <SEOHead
         title="Login - Travi CMS"
         description="Sign in to access the Travi CMS admin panel"
         noindex={true}
@@ -47,10 +47,10 @@ export default function Login() {
               Sign in with your Google or GitHub account
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent className="space-y-6">
             <div className="space-y-3">
-              <Button 
+              <Button
                 onClick={handleSignIn}
                 className="w-full gap-3"
                 size="lg"
@@ -59,8 +59,8 @@ export default function Login() {
                 <SiGoogle className="w-5 h-5" />
                 Sign in with Google
               </Button>
-              
-              <Button 
+
+              <Button
                 onClick={handleSignIn}
                 variant="outline"
                 className="w-full gap-3"
@@ -71,11 +71,11 @@ export default function Login() {
                 Sign in with GitHub
               </Button>
             </div>
-            
+
             <div className="text-center text-sm text-muted-foreground pt-4 border-t">
               <p className="flex items-center justify-center gap-2">
                 <LogIn className="w-4 h-4" />
-                Secure authentication via Replit
+                Secure authentication
               </p>
             </div>
           </CardContent>

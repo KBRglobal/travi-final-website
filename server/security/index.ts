@@ -185,7 +185,6 @@ export function setupSecurityMiddleware(app: Express): void {
   // Common script sources shared by both modes
   const commonScriptSrc = [
     "'self'",
-    "https://replit.com",
     "https://www.googletagmanager.com",
     "https://www.google-analytics.com",
     "https://emrld.ltd", // Travelpayouts affiliate verification
