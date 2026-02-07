@@ -136,3 +136,6 @@ export * from "./content-rules";
 
 // Editorial placements system
 export * from "./editorial-placements";
+
+// Ghost tables (existed in DB but were missing from Drizzle schema)
+export * from "./ghost-tables";
