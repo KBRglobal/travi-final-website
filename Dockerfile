@@ -3,14 +3,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install build dependencies for native modules (bcrypt, sharp)
-RUN apk add --no-cache python3 make g++ vips-dev
+# Disable husky git hooks in CI/Docker
+ENV HUSKY=0
+
+# Install build dependencies for native modules (bcrypt)
+RUN apk add --no-cache python3 make g++
 
 COPY package.json package-lock.json ./
-RUN npm ci --ignore-scripts && \
-    npm install node-gyp -g && \
-    npm rebuild bcrypt && \
-    npm rebuild sharp
+RUN npm ci
 
 COPY . .
 RUN npm run build
@@ -22,14 +22,13 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=5000
+ENV HUSKY=0
 
-# Runtime dependencies for native modules
-RUN apk add --no-cache vips python3 make g++
+# Runtime dependencies for bcrypt
+RUN apk add --no-cache python3 make g++
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev --ignore-scripts && \
-    npm install node-gyp -g && \
-    npm rebuild bcrypt && \
+RUN npm ci --omit=dev && \
     apk del python3 make g++
 
 COPY --from=builder /app/dist ./dist
