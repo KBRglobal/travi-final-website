@@ -53,7 +53,7 @@ import { startBackgroundServices, stopBackgroundServices } from "./services/back
 import { db } from "./db";
 import { destinations } from "@shared/schema";
 import { sendProblemResponse, zodToProblemDetails, ErrorTypes } from "./lib/error-response";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { redirectMiddleware, attractionSlugRedirectMiddleware } from "./middleware/redirects";
 import { localeMiddleware } from "./middleware/locale";
 
@@ -92,6 +92,10 @@ app.use((req, res, next) => {
 // Disable X-Powered-By header globally
 app.disable("x-powered-by");
 
+// Correlation ID — assign unique request ID for tracing (early in chain)
+import { correlationIdMiddleware } from "./shared/middleware/correlation-id";
+app.use(correlationIdMiddleware);
+
 // Initialize enterprise security layer (Helmet + attack detection)
 setupSecurityMiddleware(app);
 
@@ -129,9 +133,10 @@ declare module "http" {
 }
 
 // Security: Limit request body size to prevent DoS attacks
+// JSON/urlencoded capped at 2MB; uploads use separate multipart handlers
 app.use(
   express.json({
-    limit: "10mb", // Maximum JSON body size
+    limit: "2mb",
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
@@ -141,7 +146,7 @@ app.use(
 app.use(
   express.urlencoded({
     extended: false,
-    limit: "10mb", // Maximum URL-encoded body size
+    limit: "2mb",
   })
 );
 
@@ -284,6 +289,27 @@ app.use((req, res, next) => {
 // This allows Replit deployment health checks to pass while background seeding continues
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Deep health check — verifies DB connectivity
+app.get("/health/db", async (_req, res) => {
+  const start = Date.now();
+  try {
+    await db.execute(sql`SELECT 1`);
+    res.status(200).json({
+      status: "ok",
+      db: "connected",
+      latencyMs: Date.now() - start,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    res.status(503).json({
+      status: "error",
+      db: "unreachable",
+      latencyMs: Date.now() - start,
+      error: err instanceof Error ? err.message : "DB check failed",
+    });
+  }
 });
 
 // ============================================================================
