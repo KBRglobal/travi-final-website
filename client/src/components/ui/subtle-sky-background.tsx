@@ -11,10 +11,10 @@ export default function SubtleSkyBackground({ className }: SubtleSkyBackgroundPr
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    
+
     let animationId: number;
     let time = 0;
 
@@ -27,16 +27,16 @@ export default function SubtleSkyBackground({ className }: SubtleSkyBackgroundPr
       time += 0.0005;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#fffdf9";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const layers = [
-        { color: "rgba(250, 253, 255, 0.25)", speed: 0.2, amplitude: 50, yOffset: 0.25, blur: 200 },
-        { color: "rgba(248, 252, 255, 0.2)", speed: 0.15, amplitude: 60, yOffset: 0.5, blur: 220 },
-        { color: "rgba(252, 254, 255, 0.22)", speed: 0.18, amplitude: 45, yOffset: 0.7, blur: 190 },
+        { color: "rgba(247, 243, 236, 0.25)", speed: 0.2, amplitude: 50, yOffset: 0.25, blur: 200 },
+        { color: "rgba(245, 238, 225, 0.2)", speed: 0.15, amplitude: 60, yOffset: 0.5, blur: 220 },
+        { color: "rgba(250, 245, 237, 0.22)", speed: 0.18, amplitude: 45, yOffset: 0.7, blur: 190 },
       ];
 
-      layers.forEach((layer) => {
+      layers.forEach(layer => {
         ctx.save();
         ctx.filter = `blur(${layer.blur}px)`;
         ctx.beginPath();
@@ -70,7 +70,5 @@ export default function SubtleSkyBackground({ className }: SubtleSkyBackgroundPr
     };
   }, []);
 
-  return (
-    <canvas ref={canvasRef} className={cn("fixed inset-0 w-full h-full -z-10", className)} />
-  );
+  return <canvas ref={canvasRef} className={cn("fixed inset-0 w-full h-full -z-10", className)} />;
 }

@@ -19,15 +19,15 @@ const buttonVariants = cva(
         secondary: "border bg-secondary text-secondary-foreground border border-secondary-border ",
         // Add a transparent border so that when someone toggles a border on later, it doesn't shift layout/size.
         ghost: "border border-transparent",
-        // TRAVI brand button - purple for primary CTAs (canonical from homepage)
+        // TRAVI brand button - warm terracotta for primary CTAs
         brand:
-          "text-white border-2 border-[#24103E] rounded-[16px] bg-travi-purple hover:bg-travi-purple/90 shadow-[0_4px_15px_rgba(100,67,244,0.3)]",
-        // TRAVI secondary button - white with dark border
+          "text-white border-2 border-primary/20 rounded-xl bg-primary hover:bg-primary/90 shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.3)]",
+        // TRAVI secondary button - background with warm border
         "brand-secondary":
-          "text-[#24103E] border-2 border-[#24103E] rounded-[16px] bg-white hover:bg-slate-50 shadow-[0_4px_15px_rgba(36,16,62,0.1)]",
+          "text-foreground border-2 border-primary/30 rounded-xl bg-background hover:bg-muted shadow-[0_4px_15px_hsl(var(--primary)/0.08)]",
         // On-image button - solid white for use over images/dark backgrounds
         "on-image":
-          "bg-white text-[#1e1b4b] border-none rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)]",
+          "bg-white text-foreground border-none rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)]",
         // Link variant - text-only button that looks like a link
         link: "text-primary underline-offset-4 hover:underline border-transparent bg-transparent",
       },
