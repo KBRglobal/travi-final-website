@@ -193,7 +193,7 @@ function normalizeBlock(
       if (Array.isArray(faqsArray) && faqsArray.length > 0) {
         const firstFaq = faqsArray[0];
         if (typeof firstFaq === "object" && firstFaq) {
-          const q = (firstFaq as any).question || (firstFaq as any).q || "Question?";
+          const q = firstFaq.question || firstFaq.q || "Question?";
           const a = (firstFaq as any).answer || (firstFaq as any).a || "Answer pending.";
           return {
             type: "faq" as const,

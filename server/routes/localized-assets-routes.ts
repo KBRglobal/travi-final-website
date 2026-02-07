@@ -176,10 +176,7 @@ router.post(
         return res.json(updated);
       }
 
-      const [created] = await db
-        .insert(localizedAssets)
-        .values(data as any)
-        .returning();
+      const [created] = await db.insert(localizedAssets).values(data).returning();
 
       res.status(201).json(created);
     } catch (error) {

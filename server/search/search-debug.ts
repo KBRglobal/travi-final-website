@@ -215,7 +215,7 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
     query: query,
     resultCount: 0,
     durationMs: Date.now() - intentStart,
-    details: `Primary intent: ${(intent as any).primary} (confidence: ${((intent as any).confidence * 100).toFixed(0)}%)`,
+    details: `Primary intent: ${intent.primary} (confidence: ${(intent.confidence * 100).toFixed(0)}%)`,
   });
 
   // Step 5: Execute search
@@ -270,7 +270,7 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
       recommendations.push("Include a destination or specific location in your query");
     }
 
-    if (Object.keys((intent as any).entities).length === 0) {
+    if (Object.keys(intent.entities).length === 0) {
       noResultsReasons.push("No entities could be extracted from the query");
       recommendations.push(
         "Be more specific about what you're looking for (hotel, restaurant, attraction)"
@@ -332,17 +332,17 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
 
   // Build filter reasons
   const filterReasons: string[] = [];
-  if ((intent as any).suggestedFilters.contentTypes) {
+  if (intent.suggestedFilters.contentTypes) {
     filterReasons.push(
-      `Content types filtered to: ${(intent as any).suggestedFilters.contentTypes.join(", ")}`
+      `Content types filtered to: ${intent.suggestedFilters.contentTypes.join(", ")}`
     );
   }
-  if ((intent as any).suggestedFilters.location) {
-    filterReasons.push(`Location filter: ${(intent as any).suggestedFilters.location}`);
+  if (intent.suggestedFilters.location) {
+    filterReasons.push(`Location filter: ${intent.suggestedFilters.location}`);
   }
-  if ((intent as any).suggestedFilters.priceRange) {
+  if (intent.suggestedFilters.priceRange) {
     filterReasons.push(
-      `Price range: ${(intent as any).suggestedFilters.priceRange[0]} - ${(intent as any).suggestedFilters.priceRange[1]}`
+      `Price range: ${intent.suggestedFilters.priceRange[0]} - ${intent.suggestedFilters.priceRange[1]}`
     );
   }
 
@@ -368,11 +368,11 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
       },
     },
     intentClassification: {
-      primary: (intent as any).primary,
-      confidence: (intent as any).confidence,
+      primary: intent.primary,
+      confidence: intent.confidence,
       matchedPatterns: [], // Would need to track which patterns matched
-      extractedEntities: (intent as any).entities as Record<string, unknown>,
-      suggestedFilters: (intent as any).suggestedFilters as Record<string, unknown>,
+      extractedEntities: intent.entities as Record<string, unknown>,
+      suggestedFilters: intent.suggestedFilters as Record<string, unknown>,
       filterReasons,
     },
     pipeline,

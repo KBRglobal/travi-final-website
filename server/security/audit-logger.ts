@@ -347,7 +347,7 @@ export async function getSecuritySummary(timeRange: "day" | "week" | "month" = "
   };
 
   events.forEach(log => {
-    const afterState = log.afterState as any;
+    const afterState = log.afterState;
     if (!afterState) return;
 
     const eventType = afterState.eventType || "unknown";
