@@ -121,6 +121,7 @@ export function EditorialNewsGrid() {
     <section
       className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/50"
       data-testid="editorial-news-grid"
+      aria-label="Travel news and updates"
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}

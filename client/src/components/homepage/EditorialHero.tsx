@@ -81,7 +81,11 @@ export function EditorialHero() {
     : null;
 
   return (
-    <section className="py-8 px-4 sm:px-6 lg:px-8" data-testid="editorial-hero">
+    <section
+      className="py-8 px-4 sm:px-6 lg:px-8"
+      data-testid="editorial-hero"
+      aria-label="Featured story"
+    >
       <div className="max-w-7xl mx-auto">
         <Link href={contentUrl} className="group block">
           <article className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] rounded-2xl overflow-hidden">

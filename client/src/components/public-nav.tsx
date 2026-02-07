@@ -125,7 +125,7 @@ export function PublicNav({
     normalizedLocation === href || normalizedLocation.startsWith(href + "/");
 
   return (
-    <header className={className}>
+    <header className={className} role="banner">
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           hideOnMobile ? "hidden lg:block" : ""
@@ -152,7 +152,7 @@ export function PublicNav({
               <img src={traviLogo} alt={t("nav.logoAlt")} className="h-8 md:h-10" />
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-1" aria-label={t("nav.mainNavigation")}>
+            <div className="hidden lg:flex items-center gap-1">
               {NAV_ITEMS.map(item => {
                 const active = isActive(item.href);
                 const label = t(item.key);
@@ -172,7 +172,7 @@ export function PublicNav({
                   </Link>
                 );
               })}
-            </nav>
+            </div>
 
             <div className="flex items-center gap-2 sm:gap-4">
               <LanguageSwitcher className="hidden sm:flex" />

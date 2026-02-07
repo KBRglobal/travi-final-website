@@ -88,7 +88,11 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
   } = config;
 
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden" data-testid="newsletter-section">
+    <section
+      className="relative py-20 md:py-28 overflow-hidden"
+      data-testid="newsletter-section"
+      aria-label="Newsletter signup"
+    >
       {/* Full-bleed Background Image */}
       <div className="absolute inset-0 z-0">
         <img

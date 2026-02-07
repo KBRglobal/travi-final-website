@@ -109,11 +109,16 @@ export function TrendingSection() {
   }
 
   return (
-    <section className="py-6 border-y border-border bg-card" data-testid="trending-section">
+    <section
+      className="py-6 border-y border-border bg-card"
+      data-testid="trending-section"
+      aria-label="Trending stories"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="sr-only">Trending Stories</h2>
         <div className="flex items-center gap-6">
           {/* Label */}
-          <div className="flex-shrink-0 flex items-center gap-2 text-primary">
+          <div className="flex-shrink-0 flex items-center gap-2 text-primary" aria-hidden="true">
             <TrendingUp className="w-5 h-5" />
             <span className="font-bold uppercase tracking-wide text-sm">Trending</span>
           </div>
