@@ -144,7 +144,7 @@ export function identifyAICrawler(userAgent: string): {
   platform: string;
   isAICrawler: boolean;
 } {
-  for (const [key, crawler] of Object.entries(AI_CRAWLERS)) {
+  for (const [, crawler] of Object.entries(AI_CRAWLERS)) {
     if (crawler.userAgentPattern.test(userAgent)) {
       return {
         name: crawler.name,

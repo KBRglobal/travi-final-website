@@ -67,7 +67,6 @@ export function registerSEORoutes(app: Express) {
         // Transform result to frontend expected format
         const transformTier = (tierName: string, score: number) => {
           const tierChecks = result.checks.filter(c => c.tier === tierName);
-          const maxScore = tierChecks.length * 100;
           const passedCount = tierChecks.filter(c => c.passed).length;
 
           return {

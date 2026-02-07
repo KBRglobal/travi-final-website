@@ -179,7 +179,7 @@ export function countCharsByScript(text: string): Record<string, number> {
   const counts: Record<string, number> = {};
 
   for (const char of text) {
-    const charCode = char.charCodeAt(0);
+    const charCode = char.codePointAt(0)!;
 
     // Skip whitespace and common punctuation
     if (/[\s\d.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/-]/.test(char)) {

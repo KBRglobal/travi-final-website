@@ -202,7 +202,7 @@ export function getVariantForSession(testId: string, sessionId: string): "A" | "
 
   // Simple hash-based assignment for consistency
   const hash = sessionId.split("").reduce((a, b) => {
-    a = (a << 5) - a + b.charCodeAt(0);
+    a = (a << 5) - a + b.codePointAt(0)!;
     return a & a;
   }, 0);
 
@@ -276,8 +276,6 @@ export async function getABTestResults(testId: string): Promise<ABTestResult> {
 
   // Get citations for this content during the test period
   const startDate = test.startDate || test.createdAt;
-  const endDate = test.endDate || new Date();
-
   const citations = await db
     .select()
     .from(aeoCitations)

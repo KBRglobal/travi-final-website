@@ -31,7 +31,7 @@ declare global {
 }
 
 function loadGTM() {
-  if (typeof globalThis.window === "undefined") return;
+  if (globalThis.window === undefined) return;
   if (globalThis.__gtm_loaded) return;
 
   globalThis.__gtm_loaded = true;

@@ -70,11 +70,7 @@ export default function DestinationPage() {
   }, [slug]);
 
   // Fetch destination data from API (DATABASE as single source of truth)
-  const {
-    data: apiData,
-    isLoading,
-    error,
-  } = useQuery<APIDestinationData>({
+  const { data: apiData, isLoading } = useQuery<APIDestinationData>({
     queryKey: ["/api/public/destinations", slug],
     enabled: !!slug,
   });

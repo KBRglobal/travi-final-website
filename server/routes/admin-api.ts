@@ -74,7 +74,7 @@ export function registerAdminApiRoutes(app: Express): void {
         }));
 
         res.json({
-          logs: transformedLogs.reverse(),
+          logs: transformedLogs.toReversed(),
           total: transformedLogs.length,
         });
       } catch (error) {
@@ -1610,7 +1610,6 @@ export function registerAdminApiRoutes(app: Express): void {
             const value = fieldValues[fieldName] as string;
             const validation = validateCharacterLimits(value, limits);
             if (!validation.valid) {
-              const limitDesc = `${limits.min}-${limits.max}`;
               if (validation.tooShort) {
                 errors.push(
                   `${fieldName} must be at least ${limits.min} characters (current: ${value.length})`

@@ -545,7 +545,6 @@ export const customerJourney = {
    * Get conversion funnel analysis
    */
   async getConversionFunnel(steps: string[]): Promise<ConversionFunnel> {
-    const visitors = new Set(eventStore.events.map(e => e.visitorId));
     const stepStats: Array<{ name: string; visitors: number }> = [];
 
     for (const step of steps) {

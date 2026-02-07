@@ -134,7 +134,6 @@ export function observeHistogram(name: string, value: number, labels: Record<str
  */
 function formatMetrics(): string {
   const lines: string[] = [];
-  const startTime = Date.now() - process.uptime() * 1000;
 
   // Update dynamic metrics
   updateDynamicMetrics();

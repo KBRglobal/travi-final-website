@@ -14,7 +14,7 @@ import { hotels, articles, attractions } from "@shared/schema";
 function sanitizeForLog(input: string): string {
   if (!input) return "";
   // Remove newlines, carriage returns, and null bytes to prevent log injection
-  return input.replace(new RegExp(String.raw`[\r\n\x00]`, "g"), "").substring(0, 200);
+  return input.replace(/[\r\n\x00]/g, "").substring(0, 200);
 }
 
 // SECURITY: Define valid file types - MIME type MUST match expected extension

@@ -124,8 +124,6 @@ export function DestinationsHero({
   const heroCTALink = heroConfig?.heroCTALink ?? null;
 
   // Check if we have any content to display
-  const hasHeroContent = heroTitle || heroSubtitle || heroDescription;
-
   const hasSlides = displayDestinations.length > 0;
   const dest = hasSlides ? displayDestinations[currentIndex] : null;
 

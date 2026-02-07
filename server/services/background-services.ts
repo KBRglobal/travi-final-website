@@ -259,7 +259,7 @@ async function startDataDecisionsService(config: BackgroundServicesConfig): Prom
   }
 
   try {
-    const { initializeDataDecisionSystem, shutdownDataDecisionSystem, autonomousLoop } =
+    const { initializeDataDecisionSystem, shutdownDataDecisionSystem } =
       await import("../data-decisions");
 
     // Initialize the system with autonomous loop enabled
@@ -370,8 +370,7 @@ async function startContentHealthService(config: BackgroundServicesConfig): Prom
   }
 
   try {
-    const { startHealthScanner, stopHealthScanner, isHealthScannerRunning } =
-      await import("../content-health/scheduler");
+    const { startHealthScanner, stopHealthScanner } = await import("../content-health/scheduler");
 
     // Start the health scanner (it has its own internal interval)
     log.info("[BackgroundServices] Content Health Scheduler starting...");

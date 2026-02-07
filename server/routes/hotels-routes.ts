@@ -145,15 +145,6 @@ export function registerHotelsRoutes(app: Express): void {
         });
       }
 
-      const today = new Date();
-      const defaultCheckIn = new Date(today);
-      defaultCheckIn.setDate(today.getDate() + 1);
-      const defaultCheckOut = new Date(today);
-      defaultCheckOut.setDate(today.getDate() + 3);
-
-      const checkInDate = checkIn || defaultCheckIn.toISOString().split("T")[0];
-      const checkOutDate = checkOut || defaultCheckOut.toISOString().split("T")[0];
-
       const citySlug = String(cityId).toLowerCase();
       const cityInfo = xoteloLocationKeys[citySlug];
       if (!cityInfo) {
@@ -452,7 +443,13 @@ export function registerHotelsRoutes(app: Express): void {
         checkInTime: hotelData.checkIn || "14:00",
         checkOutTime: hotelData.checkOut || "12:00",
         seoTitle: `${hotelData.name || hotelData.hotelName} | ${hotelData.stars || 5}-Star Luxury Hotel | TRAVI`,
-        seoDescription: `Book ${hotelData.name || hotelData.hotelName}${hotelData.location?.city || hotelData.cityName ? " in " + (hotelData.location?.city || hotelData.cityName) : ""}. Premium amenities and exceptional service.`,
+        seoDescription:
+          "Book " +
+          (hotelData.name || hotelData.hotelName) +
+          (hotelData.location?.city || hotelData.cityName
+            ? " in " + (hotelData.location?.city || hotelData.cityName)
+            : "") +
+          ". Premium amenities and exceptional service.",
         highlights: [],
       };
 

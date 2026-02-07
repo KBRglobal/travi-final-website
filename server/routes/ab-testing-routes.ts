@@ -77,9 +77,6 @@ export function registerAbTestingRoutes(app: Express): void {
     try {
       const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const { id } = req.params;
-      const authReq = req as unknown as AuthRequest;
-      const userId = authReq.user?.claims?.sub || "";
-      const sessionId = (authReq as any).session?.id || req.ip || "";
       const variant = await ctaAbTesting.ctaAbTestingService.getTest(id);
       res.json(variant);
     } catch (error) {
@@ -91,10 +88,7 @@ export function registerAbTestingRoutes(app: Express): void {
     try {
       const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const { id } = req.params;
-      const { variantId, eventType, metadata } = req.body;
-      const authReq = req as unknown as AuthRequest;
-      const userId = authReq.user?.claims?.sub;
-      const sessionId = (authReq as any).session?.id || req.ip || "";
+      const { variantId } = req.body;
       await ctaAbTesting.ctaAbTestingService.recordConversion(id, variantId);
       res.json({ success: true });
     } catch (error) {

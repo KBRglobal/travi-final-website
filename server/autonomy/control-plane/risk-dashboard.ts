@@ -297,7 +297,7 @@ async function getRecentActivity(limit: number): Promise<
   }
 
   // Sort by timestamp and limit
-  return activity.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, limit);
+  return activity.toSorted((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, limit);
 }
 
 /**

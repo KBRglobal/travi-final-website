@@ -319,7 +319,7 @@ export default function Attractions() {
   const [, navigate] = useLocation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [activeType, setActiveType] = useState("all");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 

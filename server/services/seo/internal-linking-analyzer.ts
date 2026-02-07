@@ -154,7 +154,7 @@ export class InternalLinkingAnalyzer {
         }
       }
 
-      return suggestions.sort((a, b) => b.relevanceScore - a.relevanceScore).slice(0, 5);
+      return suggestions.toSorted((a, b) => b.relevanceScore - a.relevanceScore).slice(0, 5);
     } catch (error) {
       log.error("[InternalLinkingAnalyzer] Find suggestions error:", error);
       return [];
@@ -418,7 +418,7 @@ export class InternalLinkingAnalyzer {
         }
       }
 
-      return weakPages.sort((a, b) => a.pageRankScore - b.pageRankScore).slice(0, 20);
+      return weakPages.toSorted((a, b) => a.pageRankScore - b.pageRankScore).slice(0, 20);
     } catch (error) {
       log.error("[InternalLinkingAnalyzer] Find weak pages error:", error);
       return [];
@@ -505,7 +505,7 @@ export class InternalLinkingAnalyzer {
       }
 
       return suggestions
-        .sort((a, b) => b.relevanceScore - a.relevanceScore)
+        .toSorted((a, b) => b.relevanceScore - a.relevanceScore)
         .slice(0, maxSuggestions);
     } catch (error) {
       log.error("[InternalLinkingAnalyzer] Suggest links error:", error);

@@ -244,8 +244,6 @@ class TokenBucketRateLimiter {
    */
   private refillAndConsume(bucket: TokenBucket): boolean {
     const now = Date.now();
-    const config = this.getConfig(bucket.maxTokens === 20 ? "anthropic" : "default");
-
     // Calculate current tokens with refill
     bucket.tokens = this.calculateCurrentTokens(bucket);
     bucket.lastRefill = now;

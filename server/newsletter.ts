@@ -825,7 +825,7 @@ export const automatedSequencesObj = {
       return true;
     });
 
-    for (const sequence of matchingSequences) {
+    for (const _sequence of matchingSequences) {
       // In production, queue sequence emails with delays
     }
   },

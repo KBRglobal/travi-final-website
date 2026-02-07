@@ -207,18 +207,10 @@ export function enforcementLoggingMiddleware(
 ) {
   res.on("finish", () => {
     if (req.autonomy) {
-      const logData = {
-        method: req.method,
-        path: req.path,
-        decision: req.autonomy.decision,
-        warnings: req.autonomy.warnings.length,
-        statusCode: res.statusCode,
-      };
-
       if (req.autonomy.decision === "BLOCK") {
         /* Decision logged at autonomy level - no additional action needed */
       } else if (req.autonomy.warnings.length > 0) {
-        /* Warnings captured in logData above */
+        /* Warnings captured at autonomy level */
       }
     }
   });

@@ -9,7 +9,7 @@ export * from "./types";
 export * from "./engine";
 
 export function initLearningEngine(): void {
-  const enabled = process.env.ENABLE_AUTONOMY_LEARNING === "true";
+  /* Placeholder: learning engine initialization is a no-op until configuration is implemented */
 }
 
 export function shutdownLearningEngine(): void {

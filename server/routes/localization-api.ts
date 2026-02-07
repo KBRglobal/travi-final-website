@@ -278,7 +278,6 @@ export function registerLocalizationApiRoutes(app: Express): void {
         }> => {
           throw new Error("Automatic translation is permanently disabled");
         };
-        const generateContentHash = () => "disabled";
 
         const translatedContent = await translateContent(
           {
@@ -346,7 +345,6 @@ export function registerLocalizationApiRoutes(app: Express): void {
         const translateToAllLanguages = async (..._args: any[]): Promise<Map<string, any>> => {
           throw new Error("Automatic translation is permanently disabled");
         };
-        const generateContentHash = () => "disabled";
 
         const translations = await translateToAllLanguages(
           {

@@ -34,7 +34,7 @@ export function DestinationHero({
 
   const prefersReducedMotion = useMemo(
     () =>
-      typeof globalThis.window !== "undefined" &&
+      globalThis.window !== undefined &&
       globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
     []
   );

@@ -167,7 +167,6 @@ export function registerContentCrudRoutes(app: Express): void {
     try {
       const contents = await storage.getContentsWithRelations({});
       const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
       const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 

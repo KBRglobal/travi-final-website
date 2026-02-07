@@ -26,7 +26,7 @@ export function sanitizeText(input: string, maxLength: number = 10000): string {
   if (!input || typeof input !== "string") return "";
 
   return input
-    .replace(new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, "g"), "")
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
     .slice(0, maxLength)
     .trim();
 }

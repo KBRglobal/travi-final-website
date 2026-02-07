@@ -271,7 +271,6 @@ function suggestContentForQuery(
   existingMatches: Array<{ type: string; relevanceScore: number }>
 ): Array<{ type: string; title: string; reason: string }> {
   const suggestions: Array<{ type: string; title: string; reason: string }> = [];
-  const queryLower = query.toLowerCase();
 
   // Check for comparison patterns
   if (/vs|versus|compare|between/i.test(query)) {
@@ -289,9 +288,10 @@ function suggestContentForQuery(
   if (/best\s+/i.test(query)) {
     const match = /best\s+(.+?)(?:\s+in\s+|\s+for\s+)?(.+)?/i.exec(query);
     if (match) {
+      const locationSuffix = match[2] ? " in " + match[2].trim() : "";
       suggestions.push({
         type: "article",
-        title: `Top 10 Best ${match[1].trim()}${match[2] ? " in " + match[2].trim() : ""}`,
+        title: `Top 10 Best ${match[1].trim()}${locationSuffix}`,
         reason: 'Query seeks "best" options - create ranked list content',
       });
     }

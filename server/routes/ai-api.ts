@@ -46,8 +46,8 @@ function cleanJsonFromMarkdown(content: string): string {
   }
   cleaned = cleaned.trim() || "{}";
   cleaned = cleaned.replace(/"([^"\\]|\\.)*"/g, match => {
-    return match.replace(new RegExp(String.raw`[\x00-\x1F\x7F]`, "g"), char => {
-      const code = char.charCodeAt(0);
+    return match.replace(/[\x00-\x1F\x7F]/g, char => {
+      const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
       if (code === 0x0a) return String.raw`\n`;
       if (code === 0x0d) return String.raw`\r`;
@@ -1282,7 +1282,7 @@ Output format:
           return res.status(503).json({ error: "No AI providers available" });
         }
 
-        const { fieldType, currentValue, title, contentType, primaryKeyword, maxLength } = req.body;
+        const { fieldType, title, contentType, primaryKeyword, maxLength } = req.body;
 
         if (!fieldType || !title || !contentType) {
           return res.status(400).json({ error: "fieldType, title, and contentType are required" });
@@ -1741,10 +1741,12 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
             userPrompt = `Translate the following text to ${lang}. Maintain the tone and style:\n\n${content}`;
             break;
           }
-          case "seo_optimize":
+          case "seo_optimize": {
             systemPrompt = "You are an SEO expert and content writer for a Dubai travel website.";
-            userPrompt = `Optimize the following text for SEO. Improve keyword usage, add relevant terms naturally, and make it more search-engine friendly while keeping it readable and engaging:\n\n${content}${context ? "\n\nContext/Keywords to target: " + context : ""}`;
+            const contextSuffix = context ? "\n\nContext/Keywords to target: " + context : "";
+            userPrompt = `Optimize the following text for SEO. Improve keyword usage, add relevant terms naturally, and make it more search-engine friendly while keeping it readable and engaging:\n\n${content}${contextSuffix}`;
             break;
+          }
           case "improve_grammar":
             userPrompt = `Fix any grammar, spelling, or punctuation errors in the following text. Also improve sentence flow where needed:\n\n${content}`;
             break;

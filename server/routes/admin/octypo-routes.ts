@@ -492,7 +492,7 @@ router.get("/destinations", async (_req: Request, res: Response) => {
       const health = total > 0 ? Math.round((withContent / total) * 100) : 0;
       const coverage = total > 0 ? Math.round((withContent / total) * 100) : 0;
 
-      let status = "Initializing";
+      let status: string;
       if (health >= 90) status = "Running";
       else if (health >= 50) status = "Growing";
       else if (health >= 20) status = "Initializing";
@@ -2478,7 +2478,7 @@ router.get("/real-autopilot/schedules", async (_req: Request, res: Response) => 
 router.patch("/real-autopilot/schedules/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { enabled, cronExpression, config } = req.body;
+    const { enabled, cronExpression } = req.body;
 
     await autopilotAPI.updateSchedule(id, { enabled, cronExpression });
 

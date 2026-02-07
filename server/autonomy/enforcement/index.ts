@@ -75,8 +75,7 @@ import { shutdownBudgetConsumer } from "./budget-consumer";
  * Called on server startup
  */
 export function initEnforcement(): void {
-  const enabled = process.env.ENABLE_AUTONOMY_POLICY === "true";
-  const degradedMode = process.env.ENABLE_AUTONOMY_DEGRADED_MODE === "true";
+  /* Placeholder: enforcement initialization is a no-op until configuration is implemented */
 }
 
 /**

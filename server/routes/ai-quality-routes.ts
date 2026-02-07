@@ -234,7 +234,7 @@ router.post("/paraphrase", async (req: Request, res: Response) => {
       });
     }
 
-    const { content, style, tone, seoOptimized, preserveKeywords } = parseResult.data;
+    const { content, style, tone, seoOptimized } = parseResult.data;
 
     log.info("[AI-Quality] Paraphrasing content", {
       contentLength: content.length,
@@ -336,14 +336,9 @@ router.post("/feedback/submit", async (req: Request, res: Response) => {
       });
     }
 
-    const { contentId, contentType, rating, issues, comment, reviewerId } = parseResult.data;
+    const { contentId, contentType, rating, issues } = parseResult.data;
 
     const ratingToNumeric: Record<string, number> = { good: 5, needs_work: 3, bad: 1 };
-    const ratingToDecision: Record<string, "accept" | "reject" | "needs_revision"> = {
-      good: "accept",
-      needs_work: "needs_revision",
-      bad: "reject",
-    };
 
     log.info("[AI-Quality] Submitting feedback", {
       contentId,
@@ -390,7 +385,7 @@ router.post("/feedback/quick-review", async (req: Request, res: Response) => {
       });
     }
 
-    const { contentId, contentType, approved, reviewerId } = parseResult.data;
+    const { contentId, contentType, approved } = parseResult.data;
 
     log.info("[AI-Quality] Quick review", {
       contentId,
@@ -474,7 +469,7 @@ router.post("/experiments/create", async (req: Request, res: Response) => {
       });
     }
 
-    const { name, description, variants, targetContentType, targetSampleSize } = parseResult.data;
+    const { name, variants, targetContentType } = parseResult.data;
 
     log.info("[AI-Quality] Creating experiment", {
       name,

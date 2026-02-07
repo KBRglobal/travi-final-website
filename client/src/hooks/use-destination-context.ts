@@ -38,10 +38,13 @@ export const DESTINATION_SPECIFIC_ROUTES: Record<string, string[]> = {
 function getRouteDestination(path: string): string | null {
   const normalizedPath = path.toLowerCase();
   for (const [destination, routes] of Object.entries(DESTINATION_SPECIFIC_ROUTES)) {
-    if (routes.some(route =>
-      normalizedPath === route.toLowerCase() ||
-      normalizedPath.startsWith(route.toLowerCase() + "/")
-    )) {
+    if (
+      routes.some(
+        route =>
+          normalizedPath === route.toLowerCase() ||
+          normalizedPath.startsWith(route.toLowerCase() + "/")
+      )
+    ) {
       return destination;
     }
   }
@@ -76,7 +79,7 @@ export function useDestinationContext(): DestinationContext {
     const path = location.toLowerCase();
 
     // Check if we're on a destination page (support both /destination/slug and /destinations/slug)
-    const destinationMatch = path.match(/\/destinations?\/([^\/]+)/);
+    const destinationMatch = path.match(/\/destinations?\/([^/]+)/);
     const destinationSlug = destinationMatch ? destinationMatch[1] : null;
 
     // Check if this route belongs to a specific destination

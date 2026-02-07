@@ -852,7 +852,11 @@ export async function logAuditEvent(entry: Omit<AuditLogEntry, "timestamp">) {
       actionType: mapActionToDbEnum(entry.action),
       entityType: entry.resourceType as any,
       entityId: entry.resourceId,
-      description: `${entry.action} on ${entry.resourceType}${entry.resourceId ? " (" + entry.resourceId + ")" : ""}`,
+      description:
+        entry.action +
+        " on " +
+        entry.resourceType +
+        (entry.resourceId ? " (" + entry.resourceId + ")" : ""),
       ipAddress: entry.ip,
       userAgent: entry.userAgent,
       afterState: entry.details as Record<string, unknown>,
@@ -1025,7 +1029,7 @@ function sanitizeString(value: string): string {
   let sanitized = value.replace(/\0/g, "");
 
   // Remove other control characters (except newline and tab)
-  sanitized = sanitized.replace(new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, "g"), "");
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
 
   return sanitized.trim();
 }
@@ -1055,9 +1059,7 @@ function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
         sanitized[key] = sanitizeString(value);
       } else {
         // For longer content (like body/content), just remove dangerous control chars
-        sanitized[key] = value
-          .replace(/\0/g, "")
-          .replace(new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, "g"), "");
+        sanitized[key] = value.replace(/\0/g, "").replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
       }
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map(item => {

@@ -349,7 +349,7 @@ export function identifyLowCostWins(limit: number = 20): LowCostWin[] {
     });
   }
 
-  const sorted = lowCostWins.sort((a, b) => {
+  const sorted = lowCostWins.toSorted((a, b) => {
     const aRoi = a.potentialGain / a.estimatedCost;
     const bRoi = b.potentialGain / b.estimatedCost;
     return bRoi - aRoi;

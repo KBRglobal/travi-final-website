@@ -28,8 +28,8 @@ function cleanJsonFromMarkdown(content: string): string {
   cleaned = cleaned.trim() || "{}";
 
   cleaned = cleaned.replace(/"([^"\\]|\\.)*"/g, match => {
-    return match.replace(new RegExp(String.raw`[\x00-\x1F\x7F]`, "g"), char => {
-      const code = char.charCodeAt(0);
+    return match.replace(/[\x00-\x1F\x7F]/g, char => {
+      const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
       if (code === 0x0a) return String.raw`\n`;
       if (code === 0x0d) return String.raw`\r`;
@@ -955,7 +955,7 @@ RULES:
       // Sort by priority (high first) and usage count (low first)
       const priorityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 };
       const sortedTopics = topics
-        .sort((a, b) => {
+        .toSorted((a, b) => {
           const priorityDiff =
             (priorityOrder[a.priority || "medium"] || 1) -
             (priorityOrder[b.priority || "medium"] || 1);

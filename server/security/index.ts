@@ -29,7 +29,7 @@ function detectSqlInjection(input: string): boolean {
     /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|DECLARE)\b)/gi,
     /(\bOR\b\s+\d+\s*=\s*\d+)/gi,
     /(\bAND\b\s+\d+\s*=\s*\d+)/gi,
-    /(--|\#|\/\*|\*\/)/g,
+    /(--|#|\/\*|\*\/)/g,
     /(\bxp_\w+\b)/gi,
     /(\bsp_\w+\b)/gi,
     /('\s*OR\s*'?\d+'?\s*=\s*'?\d+'?)/gi,

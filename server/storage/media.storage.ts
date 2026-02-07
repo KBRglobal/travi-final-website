@@ -56,16 +56,14 @@ export class MediaStorage {
   ): Promise<{ isUsed: boolean; usedIn: { id: string; title: string; type: string }[] }> {
     // Use database LIKE/ILIKE to search in JSON blocks - avoids full table scan in JS
     // Combine heroImage check and blocks search in single queries
+    const likePattern = "%" + mediaUrl + "%";
     const results = await db
       .select({ id: contents.id, title: contents.title, type: contents.type })
       .from(contents)
       .where(
         and(
           sql`${contents.deletedAt} IS NULL`,
-          or(
-            eq(contents.heroImage, mediaUrl),
-            sql`${contents.blocks}::text LIKE ${"%" + mediaUrl + "%"}`
-          )
+          or(eq(contents.heroImage, mediaUrl), sql`${contents.blocks}::text LIKE ${likePattern}`)
         )
       )
       .limit(100); // Limit results to prevent huge responses

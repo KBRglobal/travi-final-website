@@ -140,10 +140,11 @@ export class ArticleIdeation {
 
     // Build entity context
     const entityContext = entities
-      .map(
-        e =>
-          `- ${e.name} (${e.type})${e.location ? " in " + e.location : ""}${e.description ? ": " + e.description : ""}`
-      )
+      .map(e => {
+        const locationPart = e.location ? " in " + e.location : "";
+        const descPart = e.description ? ": " + e.description : "";
+        return `- ${e.name} (${e.type})${locationPart}${descPart}`;
+      })
       .join("\n");
 
     // Build article type constraints

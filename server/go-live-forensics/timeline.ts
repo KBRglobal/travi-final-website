@@ -2,14 +2,19 @@
  * Go-Live Timeline & Forensics - Core Timeline Logic
  */
 
-import { createLogger } from '../lib/logger';
-import { FORENSICS_CONFIG, isGoLiveForensicsEnabled } from './config';
+import { createLogger } from "../lib/logger";
+import { FORENSICS_CONFIG, isGoLiveForensicsEnabled } from "./config";
 import type {
-  ForensicsEvent, ForensicsEventType, EventSeverity,
-  TimelineQuery, TimelineResult, ForensicsSummary, ForensicsStatus,
-} from './types';
+  ForensicsEvent,
+  ForensicsEventType,
+  EventSeverity,
+  TimelineQuery,
+  TimelineResult,
+  ForensicsSummary,
+  ForensicsStatus,
+} from "./types";
 
-const logger = createLogger('go-live-forensics');
+const logger = createLogger("go-live-forensics");
 
 // Immutable event storage
 const eventLog: ForensicsEvent[] = [];
@@ -19,7 +24,7 @@ const eventIndex = new Map<string, ForensicsEvent>();
 // Event Signature
 // ============================================================================
 
-function generateSignature(event: Omit<ForensicsEvent, 'immutable' | 'signature'>): string {
+function generateSignature(event: Omit<ForensicsEvent, "immutable" | "signature">): string {
   const data = JSON.stringify({
     id: event.id,
     timestamp: event.timestamp.toISOString(),
@@ -30,10 +35,10 @@ function generateSignature(event: Omit<ForensicsEvent, 'immutable' | 'signature'
   });
   let hash = 0;
   for (let i = 0; i < data.length; i++) {
-    hash = ((hash << 5) - hash) + data.charCodeAt(i);
+    hash = (hash << 5) - hash + data.codePointAt(i)!;
     hash = hash & hash;
   }
-  return Math.abs(hash).toString(16).padStart(8, '0');
+  return Math.abs(hash).toString(16).padStart(8, "0");
 }
 
 // ============================================================================
@@ -50,7 +55,7 @@ export function recordEvent(
   options: { actor?: string; correlationId?: string } = {}
 ): ForensicsEvent {
   if (!isGoLiveForensicsEnabled()) {
-    throw new Error('Go-live forensics is not enabled');
+    throw new Error("Go-live forensics is not enabled");
   }
 
   const baseEvent = {
@@ -81,7 +86,7 @@ export function recordEvent(
   eventLog.push(event);
   eventIndex.set(event.id, event);
 
-  logger.debug({ eventId: event.id, type, severity }, 'Forensics event recorded');
+  logger.debug({ eventId: event.id, type, severity }, "Forensics event recorded");
   return event;
 }
 
@@ -93,8 +98,8 @@ export function recordDecision(
   actor?: string
 ): ForensicsEvent {
   return recordEvent(
-    'decision',
-    'info',
+    "decision",
+    "info",
     source,
     `Decision: ${decision}`,
     `System decision: ${decision}`,
@@ -108,15 +113,9 @@ export function recordApproval(
   reason: string,
   data: Record<string, unknown>
 ): ForensicsEvent {
-  return recordEvent(
-    'approval',
-    'info',
-    'cutover',
-    `Approval by ${approvedBy}`,
-    reason,
-    data,
-    { actor: approvedBy }
-  );
+  return recordEvent("approval", "info", "cutover", `Approval by ${approvedBy}`, reason, data, {
+    actor: approvedBy,
+  });
 }
 
 export function recordOverride(
@@ -126,9 +125,9 @@ export function recordOverride(
   reason: string
 ): ForensicsEvent {
   return recordEvent(
-    'override',
-    'warning',
-    'cutover',
+    "override",
+    "warning",
+    "cutover",
     `Override by ${overriddenBy}`,
     reason,
     { previousDecision, newDecision },
@@ -143,9 +142,9 @@ export function recordIncident(
   description: string
 ): ForensicsEvent {
   return recordEvent(
-    'incident',
+    "incident",
     severity,
-    'incidents',
+    "incidents",
     title,
     description,
     { incidentId },
@@ -159,9 +158,9 @@ export function recordDeployment(
   deployedBy?: string
 ): ForensicsEvent {
   return recordEvent(
-    'deployment',
-    'info',
-    'deploy',
+    "deployment",
+    "info",
+    "deploy",
     `Deployment: ${version} to ${environment}`,
     `Version ${version} deployed to ${environment}`,
     { version, environment },
@@ -176,9 +175,9 @@ export function recordRollback(
   rolledBackBy?: string
 ): ForensicsEvent {
   return recordEvent(
-    'rollback',
-    'error',
-    'deploy',
+    "rollback",
+    "error",
+    "deploy",
     `Rollback: ${fromVersion} → ${toVersion}`,
     reason,
     { fromVersion, toVersion },
@@ -191,7 +190,10 @@ export function recordRollback(
 // ============================================================================
 
 export function queryTimeline(query: TimelineQuery = {}): TimelineResult {
-  const limit = Math.min(query.limit || FORENSICS_CONFIG.queryDefaultLimit, FORENSICS_CONFIG.queryMaxLimit);
+  const limit = Math.min(
+    query.limit || FORENSICS_CONFIG.queryDefaultLimit,
+    FORENSICS_CONFIG.queryMaxLimit
+  );
   const offset = query.offset || 0;
 
   let filtered = [...eventLog];
@@ -242,7 +244,9 @@ export function getEventsByCorrelation(correlationId: string): ForensicsEvent[] 
 }
 
 export function getRecentEvents(limit = 50): ForensicsEvent[] {
-  return [...eventLog].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, limit);
+  return [...eventLog]
+    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+    .slice(0, limit);
 }
 
 // ============================================================================
@@ -324,7 +328,7 @@ export function pruneOldEvents(): number {
 
   const pruned = before - eventLog.length;
   if (pruned > 0) {
-    logger.info({ pruned }, 'Old events pruned');
+    logger.info({ pruned }, "Old events pruned");
   }
   return pruned;
 }

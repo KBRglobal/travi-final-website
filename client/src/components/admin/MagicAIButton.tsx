@@ -72,9 +72,17 @@ export function MagicAIButton({
 
         if (result.completed.length > 0) {
           onGenerated?.(result.completed);
+          const pluralSuffix = result.completed.length > 1 ? "s" : "";
+          const failedSuffix =
+            result.failed.length > 0 ? ", " + result.failed.length + " failed" : "";
           toast({
             title: "Generation Complete",
-            description: `Successfully generated ${result.completed.length} translation${result.completed.length > 1 ? "s" : ""}${result.failed.length > 0 ? ", " + result.failed.length + " failed" : ""}`,
+            description:
+              "Successfully generated " +
+              result.completed.length +
+              " translation" +
+              pluralSuffix +
+              failedSuffix,
           });
         } else if (result.failed.length > 0) {
           toast({

@@ -135,7 +135,7 @@ export function getImprovementCandidates(limit: number = 50): ContentValueResult
   }
 
   return candidates
-    .sort((a, b) => {
+    .toSorted((a, b) => {
       if (a.ratio !== b.ratio) {
         return a.ratio - b.ratio;
       }
@@ -158,7 +158,7 @@ export function getHighValueContent(limit: number = 50): ContentValueResult[] {
     }
   }
 
-  return highValue.sort((a, b) => b.value - a.value).slice(0, limit);
+  return highValue.toSorted((a, b) => b.value - a.value).slice(0, limit);
 }
 
 export function getProtectedContent(): ContentValueResult[] {

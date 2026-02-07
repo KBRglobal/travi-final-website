@@ -114,7 +114,7 @@ function escapeXml(str: string): string {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
-    .replaceAll("\'", "&apos;");
+    .replaceAll("'", "&apos;");
 }
 
 // Generate sitemap XML

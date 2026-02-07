@@ -68,7 +68,7 @@ export async function logCrawlerVisit(input: CrawlerLogInput): Promise<boolean> 
       input.requestPath
     );
   if (pathMatch) {
-    const [, type, slug] = pathMatch;
+    const [, , slug] = pathMatch;
     const content = await db.query.contents.findFirst({
       where: eq(contents.slug, slug),
     });

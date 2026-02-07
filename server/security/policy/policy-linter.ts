@@ -182,7 +182,7 @@ function detectRedundant(policies: PolicyRule[]): LintIssue[] {
       actions: [...policy.actions].sort(),
       resources: [...policy.resources].sort(),
       effect: policy.effect,
-      roles: policy.roles?.sort(),
+      roles: policy.roles?.toSorted(),
     });
 
     if (seen.has(fingerprint)) {

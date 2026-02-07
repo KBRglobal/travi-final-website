@@ -381,7 +381,6 @@ function buildHighlights(
 
   const total = metrics.tp + metrics.tn + metrics.fp + metrics.fn;
   const blocked = metrics.tn + metrics.fn;
-  const allowed = metrics.tp + metrics.fp;
 
   if (audience === "executive") {
     highlights.push(

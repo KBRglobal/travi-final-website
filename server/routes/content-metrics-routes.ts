@@ -135,15 +135,13 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
     getAllPerformance,
   } = await import("../content/metrics/performance-model");
 
-  const { getRewriteDecision, shouldRewrite } = await import("../content/metrics/rewrite-guard");
+  const { getRewriteDecision } = await import("../content/metrics/rewrite-guard");
 
   const {
     recordImpression: recordContentPerfImpression,
     recordClick: recordContentPerfClick,
     recordScrollDepth: recordContentPerfScrollDepth,
-    getPerformanceScore: getContentPerfScore,
     getPerformance: getContentPerfData,
-    getAllPerformance: getAllContentPerfData,
     shouldAllowRegeneration: shouldAllowContentRegen,
   } = await import("../content/metrics/content-performance");
 
@@ -199,7 +197,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
 
   app.post("/api/content/performance", requireAuth, async (req, res) => {
     try {
-      const { entityId, entityType, eventType, scrollDepth, forceOverride } = req.body;
+      const { entityId, entityType, eventType, scrollDepth } = req.body;
 
       if (!entityId || typeof entityId !== "string") {
         return res.status(400).json({ error: "entityId is required" });

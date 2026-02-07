@@ -1043,20 +1043,20 @@ export function registerAdminTiqetsRoutes(app: Express): void {
               // Note: octypoState uses number IDs, but tiqets uses string UUIDs
               // Using hash for compatibility
               const numericId = Math.abs(
-                attr.id.split("").reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0)
+                attr.id.split("").reduce((a, b) => (a << 5) - a + b.codePointAt(0)!, 0)
               );
               octypoState.removeFromFailedQueue(numericId);
             } else {
               errors++;
               const numericId = Math.abs(
-                attr.id.split("").reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0)
+                attr.id.split("").reduce((a, b) => (a << 5) - a + b.codePointAt(0)!, 0)
               );
               octypoState.addToFailedQueue(numericId, attr.title || "Unknown", "Generation failed");
             }
           } catch (err: unknown) {
             errors++;
             const numericId = Math.abs(
-              attr.id.split("").reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0)
+              attr.id.split("").reduce((a, b) => (a << 5) - a + b.codePointAt(0)!, 0)
             );
             const errorMessage = err instanceof Error ? err.message : "Unknown error";
             octypoState.addToFailedQueue(numericId, attr.title || "Unknown", errorMessage);
@@ -1076,25 +1076,6 @@ export function registerAdminTiqetsRoutes(app: Express): void {
           const chunkStartTime = Date.now();
           await Promise.all(chunk.map(processAttraction));
           chunkIndex++;
-
-          // Detailed batch completion logging
-          const chunkDuration = ((Date.now() - chunkStartTime) / 1000).toFixed(1);
-          const totalDuration = ((Date.now() - batchStartTime) / 1000).toFixed(1);
-          const articlesPerMin =
-            processed > 0 ? (processed / ((Date.now() - batchStartTime) / 60000)).toFixed(1) : "0";
-
-          // Query remaining count for ETA
-          const { rows: remainingRows } = await pool.query(`
-            SELECT COUNT(*) as remaining FROM tiqets_attractions 
-            WHERE quality_score IS NULL OR quality_score < 90
-          `);
-          const remaining = Number.parseInt(remainingRows[0]?.remaining) || 0;
-          const etaHours =
-            Number.parseFloat(articlesPerMin) > 0
-              ? (remaining / (Number.parseFloat(articlesPerMin) * 60)).toFixed(1)
-              : "?";
-
-          const stateStats = octypoState.getStats();
         }
 
         // Signal batch completion to background service
@@ -1218,10 +1199,6 @@ export function registerAdminTiqetsRoutes(app: Express): void {
 
     try {
       const { startSmartQueue, isQueueRunning } = await import("../../services/content-job-queue");
-      const attractionGen = await import("../../services/attraction-content-generator");
-      const generateFullAttractionContentEnhanced =
-        (attractionGen as any).generateFullAttractionContentEnhanced ||
-        attractionGen.generateAttractionContent;
       const { getMultiModelProvider } = await import("../../ai/multi-model-provider");
 
       if (isQueueRunning()) {
@@ -1319,8 +1296,7 @@ Return as valid JSON.`,
   // GET /api/admin/tiqets/health - Get comprehensive health status of content generation system
   app.get("/api/admin/tiqets/health", requireAuth, async (req, res) => {
     try {
-      const { getHealthMetrics, forceReleaseAllLocks } =
-        await import("../../services/tiqets-background-generator");
+      const { getHealthMetrics } = await import("../../services/tiqets-background-generator");
       const { getQueueStats, getFailureStats } = await import("../../services/content-job-queue");
 
       const [health, queueStats, failureStats] = await Promise.all([

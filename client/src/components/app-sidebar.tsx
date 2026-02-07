@@ -230,11 +230,10 @@ export function AppSidebar({ user }: Readonly<AppSidebarProps>) {
     content: true,
   });
 
-  const { data: permissionsResponse, isLoading: permissionsLoading } =
-    useQuery<PermissionsResponse>({
-      queryKey: ["/api/user/permissions"],
-      enabled: !!user,
-    });
+  const { data: permissionsResponse } = useQuery<PermissionsResponse>({
+    queryKey: ["/api/user/permissions"],
+    enabled: !!user,
+  });
 
   const hasPermission = (permission: PermissionKey): boolean => {
     if (!permissionsResponse) return false;

@@ -76,8 +76,6 @@ export function generateMetaTags(options: MetaTagsOptions): string {
 
   const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
   const ogType = type === "place" ? "place" : type;
-  const dir = RTL_LOCALES.includes(locale) ? "rtl" : "ltr";
-
   const metaTags: string[] = [
     `<meta charset="utf-8">`,
     `<meta name="viewport" content="width=device-width, initial-scale=1">`,

@@ -297,19 +297,23 @@ export async function renderCategoryPage(
     .join("\n");
 
   // Generate pagination HTML for attractions
+  const prevPagePath = baseUrlPath + (currentPage === 2 ? "" : "?page=" + (currentPage - 1));
+  const prevPageUrl = getCanonicalUrl(prevPagePath, locale);
+  const nextPagePath = baseUrlPath + "?page=" + (currentPage + 1);
+  const nextPageUrl = getCanonicalUrl(nextPagePath, locale);
   const paginationHtml =
     contentType === "attraction" && totalPages > 1
       ? `
           <nav aria-label="Pagination">
             ${
               currentPage > 1
-                ? `<a href="${getCanonicalUrl(`${baseUrlPath}${currentPage === 2 ? "" : `?page=${currentPage - 1}`}`, locale)}" rel="prev">Previous</a>`
+                ? `<a href="${prevPageUrl}" rel="prev">Previous</a>`
                 : `<span>Previous</span>`
             }
             <span>Page ${currentPage} of ${totalPages}</span>
             ${
               currentPage < totalPages
-                ? `<a href="${getCanonicalUrl(`${baseUrlPath}?page=${currentPage + 1}`, locale)}" rel="next">Next</a>`
+                ? `<a href="${nextPageUrl}" rel="next">Next</a>`
                 : `<span>Next</span>`
             }
           </nav>

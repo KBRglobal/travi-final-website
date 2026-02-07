@@ -88,7 +88,7 @@ router.post("/settings/test-key", async (req, res) => {
     }
 
     // Quick test based on provider
-    let testResult = { success: false, message: "" };
+    let testResult: { success: boolean; message: string };
 
     switch (provider) {
       case "anthropic":

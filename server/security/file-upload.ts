@@ -114,7 +114,7 @@ function detectMaliciousContent(buffer: Buffer): boolean {
   }
 
   // Check for common shell commands
-  if (/(\$\(|\`|\bexec\b|\beval\b|\bsystem\b)/i.test(content)) {
+  if (/(\$\(|`|\bexec\b|\beval\b|\bsystem\b)/i.test(content)) {
     return true;
   }
 

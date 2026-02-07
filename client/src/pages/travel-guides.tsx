@@ -347,12 +347,6 @@ export default function TravelGuidesPage() {
     }
   }, []);
 
-  const handleLocaleChange = (locale: string) => {
-    setSelectedLocale(locale);
-    const newUrl = `${location.split("?")[0]}?locale=${locale}`;
-    globalThis.history.replaceState({}, "", newUrl);
-  };
-
   // Filter guides by search query
   const filteredGuides =
     data?.guides.filter(

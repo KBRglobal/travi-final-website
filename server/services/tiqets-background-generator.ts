@@ -325,7 +325,6 @@ async function runBackgroundTask(): Promise<void> {
     // Get current status counts
     const counts = await getStatusCounts();
     const pending = counts.pending || 0;
-    const completed = counts.completed || 0;
     const ready = counts.ready || 0;
     const failed = counts.failed || 0;
     const inProgress = (counts.in_progress || 0) + (counts.generating || 0);

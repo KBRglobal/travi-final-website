@@ -93,7 +93,7 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
     }
 
     // Numbered heading: "1. Title" or "1: Title"
-    if (/^\d+[\.:]\s*[A-Z]/.test(firstLine) && firstLine.length < 60) {
+    if (/^\d+[.:]\s*[A-Z]/.test(firstLine) && firstLine.length < 60) {
       return true;
     }
 
@@ -561,8 +561,6 @@ export async function processBatchDocUpload(
     const result = await processDocUpload(file.buffer, contentType);
     results.push({ ...result, filename: file.filename });
   }
-
-  const successful = results.filter(r => r.success).length;
 
   return results;
 }

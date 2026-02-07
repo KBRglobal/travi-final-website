@@ -204,8 +204,6 @@ export class ExplosionOrchestrator {
       .where(eq(explodedArticles.id, articleId));
 
     // Get article type metadata
-    const articleMeta = ARTICLE_TYPE_METADATA[article.articleType as ExplodedArticleType];
-
     // Build attraction-like data for the orchestrator
     const attractionData = {
       id: 0,

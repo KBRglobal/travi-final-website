@@ -46,7 +46,7 @@ function findRelevantDubaiKeywords(topic: string): {
   let categoryHint = "";
   const topicLower = topic.toLowerCase();
 
-  for (const [key, category] of Object.entries(DUBAI_KEYWORDS)) {
+  for (const [, category] of Object.entries(DUBAI_KEYWORDS)) {
     if (
       category.topics.some(
         t =>
@@ -544,8 +544,6 @@ export async function improveContent(
     ...content.seoValidation.errors.map(e => e.message),
     ...content.seoValidation.warnings.map(w => w.message),
   ].join("\n- ");
-
-  const currentHtml = content.content.map(s => `<h2>${s.heading}</h2>\n${s.content}`).join("\n");
 
   const messages: AIMessage[] = [
     {

@@ -41,7 +41,7 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
   const { toast } = useToast();
 
   const prefersReducedMotion = useMemo(() => {
-    if (typeof globalThis.window === "undefined") return false;
+    if (globalThis.window === undefined) return false;
     return globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 

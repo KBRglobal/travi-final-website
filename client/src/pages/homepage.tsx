@@ -43,7 +43,7 @@ export default function Homepage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [location] = useLocation();
   const { t } = useTranslation();
-  const { locale, isRTL, localePath } = useLocale();
+  const { localePath } = useLocale();
 
   const { data: config, isLoading } = useQuery<HomepageConfig>({
     queryKey: ["/api/public/homepage-config"],

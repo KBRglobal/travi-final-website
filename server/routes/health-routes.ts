@@ -143,10 +143,11 @@ export function registerHealthRoutes(app: Express): void {
     ]);
 
     if (cacheCheck.success && cacheCheck.result) {
+      const cacheErrorDetail = cacheCheck.result.error ? ": " + cacheCheck.result.error : "";
       health.checks.cache = {
         status: cacheCheck.result.status,
         latency: cacheCheck.result.latency,
-        details: `${cacheCheck.result.type}${cacheCheck.result.error ? ": " + cacheCheck.result.error : ""}`,
+        details: `${cacheCheck.result.type}${cacheErrorDetail}`,
       };
     } else {
       health.checks.cache = {
@@ -157,10 +158,13 @@ export function registerHealthRoutes(app: Express): void {
 
     // Storage timeout/failure should NOT make the whole health check unhealthy
     if (storageCheck.success && storageCheck.result) {
+      const storageErrorDetail = storageCheck.result.error
+        ? " (" + storageCheck.result.error + ")"
+        : "";
       health.checks.storage = {
         status: storageCheck.result.status,
         latency: storageCheck.result.latency,
-        details: `${storageCheck.result.primary || "fallback"}: ${storageCheck.result.fallback}${storageCheck.result.error ? " (" + storageCheck.result.error + ")" : ""}`,
+        details: `${storageCheck.result.primary || "fallback"}: ${storageCheck.result.fallback}${storageErrorDetail}`,
       };
     } else {
       health.checks.storage = {

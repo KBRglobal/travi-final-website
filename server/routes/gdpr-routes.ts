@@ -76,7 +76,7 @@ export function registerGdprRoutes(app: Express): void {
     async (req, res) => {
       const { userId } = req.params;
       const currentUser = req.user as { id: string };
-      const { reason, anonymizeContent } = req.body || {};
+      const { anonymizeContent } = req.body || {};
 
       try {
         const user = await storage.getUser(userId);
@@ -123,7 +123,6 @@ export function registerGdprRoutes(app: Express): void {
 
   // Record consent preferences (GDPR Article 7)
   app.post("/api/gdpr/consent", requireAuth, async (req, res) => {
-    const currentUser = req.user as { id: string };
     const { analytics, marketing, necessary } = req.body;
 
     if (typeof analytics !== "boolean" || typeof marketing !== "boolean") {

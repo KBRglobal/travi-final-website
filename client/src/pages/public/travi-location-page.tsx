@@ -581,7 +581,7 @@ function generateSchemaOrg(location: TraviLocation) {
       addressCountry: location.country || "",
       streetAddress: location.details?.address || "",
     },
-    url: typeof globalThis.window !== "undefined" ? globalThis.location.href : "",
+    url: globalThis.window !== undefined ? globalThis.location.href : "",
   };
 
   if (location.details?.phone) {
@@ -672,7 +672,7 @@ export default function TraviLocationPage() {
         <meta property="og:type" content="website" />
         <link
           rel="canonical"
-          href={typeof globalThis.window !== "undefined" ? globalThis.location.href : ""}
+          href={globalThis.window !== undefined ? globalThis.location.href : ""}
         />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>

@@ -20,7 +20,7 @@ export function registerAdminContentQualityRoutes(app: Express): void {
   // GET /api/admin/content-quality/attractions - Get attractions with quality scores
   app.get("/api/admin/content-quality/attractions", requireAuth, async (req, res) => {
     try {
-      const { page = 1, limit = 50, city, minScore, maxScore, status } = req.query;
+      const { page = 1, limit = 50 } = req.query;
 
       let query = db
         .select({
@@ -80,7 +80,7 @@ export function registerAdminContentQualityRoutes(app: Express): void {
   // POST /api/admin/content-quality/regenerate-all - Start bulk regeneration
   app.post("/api/admin/content-quality/regenerate-all", requireAuth, async (req, res) => {
     try {
-      const { batchSize, cityFilter, onlyFailed } = req.body;
+      const { batchSize, cityFilter } = req.body;
       const { regenerateAllAttractions, getRegenerationStats } =
         await import("../../services/content-regeneration-job");
 

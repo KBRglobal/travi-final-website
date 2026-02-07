@@ -44,7 +44,7 @@ export function registerAdminLogsRoutes(app: Express): void {
         }));
 
         res.json({
-          logs: transformedLogs.reverse(), // Most recent first
+          logs: transformedLogs.toReversed(), // Most recent first
           total: transformedLogs.length,
         });
       } catch (error) {

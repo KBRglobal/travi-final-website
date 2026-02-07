@@ -334,7 +334,6 @@ class JobQueue {
    * Clean up old jobs to prevent DB bloat
    */
   private async cleanup() {
-    const maxJobs = 1000;
     const cutoffDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // 7 days old
 
     try {

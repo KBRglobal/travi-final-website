@@ -49,7 +49,7 @@ export const initGA = () => {
 
 // Track page views - useful for single-page applications
 export const trackPageView = (url: string) => {
-  if (typeof globalThis.window === "undefined" || !globalThis.gtag) return;
+  if (globalThis.window === undefined || !globalThis.gtag) return;
 
   const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
   if (!measurementId) return;
@@ -61,7 +61,7 @@ export const trackPageView = (url: string) => {
 
 // Track events
 export const trackEvent = (action: string, category?: string, label?: string, value?: number) => {
-  if (typeof globalThis.window === "undefined" || !globalThis.gtag) return;
+  if (globalThis.window === undefined || !globalThis.gtag) return;
 
   globalThis.gtag("event", action, {
     event_category: category,

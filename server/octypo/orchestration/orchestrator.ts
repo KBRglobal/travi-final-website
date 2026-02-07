@@ -304,7 +304,6 @@ export class OctypoOrchestrator {
       this.countWords(content.howToGetThere) +
       content.faqs.reduce((sum, f) => sum + this.countWords(f.answer), 0);
 
-    const totalCriticalIssues = quality108.criticalIssues.length + validatorCriticalCount;
     const totalMajorIssues = quality108.majorIssues.length + validatorMajorCount;
 
     // Only fail if under 900 words - ignore quality score
@@ -316,7 +315,7 @@ export class OctypoOrchestrator {
     const normalizedOverallScore = quality108.percentage;
 
     if (!passed && totalMajorIssues > 0) {
-      const allMajorIssues = [...quality108.majorIssues];
+      /* Major issues exist but handled at the validation level */
     }
 
     return {

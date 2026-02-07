@@ -144,15 +144,11 @@ export async function computeCoverageSummary(): Promise<CoverageSummary> {
       .select({ count: count() })
       .from(contents)
       .where(eq(contents.status, 'published'));
-    const publishedCount = publishedResult[0]?.count || 0;
-
     // Content with AEO capsule
     const aeoResult = await db
       .select({ count: count() })
       .from(contents)
       .where(isNotNull(contents.answerCapsule));
-    const aeoCount = aeoResult[0]?.count || 0;
-
     // For entity counts, we need to check the entityTags table
     // This is a simplified query - in production we'd use a subquery
     const entityTagsQuery = await db.execute(sql`

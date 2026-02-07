@@ -24,7 +24,7 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(undefin
 const STORAGE_KEY = "travi_favorites";
 
 function loadFavorites(): FavoriteItem[] {
-  if (typeof globalThis.window === "undefined") return [];
+  if (globalThis.window === undefined) return [];
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
@@ -34,7 +34,7 @@ function loadFavorites(): FavoriteItem[] {
 }
 
 function saveFavorites(favorites: FavoriteItem[]) {
-  if (typeof globalThis.window === "undefined") return;
+  if (globalThis.window === undefined) return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
 }
 

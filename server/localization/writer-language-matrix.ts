@@ -150,7 +150,7 @@ export function getBestWriterForLocale(locale: string, category?: string): strin
   }
 
   // Return highest priority (lowest number) writer
-  return allWriters.sort((a, b) => a.priority - b.priority)[0].id;
+  return allWriters.toSorted((a, b) => a.priority - b.priority)[0].id;
 }
 
 /**

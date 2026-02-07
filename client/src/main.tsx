@@ -15,7 +15,7 @@ function initPostHog() {
     });
   }
 }
-if (typeof globalThis.requestIdleCallback === "undefined") {
+if (globalThis.requestIdleCallback === undefined) {
   setTimeout(initPostHog, 2000);
 } else {
   globalThis.requestIdleCallback(initPostHog);

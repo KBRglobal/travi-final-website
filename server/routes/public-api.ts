@@ -163,9 +163,6 @@ export function registerPublicApiRoutes(app: Express): void {
   // Original: /api/public/destinations (line ~5762)
   router.get("/destinations", async (req, res) => {
     try {
-      const { limit, level } = req.query;
-      const maxLimit = Math.min(Number.parseInt(limit as string) || 50, 50);
-
       const allDestinations = await db
         .select({
           id: destinations.id,

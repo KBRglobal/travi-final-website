@@ -124,7 +124,7 @@ export function getKeysNeedingRotation(): KeyMetadata[] {
 
   keyRegistry.forEach((metadata, keyId) => {
     if (metadata.isActive) {
-      const { needsRotation: needs, daysRemaining } = needsRotation(keyId);
+      const { needsRotation: needs } = needsRotation(keyId);
       if (needs || shouldAlert(keyId)) {
         keysToRotate.push({
           ...metadata,

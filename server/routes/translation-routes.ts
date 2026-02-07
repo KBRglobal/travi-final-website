@@ -181,7 +181,6 @@ export function registerTranslationRoutes(app: Express): void {
         }> => {
           throw new Error("Automatic translation is permanently disabled");
         };
-        const generateContentHash = () => "disabled";
 
         // Note: translation-service uses (content, sourceLocale, targetLocale) order
         const translatedContent = await translateContent(
@@ -250,7 +249,6 @@ export function registerTranslationRoutes(app: Express): void {
         const translateToAllLanguages = async (..._args: any[]): Promise<Map<string, any>> => {
           throw new Error("Automatic translation is permanently disabled");
         };
-        const generateContentHash = () => "disabled";
 
         // translateToAllLanguages handles tier filtering internally
         const translations = await translateToAllLanguages(

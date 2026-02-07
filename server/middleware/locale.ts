@@ -31,7 +31,7 @@ export function isValidLocale(code: string): code is Locale {
 }
 
 export function localeMiddleware(req: Request, res: Response, next: NextFunction) {
-  const { locale, pathWithoutLocale } = extractLocaleFromPath(req.path);
+  const { locale } = extractLocaleFromPath(req.path);
 
   req.locale = locale;
   req.isRTL = RTL_LOCALES.includes(locale);

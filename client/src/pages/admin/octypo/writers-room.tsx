@@ -68,13 +68,17 @@ function getInitials(name: string): string {
 }
 
 function mapWriterToDisplay(writer: WriterFromAPI, index: number): DisplayWriter {
+  const generatedInfo =
+    writer.stats?.generated > 0
+      ? "Has generated " + writer.stats.generated + " pieces of content."
+      : "";
   return {
     id: writer.id,
     name: writer.name,
     initials: getInitials(writer.name),
     specialty: writer.specialty,
     type: "writer",
-    description: `Specialized in ${writer.expertise?.join(", ") || writer.specialty}. ${writer.stats?.generated > 0 ? "Has generated " + writer.stats.generated + " pieces of content." : ""}`,
+    description: `Specialized in ${writer.expertise?.join(", ") || writer.specialty}. ${generatedInfo}`,
     experience: writer.experienceYears || 0,
     languages: writer.languagesCount || 0,
     traits: writer.traits || [],

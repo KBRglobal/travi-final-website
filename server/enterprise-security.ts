@@ -961,7 +961,7 @@ export const passwordSecurity = {
     if (/\d/.test(password)) score += 10;
     else feedback.push("Add numbers");
 
-    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) score += 15;
+    if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) score += 15;
     else feedback.push("Add special characters");
 
     // Pattern checks (deductions)

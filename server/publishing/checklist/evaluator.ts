@@ -416,7 +416,6 @@ export async function evaluateChecklist(contentId: string): Promise<ChecklistRes
 
     // Calculate overall score (only count required items for blocking)
     const requiredItems = items.filter(i => i.priority === "required");
-    const requiredPassed = requiredItems.filter(i => i.status === "pass").length;
     const canPublish = requiredItems.every(i => i.status === "pass");
 
     const overallScore =

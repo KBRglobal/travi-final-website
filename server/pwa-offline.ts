@@ -267,7 +267,7 @@ export const pwaManager = {
    */
   generateServiceWorker(): string {
     const config = defaultSwConfig;
-    const bslash = String.fromCharCode(92);
+    const bslash = String.fromCodePoint(92);
 
     return `
 // Service Worker for Travi PWA
