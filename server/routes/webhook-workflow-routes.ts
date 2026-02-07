@@ -1,12 +1,15 @@
 /**
- * Webhooks and Workflows Routes
- * CRUD for webhooks and workflow automation
+ * Workflows Routes
+ * CRUD for workflow automation
+ *
+ * Note: Webhook CRUD routes (GET/POST/PATCH/DELETE /api/webhooks, test, logs)
+ * are handled by enterprise-routes.ts. Only workflow routes remain here.
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { eq, desc } from "drizzle-orm";
 import { db } from "../db";
-import { webhooks, webhookLogs, workflows, workflowExecutions } from "@shared/schema";
+import { workflows, workflowExecutions } from "@shared/schema";
 import { requirePermission, type AuthRequest } from "../security";
 
 // Helper to get user ID from auth request
@@ -16,60 +19,7 @@ function getUserId(req: AuthRequest): string | undefined {
 
 export function registerWebhookWorkflowRoutes(app: Express): void {
   // ============================================================================
-  // WEBHOOKS
-  // ============================================================================
-  app.post("/api/webhooks", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const webhook = await db
-        .insert(webhooks)
-        .values({
-          ...req.body,
-          createdBy: getUserId(req as AuthRequest),
-        })
-        .returning();
-      res.json(webhook[0]);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create webhook" });
-    }
-  });
-
-  app.get("/api/webhooks", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const allWebhooks = await db.select().from(webhooks);
-      res.json(allWebhooks);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch webhooks" });
-    }
-  });
-
-  app.post("/api/webhooks/:id/test", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const { webhookManager } = await import("../webhooks/webhook-manager");
-      const { id } = req.params;
-      const result = await webhookManager.testWebhook(id);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to test webhook" });
-    }
-  });
-
-  app.get("/api/webhooks/:id/logs", requirePermission("canManageSettings"), async (req, res) => {
-    try {
-      const { id } = req.params;
-      const logs = await db
-        .select()
-        .from(webhookLogs)
-        .where(eq(webhookLogs.webhookId, id))
-        .orderBy(desc(webhookLogs.createdAt))
-        .limit(50);
-      res.json(logs);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch webhook logs" });
-    }
-  });
-
-  // ============================================================================
-  // WORKFLOWS
+  // WORKFLOWS (webhook routes removed - handled by enterprise-routes.ts)
   // ============================================================================
   app.post("/api/workflows", requirePermission("canManageSettings"), async (req, res) => {
     try {
@@ -86,7 +36,7 @@ export function registerWebhookWorkflowRoutes(app: Express): void {
     }
   });
 
-  app.get("/api/workflows", requirePermission("canManageSettings"), async (req, res) => {
+  app.get("/api/workflows", requirePermission("canManageSettings"), async (_req, res) => {
     try {
       const allWorkflows = await db.select().from(workflows);
       res.json(allWorkflows);

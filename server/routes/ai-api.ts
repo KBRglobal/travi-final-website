@@ -1876,44 +1876,5 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
 
   app.use("/api/ai", router);
 
-  app.get("/api/ai-images/:filename", async (req: Request, res: Response) => {
-    const filename = req.params.filename;
-
-    if (!filename || filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
-      res.status(400).send("Invalid filename");
-      return;
-    }
-
-    const allowedExtensions = ["jpg", "jpeg", "png", "webp", "gif"];
-    const ext = filename.split(".").pop()?.toLowerCase();
-    if (!ext || !allowedExtensions.includes(ext)) {
-      res.status(400).send("Invalid file type");
-      return;
-    }
-
-    try {
-      const objectPath = `public/ai-generated/${filename}`;
-      const storageManager = getStorageManager();
-      const buffer = await storageManager.download(objectPath);
-
-      if (!buffer) {
-        res.status(404).send("Image not found");
-        return;
-      }
-
-      const contentTypes: Record<string, string> = {
-        jpg: "image/jpeg",
-        jpeg: "image/jpeg",
-        png: "image/png",
-        webp: "image/webp",
-        gif: "image/gif",
-      };
-
-      res.set("Content-Type", contentTypes[ext || "jpg"] || "image/jpeg");
-      res.set("Cache-Control", "public, max-age=31536000");
-      res.send(buffer);
-    } catch (error) {
-      res.status(404).send("Image not found");
-    }
-  });
+  // /api/ai-images/:filename is handled by misc-routes.ts (single registration)
 }
