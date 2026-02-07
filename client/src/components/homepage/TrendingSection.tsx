@@ -97,10 +97,7 @@ export function TrendingSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse flex gap-8 overflow-hidden">
             {[1, 2, 3, 4].map(i => (
-              <div
-                key={i}
-                className="flex-shrink-0 w-72 h-16 bg-slate-200 dark:bg-slate-800 rounded"
-              />
+              <div key={i} className="flex-shrink-0 w-72 h-16 bg-travi-sand dark:bg-card rounded" />
             ))}
           </div>
         </div>

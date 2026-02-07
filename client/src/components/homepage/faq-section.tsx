@@ -25,7 +25,7 @@ export function FAQSection() {
 
   return (
     <AnimatedSection
-      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-950"
+      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-background dark:bg-background"
       ariaLabel="Frequently asked questions about TRAVI World"
     >
       <Helmet>
@@ -34,10 +34,10 @@ export function FAQSection() {
 
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground dark:text-white mb-4 font-chillax">
             {t("home.sections.faq")}
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+          <p className="text-base sm:text-lg text-muted-foreground dark:text-muted-foreground">
             {t("home.sections.faqDesc")}
           </p>
         </div>
@@ -52,14 +52,14 @@ export function FAQSection() {
               itemProp="mainEntity"
               itemType="https://schema.org/Question"
             >
-              <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
+              <div className="bg-travi-cream dark:bg-card rounded-2xl overflow-hidden border border-border dark:border-border">
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
+                  className="w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-travi-sand/50 dark:hover:bg-card/50 transition-colors"
                   aria-expanded={openIndex === index}
                 >
                   <h3
-                    className="text-lg font-semibold text-slate-900 dark:text-white pr-4"
+                    className="text-lg font-semibold text-foreground dark:text-white pr-4 font-chillax"
                     itemProp="name"
                   >
                     {faq.q}

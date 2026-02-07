@@ -37,7 +37,7 @@ interface EditorialPlacement {
 
 function HeroSkeleton() {
   return (
-    <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] animate-pulse bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+    <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] animate-pulse bg-travi-sand dark:bg-card rounded-2xl" />
   );
 }
 

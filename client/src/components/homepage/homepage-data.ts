@@ -91,10 +91,10 @@ export const heroAnimationStyles = `
   .animated-gradient-text {
     background: linear-gradient(
       135deg,
-      #6443F4 0%,
-      #8B5CF6 30%,
-      #F24294 70%,
-      #6443F4 100%
+      hsl(15 72% 55%) 0%,
+      hsl(36 90% 55%) 30%,
+      hsl(15 72% 45%) 70%,
+      hsl(36 90% 55%) 100%
     );
     background-size: 300% 300%;
     -webkit-background-clip: text;
@@ -224,10 +224,10 @@ export const CATEGORY_CARDS = [
     description:
       "Compare hotels, resorts, and accommodation options across 17 destinations worldwide",
     linkUrl: "/hotels",
-    gradient: "from-blue-500 to-cyan-400",
-    bgColor: "bg-blue-50 dark:bg-blue-950/30",
-    iconBg: "bg-blue-500",
-    hoverGlow: "hover:shadow-blue-500/25",
+    gradient: "from-travi-teal to-teal-400",
+    bgColor: "bg-teal-50 dark:bg-teal-950/30",
+    iconBg: "bg-travi-teal",
+    hoverGlow: "hover:shadow-teal-500/25",
   },
   {
     id: 2,
@@ -236,9 +236,9 @@ export const CATEGORY_CARDS = [
     subtitle: "Discover must-see places",
     description: "Explore 3,000+ tourist attractions with reviews, tickets, and visitor tips",
     linkUrl: "/attractions",
-    gradient: "from-amber-500 to-orange-400",
+    gradient: "from-travi-amber to-amber-400",
     bgColor: "bg-amber-50 dark:bg-amber-950/30",
-    iconBg: "bg-amber-500",
+    iconBg: "bg-travi-amber",
     hoverGlow: "hover:shadow-amber-500/25",
   },
   {
@@ -248,10 +248,10 @@ export const CATEGORY_CARDS = [
     subtitle: "Latest travel updates",
     description: "Stay informed with daily travel news, tips, and destination updates",
     linkUrl: "/news",
-    gradient: "from-violet-500 to-purple-400",
-    bgColor: "bg-violet-50 dark:bg-violet-950/30",
-    iconBg: "bg-violet-500",
-    hoverGlow: "hover:shadow-violet-500/25",
+    gradient: "from-travi-terracotta to-orange-400",
+    bgColor: "bg-orange-50 dark:bg-orange-950/30",
+    iconBg: "bg-travi-terracotta",
+    hoverGlow: "hover:shadow-orange-500/25",
   },
   {
     id: 4,
@@ -260,10 +260,10 @@ export const CATEGORY_CARDS = [
     subtitle: "Complete destination guides",
     description: "In-depth travel guides with local tips, itineraries, and recommendations",
     linkUrl: "/guides",
-    gradient: "from-indigo-500 to-blue-400",
-    bgColor: "bg-indigo-50 dark:bg-indigo-950/30",
-    iconBg: "bg-indigo-500",
-    hoverGlow: "hover:shadow-indigo-500/25",
+    gradient: "from-travi-olive to-emerald-400",
+    bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
+    iconBg: "bg-travi-olive",
+    hoverGlow: "hover:shadow-emerald-500/25",
   },
 ];
 

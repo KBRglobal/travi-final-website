@@ -38,9 +38,9 @@ interface EditorialPlacement {
 function CardSkeleton() {
   return (
     <div className="animate-pulse">
-      <div className="aspect-video bg-slate-200 dark:bg-slate-800 rounded-xl mb-4" />
-      <div className="h-5 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-2" />
-      <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/2" />
+      <div className="aspect-video bg-travi-sand dark:bg-card rounded-xl mb-4" />
+      <div className="h-5 bg-travi-sand dark:bg-card rounded w-3/4 mb-2" />
+      <div className="h-4 bg-travi-sand dark:bg-card rounded w-1/2" />
     </div>
   );
 }

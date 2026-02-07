@@ -180,7 +180,7 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder={placeholder}
-                    className="w-full h-12 sm:h-14 px-5 text-base rounded-full bg-white/80 backdrop-blur-sm border-white/50 shadow-sm focus:border-[#6443F4] focus:ring-[#6443F4] placeholder:text-slate-400"
+                    className="w-full h-12 sm:h-14 px-5 text-base rounded-full bg-white/80 backdrop-blur-sm border-travi-sand shadow-sm focus:border-primary focus:ring-primary placeholder:text-slate-400"
                     disabled={isLoading}
                     data-testid="input-newsletter-email"
                   />
@@ -188,9 +188,9 @@ export function NewsletterSection({ config = defaultConfig }: NewsletterSectionP
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="h-12 sm:h-14 px-8 rounded-full text-base font-semibold transition-all duration-300 bg-[#6443F4] hover:bg-[#5539d4] text-white"
+                  className="h-12 sm:h-14 px-8 rounded-full text-base font-semibold transition-all duration-300 bg-primary hover:bg-primary/90 text-primary-foreground"
                   style={{
-                    boxShadow: "0 4px 20px rgba(100, 67, 244, 0.3)",
+                    boxShadow: "0 4px 20px hsl(15 72% 55% / 0.3)",
                   }}
                   data-testid="button-newsletter-subscribe"
                 >
