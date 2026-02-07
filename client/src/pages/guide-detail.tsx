@@ -180,7 +180,7 @@ function ReadingProgressBar() {
   if (prefersReducedMotion) {
     return (
       <div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-travi-amber z-[100]"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#6443F4] to-[#E84C9A] z-[100]"
         data-testid="reading-progress-bar"
       />
     );
@@ -188,7 +188,7 @@ function ReadingProgressBar() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-travi-amber origin-left z-[100]"
+      className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#6443F4] to-[#E84C9A] origin-left z-[100]"
       style={{ scaleX }}
       data-testid="reading-progress-bar"
     />
@@ -282,7 +282,7 @@ function CinematicHero({
         />
       </motion.div>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0B0A1F] via-[#0B0A1F]/60 to-transparent" />
 
       <motion.div
         className="relative z-10 max-w-7xl mx-auto px-6 pb-8 md:pb-12 w-full"
@@ -329,7 +329,7 @@ function CinematicHero({
             </nav>
 
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <Badge className="bg-gradient-to-r from-primary to-travi-amber text-white border-0">
+              <Badge className="bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white border-0">
                 <BookOpen className="h-3 w-3 mr-1" />
                 Travel Guide
               </Badge>
@@ -348,8 +348,7 @@ function CinematicHero({
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg"
               style={{
                 fontFamily: "'Chillax', var(--font-sans)",
-                background:
-                  "linear-gradient(135deg, #FFFFFF 0%, hsl(var(--travi-amber)) 50%, hsl(var(--primary)) 100%)",
+                background: "linear-gradient(135deg, #FFFFFF 0%, #E84C9A 50%, #6443F4 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -365,16 +364,16 @@ function CinematicHero({
 
             <div className="flex flex-wrap items-center gap-4 md:gap-6">
               <div className="flex items-center gap-2 text-white/70 text-sm">
-                <Clock className="h-4 w-4 text-travi-amber" />
+                <Clock className="h-4 w-4 text-[#E84C9A]" />
                 <span>{estimatedReadingTime} min read</span>
               </div>
               <div className="flex items-center gap-2 text-white/70 text-sm">
-                <Layers className="h-4 w-4 text-primary" />
+                <Layers className="h-4 w-4 text-[#6443F4]" />
                 <span>{sectionsCount} sections</span>
               </div>
               {formattedDate && (
                 <div className="flex items-center gap-2 text-white/70 text-sm">
-                  <RefreshCw className="h-4 w-4 text-travi-amber" />
+                  <RefreshCw className="h-4 w-4 text-[#E84C9A]" />
                   <span>Updated {formattedDate}</span>
                 </div>
               )}
@@ -397,7 +396,7 @@ function ContentSection({ section, index }: { section: GuideSection; index: numb
     <AnimatedSection delay={index * 0.05} className="mb-12" data-testid={`section-${sectionId}`}>
       <div id={sectionId} className="scroll-mt-32">
         <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-travi-amber/20 text-primary">
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#6443F4]/20 to-[#E84C9A]/20 text-[#6443F4]">
             {getSectionIcon(section.heading)}
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white font-chillax">
@@ -410,10 +409,10 @@ function ContentSection({ section, index }: { section: GuideSection; index: numb
             prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4
             prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-3
             prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed
-            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-            prose-li:text-slate-600 dark:prose-li:text-slate-300 prose-li:marker:text-travi-amber
+            prose-a:text-[#6443F4] prose-a:no-underline hover:prose-a:underline
+            prose-li:text-slate-600 dark:prose-li:text-slate-300 prose-li:marker:text-[#E84C9A]
             prose-strong:text-slate-800 dark:prose-strong:text-white
-            prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg
+            prose-blockquote:border-l-[#6443F4] prose-blockquote:bg-[#6443F4]/5 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg
             prose-table:border prose-table:border-slate-200 dark:prose-table:border-slate-700 prose-table:rounded-lg prose-table:overflow-hidden
             prose-th:bg-slate-100 dark:prose-th:bg-slate-800 prose-th:p-3 prose-th:text-left prose-th:font-semibold
             prose-td:p-3 prose-td:border-t prose-td:border-slate-200 dark:prose-td:border-slate-700"
@@ -441,22 +440,22 @@ function TableOfContents({
 
   return (
     <div
-      className="bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-xl sticky top-28 overflow-hidden"
+      className="bg-white/70 dark:bg-[#0B0A1F]/70 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-xl sticky top-28 overflow-hidden"
       data-testid="table-of-contents"
     >
       <div className="p-4 border-b border-slate-200/50 dark:border-white/10">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-primary" />
+            <BookOpen className="h-4 w-4 text-[#6443F4]" />
             Contents
           </h3>
-          <span className="text-xs font-medium text-primary">
+          <span className="text-xs font-medium text-[#6443F4]">
             {Math.round(scrollProgress * 100)}%
           </span>
         </div>
         <div className="w-full h-1 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-primary to-travi-amber rounded-full"
+            className="h-full bg-gradient-to-r from-[#6443F4] to-[#E84C9A] rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
             transition={{ duration: 0.3 }}
@@ -478,7 +477,7 @@ function TableOfContents({
                 className={cn(
                   "flex items-center gap-2 px-3 py-2.5 text-sm rounded-xl transition-all duration-200 group",
                   isActive
-                    ? "bg-gradient-to-r from-primary/10 to-travi-amber/10 text-primary font-medium border border-primary/20"
+                    ? "bg-gradient-to-r from-[#6443F4]/10 to-[#E84C9A]/10 text-[#6443F4] font-medium border border-[#6443F4]/20"
                     : isPast
                       ? "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"
                       : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
@@ -489,10 +488,10 @@ function TableOfContents({
                   className={cn(
                     "flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs transition-all",
                     isActive
-                      ? "bg-gradient-to-r from-primary to-travi-amber text-white"
+                      ? "bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white"
                       : isPast
-                        ? "bg-primary/20 text-primary"
-                        : "bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 group-hover:bg-primary/20 group-hover:text-primary"
+                        ? "bg-[#6443F4]/20 text-[#6443F4]"
+                        : "bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 group-hover:bg-[#6443F4]/20 group-hover:text-[#6443F4]"
                   )}
                 >
                   {index + 1}
@@ -583,10 +582,10 @@ function FAQsSection({ faqs, destinationName }: { faqs: GuideFaq[]; destinationN
 
   return (
     <AnimatedSection className="mb-12" data-testid="section-faqs">
-      <Card className="bg-gradient-to-br from-slate-50 to-primary/5 dark:from-slate-800/50 dark:to-primary/10 border-slate-200 dark:border-slate-700">
+      <Card className="bg-gradient-to-br from-slate-50 to-[#6443F4]/5 dark:from-slate-800/50 dark:to-[#6443F4]/10 border-slate-200 dark:border-slate-700">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl text-slate-900 dark:text-white">
-            <BookOpen className="h-5 w-5 text-primary" />
+            <BookOpen className="h-5 w-5 text-[#6443F4]" />
             Frequently Asked Questions about {destinationName}
           </CardTitle>
         </CardHeader>
@@ -604,7 +603,7 @@ function FAQsSection({ faqs, destinationName }: { faqs: GuideFaq[]; destinationN
                   className="font-semibold text-slate-900 dark:text-white mb-2 flex items-start gap-2"
                   itemProp="name"
                 >
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-r from-primary to-travi-amber text-white text-sm flex items-center justify-center font-bold">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white text-sm flex items-center justify-center font-bold">
                     Q
                   </span>
                   {faq.question}
@@ -648,9 +647,9 @@ function QuickFactsSection({
 
   return (
     <AnimatedSection className="mb-12" data-testid="section-quick-facts">
-      <Card className="bg-gradient-to-br from-primary/5 to-travi-amber/5 dark:from-primary/10 dark:to-travi-amber/10 border-primary/20">
+      <Card className="bg-gradient-to-br from-[#6443F4]/5 to-[#E84C9A]/5 dark:from-[#6443F4]/10 dark:to-[#E84C9A]/10 border-[#6443F4]/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl text-primary dark:text-travi-amber">
+          <CardTitle className="flex items-center gap-2 text-xl text-[#6443F4] dark:text-[#E84C9A]">
             <Globe className="h-5 w-5" />
             Quick Facts: {destinationName}
           </CardTitle>
@@ -660,9 +659,9 @@ function QuickFactsSection({
             {Object.entries(quickFacts).map(([key, value]) => (
               <div
                 key={key}
-                className="bg-white/80 dark:bg-white/5 rounded-lg p-3 border border-primary/10"
+                className="bg-white/80 dark:bg-white/5 rounded-lg p-3 border border-[#6443F4]/10"
               >
-                <div className="flex items-center gap-2 text-primary mb-1">
+                <div className="flex items-center gap-2 text-[#6443F4] mb-1">
                   {factIcons[key.toLowerCase()] || <Globe className="h-4 w-4" />}
                   <span className="text-xs font-medium uppercase tracking-wide">
                     {key.replace(/_/g, " ")}
@@ -751,7 +750,7 @@ function AffiliateCTA({
   return (
     <AnimatedSection className="mb-12" data-testid="section-cta">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-gradient-to-br from-primary to-slate-900 border-0 text-white overflow-hidden group hover:shadow-xl transition-shadow">
+        <Card className="bg-gradient-to-br from-[#6443F4] to-[#0B0A1F] border-0 text-white overflow-hidden group hover:shadow-xl transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -765,7 +764,7 @@ function AffiliateCTA({
                 <Link href={localePath(`/destinations/${destinationSlug}/hotels`)}>
                   <Button
                     variant="secondary"
-                    className="bg-white text-primary hover:bg-white/90"
+                    className="bg-white text-[#6443F4] hover:bg-white/90"
                     data-testid="cta-hotels"
                   >
                     Browse Hotels <ChevronRight className="h-4 w-4 ml-1" />
@@ -776,7 +775,7 @@ function AffiliateCTA({
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-travi-amber to-travi-olive border-0 text-white overflow-hidden group hover:shadow-xl transition-shadow">
+        <Card className="bg-gradient-to-br from-[#E84C9A] to-[#6443F4] border-0 text-white overflow-hidden group hover:shadow-xl transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -790,7 +789,7 @@ function AffiliateCTA({
                 <Link href={localePath(`/destinations/${destinationSlug}`)}>
                   <Button
                     variant="secondary"
-                    className="bg-white text-travi-amber hover:bg-white/90"
+                    className="bg-white text-[#E84C9A] hover:bg-white/90"
                     data-testid="cta-attractions"
                   >
                     Explore <ChevronRight className="h-4 w-4 ml-1" />
@@ -858,7 +857,7 @@ function ScrollToTop() {
   return (
     <Button
       size="icon"
-      className="fixed bottom-8 right-8 z-50 rounded-full shadow-lg bg-gradient-to-r from-primary to-travi-amber hover:opacity-90"
+      className="fixed bottom-8 right-8 z-50 rounded-full shadow-lg bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       data-testid="scroll-to-top"
     >
@@ -1001,7 +1000,7 @@ export default function GuideDetailPage() {
     return (
       <>
         <PublicNav />
-        <main className="min-h-screen pt-32 pb-16 px-6 bg-white dark:bg-slate-950">
+        <main className="min-h-screen pt-32 pb-16 px-6 bg-white dark:bg-[#0B0A1F]">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
               Guide Not Found
@@ -1060,7 +1059,7 @@ export default function GuideDetailPage() {
 
       <PublicNav />
 
-      <main className="min-h-screen bg-white dark:bg-slate-950" data-testid={`guide-page-${slug}`}>
+      <main className="min-h-screen bg-white dark:bg-[#0B0A1F]" data-testid={`guide-page-${slug}`}>
         <CinematicHero
           heroImage={heroImage}
           title={guide?.title || `${destinationName} Travel Guide`}
@@ -1143,10 +1142,10 @@ export default function GuideDetailPage() {
                           prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4
                           prose-h4:text-lg prose-h4:mt-6 prose-h4:mb-3
                           prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed
-                          prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-                          prose-li:text-slate-600 dark:prose-li:text-slate-300 prose-li:marker:text-travi-amber
+                          prose-a:text-[#6443F4] prose-a:no-underline hover:prose-a:underline
+                          prose-li:text-slate-600 dark:prose-li:text-slate-300 prose-li:marker:text-[#E84C9A]
                           prose-strong:text-slate-800 dark:prose-strong:text-white
-                          prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg
+                          prose-blockquote:border-l-[#6443F4] prose-blockquote:bg-[#6443F4]/5 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:rounded-r-lg
                           prose-table:border prose-table:border-slate-200 dark:prose-table:border-slate-700 prose-table:rounded-lg prose-table:overflow-hidden
                           prose-th:bg-slate-100 dark:prose-th:bg-slate-800 prose-th:p-3 prose-th:text-left prose-th:font-semibold
                           prose-td:p-3 prose-td:border-t prose-td:border-slate-200 dark:prose-td:border-slate-700"
@@ -1171,7 +1170,7 @@ export default function GuideDetailPage() {
                           href={guide.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-primary hover:underline"
+                          className="text-[#6443F4] hover:underline"
                         >
                           Wikivoyage
                         </a>

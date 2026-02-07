@@ -353,7 +353,7 @@ function getActivityIcon(type: ActivityItem["type"]) {
     case "content_published":
       return <CheckCircle2 className="h-4 w-4 text-primary" />;
     case "ai_generated":
-      return <Sparkles className="h-4 w-4 text-primary" />;
+      return <Sparkles className="h-4 w-4 text-purple-500" />;
     case "user_login":
       return <User className="h-4 w-4 text-muted-foreground" />;
     case "system_event":

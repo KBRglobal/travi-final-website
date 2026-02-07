@@ -68,7 +68,7 @@ export default function NotFound() {
 
     // Create game HTML
     container.innerHTML = `
-      <div class="absolute inset-0" style="background: linear-gradient(180deg, hsl(35 80% 95%) 0%, hsl(35 70% 88%) 20%, hsl(30 55% 78%) 40%, hsl(25 60% 68%) 60%, hsl(20 65% 55%) 80%, hsl(15 70% 45%) 100%);"></div>
+      <div class="absolute inset-0" style="background: linear-gradient(180deg, #EDE9FE 0%, #DDD6FE 20%, #C4B5FD 40%, #A78BFA 60%, #8B5CF6 80%, #7C3AED 100%);"></div>
       <div id="bg-clouds" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
       <div class="absolute top-3 right-3 text-4xl" style="filter: drop-shadow(0 0 15px rgba(250,204,21,0.5));">☀️</div>
       <div id="game-elements" class="absolute inset-0"></div>
@@ -77,13 +77,13 @@ export default function NotFound() {
         <img src="${mascotLight}" alt="TRAVI Mascot" class="w-full h-full object-contain">
       </div>
       
-      <div id="score-display" class="hidden absolute top-3 left-3 backdrop-blur-md bg-white/95 rounded-lg px-3 py-1.5 shadow-md border border-primary/10">
-        <div id="score" class="text-2xl font-bold" style="color: hsl(15 70% 45%);">0</div>
+      <div id="score-display" class="hidden absolute top-3 left-3 backdrop-blur-md bg-white/95 rounded-lg px-3 py-1.5 shadow-md border border-[#6443F4]/10">
+        <div id="score" class="text-2xl font-bold" style="color: #6443F4;">0</div>
         <div class="text-xs text-gray-500">points</div>
       </div>
       
-      <div id="highscore-display" class="hidden absolute top-3 left-1/2 -translate-x-1/2 backdrop-blur-md bg-white/95 rounded-lg px-2 py-1 shadow-md border border-primary/10">
-        <div class="text-xs text-gray-500">🏆 <span id="highscore" class="font-semibold" style="color: hsl(15 70% 45%);">0</span></div>
+      <div id="highscore-display" class="hidden absolute top-3 left-1/2 -translate-x-1/2 backdrop-blur-md bg-white/95 rounded-lg px-2 py-1 shadow-md border border-[#6443F4]/10">
+        <div class="text-xs text-gray-500">🏆 <span id="highscore" class="font-semibold" style="color: #6443F4;">0</span></div>
       </div>
 
       <div id="start-screen" class="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center z-20">
@@ -101,7 +101,7 @@ export default function NotFound() {
               <div class="text-xs text-rose-500 font-medium">Avoid!</div>
             </div>
           </div>
-          <button id="start-btn" class="w-full text-white px-5 py-2 rounded-full font-semibold text-sm shadow-md" style="background: linear-gradient(135deg, hsl(15 70% 45%) 0%, hsl(35 80% 55%) 100%);">
+          <button id="start-btn" class="w-full text-white px-5 py-2 rounded-full font-semibold text-sm shadow-md" style="background: linear-gradient(135deg, #6443F4 0%, #8B5CF6 100%);">
             Let's Go! 🚀
           </button>
           <p class="text-xs text-gray-400 mt-2">Space / Click = Jump</p>
@@ -112,14 +112,14 @@ export default function NotFound() {
         <div class="bg-white rounded-2xl p-6 text-center shadow-lg mx-4 max-w-xs border border-gray-100">
           <div class="text-4xl mb-2">😵</div>
           <h2 class="text-lg font-bold text-rose-500 mb-2">Turbulence!</h2>
-          <div class="rounded-xl p-3 mb-3" style="background: rgba(180, 83, 50, 0.05);">
-            <div id="final-score" class="text-3xl font-bold" style="color: hsl(15 70% 45%);">0</div>
+          <div class="rounded-xl p-3 mb-3" style="background: rgba(123, 75, 164, 0.05);">
+            <div id="final-score" class="text-3xl font-bold" style="color: #6443F4;">0</div>
             <div class="text-xs text-gray-500">points</div>
           </div>
           <div class="text-sm text-gray-500 mb-3">
-            🏆 Best: <span id="final-highscore" class="font-semibold" style="color: hsl(15 70% 45%);">0</span>
+            🏆 Best: <span id="final-highscore" class="font-semibold" style="color: #6443F4;">0</span>
           </div>
-          <button id="restart-btn" class="w-full text-white px-5 py-2 rounded-full font-semibold text-sm shadow-md" style="background: linear-gradient(135deg, hsl(15 70% 45%) 0%, hsl(35 80% 55%) 100%);">
+          <button id="restart-btn" class="w-full text-white px-5 py-2 rounded-full font-semibold text-sm shadow-md" style="background: linear-gradient(135deg, #6443F4 0%, #8B5CF6 100%);">
             Try Again 🔄
           </button>
         </div>
@@ -416,13 +416,13 @@ export default function NotFound() {
         </header>
 
         <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/10 to-travi-amber/10 flex items-center justify-center mb-6">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-6">
             <svg
               width="28"
               height="28"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="hsl(var(--primary))"
+              stroke="#6443F4"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -458,7 +458,7 @@ export default function NotFound() {
             <Link href={localePath("/")} data-testid="button-404-home">
               <Button
                 size="lg"
-                className="rounded-full bg-primary hover:bg-primary/90 text-white px-6"
+                className="rounded-full bg-[#6443F4] hover:bg-[#5339D9] text-white px-6"
               >
                 <Home className="w-4 h-4 mr-2" />
                 Go to homepage

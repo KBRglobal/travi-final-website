@@ -148,17 +148,17 @@ export default function Homepage() {
 
           {/* POPULAR DESTINATIONS */}
           <AnimatedSection
-            className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-travi-cream to-background dark:from-background dark:to-card"
+            className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950"
             ariaLabel="Popular travel destinations"
           >
             <div className="max-w-7xl mx-auto">
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 sm:mb-14 gap-4">
                 <div>
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground dark:text-white mb-3 font-chillax">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-3 font-chillax">
                     {sections["destinations"]?.title ||
                       t("home.destinationsSection.title", "Explore Popular Destinations")}
                   </h2>
-                  <p className="text-base sm:text-lg text-muted-foreground dark:text-muted-foreground">
+                  <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
                     {sections["destinations"]?.subtitle ||
                       t(
                         "home.destinationsSection.subtitle",
@@ -168,7 +168,7 @@ export default function Homepage() {
                 </div>
                 <Link
                   href={localePath("/destinations")}
-                  className="hidden sm:inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
+                  className="hidden sm:inline-flex items-center gap-2 text-travi-purple font-semibold hover:gap-3 transition-all"
                   title="View all travel destinations"
                 >
                   {t("home.destinationsSection.viewAll", "View All")}{" "}
@@ -189,8 +189,8 @@ export default function Homepage() {
                         href={dest.slug || `/destinations/${dest.id}`}
                         title={`${dest.name} Travel Guide - Hotels, Attractions & Things to Do`}
                       >
-                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-card dark:bg-card h-full">
-                          <div className="relative h-48 sm:h-56 overflow-hidden bg-travi-sand/50 dark:bg-card">
+                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-slate-900 h-full">
+                          <div className="relative h-48 sm:h-56 overflow-hidden bg-slate-100 dark:bg-slate-800">
                             {dest.cardImage ? (
                               <img
                                 src={dest.cardImage}
@@ -225,10 +225,10 @@ export default function Homepage() {
                             </div>
                           </div>
                           <CardContent className="p-4 sm:p-5">
-                            <h3 className="font-bold text-foreground dark:text-white text-base sm:text-lg mb-1">
+                            <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg mb-1">
                               {dest.name}
                             </h3>
-                            <p className="text-sm text-muted-foreground">{dest.country}</p>
+                            <p className="text-sm text-slate-500">{dest.country}</p>
                           </CardContent>
                         </Card>
                       </Link>
@@ -238,7 +238,7 @@ export default function Homepage() {
 
               <div className="text-center mt-8 sm:hidden">
                 <Button
-                  className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+                  className="rounded-full bg-travi-purple hover:bg-travi-purple/90 text-white gap-2"
                   asChild
                 >
                   <Link href={localePath("/destinations")} title="Browse all travel destinations">
@@ -264,11 +264,11 @@ export default function Homepage() {
 
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-10 sm:mb-14">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground dark:text-white mb-4 font-chillax">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
                   {sections["experience_categories"]?.title ||
                     t("home.experiencesSection.title", "Find Your Perfect Travel Style")}
                 </h2>
-                <p className="text-base sm:text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                   {sections["experience_categories"]?.subtitle ||
                     t(
                       "home.experiencesSection.subtitle",
@@ -290,7 +290,7 @@ export default function Homepage() {
                         href={category.href || `/${category.slug}`}
                         title={`${category.name} - Complete Travel Guide ${CURRENT_YEAR}`}
                       >
-                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 bg-card dark:bg-card h-full">
+                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 bg-white dark:bg-slate-900 h-full">
                           <div className="relative h-40 sm:h-48 overflow-hidden">
                             {category.image ? (
                               <img
@@ -307,7 +307,7 @@ export default function Homepage() {
                                 decoding="async"
                               />
                             ) : (
-                              <div className="h-full bg-primary flex items-center justify-center">
+                              <div className="h-full bg-[#6443F4] flex items-center justify-center">
                                 <IconComponent
                                   className="w-16 h-16 text-white/90 group-hover:scale-110 transition-transform"
                                   aria-hidden="true"
@@ -328,11 +328,11 @@ export default function Homepage() {
                             </div>
                           </div>
                           <CardContent className="p-4 flex items-center justify-between">
-                            <span className="text-sm font-medium text-primary">
+                            <span className="text-sm font-medium text-[#6443F4]">
                               {t("home.experiencesSection.exploreGuides", "Explore guides")}
                             </span>
                             <ArrowRight
-                              className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform"
+                              className="w-4 h-4 text-[#6443F4] group-hover:translate-x-1 transition-transform"
                               aria-hidden="true"
                             />
                           </CardContent>
@@ -366,16 +366,16 @@ export default function Homepage() {
 
           {/* REGIONS */}
           <AnimatedSection
-            className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-travi-cream dark:bg-card"
+            className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900"
             ariaLabel="Browse destinations by region"
           >
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-10 sm:mb-14">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground dark:text-white mb-4 font-chillax">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
                   {sections["region_links"]?.title ||
                     t("home.regionsSection.title", "Explore by Region")}
                 </h2>
-                <p className="text-base sm:text-lg text-muted-foreground dark:text-muted-foreground">
+                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
                   {sections["region_links"]?.subtitle ||
                     t("home.regionsSection.subtitle", "Browse destinations by geographic region")}
                 </p>
@@ -388,9 +388,9 @@ export default function Homepage() {
                     className="animate-fade-in-up"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <Card className="bg-card dark:bg-card border-0 shadow-sm p-6 h-full">
-                      <h3 className="text-xl font-bold text-foreground dark:text-white mb-4 flex items-center gap-2 font-chillax">
-                        <Globe className="w-5 h-5 text-primary" aria-hidden="true" />
+                    <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm p-6 h-full">
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 font-chillax">
+                        <Globe className="w-5 h-5 text-[#6443F4]" aria-hidden="true" />
                         {region.name}
                       </h3>
                       <ul className="space-y-1">
@@ -399,7 +399,7 @@ export default function Homepage() {
                             <li key={i}>
                               <Link
                                 href={dest.slug.startsWith("/") ? dest.slug : `/${dest.slug}`}
-                                className="flex items-center gap-2 py-2 px-3 rounded-lg text-sm text-muted-foreground dark:text-muted-foreground hover:text-primary hover:bg-travi-sand/50 dark:hover:bg-card/50 transition-all"
+                                className="flex items-center gap-2 py-2 px-3 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:text-[#6443F4] hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all"
                                 title={`${dest.name} Travel Guide`}
                               >
                                 <MapPin className="w-4 h-4 flex-shrink-0" aria-hidden="true" />

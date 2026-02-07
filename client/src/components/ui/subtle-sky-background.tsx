@@ -27,13 +27,13 @@ export default function SubtleSkyBackground({ className }: SubtleSkyBackgroundPr
       time += 0.0005;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "#fffdf9";
+      ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const layers = [
-        { color: "rgba(247, 243, 236, 0.25)", speed: 0.2, amplitude: 50, yOffset: 0.25, blur: 200 },
-        { color: "rgba(245, 238, 225, 0.2)", speed: 0.15, amplitude: 60, yOffset: 0.5, blur: 220 },
-        { color: "rgba(250, 245, 237, 0.22)", speed: 0.18, amplitude: 45, yOffset: 0.7, blur: 190 },
+        { color: "rgba(250, 253, 255, 0.25)", speed: 0.2, amplitude: 50, yOffset: 0.25, blur: 200 },
+        { color: "rgba(248, 252, 255, 0.2)", speed: 0.15, amplitude: 60, yOffset: 0.5, blur: 220 },
+        { color: "rgba(252, 254, 255, 0.22)", speed: 0.18, amplitude: 45, yOffset: 0.7, blur: 190 },
       ];
 
       layers.forEach(layer => {

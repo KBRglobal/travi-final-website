@@ -274,8 +274,8 @@ export function MagicAllButton({
                 config.button,
                 "gap-2",
                 isLoading && [
-                  "bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10",
-                  "border-primary/30",
+                  "bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10",
+                  "border-purple-500/30",
                 ],
                 className
               )}
@@ -290,7 +290,7 @@ export function MagicAllButton({
                 <>
                   <Wand2 className={config.icon} />
                   <span>Magic All</span>
-                  <Sparkles className={cn(config.icon, "text-primary")} />
+                  <Sparkles className={cn(config.icon, "text-purple-500")} />
                 </>
               )}
             </Button>
@@ -306,7 +306,7 @@ export function MagicAllButton({
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
+              <Sparkles className="h-5 w-5 text-purple-500" />
               {isLoading ? "Generating Content" : "Magic All Fields"}
             </DialogTitle>
             <DialogDescription>
@@ -336,7 +336,7 @@ export function MagicAllButton({
                 {activeFields.map(field => (
                   <span
                     key={field.fieldId}
-                    className="inline-flex items-center px-2 py-1 rounded-md bg-primary/5 dark:bg-primary/10 text-primary dark:text-primary/80 text-xs"
+                    className="inline-flex items-center px-2 py-1 rounded-md bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300 text-xs"
                   >
                     {field.label}
                   </span>
@@ -357,7 +357,7 @@ export function MagicAllButton({
                 <Button
                   type="button"
                   onClick={handleConfirm}
-                  className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="gap-2 bg-purple-600 hover:bg-purple-700 text-white"
                 >
                   <Sparkles className="h-4 w-4" />
                   Generate All

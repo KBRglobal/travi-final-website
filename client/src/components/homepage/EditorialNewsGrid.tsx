@@ -38,9 +38,9 @@ interface EditorialPlacement {
 function CardSkeleton() {
   return (
     <div className="animate-pulse">
-      <div className="aspect-[4/3] bg-travi-sand dark:bg-card rounded-lg mb-3" />
-      <div className="h-4 bg-travi-sand dark:bg-card rounded w-3/4 mb-2" />
-      <div className="h-3 bg-travi-sand dark:bg-card rounded w-1/2" />
+      <div className="aspect-[4/3] bg-slate-200 dark:bg-slate-800 rounded-lg mb-3" />
+      <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-3/4 mb-2" />
+      <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/2" />
     </div>
   );
 }
@@ -119,7 +119,7 @@ export function EditorialNewsGrid() {
 
   return (
     <section
-      className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-travi-cream dark:bg-card/50"
+      className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/50"
       data-testid="editorial-news-grid"
     >
       <div className="max-w-7xl mx-auto">

@@ -49,7 +49,7 @@ interface DisplayDestination {
 
 const heroAnimationStyles = `
   .animated-gradient-text {
-    background: linear-gradient(135deg, hsl(15, 72%, 55%) 0%, hsl(36, 90%, 55%) 30%, hsl(15, 72%, 55%) 70%, hsl(36, 90%, 55%) 100%);
+    background: linear-gradient(135deg, #6443F4 0%, #8B5CF6 30%, #F24294 70%, #6443F4 100%);
     background-size: 300% 300%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -166,22 +166,22 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
 
   return (
     <section
-      className="relative min-h-screen flex items-center pt-24 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-br from-travi-cream via-white to-travi-sand/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
+      className="relative min-h-screen flex items-center pt-24 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
       data-testid="destinations-hero"
     >
       <style>{heroAnimationStyles}</style>
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-primary/5 to-travi-amber/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-travi-amber/5 to-primary/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-travi-sand/20 to-transparent rounded-full" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-[#6443F4]/5 to-[#8B5CF6]/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-[#8B5CF6]/5 to-[#6443F4]/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-purple-100/20 to-transparent rounded-full" />
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rotate-slow opacity-10 dark:opacity-20"
           aria-hidden="true"
         >
           <div
             className="w-full h-full rounded-full border-[40px] border-transparent"
-            style={{ borderTopColor: "hsl(15, 72%, 55%)", borderRightColor: "hsl(36, 90%, 55%)" }}
+            style={{ borderTopColor: "#6443F4", borderRightColor: "#F24294" }}
           />
         </div>
       </div>
@@ -195,10 +195,10 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
               initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
               animate={{ opacity: 1, y: 0 }}
             >
-              <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-primary/10 border border-primary/20">
+              <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-[#6443F4]/10 border border-[#6443F4]/20">
                 <div className="relative flex items-center justify-center">
-                  <span className="absolute w-3 h-3 rounded-full bg-primary animate-ping opacity-75" />
-                  <span className="relative w-2.5 h-2.5 rounded-full bg-primary" />
+                  <span className="absolute w-3 h-3 rounded-full bg-[#6443F4] animate-ping opacity-75" />
+                  <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
                 </div>
                 <span
                   className="text-sm font-semibold text-slate-700 dark:text-slate-300"
@@ -226,7 +226,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                     <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text font-chillax">
                       {heroSubtitle}
                     </span>
-                    <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary via-travi-amber to-primary rounded-full opacity-80" />
+                    <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
                   </span>
                 )}
               </motion.h1>
@@ -251,7 +251,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
             >
               {heroCTAText && heroCTALink && (
                 <Link href={heroCTALink}>
-                  <Button className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30">
+                  <Button className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30">
                     <Compass className="w-5 h-5 me-2" />
                     {heroCTAText}
                   </Button>
@@ -316,7 +316,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 <div
-                  className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-primary/15 hover:-translate-y-2 transition-all duration-400"
+                  className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2 transition-all duration-400"
                   role="region"
                   aria-label={t("destinations.hero.galleryAriaLabel")}
                 >
@@ -342,13 +342,13 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                     <div className="flex items-start justify-between gap-2 flex-wrap">
                       {dest.cityType && (
                         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
-                          <Building2 className="w-4 h-4 text-primary" />
+                          <Building2 className="w-4 h-4 text-[#6443F4]" />
                           <span className="font-bold text-slate-800">{dest.cityType}</span>
                         </div>
                       )}
                       {dest.travelStyle && (
                         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 backdrop-blur-md shadow-lg">
-                          <Heart className="w-4 h-4 text-travi-amber" />
+                          <Heart className="w-4 h-4 text-[#F24294]" />
                           <span className="font-medium text-slate-700">{dest.travelStyle}</span>
                         </div>
                       )}
@@ -382,7 +382,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                           <span className="text-2xl font-bold text-white ms-2">{dest.name}</span>
                         </div>
                         <Link href={`/destinations/${dest.slug}`}>
-                          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-primary/10 hover:text-primary transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
+                          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                             {t("destinations.hero.discoverButton")}
                             <ArrowRight className="w-5 h-5 rtl:rotate-180" />
                           </button>
@@ -403,10 +403,10 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                         key={i}
                         onClick={() => goTo(i)}
                         className={cn(
-                          "thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-primary/20 transition-all",
+                          "thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-[#6443F4]/20 transition-all",
                           currentIndex === i
-                            ? "ring-primary active"
-                            : "ring-transparent hover:ring-primary/50"
+                            ? "ring-[#6443F4] active"
+                            : "ring-transparent hover:ring-[#6443F4]/50"
                         )}
                         data-testid={`thumbnail-${i}`}
                         role="tab"
@@ -446,7 +446,7 @@ export function DestinationsHero({ destinationCount, regionCount }: Destinations
                   aria-label={t("destinations.hero.placeholderAriaLabel")}
                 >
                   <div className="text-center p-8">
-                    <Compass className="w-16 h-16 text-primary/50 mx-auto mb-4" />
+                    <Compass className="w-16 h-16 text-[#6443F4]/50 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-400 mb-2">
                       {t("destinations.hero.explorePlaceholder")}
                     </h3>

@@ -366,10 +366,10 @@ export default function OctypoDashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">AI Writers</CardTitle>
-            <Bot className="h-4 w-4 text-primary" />
+            <Bot className="h-4 w-4 text-purple-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary" data-testid="text-writers">
+            <div className="text-3xl font-bold text-purple-600" data-testid="text-writers">
               {writerAgentCount}
             </div>
             <p className="text-xs text-muted-foreground">{validatorAgentCount} validators</p>
@@ -391,17 +391,17 @@ export default function OctypoDashboardPage() {
       </div>
 
       {/* AI Infrastructure */}
-      <Card className="bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-primary/20 dark:border-primary/30">
+      <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <Bot className="h-5 w-5 text-primary" />
+            <Bot className="h-5 w-5 text-purple-600" />
             AI Infrastructure
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             <div className="p-3 rounded-lg bg-white/60 dark:bg-white/10">
-              <div className="text-2xl font-bold text-primary" data-testid="text-engines-total">
+              <div className="text-2xl font-bold text-purple-600" data-testid="text-engines-total">
                 {engineStats?.total || 0}
               </div>
               <div className="text-xs text-muted-foreground">AI Engines</div>

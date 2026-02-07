@@ -44,12 +44,12 @@ const heroAnimationStyles = `
   .hero-gradient-text {
     background: linear-gradient(
       135deg,
-      hsl(15 72% 55%) 0%,
-      hsl(36 90% 55%) 20%,
-      hsl(36 90% 65%) 40%,
-      hsl(15 72% 55%) 60%,
-      hsl(36 90% 55%) 80%,
-      hsl(15 72% 55%) 100%
+      #6443F4 0%,
+      #8B5CF6 20%,
+      #A78BFA 40%,
+      #6443F4 60%,
+      #8B5CF6 80%,
+      #6443F4 100%
     );
     background-size: 300% 300%;
     -webkit-background-clip: text;
@@ -132,7 +132,7 @@ function AttractionError({ message }: { message: string }) {
           {message}
         </p>
         <Button
-          className="bg-primary hover:bg-primary/90 text-white"
+          className="bg-[#6443F4] hover:bg-[#5539d4] text-white"
           onClick={() => window.history.back()}
           data-testid="button-go-back"
         >
@@ -240,7 +240,7 @@ function HeroSection({
             className="flex flex-wrap items-center gap-3 md:gap-4"
             data-testid="hero-quick-stats"
           >
-            <Badge className="bg-primary/20 backdrop-blur-sm text-white border-primary/40 px-4 py-2 text-sm">
+            <Badge className="bg-[#6443F4]/20 backdrop-blur-sm text-white border-[#6443F4]/40 px-4 py-2 text-sm">
               <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1.5" />
               <span className="font-semibold">{rating}</span>
               {reviewCount > 0 && (
@@ -249,13 +249,13 @@ function HeroSection({
             </Badge>
 
             {attraction.duration && (
-              <Badge className="bg-primary/20 backdrop-blur-sm text-white border-primary/40 px-4 py-2 text-sm">
+              <Badge className="bg-[#6443F4]/20 backdrop-blur-sm text-white border-[#6443F4]/40 px-4 py-2 text-sm">
                 <Clock className="w-4 h-4 mr-1.5" />
                 <span>{attraction.duration}</span>
               </Badge>
             )}
 
-            <Badge className="bg-primary/20 backdrop-blur-sm text-white border-primary/40 px-4 py-2 text-sm">
+            <Badge className="bg-[#6443F4]/20 backdrop-blur-sm text-white border-[#6443F4]/40 px-4 py-2 text-sm">
               <Ticket className="w-4 h-4 mr-1.5" />
               <span>Skip the Line</span>
             </Badge>
@@ -272,7 +272,7 @@ function HeroSection({
                 target="_blank"
                 rel="noopener noreferrer sponsored"
                 onClick={onAffiliateClick}
-                className="inline-flex items-center gap-2.5 bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-xl shadow-lg shadow-primary/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/40 active:scale-[0.98]"
+                className="inline-flex items-center gap-2.5 bg-[#6443F4] hover:bg-[#5539d4] text-white font-semibold px-8 py-4 rounded-xl shadow-lg shadow-[#6443F4]/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#6443F4]/40 active:scale-[0.98]"
                 data-testid="button-hero-cta"
               >
                 <Ticket className="w-5 h-5" />
@@ -352,8 +352,8 @@ function LivePricingWidget({
                 key={ticket.id || index}
                 className={`border-2 shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl ${
                   ticket.popular
-                    ? "border-primary dark:border-primary"
-                    : "border-slate-200 dark:border-slate-700 hover:border-primary/50"
+                    ? "border-[#6443F4] dark:border-[#6443F4]"
+                    : "border-slate-200 dark:border-slate-700 hover:border-[#6443F4]/50"
                 }`}
                 data-testid={`ticket-card-${index}`}
               >
@@ -362,7 +362,7 @@ function LivePricingWidget({
                     <div className="flex items-start justify-between gap-4 mb-4">
                       <div className="flex-1">
                         {ticket.popular && (
-                          <Badge className="bg-primary/10 text-primary border-primary/20 mb-3">
+                          <Badge className="bg-[#6443F4]/10 text-[#6443F4] border-[#6443F4]/20 mb-3">
                             <Sparkles className="w-3 h-3 mr-1" />
                             Most Popular
                           </Badge>
@@ -384,7 +384,7 @@ function LivePricingWidget({
                             key={featureIndex}
                             className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300"
                           >
-                            <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                            <CheckCircle2 className="w-4 h-4 text-[#6443F4] flex-shrink-0 mt-0.5" />
                             <span>{feature}</span>
                           </li>
                         ))}
@@ -398,7 +398,7 @@ function LivePricingWidget({
                           target="_blank"
                           rel="noopener noreferrer sponsored"
                           onClick={onAffiliateClick}
-                          className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-primary/25"
+                          className="inline-flex items-center gap-2 bg-[#6443F4] hover:bg-[#5539d4] text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[#6443F4]/25"
                           data-testid={`button-book-now-${index}`}
                         >
                           Check Availability
@@ -414,10 +414,10 @@ function LivePricingWidget({
         </div>
 
         <div
-          className="mt-8 p-5 bg-primary/5 dark:bg-primary/10 border-l-4 border-primary rounded-r-lg"
+          className="mt-8 p-5 bg-[#6443F4]/5 dark:bg-[#6443F4]/10 border-l-4 border-[#6443F4] rounded-r-lg"
           data-testid="trust-bar"
         >
-          <div className="flex flex-wrap items-center gap-5 md:gap-8 text-sm text-primary dark:text-travi-amber">
+          <div className="flex flex-wrap items-center gap-5 md:gap-8 text-sm text-[#6443F4] dark:text-[#8B5CF6]">
             {hasFreeCancellation && (
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" />
@@ -484,15 +484,15 @@ function IntroductionSection({ attraction }: { attraction: TiqetsAttraction }) {
         </div>
 
         <div
-          className="mt-10 p-6 bg-primary/5 dark:bg-primary/10 border-l-4 border-primary rounded-r-xl"
+          className="mt-10 p-6 bg-[#6443F4]/5 dark:bg-[#6443F4]/10 border-l-4 border-[#6443F4] rounded-r-xl"
           data-testid="pro-tip-box"
         >
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Lightbulb className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-lg bg-[#6443F4]/10 flex items-center justify-center flex-shrink-0">
+              <Lightbulb className="w-5 h-5 text-[#6443F4]" />
             </div>
             <div>
-              <p className="font-semibold text-primary dark:text-travi-amber mb-1.5">Pro Tip</p>
+              <p className="font-semibold text-[#6443F4] dark:text-[#8B5CF6] mb-1.5">Pro Tip</p>
               <div
                 className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: sanitizeHTML(proTipContent) }}
@@ -564,8 +564,8 @@ function QuickFactsBox({ attraction }: { attraction: TiqetsAttraction }) {
                     className="flex items-start gap-3"
                     data-testid={`quick-fact-${index}`}
                   >
-                    <div className="w-11 h-11 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <IconComponent className="w-5 h-5 text-primary" />
+                    <div className="w-11 h-11 rounded-xl bg-[#6443F4]/10 dark:bg-[#6443F4]/20 flex items-center justify-center flex-shrink-0">
+                      <IconComponent className="w-5 h-5 text-[#6443F4]" />
                     </div>
                     <div>
                       <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium mb-0.5">
@@ -581,7 +581,7 @@ function QuickFactsBox({ attraction }: { attraction: TiqetsAttraction }) {
             </div>
 
             <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-              <div className="flex items-start gap-3 text-sm text-primary dark:text-travi-amber">
+              <div className="flex items-start gap-3 text-sm text-[#6443F4] dark:text-[#8B5CF6]">
                 <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <p>
                   <strong>Important:</strong> Book 2-3 weeks ahead for peak season (Dec-Feb).
@@ -660,7 +660,7 @@ function TicketOptionsTable({
                   key={index}
                   className={`border-b border-slate-200 dark:border-slate-700 transition-colors ${
                     ticket.popular
-                      ? "bg-primary/5 dark:bg-primary/10"
+                      ? "bg-[#6443F4]/5 dark:bg-[#6443F4]/10"
                       : "hover:bg-slate-50 dark:hover:bg-slate-800/30"
                   }`}
                   data-testid={`ticket-row-${index}`}
@@ -671,7 +671,7 @@ function TicketOptionsTable({
                         {ticket.type}
                       </span>
                       {ticket.popular && (
-                        <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
+                        <Badge className="bg-[#6443F4]/10 text-[#6443F4] border-[#6443F4]/20 text-xs">
                           Popular
                         </Badge>
                       )}
@@ -687,7 +687,7 @@ function TicketOptionsTable({
                           key={pIndex}
                           className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400"
                         >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#6443F4]" />
                           {perk}
                         </li>
                       ))}
@@ -700,7 +700,7 @@ function TicketOptionsTable({
                         target="_blank"
                         rel="noopener noreferrer sponsored"
                         onClick={onAffiliateClick}
-                        className="inline-flex items-center gap-1.5 bg-primary hover:bg-primary/90 text-white font-medium px-4 py-2.5 rounded-lg text-sm transition-all duration-200 hover:shadow-md"
+                        className="inline-flex items-center gap-1.5 bg-[#6443F4] hover:bg-[#5539d4] text-white font-medium px-4 py-2.5 rounded-lg text-sm transition-all duration-200 hover:shadow-md"
                         data-testid={`button-book-ticket-${index}`}
                       >
                         Book Now
@@ -794,8 +794,8 @@ function WhatToExpectSection({ attraction }: { attraction: TiqetsAttraction }) {
                 </div>
                 <CardContent className="p-5">
                   <div className="flex items-center gap-2.5 mb-3">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Sparkles className="w-4 h-4 text-primary" />
+                    <div className="w-8 h-8 rounded-lg bg-[#6443F4]/10 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-[#6443F4]" />
                     </div>
                     <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">
                       {item.title}
@@ -869,13 +869,13 @@ function VisitorTipsSection({ attraction }: { attraction: TiqetsAttraction }) {
           {tips.map((tip, index) => (
             <Card
               key={index}
-              className="border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:border-primary/30"
+              className="border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30"
               data-testid={`tip-card-${index}`}
             >
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-11 h-11 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                    <Lightbulb className="w-5 h-5 text-primary" />
+                  <div className="w-11 h-11 rounded-xl bg-[#6443F4]/10 dark:bg-[#6443F4]/20 flex items-center justify-center">
+                    <Lightbulb className="w-5 h-5 text-[#6443F4]" />
                   </div>
                   <h3 className="font-semibold text-slate-900 dark:text-slate-100">{tip.title}</h3>
                 </div>
@@ -968,7 +968,7 @@ function HowToGetThereSection({ attraction }: { attraction: TiqetsAttraction }) 
         </div>
 
         {description && (
-          <div className="mb-10 p-6 bg-primary/5 dark:bg-primary/10 border-l-4 border-primary rounded-r-lg">
+          <div className="mb-10 p-6 bg-[#6443F4]/5 dark:bg-[#6443F4]/10 border-l-4 border-[#6443F4] rounded-r-lg">
             <div
               className="text-sm text-slate-700 dark:text-slate-300"
               dangerouslySetInnerHTML={{ __html: sanitizeHTML(description) }}
@@ -982,13 +982,13 @@ function HowToGetThereSection({ attraction }: { attraction: TiqetsAttraction }) 
             return (
               <Card
                 key={index}
-                className="border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:border-primary/30"
+                className="border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30"
                 data-testid={`transport-option-${index}`}
               >
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-11 h-11 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                      <IconComponent className="w-5 h-5 text-primary" />
+                    <div className="w-11 h-11 rounded-xl bg-[#6443F4]/10 dark:bg-[#6443F4]/20 flex items-center justify-center">
+                      <IconComponent className="w-5 h-5 text-[#6443F4]" />
                     </div>
                     <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                       By {option.mode}
@@ -1049,7 +1049,7 @@ function FAQSection({ faqs, attractionName }: { faqs: FAQItem[] | null; attracti
             <AccordionItem
               key={index}
               value={`faq-${index}`}
-              className="border border-slate-200 dark:border-slate-700 rounded-xl px-5 data-[state=open]:bg-primary/5 dark:data-[state=open]:bg-primary/10 data-[state=open]:border-primary/30 transition-all duration-200"
+              className="border border-slate-200 dark:border-slate-700 rounded-xl px-5 data-[state=open]:bg-[#6443F4]/5 dark:data-[state=open]:bg-[#6443F4]/10 data-[state=open]:border-[#6443F4]/30 transition-all duration-200"
             >
               <AccordionTrigger
                 className="text-left py-5 hover:no-underline"
@@ -1113,7 +1113,7 @@ function RelatedAttractionsSection({
                 className="flex-shrink-0 w-72 snap-start"
                 data-testid={`related-attraction-${index}`}
               >
-                <Card className="overflow-hidden border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30">
+                <Card className="overflow-hidden border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-[#6443F4]/30">
                   <div className="aspect-[4/3] overflow-hidden relative">
                     <img
                       src={image}
@@ -1126,7 +1126,7 @@ function RelatedAttractionsSection({
                       }}
                     />
                     {attraction.primaryCategory && (
-                      <Badge className="absolute top-3 left-3 bg-primary/10 backdrop-blur-sm text-primary border-primary/20">
+                      <Badge className="absolute top-3 left-3 bg-[#6443F4]/10 backdrop-blur-sm text-[#6443F4] border-[#6443F4]/20">
                         {attraction.primaryCategory}
                       </Badge>
                     )}
@@ -1191,7 +1191,7 @@ function StickyBookingCTA({
             target="_blank"
             rel="noopener noreferrer sponsored"
             onClick={onAffiliateClick}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-[#6443F4] hover:bg-[#5539d4] text-white font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-[#6443F4]/25 transition-all duration-300 hover:shadow-xl hover:shadow-[#6443F4]/30 hover:scale-[1.02] active:scale-[0.98]"
             data-testid="button-sticky-book"
           >
             <Ticket className="w-5 h-5" />
@@ -1392,7 +1392,7 @@ export default function AttractionDetail() {
         <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
           <Link
             href={localePath(`/attractions/list/${destination.toLowerCase()}`)}
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors group"
+            className="inline-flex items-center gap-2 text-[#6443F4] hover:text-[#5539d4] font-medium transition-colors group"
             data-testid="link-explore-more-top"
           >
             <Search className="w-4 h-4" />
@@ -1438,7 +1438,7 @@ export default function AttractionDetail() {
               <Button
                 variant="outline"
                 size="lg"
-                className="rounded-full border-2 border-primary text-primary"
+                className="rounded-full border-2 border-[#6443F4] text-[#6443F4]"
               >
                 <Search className="w-5 h-5 mr-2" />
                 Explore more attractions in {attraction.cityName || destination}

@@ -30,7 +30,7 @@ export function PublicFooter() {
 
   return (
     <footer
-      className="bg-travi-cream dark:bg-stone-950"
+      className="bg-white dark:bg-slate-950"
       dir={isRTL ? "rtl" : "ltr"}
       data-testid="footer"
       role="contentinfo"
@@ -58,7 +58,7 @@ export function PublicFooter() {
                     <li key={link.href}>
                       <Link
                         href={localePath(link.href)}
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
                         data-testid={`link-footer-${link.href.replace("/", "")}`}
                       >
                         {t(link.key)}
@@ -77,7 +77,7 @@ export function PublicFooter() {
                     <li key={link.href}>
                       <Link
                         href={localePath(link.href)}
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
                         data-testid={`link-footer-${link.href.replace("/", "")}`}
                       >
                         {t(link.key)}
@@ -96,7 +96,7 @@ export function PublicFooter() {
                     <li key={link.href}>
                       <Link
                         href={localePath(link.href)}
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
                         data-testid={`link-footer-${link.href.replace("/", "")}`}
                       >
                         {t(link.key)}
@@ -106,7 +106,7 @@ export function PublicFooter() {
                   <li>
                     <button
                       onClick={openCookieSettings}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 cursor-pointer text-start"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 cursor-pointer text-start"
                       data-testid="button-cookie-settings"
                     >
                       {t("footer.cookieSettings")}
@@ -119,13 +119,13 @@ export function PublicFooter() {
         </div>
       </div>
 
-      <div className="border-t border-border/20 dark:border-border/30 bg-travi-cream dark:bg-stone-950">
+      <div className="border-t border-border/20 dark:border-border/30 bg-white dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-muted-foreground">
             <span>{t("footer.copyright", { year: currentYear, brand: "TRAVI" })}</span>
             <a
               href="mailto:info@travi.world"
-              className="hover:text-primary transition-colors duration-200"
+              className="hover:text-foreground transition-colors duration-200"
               data-testid="link-footer-email"
               aria-label={t("footer.emailAriaLabel")}
             >

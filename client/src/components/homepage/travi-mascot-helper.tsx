@@ -22,7 +22,7 @@ export function TraviMascotHelper() {
       <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-center gap-1 animate-bounce-in">
         <button
           onClick={() => setIsChatOpen(true)}
-          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-travi-amber p-0.5 sm:p-1 shadow-lg shadow-primary/30 overflow-hidden transition-all hover:shadow-xl hover:scale-105 active:scale-95"
+          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-travi-purple to-[#8B5CF6] p-0.5 sm:p-1 shadow-lg shadow-travi-purple/30 overflow-hidden transition-all hover:shadow-xl hover:scale-105 active:scale-95"
           aria-label="Open chat with TRAVI assistant"
           title="Chat with TRAVI travel assistant"
         >

@@ -58,7 +58,7 @@ export function Breadcrumbs({ items, showDestination = false, className = "" }: 
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
       <nav
-        className={`flex items-center gap-2 text-muted-foreground text-sm ${className}`}
+        className={`flex items-center gap-2 text-slate-500 text-sm ${className}`}
         aria-label="Breadcrumb"
       >
         {allItems.map((item, index) => {
@@ -67,11 +67,14 @@ export function Breadcrumbs({ items, showDestination = false, className = "" }: 
 
           return (
             <span key={index} className="flex items-center gap-2">
-              {index > 0 && <ChevronRight className="w-4 h-4 text-muted-foreground/50" />}
+              {index > 0 && <ChevronRight className="w-4 h-4" />}
               {isLast || !item.href ? (
-                <span className="text-primary font-medium">{label}</span>
+                <span className="text-slate-900 dark:text-white font-medium">{label}</span>
               ) : (
-                <Link href={localePath(item.href)} className="hover:text-primary transition-colors">
+                <Link
+                  href={localePath(item.href)}
+                  className="hover:text-[#6443F4] transition-colors"
+                >
                   {label}
                 </Link>
               )}

@@ -44,16 +44,16 @@ export function CategoriesSection() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 dark:bg-primary/20 rounded-full mb-4">
-            <Compass className="w-4 h-4 text-primary" aria-hidden="true" />
-            <span className="text-xs font-semibold tracking-wide text-primary uppercase">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-4">
+            <Compass className="w-4 h-4 text-travi-purple" aria-hidden="true" />
+            <span className="text-xs font-semibold tracking-wide text-travi-purple uppercase">
               {t("home.categoriesSection.badge", "Browse Travel Categories")}
             </span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground dark:text-white mb-4 font-chillax">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
             {t("home.categoriesSection.title", "Explore by Type")}
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
             {t(
               "home.categoriesSection.subtitle",
               "Find exactly what you're looking for with our curated travel categories"

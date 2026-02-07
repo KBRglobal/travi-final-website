@@ -215,7 +215,7 @@ function HeroSection({
   setSearchQuery: (q: string) => void;
 }) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div
@@ -226,9 +226,9 @@ function HeroSection({
         />
       </div>
 
-      {/* Gradient Orbs - warm */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-travi-amber/15 rounded-full blur-3xl" />
+      {/* Gradient Orbs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
 
       <div className="relative container mx-auto px-4 py-20 md:py-28">
         {/* Navigation */}
@@ -258,14 +258,14 @@ function HeroSection({
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
-                <Plane className="w-4 h-4 text-travi-amber" />
+                <Plane className="w-4 h-4 text-purple-300" />
                 <span className="text-sm font-medium text-white/90">Travel News Portal</span>
               </div>
             </div>
 
             <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               Discover the World's
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-travi-amber via-primary to-travi-amber">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
                 Latest Stories
               </span>
             </h1>
@@ -285,7 +285,7 @@ function HeroSection({
                   placeholder="Search destinations, topics, or articles..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-14 pr-5 py-7 text-lg bg-transparent border-white/20 text-white placeholder:text-white/40 rounded-2xl focus:ring-2 focus:ring-primary/50 focus:border-primary/50"
+                  className="w-full pl-14 pr-5 py-7 text-lg bg-transparent border-white/20 text-white placeholder:text-white/40 rounded-2xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
                 />
               </div>
             </div>
@@ -405,7 +405,7 @@ function FeaturedArticle({ article }: { article: Article }) {
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary to-travi-teal" />
+            <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-600" />
           )}
         </div>
 
@@ -431,7 +431,7 @@ function FeaturedArticle({ article }: { article: Article }) {
             )}
           </div>
 
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 leading-tight group-hover:text-travi-amber transition-colors">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 leading-tight group-hover:text-purple-200 transition-colors">
             {article.title}
           </h2>
 
@@ -885,7 +885,7 @@ export default function PublicNews() {
 
           {/* Newsletter */}
           <section className="mt-20 mb-8">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-travi-olive to-primary p-10 md:p-16">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-purple-600 to-primary p-10 md:p-16">
               {/* Background decoration */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />

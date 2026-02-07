@@ -64,19 +64,19 @@ export default function PrivacyPage() {
         {/* Hero Section with gradient and mascot */}
         <section className="relative pt-28 pb-20 overflow-hidden">
           {/* Gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-primary/5 to-white dark:from-primary/20 dark:via-primary/10 dark:to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#6443F4]/10 via-[#6443F4]/5 to-white dark:from-[#6443F4]/20 dark:via-[#6443F4]/10 dark:to-background" />
 
           {/* Decorative elements */}
-          <div className="absolute top-20 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
-          <div className="absolute top-40 right-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-64 h-64 bg-[#6443F4]/10 rounded-full blur-3xl" />
+          <div className="absolute top-40 right-10 w-80 h-80 bg-[#6443F4]/10 rounded-full blur-3xl" />
 
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Hero Content */}
               <div className="text-center lg:text-start">
-                <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-primary/20">
-                  <Shield className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">
+                <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#6443F4]/20">
+                  <Shield className="w-4 h-4 text-[#6443F4]" />
+                  <span className="text-sm font-medium text-[#6443F4]">
                     {t("pages.privacy.badge")}
                   </span>
                 </div>
@@ -85,7 +85,7 @@ export default function PrivacyPage() {
                   className="text-4xl md:text-5xl font-bold mb-6 font-chillax"
                   data-testid="heading-privacy"
                 >
-                  <span className="text-primary">{t("pages.privacy.title")}</span>
+                  <span className="text-[#6443F4]">{t("pages.privacy.title")}</span>
                 </h1>
 
                 <p className="text-lg text-muted-foreground mb-8 max-w-xl">
@@ -101,7 +101,7 @@ export default function PrivacyPage() {
               <div className="relative flex justify-center">
                 <div className="relative">
                   {/* Glow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/30 rounded-3xl blur-2xl transform scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#6443F4]/30 to-[#6443F4]/30 rounded-3xl blur-2xl transform scale-110" />
 
                   {/* Mascot image with glassmorphism frame */}
                   <div className="relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/30">
@@ -112,7 +112,7 @@ export default function PrivacyPage() {
                     />
 
                     {/* Shield badge overlay */}
-                    <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-primary to-primary rounded-full p-3 shadow-lg">
+                    <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-[#6443F4] to-[#6443F4] rounded-full p-3 shadow-lg">
                       <ShieldCheck className="w-8 h-8 text-white" />
                     </div>
                   </div>
@@ -131,8 +131,8 @@ export default function PrivacyPage() {
                   key={index}
                   className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 shadow-sm"
                 >
-                  <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-primary/10 to-primary/10 flex items-center justify-center mb-3">
-                    <feature.icon className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-3">
+                    <feature.icon className="w-6 h-6 text-[#6443F4]" />
                   </div>
                   <h4 className="font-semibold text-sm mb-1">{feature.title}</h4>
                   <p className="text-xs text-muted-foreground">{feature.description}</p>
@@ -145,7 +145,7 @@ export default function PrivacyPage() {
         {/* Intro Card */}
         <section className="py-16 bg-white dark:bg-background">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="border-l-4 border-l-primary" data-testid="card-intro">
+            <Card className="border-l-4 border-l-[#6443F4]" data-testid="card-intro">
               <CardContent className="pt-6">
                 {/* OUT_OF_SCOPE: Legal body text */}
                 <p className="text-muted-foreground leading-relaxed">
@@ -169,7 +169,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-who-we-are">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Building2 className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.whoWeAre")}
@@ -188,7 +188,7 @@ export default function PrivacyPage() {
                   For privacy-related inquiries, contact us at:{" "}
                   <a
                     href="mailto:privacy@travi.world"
-                    className="text-primary hover:underline"
+                    className="text-[#6443F4] hover:underline"
                     data-testid="link-privacy-email"
                   >
                     privacy@travi.world
@@ -200,7 +200,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-information-collect">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <FileText className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.informationCollect")}
@@ -240,7 +240,7 @@ export default function PrivacyPage() {
                     "General geographic location",
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-5 h-5 text-[#6443F4] mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{item}</span>
                     </div>
                   ))}
@@ -260,7 +260,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-how-we-use">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Users className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.howWeUse")}
@@ -298,7 +298,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-legal-basis">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <FileText className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.legalBasis")}
@@ -331,7 +331,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-cookies">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Cookie className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.cookies")}
@@ -371,7 +371,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-third-party">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Globe className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.thirdParty")}
@@ -406,7 +406,7 @@ export default function PrivacyPage() {
                     "Other travel providers",
                   ].map((partner, i) => (
                     <div key={i} className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-[#6443F4] flex-shrink-0" />
                       <span className="text-sm">{partner}</span>
                     </div>
                   ))}
@@ -426,7 +426,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-ai-contents">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <AlertCircle className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.aiContent")}
@@ -446,7 +446,7 @@ export default function PrivacyPage() {
                     "May contain inaccuracies (verify independently)",
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-5 h-5 text-[#6443F4] mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{item}</span>
                     </div>
                   ))}
@@ -457,7 +457,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-international-transfers">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Globe className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.internationalTransfers")}
@@ -485,7 +485,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-data-retention">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <RefreshCw className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.dataRetention")}
@@ -517,7 +517,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-privacy-rights">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Shield className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.privacyRights")}
@@ -561,7 +561,7 @@ export default function PrivacyPage() {
                 </ul>
                 <p>
                   To exercise any of these rights, contact us at:{" "}
-                  <a href="mailto:privacy@travi.world" className="text-primary hover:underline">
+                  <a href="mailto:privacy@travi.world" className="text-[#6443F4] hover:underline">
                     privacy@travi.world
                   </a>
                 </p>
@@ -576,7 +576,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-california-rights">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <MapPin className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.californiaRights")}
@@ -606,7 +606,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-children-privacy">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Baby className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.childrenPrivacy")}
@@ -623,7 +623,7 @@ export default function PrivacyPage() {
                 <p>
                   If you are a parent or guardian and believe your child has provided us with
                   personal information, please contact us at{" "}
-                  <a href="mailto:privacy@travi.world" className="text-primary hover:underline">
+                  <a href="mailto:privacy@travi.world" className="text-[#6443F4] hover:underline">
                     privacy@travi.world
                   </a>
                 </p>
@@ -633,7 +633,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-data-security">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Lock className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.dataSecurity")}
@@ -668,7 +668,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-changes">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <RefreshCw className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.changes")}
@@ -696,7 +696,7 @@ export default function PrivacyPage() {
             <Card data-testid="section-contact">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Mail className="w-5 h-5 text-white" />
                   </div>
                   {t("pages.privacy.sections.contactUs")}
@@ -710,12 +710,12 @@ export default function PrivacyPage() {
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-primary" />
+                    <Mail className="w-4 h-4 text-[#6443F4]" />
                     <span>
                       Privacy Inquiries:{" "}
                       <a
                         href="mailto:privacy@travi.world"
-                        className="text-primary hover:underline"
+                        className="text-[#6443F4] hover:underline"
                         data-testid="link-contact-privacy"
                       >
                         privacy@travi.world
@@ -723,12 +723,12 @@ export default function PrivacyPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-primary" />
+                    <Mail className="w-4 h-4 text-[#6443F4]" />
                     <span>
                       General Inquiries:{" "}
                       <a
                         href="mailto:info@travi.world"
-                        className="text-primary hover:underline"
+                        className="text-[#6443F4] hover:underline"
                         data-testid="link-contact-info"
                       >
                         info@travi.world
@@ -736,7 +736,7 @@ export default function PrivacyPage() {
                     </span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-primary mt-0.5" />
+                    <MapPin className="w-4 h-4 text-[#6443F4] mt-0.5" />
                     <div>
                       <p>Postal Address:</p>
                       <p>KBR Global Creative Consulting Ltd</p>
@@ -756,7 +756,7 @@ export default function PrivacyPage() {
         </section>
 
         {/* Contact CTA */}
-        <section className="py-16 bg-gradient-to-r from-primary to-primary">
+        <section className="py-16 bg-gradient-to-r from-[#6443F4] to-[#6443F4]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 font-chillax">
               Questions About Your Privacy?
@@ -770,7 +770,7 @@ export default function PrivacyPage() {
                 <Button
                   variant="secondary"
                   size="lg"
-                  className="bg-white text-primary hover:bg-white/90"
+                  className="bg-white text-[#6443F4] hover:bg-white/90"
                 >
                   <Mail className="w-4 h-4 mr-2" />
                   Contact Privacy Team

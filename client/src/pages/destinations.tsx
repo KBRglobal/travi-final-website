@@ -29,11 +29,12 @@ const heroAnimationStyles = `
   .animated-gradient-text {
     background: linear-gradient(
       135deg,
-      hsl(15 72% 55%) 0%,
-      hsl(36 90% 55%) 25%,
-      hsl(15 72% 55%) 50%,
-      hsl(36 90% 55%) 75%,
-      hsl(15 72% 55%) 100%
+      #6443F4 0%,
+      #8B5CF6 20%,
+      #A78BFA 40%,
+      #F24294 60%,
+      #8B5CF6 80%,
+      #6443F4 100%
     );
     background-size: 300% 300%;
     -webkit-background-clip: text;
@@ -98,18 +99,18 @@ function DestinationChip({ destination, index }: { destination: APIDestination; 
     >
       <Link href={`/destinations/${destination.id}`}>
         <div
-          className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-primary/30 cursor-pointer group"
+          className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30 cursor-pointer group"
           data-testid={`chip-destination-${destination.id}`}
         >
           <img
             src={destination.cardImage || `/cards/${destination.id}.webp`}
             alt={destination.name}
-            className="w-9 h-9 rounded-full object-cover ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all"
+            className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
             loading="lazy"
             decoding="async"
             onError={e => {
               const target = e.target as HTMLImageElement;
-              target.src = `https://placehold.co/100x100/C85A3A/white?text=${destination.name.charAt(0)}`;
+              target.src = `https://placehold.co/100x100/6443F4/white?text=${destination.name.charAt(0)}`;
             }}
           />
           <div className="flex flex-col">
@@ -143,13 +144,13 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
       <SubtleSkyBackground className="absolute inset-0 pointer-events-none" />
 
       <motion.div
-        className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-travi-amber/20 via-travi-sand/10 to-transparent rounded-full blur-3xl pointer-events-none"
+        className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/20 via-pink-200/10 to-transparent rounded-full blur-3xl pointer-events-none"
         animate={shouldAnimate ? { scale: [1, 1.1, 1], opacity: [0.3, 0.4, 0.3] } : {}}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         aria-hidden="true"
       />
       <motion.div
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-travi-cream/30 via-travi-sand/20 to-transparent rounded-full blur-3xl pointer-events-none"
+        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-200/30 via-purple-100/20 to-transparent rounded-full blur-3xl pointer-events-none"
         animate={shouldAnimate ? { scale: [1, 1.15, 1], opacity: [0.25, 0.35, 0.25] } : {}}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         aria-hidden="true"
@@ -161,7 +162,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
       >
         <div
           className="w-full h-full rounded-full border-[30px] border-transparent"
-          style={{ borderTopColor: "hsl(15 72% 55%)", borderRightColor: "hsl(36 90% 55%)" }}
+          style={{ borderTopColor: "#6443F4", borderRightColor: "#F24294" }}
         />
       </div>
 
@@ -169,13 +170,13 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           <div className="flex-1 max-w-xl text-center lg:text-left">
             <motion.div
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-travi-cream to-travi-sand dark:from-primary/10 dark:to-travi-amber/10 rounded-full mb-6 border border-primary/20 dark:border-primary/30"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-full mb-6 border border-purple-100/50 dark:border-purple-800/30"
               initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <Globe className="w-4 h-4 text-primary" aria-hidden="true" />
-              <span className="text-xs font-semibold tracking-wide text-primary uppercase">
+              <Globe className="w-4 h-4 text-[#6443F4]" aria-hidden="true" />
+              <span className="text-xs font-semibold tracking-wide text-[#6443F4] uppercase">
                 {t("destinations.hero.badge", { count: destinationCount })}
               </span>
             </motion.div>
@@ -228,8 +229,8 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
               ].map((stat, i) => (
                 <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                   <div className="text-center lg:text-left flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-travi-amber/10 flex items-center justify-center">
-                      <stat.icon className="w-5 h-5 text-primary" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6443F4]/10 to-[#E84C9A]/10 flex items-center justify-center">
+                      <stat.icon className="w-5 h-5 text-[#6443F4]" />
                     </div>
                     <div>
                       <dd className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-white font-chillax">
@@ -258,7 +259,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
             >
               <Link href="#explore-destinations">
                 <Button
-                  className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-medium shadow-lg shadow-primary/20 transition-colors duration-200"
+                  className="rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white px-8 py-6 text-base font-medium shadow-lg shadow-purple-500/20 transition-colors duration-200"
                   data-testid="button-explore-destinations"
                 >
                   {t("destinations.hero.exploreAll")}
@@ -359,7 +360,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  <Badge className="mb-4 bg-gradient-to-r from-primary to-travi-amber text-white border-0 text-xs px-4 py-1.5 font-medium shadow-lg">
+                  <Badge className="mb-4 bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white border-0 text-xs px-4 py-1.5 font-medium shadow-lg">
                     <Sparkles className="w-3 h-3 mr-1.5 fill-current" aria-hidden="true" />
                     {current.moodVibe || t("destinations.card.destination")}
                   </Badge>
@@ -379,7 +380,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                   className="flex items-center gap-3 text-white/80 text-sm sm:text-base mb-6"
                 >
                   <span className="inline-flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-travi-amber" aria-hidden="true" />
+                    <MapPin className="w-4 h-4 text-[#E84C9A]" aria-hidden="true" />
                     {current.country}
                   </span>
                   {current.moodTagline && (
@@ -397,7 +398,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
                   transition={{ delay: 0.5 }}
                 >
                   <Link href={`/destinations/${current.id}`}>
-                    <Button className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 text-sm font-medium shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                    <Button className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 py-2.5 text-sm font-medium shadow-lg transition-all duration-300 hover:scale-[1.02]">
                       {t("destinations.card.explore")} {current.name}
                       <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
                     </Button>
@@ -431,7 +432,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
               className={cn(
                 "h-2 rounded-full transition-all duration-300",
                 idx === currentIndex
-                  ? "w-7 bg-gradient-to-r from-primary to-travi-amber"
+                  ? "w-7 bg-gradient-to-r from-[#6443F4] to-[#E84C9A]"
                   : "w-2 bg-white/50 hover:bg-white/70"
               )}
               role="tab"
@@ -495,7 +496,7 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
 
             <div className="absolute bottom-0 left-0 right-0 p-4">
               <div className="flex items-center gap-1.5 text-white/85 text-xs mb-1.5">
-                <MapPin className="w-3.5 h-3.5 text-travi-amber" aria-hidden="true" />
+                <MapPin className="w-3.5 h-3.5 text-[#E84C9A]" aria-hidden="true" />
                 <span>{destination.country}</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight font-chillax">
@@ -514,7 +515,7 @@ function DestinationCard({ destination, index }: { destination: APIDestination; 
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 {destination.destinationLevel || t("destinations.card.defaultLevel")}
               </span>
-              <span className="flex items-center text-primary font-medium text-sm transition-all duration-300 group-hover:gap-1.5">
+              <span className="flex items-center text-[#6443F4] font-medium text-sm transition-all duration-300 group-hover:gap-1.5">
                 {t("destinations.card.explore")}
                 <ArrowRight
                   className="w-3.5 h-3.5 ml-1 transform group-hover:translate-x-0.5 transition-transform duration-300"
@@ -586,7 +587,7 @@ function LoadingState() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-slate-950">
       <div className="text-center max-w-md">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-travi-amber flex items-center justify-center mx-auto mb-4 animate-pulse">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6443F4] to-[#E84C9A] flex items-center justify-center mx-auto mb-4 animate-pulse">
           <Loader2 className="w-8 h-8 text-white animate-spin" aria-hidden="true" />
         </div>
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 font-chillax">
@@ -613,7 +614,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         <p className="text-slate-600 dark:text-slate-400 mb-6">{t("destinations.error.message")}</p>
         <Button
           onClick={onRetry}
-          className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground px-6 shadow-lg"
+          className="rounded-xl bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90 text-white px-6 shadow-lg"
         >
           <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
           {t("destinations.error.refresh")}
@@ -792,7 +793,7 @@ export default function DestinationsPage() {
                         placeholder={t("destinations.search.placeholder")}
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
-                        className="pl-10 pr-4 h-11 w-full sm:w-64 rounded-xl border-slate-200 dark:border-slate-700 focus:border-primary focus:ring-primary/20"
+                        className="pl-10 pr-4 h-11 w-full sm:w-64 rounded-xl border-slate-200 dark:border-slate-700 focus:border-[#6443F4] focus:ring-[#6443F4]/20"
                         data-testid="input-search-destinations"
                       />
                     </div>

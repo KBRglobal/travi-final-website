@@ -175,9 +175,9 @@ export function SplitHero({
 
   return (
     <section
-      className="relative bg-travi-cream dark:bg-background min-h-screen flex items-center pt-32 pb-16 lg:pt-40 lg:pb-24 px-4 sm:px-6 md:px-12 lg:px-16 overflow-hidden"
+      className="relative bg-white dark:bg-slate-950 min-h-screen flex items-center pt-32 pb-16 lg:pt-40 lg:pb-24 px-4 sm:px-6 md:px-12 lg:px-16 overflow-hidden"
       data-testid="hero-section"
-      aria-label="Welcome to TRAVI World - Travel Intelligence, Beautifully Curated"
+      aria-label="Welcome to TRAVI World - Your trusted travel resource"
     >
       <style>{heroAnimationStyles}</style>
 
@@ -192,11 +192,11 @@ export function SplitHero({
 
       {/* Decorative blobs */}
       <div
-        className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-travi-terracotta/15 via-travi-amber/10 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-1"
+        className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/20 via-pink-200/10 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-1"
         aria-hidden="true"
       />
       <div
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-travi-sand/40 via-travi-olive/10 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-2"
+        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-200/30 via-purple-100/20 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-2"
         aria-hidden="true"
       />
 
@@ -207,7 +207,7 @@ export function SplitHero({
       >
         <div
           className="w-full h-full rounded-full border-[40px] border-transparent"
-          style={{ borderTopColor: "hsl(15 72% 55%)", borderRightColor: "hsl(36 90% 55%)" }}
+          style={{ borderTopColor: "hsl(var(--travi-purple))", borderRightColor: "#F24294" }}
         />
       </div>
 
@@ -215,8 +215,8 @@ export function SplitHero({
         {/* Left Content */}
         <div className="flex-1 max-w-xl text-center lg:text-left">
           <div className="mb-6">
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-card/90 dark:bg-card/90 backdrop-blur-md border border-border dark:border-border shadow-md">
-              <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 shadow-md">
+              <span className="w-2.5 h-2.5 rounded-full bg-travi-purple" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 {t("home.hero.badge", { count: siteStats?.destinations || 17 })}
               </span>
@@ -224,20 +224,20 @@ export function SplitHero({
           </div>
 
           <h1 className="mb-6">
-            <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground dark:text-white leading-[1.1] tracking-tight mb-2 font-chillax">
+            <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-2 font-chillax">
               {t("home.hero.headlinePart1")}
             </span>
             <span className="relative inline-block">
               <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text font-chillax">
                 {t("home.hero.headlinePart2")}
               </span>
-              <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary via-travi-amber to-travi-terracotta rounded-full opacity-80" />
+              <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-travi-purple via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
             </span>
           </h1>
 
           <p
             id="hero-description"
-            className="text-base sm:text-lg text-muted-foreground dark:text-muted-foreground mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0"
+            className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0"
             dangerouslySetInnerHTML={{
               __html: t("home.hero.description", {
                 destinations: `<span class="font-medium text-slate-700 dark:text-slate-300">${siteStats?.destinations || 17}</span>`,
@@ -268,7 +268,7 @@ export function SplitHero({
               <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                 <div className="text-center lg:text-left">
                   <dt className="sr-only">{stat.srLabel}</dt>
-                  <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-foreground dark:text-white font-chillax">
+                  <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white font-chillax">
                     {stat.num}
                   </dd>
                   <div
@@ -292,7 +292,7 @@ export function SplitHero({
           <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
             <Link href={localePath("/destinations")}>
               <Button
-                className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
+                className="rounded-full bg-gradient-to-r from-travi-purple to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
                 aria-describedby="hero-description"
               >
                 {t("home.cta.exploreDestinations")}
@@ -302,7 +302,7 @@ export function SplitHero({
             <Link href={localePath("/guides")}>
               <Button
                 variant="outline"
-                className="rounded-full bg-card hover:bg-travi-sand/50 text-foreground px-8 py-6 text-base font-medium border-2 border-border hover:border-primary/30 transition-colors duration-200"
+                className="rounded-full bg-white hover:bg-slate-50 text-slate-700 px-8 py-6 text-base font-medium border-2 border-slate-200 hover:border-slate-300 transition-colors duration-200"
               >
                 {t("common.viewAll")}
               </Button>
@@ -325,8 +325,8 @@ export function SplitHero({
                 className={cn(
                   "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
                   currentIndex === i
-                    ? "w-8 bg-gradient-to-r from-primary to-travi-amber"
-                    : "w-2.5 bg-travi-sand dark:bg-slate-700 hover:bg-travi-sand/70"
+                    ? "w-8 bg-gradient-to-r from-travi-purple to-[#8B5CF6]"
+                    : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
                 )}
               />
             ))}
@@ -336,7 +336,7 @@ export function SplitHero({
         {/* Right Image */}
         <div className="flex-1 w-full max-w-md lg:max-w-lg relative mt-8 lg:mt-0">
           <div
-            className="absolute -inset-4 bg-gradient-to-r from-primary/15 via-travi-amber/10 to-primary/15 rounded-[2rem] blur-xl opacity-60"
+            className="absolute -inset-4 bg-gradient-to-r from-travi-purple/20 via-[#F24294]/10 to-travi-purple/20 rounded-[2rem] blur-xl opacity-60"
             aria-hidden="true"
           />
 
@@ -380,62 +380,60 @@ export function SplitHero({
                 isAnimating ? "opacity-0 translate-y-5" : "opacity-100 translate-y-0"
               )}
             >
-              <div className="bg-card/95 dark:bg-card/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
+              <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-travi-amber flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/30">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-travi-purple to-[#8B5CF6] flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-500/30">
                     <MapPin className="w-5 h-5 text-white" aria-hidden="true" />
                   </div>
                   <div>
-                    <div className="font-bold text-foreground dark:text-white">
+                    <div className="font-bold text-slate-900 dark:text-white">
                       {dest.name}, {dest.country}
                     </div>
-                    <div className="text-sm text-muted-foreground">{dest.tagline}</div>
+                    <div className="text-sm text-slate-500">{dest.tagline}</div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Popular badge */}
-            <div className="absolute top-6 right-6 inline-flex items-center gap-2 bg-card/95 dark:bg-card backdrop-blur-sm rounded-full px-4 py-2 shadow-lg shadow-primary/10 border border-primary/20 float-badge">
+            <div className="absolute top-6 right-6 inline-flex items-center gap-2 bg-white/95 dark:bg-slate-800 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg shadow-purple-500/10 border border-travi-purple/20 float-badge">
               <div className="relative flex items-center justify-center">
-                <span className="absolute w-2.5 h-2.5 rounded-full bg-primary animate-ping opacity-75" />
-                <span className="relative w-2 h-2 rounded-full bg-primary" />
+                <span className="absolute w-2.5 h-2.5 rounded-full bg-travi-purple animate-ping opacity-75" />
+                <span className="relative w-2 h-2 rounded-full bg-travi-purple" />
               </div>
-              <span className="text-xs font-semibold text-primary">
+              <span className="text-xs font-semibold text-travi-purple">
                 {t("home.popular", "Popular")}
               </span>
             </div>
           </div>
 
           {/* Floating cards */}
-          <div className="absolute -left-4 top-1/4 bg-card dark:bg-card rounded-xl shadow-xl p-3 hidden lg:block border border-border dark:border-border">
+          <div className="absolute -left-4 top-1/4 bg-white dark:bg-slate-800 rounded-xl shadow-xl p-3 hidden lg:block border border-slate-100 dark:border-slate-700">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-md">
                 <Ticket className="w-4 h-4 text-white" aria-hidden="true" />
               </div>
               <div className="text-xs">
-                <div className="font-semibold text-foreground dark:text-white">
+                <div className="font-semibold text-slate-900 dark:text-white">
                   {t("home.floatingCards.tours", "500+ Tours")}
                 </div>
-                <div className="text-muted-foreground">
+                <div className="text-slate-500">
                   {t("home.floatingCards.available", "Available")}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="absolute -right-2 bottom-1/3 bg-card dark:bg-card rounded-xl shadow-xl p-3 hidden lg:block border border-border dark:border-border">
+          <div className="absolute -right-2 bottom-1/3 bg-white dark:bg-slate-800 rounded-xl shadow-xl p-3 hidden lg:block border border-slate-100 dark:border-slate-700">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md">
                 <Star className="w-4 h-4 text-white" aria-hidden="true" />
               </div>
               <div className="text-xs">
-                <div className="font-semibold text-foreground dark:text-white">
+                <div className="font-semibold text-slate-900 dark:text-white">
                   {t("home.floatingCards.rating", "4.9 Rating")}
                 </div>
-                <div className="text-muted-foreground">
-                  {t("home.floatingCards.reviews", "Reviews")}
-                </div>
+                <div className="text-slate-500">{t("home.floatingCards.reviews", "Reviews")}</div>
               </div>
             </div>
           </div>

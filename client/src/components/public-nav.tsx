@@ -131,11 +131,18 @@ export function PublicNav({
           hideOnMobile ? "hidden lg:block" : ""
         } ${
           scrolled
-            ? "bg-primary/95 backdrop-blur-xl shadow-lg shadow-black/10"
+            ? "backdrop-blur-xl shadow-lg shadow-black/20"
             : isTransparent
               ? "bg-transparent"
-              : "bg-primary"
+              : ""
         }`}
+        style={{
+          background: scrolled
+            ? "hsla(var(--travi-purple) / 0.95)"
+            : isTransparent
+              ? "transparent"
+              : "hsl(var(--travi-purple))",
+        }}
         data-testid="nav-header"
         aria-label={t("nav.mainNavigation")}
       >
@@ -155,8 +162,8 @@ export function PublicNav({
                     href={localePath(item.href)}
                     className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
                       active
-                        ? "text-white bg-white/20 font-semibold"
-                        : "text-white/80 hover:text-white hover:bg-white/10"
+                        ? "text-white bg-white/20"
+                        : "text-white/70 hover:text-white hover:bg-white/10"
                     }`}
                     data-testid={`link-nav-${item.href.replace("/", "")}`}
                     aria-current={active ? "page" : undefined}
@@ -209,7 +216,10 @@ export function PublicNav({
                 </SheetTrigger>
                 <SheetContent
                   side={isRTL ? "left" : "right"}
-                  className="w-[300px] sm:w-[350px] border-0 bg-primary"
+                  className="w-[300px] sm:w-[350px] border-0"
+                  style={{
+                    background: "hsl(var(--travi-purple))",
+                  }}
                 >
                   <SheetHeader className="flex flex-row items-center justify-between pb-4 border-b border-white/10">
                     <SheetTitle>
@@ -239,8 +249,8 @@ export function PublicNav({
                           onClick={() => setMobileMenuOpen(false)}
                           className={`flex items-center py-3 px-4 rounded-xl text-base font-medium transition-colors ${
                             active
-                              ? "text-white bg-white/20 font-semibold"
-                              : "text-white/80 hover:text-white hover:bg-white/10"
+                              ? "text-white bg-white/15"
+                              : "text-white/70 hover:text-white hover:bg-white/10"
                           }`}
                           data-testid={`link-mobile-${item.href.replace("/", "")}`}
                           aria-current={active ? "page" : undefined}

@@ -79,7 +79,7 @@ export function PWAInstallPrompt() {
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96">
-      <Card className="shadow-xl border-0 bg-primary">
+      <Card className="shadow-xl border-0 bg-[#6443F4]">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 p-2 bg-white/20 rounded-lg">
@@ -94,7 +94,7 @@ export function PWAInstallPrompt() {
                 <Button
                   onClick={handleInstall}
                   size="sm"
-                  className="bg-white text-primary hover:bg-white/90 gap-1.5"
+                  className="bg-white text-[#6443F4] hover:bg-white/90 gap-1.5"
                   data-testid="button-pwa-install"
                 >
                   <Download className="h-3.5 w-3.5" />

@@ -150,7 +150,7 @@ export function MagicButton({
       disabled={disabled || isGenerating}
       className={cn(
         sizeClasses[size],
-        "text-primary hover:text-primary/80 hover:bg-primary/5 dark:hover:bg-primary/10",
+        "text-purple-500 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950",
         isGenerating && "animate-pulse",
         className
       )}
@@ -244,7 +244,7 @@ export function MagicAllButton({
       onClick={handleClick}
       disabled={disabled || isGenerating}
       className={cn(
-        "gap-2 border-primary/20 text-primary hover:bg-primary/5 hover:border-primary/30 dark:border-primary/30 dark:text-primary/80 dark:hover:bg-primary/10",
+        "gap-2 border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300 dark:border-purple-800 dark:text-purple-400 dark:hover:bg-purple-950",
         isGenerating && "animate-pulse",
         className
       )}

@@ -98,8 +98,8 @@ export default function ContactPage() {
                 variants={fadeInUp}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 mb-6"
               >
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary dark:text-primary">
+                <Sparkles className="w-4 h-4 text-[#6443F4]" />
+                <span className="text-sm font-medium text-[#6443F4] dark:text-[#6443F4]">
                   {t("pages.contact.badge")}
                 </span>
               </motion.div>
@@ -112,7 +112,7 @@ export default function ContactPage() {
                 <span className="text-slate-900 dark:text-white">
                   {t("pages.contact.titlePart1")}{" "}
                 </span>
-                <span className="text-primary">{t("pages.contact.titlePart2")}</span>
+                <span className="text-[#6443F4]">{t("pages.contact.titlePart2")}</span>
               </motion.h1>
 
               <motion.p
@@ -125,7 +125,7 @@ export default function ContactPage() {
               <motion.a
                 variants={fadeInUp}
                 href="mailto:info@travi.world"
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-primary hover:bg-primary/90 text-white font-medium shadow-lg shadow-primary/25 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#6443F4] hover:bg-[#5539d4] text-white font-medium shadow-lg shadow-[#6443F4]/25 transition-all duration-300"
                 data-testid="button-send-message"
               >
                 <Send className="w-5 h-5" />
@@ -151,7 +151,7 @@ export default function ContactPage() {
 
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg border border-slate-200 dark:border-slate-700">
                   <div className="flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5 text-primary" />
+                    <MessageSquare className="w-5 h-5 text-[#6443F4]" />
                     <span className="font-medium text-slate-900 dark:text-white">
                       {t("pages.contact.travelCompanion")}
                     </span>
@@ -193,8 +193,8 @@ export default function ContactPage() {
                 className="group relative bg-white dark:bg-slate-900 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 data-testid={`card-contact-${option.title.toLowerCase().replace(/\s+/g, "-")}`}
               >
-                <div className="w-14 h-14 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                  <option.icon className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 rounded-xl bg-[#6443F4]/10 dark:bg-[#6443F4]/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                  <option.icon className="w-7 h-7 text-[#6443F4]" />
                 </div>
 
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
@@ -207,7 +207,7 @@ export default function ContactPage() {
                 {option.href ? (
                   <a
                     href={option.href}
-                    className="text-primary dark:text-primary font-medium hover:underline inline-flex items-center gap-1"
+                    className="text-[#6443F4] dark:text-[#6443F4] font-medium hover:underline inline-flex items-center gap-1"
                     data-testid={option.testId}
                   >
                     {option.action}
@@ -235,8 +235,8 @@ export default function ContactPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center mb-6">
-                <HelpCircle className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 rounded-xl bg-[#6443F4]/10 dark:bg-[#6443F4]/20 flex items-center justify-center mb-6">
+                <HelpCircle className="w-6 h-6 text-[#6443F4]" />
               </div>
 
               <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4 font-chillax">
@@ -256,8 +256,8 @@ export default function ContactPage() {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <div className="w-6 h-6 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-primary transition-all duration-300">
-                      <div className="w-2 h-2 rounded-full bg-primary group-hover:bg-white transition-colors" />
+                    <div className="w-6 h-6 rounded-full bg-[#6443F4]/10 dark:bg-[#6443F4]/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-[#6443F4] transition-all duration-300">
+                      <div className="w-2 h-2 rounded-full bg-[#6443F4] group-hover:bg-white transition-colors" />
                     </div>
                     <span className="text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                       {topic}
@@ -321,8 +321,8 @@ export default function ContactPage() {
           >
             <div className="relative bg-white dark:bg-slate-900 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-slate-200 dark:border-slate-800 shadow-lg">
               <div className="flex flex-col md:flex-row items-start gap-8">
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <Building2 className="w-8 h-8 text-primary" />
+                <div className="w-16 h-16 rounded-2xl bg-[#6443F4]/10 dark:bg-[#6443F4]/20 flex items-center justify-center flex-shrink-0">
+                  <Building2 className="w-8 h-8 text-[#6443F4]" />
                 </div>
 
                 <div className="flex-1">
@@ -334,7 +334,7 @@ export default function ContactPage() {
                   </p>
 
                   <div className="flex items-start gap-4">
-                    <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                    <MapPin className="w-5 h-5 text-[#6443F4] mt-1 flex-shrink-0" />
                     <div className="space-y-1">
                       <p className="font-semibold text-slate-900 dark:text-white">
                         KBR Global Creative Consulting Ltd

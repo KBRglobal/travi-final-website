@@ -61,14 +61,15 @@ interface GuidesResponse {
   offset: number;
 }
 
-// Hero animation styles (warm palette)
+// Hero animation styles (matching attractions.tsx)
 const heroAnimationStyles = `
   .animated-gradient-text {
     background: linear-gradient(
       135deg,
-      hsl(var(--primary)) 0%,
-      hsl(var(--travi-amber)) 50%,
-      hsl(var(--primary)) 100%
+      #6443F4 0%,
+      #8B5CF6 30%,
+      #F24294 70%,
+      #6443F4 100%
     );
     background-size: 300% 300%;
     -webkit-background-clip: text;
@@ -139,7 +140,7 @@ const HERO_GUIDES = [
   },
 ];
 
-// Enhanced guide card with warm styling
+// Enhanced guide card with premium styling
 function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; index: number }) {
   const destinationId = guide.slug.replace("-travel-guide", "");
   const cardImage = `/cards/${destinationId}.webp`;
@@ -159,7 +160,7 @@ function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; ind
     >
       <Link href={guideUrl}>
         <div
-          className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10"
+          className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20"
           data-testid={`guide-card-${guide.slug}`}
         >
           {/* Image container with parallax hover effect */}
@@ -181,8 +182,8 @@ function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; ind
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-80" />
 
-            {/* Warm glow effect on hover */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-travi-amber/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            {/* Glow effect on hover */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#6443F4]/20 via-transparent to-[#E84C9A]/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
             {/* Title overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-5">
@@ -216,15 +217,15 @@ function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; ind
                 </div>
               </div>
 
-              <div className="flex items-center gap-1 text-primary font-medium text-sm transition-all duration-300 group-hover:gap-2">
+              <div className="flex items-center gap-1 text-purple-600 font-medium text-sm transition-all duration-300 group-hover:gap-2">
                 <span>Explore</span>
                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </div>
             </div>
           </div>
 
-          {/* Bottom accent line - warm gradient */}
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-travi-amber transform scale-x-0 transition-transform duration-500 origin-left group-hover:scale-x-100" />
+          {/* Bottom accent line */}
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#6443F4] to-[#E84C9A] transform scale-x-0 transition-transform duration-500 origin-left group-hover:scale-x-100" />
         </div>
       </Link>
     </motion.div>
@@ -267,7 +268,7 @@ function FeaturedGuideCard({ guide, locale }: { guide: Guide; locale: string }) 
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/30 md:to-white" />
 
             {/* Floating badge */}
-            <Badge className="absolute top-4 left-4 bg-gradient-to-r from-primary to-travi-amber text-white border-0 shadow-lg">
+            <Badge className="absolute top-4 left-4 bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white border-0 shadow-lg">
               <Sparkles className="h-3 w-3 mr-1.5" />
               Featured Guide
             </Badge>
@@ -276,7 +277,7 @@ function FeaturedGuideCard({ guide, locale }: { guide: Guide; locale: string }) 
           {/* Content side */}
           <div className="p-8 md:p-10 flex flex-col justify-center">
             <div className="mb-4">
-              <span className="text-sm font-medium text-primary uppercase tracking-wider">
+              <span className="text-sm font-medium text-purple-600 uppercase tracking-wider">
                 Destination Spotlight
               </span>
             </div>
@@ -298,7 +299,7 @@ function FeaturedGuideCard({ guide, locale }: { guide: Guide; locale: string }) 
             </div>
 
             <Button
-              className="w-fit bg-primary text-primary-foreground border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+              className="w-fit bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
               data-testid={`read-featured-guide-${guide.slug}`}
             >
               Read Full Guide
@@ -409,37 +410,34 @@ export default function TravelGuidesPage() {
 
         <PublicNav />
 
-        {/* Split-Screen Immersive Hero - Warm palette */}
+        {/* Split-Screen Immersive Hero - Matching attractions.tsx style */}
         <section
-          className="relative min-h-screen bg-travi-cream dark:bg-slate-950"
+          className="relative min-h-screen bg-slate-50 dark:bg-slate-950"
           data-testid="hero-section"
           aria-label="Explore travel guides for destinations worldwide"
         >
           {/* Background Elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-            {/* Morphing blobs - warm tones */}
-            <div className="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-travi-amber/20 via-primary/10 to-travi-sand/30 dark:from-travi-amber/10 dark:via-primary/5 dark:to-travi-sand/10 morph-blob blur-3xl" />
+            {/* Morphing blobs - adapted for dark mode */}
+            <div className="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-purple-200/40 via-pink-100/30 to-purple-100/40 dark:from-purple-900/30 dark:via-pink-900/20 dark:to-purple-900/30 morph-blob blur-3xl" />
             <div
-              className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-travi-olive/15 via-travi-teal/10 to-primary/15 dark:from-travi-olive/5 dark:via-travi-teal/5 dark:to-primary/5 morph-blob blur-3xl"
+              className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-blue-100/30 via-purple-100/20 to-pink-100/30 dark:from-blue-900/20 dark:via-purple-900/15 dark:to-pink-900/20 morph-blob blur-3xl"
               style={{ animationDelay: "-4s" }}
             />
 
-            {/* Rotating gradient ring - warm tones */}
+            {/* Rotating gradient ring - opacity adjusted for dark mode */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rotate-slow opacity-10 dark:opacity-20">
               <div
                 className="w-full h-full rounded-full border-[40px] border-transparent"
-                style={{
-                  borderTopColor: "hsl(var(--primary))",
-                  borderRightColor: "hsl(var(--travi-amber))",
-                }}
+                style={{ borderTopColor: "#6443F4", borderRightColor: "#F24294" }}
               />
             </div>
 
-            {/* Grid dots */}
+            {/* Grid dots - adjusted for dark mode */}
             <div
               className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08]"
               style={{
-                backgroundImage: "radial-gradient(hsl(var(--primary)) 1px, transparent 1px)",
+                backgroundImage: "radial-gradient(#6443F4 1px, transparent 1px)",
                 backgroundSize: "30px 30px",
               }}
             />
@@ -450,32 +448,33 @@ export default function TravelGuidesPage() {
               <div className="grid lg:grid-cols-2 gap-8 items-center">
                 {/* Left Side - Content */}
                 <div className="flex flex-col justify-center px-6 sm:px-12 lg:px-16 xl:px-24">
-                  {/* Top Badge */}
+                  {/* Top Badge - Blue dot style */}
                   <motion.div
                     className="mb-8"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.1 }}
                   >
-                    <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-primary/10 border border-primary/20">
+                    <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-[#6443F4]/10 border border-[#6443F4]/20">
                       <div className="relative flex items-center justify-center">
-                        <span className="absolute w-3 h-3 rounded-full bg-primary animate-ping opacity-75" />
-                        <span className="relative w-2.5 h-2.5 rounded-full bg-primary" />
+                        <span className="absolute w-3 h-3 rounded-full bg-[#6443F4] animate-ping opacity-75" />
+                        <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
                       </div>
                       <span
                         className="text-sm font-semibold text-slate-700 dark:text-slate-300"
                         data-testid="badge-guides-count"
                       >
-                        <span className="text-primary">
+                        <span className="text-[#6443F4]">
                           {data?.total ? `${data.total}+` : "50+"}
                         </span>{" "}
-                        guides in <span className="text-primary">{SUPPORTED_LANGUAGES.length}</span>{" "}
+                        guides in{" "}
+                        <span className="text-[#6443F4]">{SUPPORTED_LANGUAGES.length}</span>{" "}
                         languages
                       </span>
                     </div>
                   </motion.div>
 
-                  {/* Main Headline */}
+                  {/* Main Headline - SEO focused with underline accent */}
                   <motion.h1
                     className="mb-6"
                     initial={{ opacity: 0, y: 30 }}
@@ -489,8 +488,8 @@ export default function TravelGuidesPage() {
                       <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight animated-gradient-text font-chillax">
                         Guides
                       </span>
-                      {/* Warm gradient underline accent */}
-                      <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary via-travi-amber to-travi-olive rounded-full opacity-80" />
+                      {/* Gradient underline accent */}
+                      <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
                     </span>
                   </motion.h1>
 
@@ -508,7 +507,7 @@ export default function TravelGuidesPage() {
                     gems, and insider recommendations.
                   </motion.p>
 
-                  {/* Inline Stats Row */}
+                  {/* Inline Stats Row (attractions pattern) */}
                   <motion.dl
                     className="flex flex-wrap justify-center lg:justify-start items-center gap-4 sm:gap-6 md:gap-8 mb-8"
                     initial={{ opacity: 0, y: 20 }}
@@ -558,9 +557,9 @@ export default function TravelGuidesPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.55 }}
                   >
-                    <div className="absolute -inset-1 bg-gradient-to-r from-primary via-travi-amber to-travi-olive rounded-2xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
+                    <div className="absolute -inset-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
                     <div className="relative flex items-center bg-white dark:bg-slate-800 backdrop-blur-xl rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-                      <Search className="w-5 h-5 text-primary ml-5 shrink-0" aria-hidden="true" />
+                      <Search className="w-5 h-5 text-[#6443F4] ml-5 shrink-0" aria-hidden="true" />
                       <Input
                         type="text"
                         placeholder="Search Paris, Dubai, Tokyo guides..."
@@ -575,7 +574,7 @@ export default function TravelGuidesPage() {
                           const el = document.getElementById("guides-grid");
                           el?.scrollIntoView({ behavior: "smooth" });
                         }}
-                        className="mr-2 md:mr-3 rounded-lg bg-primary text-primary-foreground"
+                        className="mr-2 md:mr-3 rounded-lg bg-[#6443F4] text-white"
                         data-testid="button-hero-search"
                         aria-label="Search guides"
                       >
@@ -603,7 +602,7 @@ export default function TravelGuidesPage() {
                         className={cn(
                           "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
                           currentIndex === i
-                            ? "w-8 bg-gradient-to-r from-primary to-travi-amber"
+                            ? "w-8 bg-gradient-to-r from-[#6443F4] to-[#8B5CF6]"
                             : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
                         )}
                       />
@@ -621,7 +620,7 @@ export default function TravelGuidesPage() {
                   >
                     {/* Main Featured Image */}
                     <div
-                      className="bento-card relative flex-1 min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-primary/15 hover:-translate-y-2 rounded-2xl overflow-hidden"
+                      className="bento-card relative flex-1 min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2 rounded-2xl overflow-hidden"
                       role="region"
                       aria-label="Featured guide"
                     >
@@ -654,7 +653,7 @@ export default function TravelGuidesPage() {
                             <span className="font-semibold text-slate-800">{dest.tagline}</span>
                           </div>
                           <motion.div
-                            className="relative px-4 py-2 rounded-full bg-gradient-to-r from-primary to-travi-amber text-white text-sm font-semibold shadow-lg"
+                            className="relative px-4 py-2 rounded-full bg-gradient-to-r from-[#6443F4] to-[#F24294] text-white text-sm font-semibold shadow-lg"
                             animate={{ scale: [1, 1.02, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
                           >
@@ -699,7 +698,7 @@ export default function TravelGuidesPage() {
                           className={cn(
                             "w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-300",
                             currentIndex === i
-                              ? "border-primary ring-2 ring-primary/30 scale-110"
+                              ? "border-[#6443F4] ring-2 ring-[#6443F4]/30 scale-110"
                               : "border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-100"
                           )}
                         >
@@ -750,15 +749,15 @@ export default function TravelGuidesPage() {
                 </p>
                 <Button
                   onClick={() => window.location.reload()}
-                  className="bg-primary text-primary-foreground"
+                  className="bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white"
                 >
                   Refresh Page
                 </Button>
               </Card>
             ) : filteredGuides.length === 0 ? (
-              <Card className="p-12 text-center bg-gradient-to-br from-travi-cream to-travi-sand/30 border-0 shadow-xl rounded-3xl">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-primary/20 to-travi-amber/20 flex items-center justify-center">
-                  <BookOpen className="h-8 w-8 text-primary" />
+              <Card className="p-12 text-center bg-gradient-to-br from-purple-50 to-pink-50 border-0 shadow-xl rounded-3xl">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-[#6443F4]/20 to-[#E84C9A]/20 flex items-center justify-center">
+                  <BookOpen className="h-8 w-8 text-purple-600" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">
                   {searchQuery ? "No Guides Found" : "Guides Coming Soon"}

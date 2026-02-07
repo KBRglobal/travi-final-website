@@ -94,8 +94,10 @@ export default defineConfig({
           if (id.includes("node_modules/@tiptap/") || id.includes("node_modules/prosemirror")) {
             return "editor-vendor";
           }
-          // Analytics: PostHog lazy-loaded via dynamic import in main.tsx
-          // No manual chunk needed - Vite handles async chunking automatically
+          // Analytics
+          if (id.includes("node_modules/posthog-js/")) {
+            return "analytics-vendor";
+          }
           // Admin pages - split into smaller chunks by feature
           if (id.includes("/pages/admin/")) {
             // Governance pages

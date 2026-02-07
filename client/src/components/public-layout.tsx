@@ -73,7 +73,7 @@ export function Section({
     default: "bg-background",
     alternate: "bg-muted/50",
     gradient:
-      "bg-gradient-to-br from-primary/5 via-travi-amber/5 to-travi-sand/10 dark:from-primary/10 dark:via-travi-amber/10 dark:to-travi-sand/15",
+      "bg-gradient-to-br from-travi-purple/5 via-travi-purple/5 to-[#F4C542]/5 dark:from-travi-purple/10 dark:via-travi-purple/10 dark:to-[#F4C542]/10",
   };
 
   return (
@@ -208,7 +208,7 @@ export function ContentCard({
     return (
       <Link
         href={localePath(href)}
-        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-[16px]"
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6443F4] rounded-[16px]"
         data-testid={`contents-card-link-${title.toLowerCase().replace(/\s+/g, "-")}`}
       >
         {cardContent}

@@ -70,19 +70,19 @@ export default function AboutPage() {
       icon: ShieldCheck,
       title: t("pages.about.values.accuracy.title"),
       description: t("pages.about.values.accuracy.description"),
-      color: "hsl(var(--primary))",
+      color: "#6443F4",
     },
     {
       icon: BookOpen,
       title: t("pages.about.values.transparency.title"),
       description: t("pages.about.values.transparency.description"),
-      color: "hsl(var(--travi-teal))",
+      color: "#6443F4",
     },
     {
       icon: Heart,
       title: t("pages.about.values.userFocused.title"),
       description: t("pages.about.values.userFocused.description"),
-      color: "hsl(var(--travi-amber))",
+      color: "#F4C542",
     },
   ];
 
@@ -98,20 +98,22 @@ export default function AboutPage() {
       <div dir={isRTL ? "rtl" : "ltr"}>
         {/* Hero Section with Gradient Background and Mascot */}
         <section
-          className="relative pt-28 pb-20 overflow-hidden bg-gradient-to-b from-primary/10 via-primary/5 to-white dark:from-primary/20 dark:via-primary/10 dark:to-background"
+          className="relative pt-28 pb-20 overflow-hidden bg-gradient-to-b from-[#6443F4]/10 via-[#6443F4]/5 to-white dark:from-[#6443F4]/20 dark:via-[#6443F4]/10 dark:to-background"
           data-testid="section-hero"
         >
           {/* Decorative gradient orbs */}
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-primary/15 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-72 h-72 bg-[#6443F4]/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-[#6443F4]/15 rounded-full blur-3xl" />
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left Content */}
               <div className="text-center lg:text-start">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-white/10 backdrop-blur-sm border border-white/20 dark:border-white/10 mb-6">
-                  <Globe className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">{t("pages.about.badge")}</span>
+                  <Globe className="w-4 h-4 text-[#6443F4]" />
+                  <span className="text-sm font-medium text-[#6443F4]">
+                    {t("pages.about.badge")}
+                  </span>
                 </div>
 
                 <h1
@@ -119,7 +121,7 @@ export default function AboutPage() {
                   data-testid="heading-about"
                 >
                   {t("pages.about.title")}{" "}
-                  <span className="text-primary">{t("pages.about.titleHighlight")}</span>
+                  <span className="text-[#6443F4]">{t("pages.about.titleHighlight")}</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:ms-0 mb-8">
@@ -128,7 +130,7 @@ export default function AboutPage() {
 
                 <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                   <Link href={localePath("/destinations")}>
-                    <Button className="rounded-xl px-6 bg-primary hover:bg-primary/90 text-white">
+                    <Button className="rounded-xl px-6 bg-[#6443F4] hover:bg-[#5339D9] text-white">
                       {t("pages.about.ctaExplore")}
                       <ArrowRight className="w-4 h-4 ms-2" />
                     </Button>
@@ -145,7 +147,7 @@ export default function AboutPage() {
               <div className="relative flex justify-center lg:justify-end">
                 <div className="relative">
                   {/* Glow effect behind image */}
-                  <div className="absolute -inset-4 bg-gradient-to-r from-primary via-travi-amber to-travi-olive rounded-3xl blur-2xl opacity-30" />
+                  <div className="absolute -inset-4 bg-gradient-to-r from-[#6443F4] via-[#6443F4] to-[#F4C542] rounded-3xl blur-2xl opacity-30" />
 
                   {/* Glass frame */}
                   <div className="relative bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-3xl p-3 border border-white/20 dark:border-white/10 shadow-2xl">
@@ -160,7 +162,7 @@ export default function AboutPage() {
                   {/* Floating stat badge */}
                   <div className="absolute -bottom-4 -left-4 bg-white dark:bg-slate-800 rounded-xl px-4 py-3 shadow-lg border border-slate-100 dark:border-slate-700">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-primary flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                         <Globe className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -183,7 +185,7 @@ export default function AboutPage() {
                   className="bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-white/10 text-center"
                   data-testid={`stat-card-${index}`}
                 >
-                  <p className="text-3xl md:text-4xl font-bold text-primary font-chillax">
+                  <p className="text-3xl md:text-4xl font-bold text-[#6443F4] font-chillax">
                     {stat.value}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
@@ -200,7 +202,7 @@ export default function AboutPage() {
               {/* Who We Are */}
               <div className="bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-slate-100 dark:border-white/10 shadow-lg">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary to-primary flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <h2 className="text-2xl font-bold text-foreground font-chillax">
@@ -233,7 +235,7 @@ export default function AboutPage() {
               {/* Our Mission */}
               <div className="bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-slate-100 dark:border-white/10 shadow-lg">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary to-travi-amber flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-[#6443F4] to-[#F4C542] flex items-center justify-center">
                     <Target className="w-6 h-6 text-white" />
                   </div>
                   <h2 className="text-2xl font-bold text-foreground font-chillax">
@@ -256,7 +258,7 @@ export default function AboutPage() {
                       {[0, 1, 2].map(i => (
                         <div
                           key={i}
-                          className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primary border-2 border-white dark:border-slate-800"
+                          className="w-8 h-8 rounded-full bg-gradient-to-r from-[#6443F4] to-[#6443F4] border-2 border-white dark:border-slate-800"
                         />
                       ))}
                     </div>
@@ -275,9 +277,9 @@ export default function AboutPage() {
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 mb-4">
-                <Compass className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6443F4]/10 mb-4">
+                <Compass className="w-4 h-4 text-[#6443F4]" />
+                <span className="text-sm font-medium text-[#6443F4]">
                   {t("pages.about.services.badge")}
                 </span>
               </div>
@@ -298,8 +300,8 @@ export default function AboutPage() {
                   className="group bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-white/10 hover-elevate transition-all duration-300"
                   data-testid={`offering-card-${index}`}
                 >
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-primary/10 to-primary/10 flex items-center justify-center mb-4 group-hover:from-primary group-hover:to-primary transition-all duration-300">
-                    <item.icon className="w-7 h-7 text-primary group-hover:text-white transition-colors duration-300" />
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-4 group-hover:from-[#6443F4] group-hover:to-[#6443F4] transition-all duration-300">
+                    <item.icon className="w-7 h-7 text-[#6443F4] group-hover:text-white transition-colors duration-300" />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground">{item.description}</p>
@@ -314,7 +316,7 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-slate-100 dark:border-white/10 shadow-lg">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary to-primary flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <BookOpen className="w-6 h-6 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-foreground font-chillax">
@@ -331,7 +333,7 @@ export default function AboutPage() {
 
               {/* Affiliate Disclosure Banner */}
               <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 p-6">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-travi-amber/20 to-transparent rounded-full blur-2xl" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#F4C542]/20 to-transparent rounded-full blur-2xl" />
                 <div className="relative">
                   <p className="font-semibold text-amber-800 dark:text-amber-200 mb-2">
                     {t("pages.about.editorial.affiliateTitle")}
@@ -359,9 +361,9 @@ export default function AboutPage() {
         <section className="py-20 bg-slate-50 dark:bg-slate-900/50" data-testid="section-values">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 mb-4">
-                <Heart className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#6443F4]/10 mb-4">
+                <Heart className="w-4 h-4 text-[#6443F4]" />
+                <span className="text-sm font-medium text-[#6443F4]">
                   {t("pages.about.values.badge")}
                 </span>
               </div>
@@ -377,7 +379,7 @@ export default function AboutPage() {
             {/* Timeline Layout */}
             <div className="relative">
               {/* Vertical line */}
-              <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-travi-amber to-travi-olive transform md:-translate-x-1/2" />
+              <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#6443F4] via-[#6443F4] to-[#F4C542] transform md:-translate-x-1/2" />
 
               <div className="space-y-12">
                 {values.map((value, index) => (
@@ -419,7 +421,7 @@ export default function AboutPage() {
 
         {/* Contact CTA - Gradient Background */}
         <section
-          className="py-20 bg-gradient-to-r from-primary via-primary to-primary relative overflow-hidden"
+          className="py-20 bg-gradient-to-r from-[#6443F4] via-[#6443F4] to-[#6443F4] relative overflow-hidden"
           data-testid="section-contact-cta"
         >
           {/* Decorative elements */}
@@ -444,7 +446,7 @@ export default function AboutPage() {
 
             <div className="flex flex-wrap justify-center gap-4">
               <Link href={localePath("/contact")}>
-                <Button className="rounded-xl px-8 bg-white text-primary hover:bg-white/90">
+                <Button className="rounded-xl px-8 bg-white text-[#6443F4] hover:bg-white/90">
                   <Mail className="w-4 h-4 mr-2" />
                   {t("common.contactUs")}
                 </Button>
@@ -466,7 +468,7 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-slate-100 dark:border-white/10 shadow-lg">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary to-primary flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-[#6443F4] to-[#6443F4] flex items-center justify-center">
                   <Building2 className="w-6 h-6 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-foreground font-chillax">
@@ -494,14 +496,14 @@ export default function AboutPage() {
                   <div className="space-y-3">
                     <a
                       href="mailto:info@travi.world"
-                      className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors"
+                      className="flex items-center gap-3 text-muted-foreground hover:text-[#6443F4] transition-colors"
                     >
                       <Mail className="w-5 h-5" />
                       info@travi.world
                     </a>
                     <Link
                       href={localePath("/contact")}
-                      className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors"
+                      className="flex items-center gap-3 text-muted-foreground hover:text-[#6443F4] transition-colors"
                     >
                       <Globe className="w-5 h-5" />
                       {t("pages.about.company.contactForm")}
