@@ -42,15 +42,12 @@ export function FAQSection() {
           </p>
         </div>
 
-        <div className="space-y-4" itemScope itemType="https://schema.org/FAQPage">
+        <div className="space-y-4">
           {FAQ_ITEMS.map((faq, index) => (
             <div
               key={index}
               className="animate-fade-in-up"
               style={{ animationDelay: `${index * 100}ms` }}
-              itemScope
-              itemProp="mainEntity"
-              itemType="https://schema.org/Question"
             >
               <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
                 <button
@@ -58,10 +55,7 @@ export function FAQSection() {
                   className="w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
                   aria-expanded={openIndex === index}
                 >
-                  <h3
-                    className="text-lg font-semibold text-slate-900 dark:text-white pr-4"
-                    itemProp="name"
-                  >
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white pr-4">
                     {faq.q}
                   </h3>
                   <ChevronDown
@@ -79,15 +73,9 @@ export function FAQSection() {
                       ? "grid-rows-[1fr] opacity-100"
                       : "grid-rows-[0fr] opacity-0"
                   )}
-                  itemScope
-                  itemProp="acceptedAnswer"
-                  itemType="https://schema.org/Answer"
                 >
                   <div className="overflow-hidden">
-                    <p
-                      className="px-6 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
-                      itemProp="text"
-                    >
+                    <p className="px-6 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed">
                       {faq.a}
                     </p>
                   </div>

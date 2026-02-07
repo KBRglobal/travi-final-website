@@ -590,29 +590,20 @@ function FAQsSection({ faqs, destinationName }: { faqs: GuideFaq[]; destinationN
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4" itemScope itemType="https://schema.org/FAQPage">
+          <div className="space-y-4">
             {faqs.map((faq, index) => (
               <div
                 key={index}
                 className="bg-white dark:bg-white/5 rounded-lg p-4 border border-slate-100 dark:border-white/10 shadow-sm"
-                itemScope
-                itemProp="mainEntity"
-                itemType="https://schema.org/Question"
               >
-                <h3
-                  className="font-semibold text-slate-900 dark:text-white mb-2 flex items-start gap-2"
-                  itemProp="name"
-                >
+                <h3 className="font-semibold text-slate-900 dark:text-white mb-2 flex items-start gap-2">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white text-sm flex items-center justify-center font-bold">
                     Q
                   </span>
                   {faq.question}
                 </h3>
-                <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
-                  <p
-                    className="text-slate-600 dark:text-slate-300 leading-relaxed pl-8"
-                    itemProp="text"
-                  >
+                <div>
+                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed pl-8">
                     {faq.answer}
                   </p>
                 </div>
