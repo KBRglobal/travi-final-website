@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
@@ -287,13 +287,13 @@ function FeaturedCarousel({ destinations }: Readonly<{ destinations: APIDestinat
 
   const featuredDestinations = destinations.slice(0, 8);
 
-  useState(() => {
+  useEffect(() => {
     if (!isAutoPlaying || featuredDestinations.length === 0) return;
     const timer = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % featuredDestinations.length);
     }, 4000);
     return () => clearInterval(timer);
-  });
+  }, [isAutoPlaying, featuredDestinations.length]);
 
   if (featuredDestinations.length === 0) return null;
 
@@ -310,9 +310,8 @@ function FeaturedCarousel({ destinations }: Readonly<{ destinations: APIDestinat
   const current = featuredDestinations[currentIndex];
 
   return (
-    <div
+    <section
       className="relative group"
-      role="region"
       aria-label={t("destinations.carousel.label")}
       aria-roledescription="carousel"
     >
@@ -451,7 +450,7 @@ function FeaturedCarousel({ destinations }: Readonly<{ destinations: APIDestinat
           <ChevronRight className="w-4 h-4" aria-hidden="true" />
         </Button>
       </div>
-    </div>
+    </section>
   );
 }
 

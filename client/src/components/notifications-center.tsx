@@ -239,13 +239,14 @@ export function NotificationsCenter() {
     return !localReadIds.has(n.id);
   }).length;
 
-  // Mark as read - use API for API notifications, local state for system notifications
-  const markAsRead = (id: string, isApiNotification?: boolean) => {
-    if (isApiNotification) {
-      markAsReadMutation.mutate(id);
-    } else {
-      setLocalReadIds(prev => new Set([...prev, id]));
-    }
+  // Mark API notification as read via API
+  const markApiNotificationAsRead = (id: string) => {
+    markAsReadMutation.mutate(id);
+  };
+
+  // Mark local notification as read via local state
+  const markLocalNotificationAsRead = (id: string) => {
+    setLocalReadIds(prev => new Set([...prev, id]));
   };
 
   // Mark all as read
@@ -258,7 +259,11 @@ export function NotificationsCenter() {
 
   // Handle notification click
   const handleNotificationClick = (notification: Notification) => {
-    markAsRead(notification.id, notification.isApiNotification);
+    if (notification.isApiNotification) {
+      markApiNotificationAsRead(notification.id);
+    } else {
+      markLocalNotificationAsRead(notification.id);
+    }
     if (notification.link) {
       setOpen(false);
       navigate(notification.link);

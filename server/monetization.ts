@@ -287,7 +287,7 @@ export const premiumContent = {
    * Get premium content preview
    */
   async getPreview(contentId: string): Promise<{
-    content: any | null;
+    content: any;
     isPremium: boolean;
     previewPercentage: number;
     price: number;

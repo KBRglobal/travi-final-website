@@ -452,7 +452,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
     try {
       const { getMultiModelProvider } = await import("../../ai/multi-model-provider");
       const provider = getMultiModelProvider();
-      const providers = await provider.checkAvailability();
+      const providers = provider.checkAvailability();
       res.json({ success: true, providers });
     } catch (error: any) {
       res.status(500).json({ success: false, error: error.message });
@@ -724,7 +724,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       // Check which providers are available by testing them
       const { getMultiModelProvider } = await import("../../ai/multi-model-provider");
       const providerInstance = getMultiModelProvider();
-      const providerStatus = await providerInstance.checkAvailability();
+      const providerStatus = providerInstance.checkAvailability();
       const potentialProviders = providerStatus
         .filter(p => p.available)
         .map(p => p.name) as Array<AIProviderName>;

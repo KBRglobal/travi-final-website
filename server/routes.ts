@@ -22,7 +22,7 @@ import {
   approvedBotMiddleware,
 } from "./security";
 import { bootstrapFoundationDomains, bootstrapFoundationErrorHandler } from "./foundation";
-import {} from "./cms-translations";
+import "./cms-translations";
 import * as fs from "node:fs";
 import * as path from "node:path";
 // Image generation functions from modular AI system
@@ -36,17 +36,17 @@ import * as path from "node:path";
 import { log } from "./lib/logger";
 // Performance monitoring (N+1 detection, latency tracking)
 // Admin security hardening: Emergency kill switch, IP allowlist, mandatory 2FA
-import {} from "./security/admin-hardening";
+import "./security/admin-hardening";
 // Strict password policy enforcement for admin users
 // Note: Uses dual lockout (per-IP + per-username) instead of legacy single-username lockout
-import {} from "./security/password-policy";
+import "./security/password-policy";
 // Pre-auth token for MFA flow (session created only after TOTP verification)
-import {} from "./security/pre-auth-token";
+import "./security/pre-auth-token";
 // File upload hardening with magic bytes validation
 // IDOR protection middleware for ownership and permission checks
-import {} from "./middleware/idor-protection";
+import "./middleware/idor-protection";
 
-import {} from "./enterprise-security";
+import "./enterprise-security";
 import { registerEnterpriseRoutes } from "./enterprise-routes";
 import { registerSiteConfigRoutes } from "./site-config-routes";
 import { registerFeatureRoutes } from "./feature-routes";

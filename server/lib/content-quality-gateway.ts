@@ -657,9 +657,7 @@ export function checkAltText(images: ImageInfo[]): QualityCheck {
     "fabulous",
   ];
 
-  for (let i = 0; i < images.length; i++) {
-    const img = images[i];
-
+  for (const img of images) {
     if (!img.alt || img.alt.trim().length === 0) {
       missingAlt++;
       continue;

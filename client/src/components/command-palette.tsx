@@ -446,16 +446,13 @@ export function CommandPalette({ open, onOpenChange }: Readonly<CommandPalettePr
         {/* Footer */}
         <div className="border-t px-4 py-2 flex items-center gap-4 text-xs text-muted-foreground bg-muted/30">
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">↑↓</kbd>
-            Navigate
+            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">↑↓</kbd> Navigate
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">Enter</kbd>
-            Select
+            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">Enter</kbd> Select
           </span>
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">Esc</kbd>
-            Close
+            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">Esc</kbd> Close
           </span>
         </div>
       </DialogContent>

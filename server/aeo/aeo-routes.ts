@@ -768,7 +768,7 @@ router.post("/api/aeo/ab-tests", async (req: Request, res: Response) => {
  */
 router.post("/api/aeo/ab-tests/:id/start", async (req: Request, res: Response) => {
   try {
-    const test = await startABTest(req.params.id);
+    const test = startABTest(req.params.id);
     res.json({ success: true, test });
   } catch (error) {
     aeoLogger.error("Failed to start A/B test", { error });

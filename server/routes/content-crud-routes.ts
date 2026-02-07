@@ -370,25 +370,23 @@ export function registerContentCrudRoutes(app: Express): void {
           await storage.createDistrict({ ...req.body.district, contentId: content.id });
         } else if (parsed.type === "transport" && req.body.transport) {
           await storage.createTransport({ ...req.body.transport, contentId: content.id });
-        } else {
+        } else if (parsed.type === "attraction") {
           // Create empty type-specific record if data not provided
-          if (parsed.type === "attraction") {
-            await storage.createAttraction({ contentId: content.id });
-          } else if (parsed.type === "hotel") {
-            await storage.createHotel({ contentId: content.id });
-          } else if (parsed.type === "article") {
-            await storage.createArticle({ contentId: content.id });
-          } else if (parsed.type === "event") {
-            await storage.createEvent({ contentId: content.id });
-          } else if (parsed.type === "itinerary") {
-            await storage.createItinerary({ contentId: content.id });
-          } else if (parsed.type === "dining") {
-            await storage.createDining({ contentId: content.id });
-          } else if (parsed.type === "district") {
-            await storage.createDistrict({ contentId: content.id });
-          } else if (parsed.type === "transport") {
-            await storage.createTransport({ contentId: content.id });
-          }
+          await storage.createAttraction({ contentId: content.id });
+        } else if (parsed.type === "hotel") {
+          await storage.createHotel({ contentId: content.id });
+        } else if (parsed.type === "article") {
+          await storage.createArticle({ contentId: content.id });
+        } else if (parsed.type === "event") {
+          await storage.createEvent({ contentId: content.id });
+        } else if (parsed.type === "itinerary") {
+          await storage.createItinerary({ contentId: content.id });
+        } else if (parsed.type === "dining") {
+          await storage.createDining({ contentId: content.id });
+        } else if (parsed.type === "district") {
+          await storage.createDistrict({ contentId: content.id });
+        } else if (parsed.type === "transport") {
+          await storage.createTransport({ contentId: content.id });
         }
 
         const fullContent = await storage.getContent(content.id);

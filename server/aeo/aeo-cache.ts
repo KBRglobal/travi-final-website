@@ -64,7 +64,7 @@ export const AEO_CACHE_TTL = {
 /**
  * Get cached answer capsule
  */
-export async function getCachedCapsule(contentId: string, locale: string): Promise<any | null> {
+export async function getCachedCapsule(contentId: string, locale: string): Promise<any> {
   const key = aeoCacheKeys.capsule(contentId, locale);
   return cache.get(key);
 }

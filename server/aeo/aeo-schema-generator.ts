@@ -199,7 +199,7 @@ function generateBreadcrumbSchema(content: any, siteUrl: string): any {
 /**
  * Generate type-specific schema
  */
-async function generateTypeSpecificSchema(content: any, siteUrl: string): Promise<any | null> {
+async function generateTypeSpecificSchema(content: any, siteUrl: string): Promise<any> {
   const contentId = content.id;
 
   switch (content.type) {
@@ -420,7 +420,7 @@ async function generateTypeSpecificSchema(content: any, siteUrl: string): Promis
 /**
  * Generate FAQ schema from content FAQ data
  */
-async function generateFAQSchema(content: any, contentId: string): Promise<any | null> {
+async function generateFAQSchema(content: any, contentId: string): Promise<any> {
   let faqData: any[] = [];
 
   // Fetch FAQ from type-specific table
@@ -481,7 +481,7 @@ async function generateFAQSchema(content: any, contentId: string): Promise<any |
 /**
  * Generate HowTo schema for instructional content
  */
-async function generateHowToSchema(content: any, contentId: string): Promise<any | null> {
+async function generateHowToSchema(content: any, contentId: string): Promise<any> {
   // Extract steps from content blocks
   const blocks = content.blocks || [];
   const steps: any[] = [];

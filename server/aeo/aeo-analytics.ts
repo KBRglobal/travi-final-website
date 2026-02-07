@@ -121,7 +121,6 @@ export async function calculateROI(
   }
 
   // Breakdown by content type (would need to join with contents table)
-  const typeMap = new Map<string, { traffic: number; conversions: number; revenue: number }>();
 
   return {
     period: `${startDate.toISOString().split("T")[0]} to ${endDate.toISOString().split("T")[0]}`,
@@ -143,10 +142,12 @@ export async function calculateROI(
         platform,
         ...data,
       })),
-      byContentType: Array.from(typeMap.entries()).map(([type, data]) => ({
-        type,
-        ...data,
-      })),
+      byContentType: [] as Array<{
+        type: string;
+        traffic: number;
+        conversions: number;
+        revenue: number;
+      }>,
     },
   };
 }

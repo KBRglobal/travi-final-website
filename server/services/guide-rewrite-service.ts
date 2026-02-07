@@ -528,20 +528,8 @@ export class GuideRewriteService {
       );
 
       if (mainMatches.length > 0) {
-        // Strip HTML tags from content for cleaner text
-        const stripHtml = (html: string) =>
-          html
-            .replace(/<script[^>]*>.*?<\/script>/gis, "")
-            .replace(/<style[^>]*>.*?<\/style>/gis, "")
-            .replace(/<[^>]+>/g, " ")
-            .replaceAll("&nbsp;", " ")
-            .replaceAll("&amp;", "&")
-            .replaceAll("&lt;", "<")
-            .replaceAll("&gt;", ">")
-            .replaceAll("&quot;", '"')
-            .replaceAll("&#39;", "'")
-            .replace(/\s+/g, " ")
-            .trim();
+        // Reuse module-level stripHtmlContent for stripping HTML tags
+        const stripHtml = stripHtmlContent;
 
         for (let i = 0; i < mainMatches.length; i++) {
           const match = mainMatches[i];
@@ -933,21 +921,8 @@ YOUR COMPREHENSIVE REWRITE:`;
   ): Promise<string | null> {
     const chunks: string[] = [];
 
-    // Helper function to strip HTML tags and get clean text
-    const stripHtml = (html: string): string => {
-      return html
-        .replace(/<script[^>]*>.*?<\/script>/gis, "")
-        .replace(/<style[^>]*>.*?<\/style>/gis, "")
-        .replace(/<[^>]+>/g, " ")
-        .replaceAll("&nbsp;", " ")
-        .replaceAll("&amp;", "&")
-        .replaceAll("&lt;", "<")
-        .replaceAll("&gt;", ">")
-        .replaceAll("&quot;", '"')
-        .replaceAll("&#39;", "'")
-        .replace(/\s+/g, " ")
-        .trim();
-    };
+    // Reuse module-level stripHtmlContent for stripping HTML tags
+    const stripHtml = stripHtmlContent;
 
     // Extract ALL block-level elements from Wikivoyage HTML content
     const paragraphMatches = section.content.match(/<p[^>]*>[\s\S]*?<\/p>/gi) || [];

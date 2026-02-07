@@ -10,17 +10,17 @@
  *   bootstrapFoundation(app);
  */
 
-import type { Express } from 'express';
-import { createLogger } from '../lib/logger';
-import { correlationIdMiddleware } from '../shared/middleware/correlation-id';
-import { foundationErrorHandler } from '../shared/middleware/error-handler';
-import { registerAllDomains } from '../domains';
-import { foundationEventBus } from '../shared/events';
+import type { Express } from "express";
+import { createLogger } from "../lib/logger";
+import { correlationIdMiddleware } from "../shared/middleware/correlation-id";
+import { foundationErrorHandler } from "../shared/middleware/error-handler";
+import { registerAllDomains } from "../domains";
+import { foundationEventBus } from "../shared/events";
 
-const logger = createLogger('foundation');
+const logger = createLogger("foundation");
 
 // Master feature flag - everything is OFF by default
-const ENABLE_FOUNDATION = process.env.ENABLE_FOUNDATION === 'true';
+const ENABLE_FOUNDATION = process.env.ENABLE_FOUNDATION === "true";
 
 /**
  * Foundation configuration
@@ -40,14 +40,14 @@ export interface FoundationConfig {
  */
 export function bootstrapFoundationMiddleware(app: Express): void {
   if (!ENABLE_FOUNDATION) {
-    logger.debug('Foundation disabled - skipping middleware bootstrap');
+    logger.debug("Foundation disabled - skipping middleware bootstrap");
     return;
   }
 
   // Add correlation ID middleware (must be early)
   app.use(correlationIdMiddleware);
 
-  logger.info('Foundation middleware bootstrapped');
+  logger.info("Foundation middleware bootstrapped");
 }
 
 /**
@@ -56,13 +56,13 @@ export function bootstrapFoundationMiddleware(app: Express): void {
  */
 export function bootstrapFoundationDomains(app: Express): void {
   if (!ENABLE_FOUNDATION) {
-    logger.debug('Foundation disabled - skipping domain registration');
+    logger.debug("Foundation disabled - skipping domain registration");
     return;
   }
 
   registerAllDomains(app);
 
-  logger.info('Foundation domains registered');
+  logger.info("Foundation domains registered");
 }
 
 /**
@@ -71,13 +71,13 @@ export function bootstrapFoundationDomains(app: Express): void {
  */
 export function bootstrapFoundationErrorHandler(app: Express): void {
   if (!ENABLE_FOUNDATION) {
-    logger.debug('Foundation disabled - skipping error handler');
+    logger.debug("Foundation disabled - skipping error handler");
     return;
   }
 
   app.use(foundationErrorHandler());
 
-  logger.info('Foundation error handler registered');
+  logger.info("Foundation error handler registered");
 }
 
 /**
@@ -86,12 +86,12 @@ export function bootstrapFoundationErrorHandler(app: Express): void {
  */
 export function initializeFoundationEvents(): void {
   if (!ENABLE_FOUNDATION) {
-    logger.debug('Foundation disabled - skipping event initialization');
+    logger.debug("Foundation disabled - skipping event initialization");
     return;
   }
 
   const stats = foundationEventBus.getStats();
-  logger.info({ ...stats }, 'Foundation event bus initialized');
+  logger.info({ ...stats }, "Foundation event bus initialized");
 }
 
 /**
@@ -122,6 +122,6 @@ export function getFoundationStatus(): {
   return {
     enabled: ENABLE_FOUNDATION,
     eventBus: foundationEventBus.getStats(),
-    domains: ENABLE_FOUNDATION ? [] : [], // Will be populated when domains are enabled
+    domains: [], // Will be populated when domains are enabled
   };
 }

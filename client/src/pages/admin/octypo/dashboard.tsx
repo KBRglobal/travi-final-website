@@ -614,13 +614,26 @@ export default function OctypoDashboardPage() {
                     {selectedFeeds.length} selected
                   </span>
                 </div>
-                <div className="border rounded-lg max-h-[200px] overflow-y-auto">
+                <div
+                  className="border rounded-lg max-h-[200px] overflow-y-auto"
+                  role="listbox"
+                  aria-label="RSS Feeds"
+                >
                   {dialogFeeds?.feeds && dialogFeeds.feeds.length > 0 ? (
                     dialogFeeds.feeds.map(feed => (
                       <div
                         key={feed.id}
+                        role="option"
+                        tabIndex={0}
+                        aria-selected={selectedFeeds.includes(feed.id)}
                         className="flex items-center gap-3 p-3 border-b last:border-b-0 hover:bg-muted/50 cursor-pointer"
                         onClick={() => toggleFeedSelection(feed.id)}
+                        onKeyDown={e => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            toggleFeedSelection(feed.id);
+                          }
+                        }}
                         data-testid={`feed-item-${feed.id}`}
                       >
                         <Checkbox

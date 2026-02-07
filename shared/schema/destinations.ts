@@ -295,7 +295,7 @@ export const researchUploads = pgTable("research_uploads", {
   sourceType: varchar("source_type").notNull().default("paste"), // paste, file, url
   content: text("content").notNull(),
   status: researchStatusEnum("status").notNull().default("pending"),
-  metadata: jsonb("metadata"), // { wordCount, topics, language, sourceUrl }
+  metadata: jsonb("metadata"),
   analyzedAt: timestamp("analyzed_at"),
   createdBy: varchar("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),

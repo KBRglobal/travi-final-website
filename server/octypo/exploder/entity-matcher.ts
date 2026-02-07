@@ -205,8 +205,8 @@ export class EntityMatcher {
     return name
       .toLowerCase()
       .trim()
-      .replace(/[''`]/g, "'")
-      .replace(/[""]/g, '"')
+      .replace(/[\u2018\u2019`]/g, "'")
+      .replace(/[\u201c\u201d]/g, '"')
       .replace(/\s+/g, " ")
       .replace(/[^\w\s'-]/g, "");
   }

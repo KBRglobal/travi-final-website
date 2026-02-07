@@ -53,7 +53,7 @@ export function PublicFooter() {
                 <h3 className="text-sm font-semibold text-foreground mb-5 tracking-normal">
                   {t("footer.explore")}
                 </h3>
-                <ul className="space-y-3" role="list">
+                <ul className="space-y-3">
                   {exploreLinks.map(link => (
                     <li key={link.href}>
                       <Link
@@ -72,7 +72,7 @@ export function PublicFooter() {
                 <h3 className="text-sm font-semibold text-foreground mb-5 tracking-normal">
                   {t("footer.travel")}
                 </h3>
-                <ul className="space-y-3" role="list">
+                <ul className="space-y-3">
                   {travelLinks.map(link => (
                     <li key={link.href}>
                       <Link
@@ -91,7 +91,7 @@ export function PublicFooter() {
                 <h3 className="text-sm font-semibold text-foreground mb-5 tracking-normal">
                   {t("footer.company")}
                 </h3>
-                <ul className="space-y-3" role="list">
+                <ul className="space-y-3">
                   {companyLinks.map(link => (
                     <li key={link.href}>
                       <Link

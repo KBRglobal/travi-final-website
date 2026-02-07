@@ -87,12 +87,8 @@ export function createGuardedJobExecutor<T>(
       };
     }
 
-    try {
-      const result = await executor(data);
-      return { executed: true, result };
-    } catch (error) {
-      throw error;
-    }
+    const result = await executor(data);
+    return { executed: true, result };
   };
 }
 

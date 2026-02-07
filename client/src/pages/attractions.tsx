@@ -322,7 +322,7 @@ export default function Attractions() {
   const [, navigate] = useLocation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const [activeType, setActiveType] = useState("all");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
@@ -918,9 +918,8 @@ export default function Attractions() {
                       transition={{ duration: 0.8, delay: 0.4 }}
                     >
                       {/* Main Featured Image */}
-                      <div
+                      <section
                         className="bento-card relative flex-1 min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2"
-                        role="region"
                         aria-label={t("attractions.gallery.ariaFeaturedAttraction")}
                       >
                         <AnimatePresence mode="wait">
@@ -1013,7 +1012,7 @@ export default function Attractions() {
                             </div>
                           </motion.div>
                         </div>
-                      </div>
+                      </section>
 
                       {/* Thumbnail Strip */}
                       <div
@@ -1144,8 +1143,8 @@ export default function Attractions() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {isLoadingDestinations ? (
-                  Array.from({ length: 8 }).map((_, i) => (
-                    <div key={`dest-skeleton-${i}`} className="overflow-hidden rounded-lg">
+                  ["sk-a", "sk-b", "sk-c", "sk-d", "sk-e", "sk-f", "sk-g", "sk-h"].map(id => (
+                    <div key={id} className="overflow-hidden rounded-lg">
                       <Skeleton className="aspect-[4/3] w-full" />
                     </div>
                   ))

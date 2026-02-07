@@ -174,7 +174,7 @@ function PublicRouter() {
   const [location] = useLocation();
 
   // Detect whether the current path starts with a known locale prefix.
-  const firstSegment = location.split("/").filter(Boolean)[0] || "";
+  const firstSegment = location.split("/").find(Boolean) || "";
   const hasLocalePrefix = LOCALE_SET.has(firstSegment);
 
   // Strip locale prefix so the Switch only needs ~24 route patterns instead of 672+.

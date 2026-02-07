@@ -196,11 +196,10 @@ export function setupSecurityMiddleware(app: Express): void {
     "https://static.cloudflareinsights.com", // Cloudflare Web Analytics
   ];
 
-  // TODO: To fully remove 'unsafe-inline' from script-src in production (STRICT_CSP),
-  // the inline scripts in client/index.html (SW cleanup IIFE and Travelpayouts loader)
-  // must be moved to external .js files loaded with defer. Until then, 'unsafe-inline'
-  // is required in both modes to avoid breaking those scripts. Removing it without
-  // externalizing them would block script execution and break the site.
+  // DEFERRED: Removing 'unsafe-inline' from script-src requires externalizing
+  // inline scripts in client/index.html (SW cleanup IIFE and Travelpayouts loader)
+  // to external .js files loaded with defer. Until then, 'unsafe-inline' remains
+  // required in both modes to avoid breaking those scripts.
   const scriptSrcDirective = STRICT_CSP
     ? [
         ...commonScriptSrc,

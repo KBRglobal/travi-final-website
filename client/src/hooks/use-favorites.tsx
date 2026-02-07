@@ -1,4 +1,12 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  ReactNode,
+} from "react";
 
 interface FavoriteItem {
   id: string;
@@ -53,48 +61,52 @@ export function FavoritesProvider({ children }: Readonly<{ children: ReactNode }
     }
   }, [favorites, mounted]);
 
-  const addFavorite = (item: Omit<FavoriteItem, "addedAt">) => {
+  const addFavorite = useCallback((item: Omit<FavoriteItem, "addedAt">) => {
     setFavorites(prev => {
       if (prev.some(f => f.id === item.id)) return prev;
       return [...prev, { ...item, addedAt: Date.now() }];
     });
-  };
+  }, []);
 
-  const removeFavorite = (id: string) => {
+  const removeFavorite = useCallback((id: string) => {
     setFavorites(prev => prev.filter(f => f.id !== id));
-  };
+  }, []);
 
-  const isFavorite = (id: string) => {
-    return favorites.some(f => f.id === id);
-  };
-
-  const toggleFavorite = (item: Omit<FavoriteItem, "addedAt">) => {
-    if (isFavorite(item.id)) {
-      removeFavorite(item.id);
-    } else {
-      addFavorite(item);
-    }
-  };
-
-  const clearFavorites = () => {
-    setFavorites([]);
-  };
-
-  return (
-    <FavoritesContext.Provider
-      value={{
-        favorites,
-        addFavorite,
-        removeFavorite,
-        isFavorite,
-        toggleFavorite,
-        clearFavorites,
-        count: favorites.length,
-      }}
-    >
-      {children}
-    </FavoritesContext.Provider>
+  const isFavorite = useCallback(
+    (id: string) => {
+      return favorites.some(f => f.id === id);
+    },
+    [favorites]
   );
+
+  const toggleFavorite = useCallback((item: Omit<FavoriteItem, "addedAt">) => {
+    setFavorites(prev => {
+      const exists = prev.some(f => f.id === item.id);
+      if (exists) {
+        return prev.filter(f => f.id !== item.id);
+      }
+      return [...prev, { ...item, addedAt: Date.now() }];
+    });
+  }, []);
+
+  const clearFavorites = useCallback(() => {
+    setFavorites([]);
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({
+      favorites,
+      addFavorite,
+      removeFavorite,
+      isFavorite,
+      toggleFavorite,
+      clearFavorites,
+      count: favorites.length,
+    }),
+    [favorites, addFavorite, removeFavorite, isFavorite, toggleFavorite, clearFavorites]
+  );
+
+  return <FavoritesContext.Provider value={contextValue}>{children}</FavoritesContext.Provider>;
 }
 
 export function useFavorites() {

@@ -143,11 +143,6 @@ export function validateRequiredEnvVars(): void {
   // OUTPUT RESULTS
   // ========================================
 
-  // Log AI service configuration
-  const aiServices = [];
-  if (hasOpenAI) aiServices.push("OpenAI");
-  if (hasAnthropic) aiServices.push("Anthropic");
-
   // Log warnings
   if (result.warnings.length > 0) {
     result.warnings.forEach(warning => {});
@@ -163,11 +158,7 @@ export function validateRequiredEnvVars(): void {
     );
   }
 
-  if (result.warnings.length === 0) {
-    /* No warnings - environment configuration is clean */
-  } else {
-    /* Warnings already logged during validation above */
-  }
+  // Warnings (if any) are already logged during validation above
 }
 
 /**

@@ -84,104 +84,100 @@ class RSSReader {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    try {
-      // Drop old table if it has wrong column types (uuid instead of varchar)
-      await db.execute(sql`
-        DO $$
-        BEGIN
-          IF EXISTS (
-            SELECT 1 FROM information_schema.columns
-            WHERE table_name = 'rss_feed_items'
-            AND column_name = 'feed_id'
-            AND data_type = 'uuid'
-          ) THEN
-            DROP TABLE rss_feed_items CASCADE;
-          END IF;
-        END $$
-      `);
+    // Drop old table if it has wrong column types (uuid instead of varchar)
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'rss_feed_items'
+          AND column_name = 'feed_id'
+          AND data_type = 'uuid'
+        ) THEN
+          DROP TABLE rss_feed_items CASCADE;
+        END IF;
+      END $$
+    `);
 
-      await db.execute(sql`
-        CREATE TABLE IF NOT EXISTS rss_feed_items (
-          id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid()::text,
-          feed_id VARCHAR NOT NULL REFERENCES rss_feeds(id) ON DELETE CASCADE,
-          title VARCHAR(500) NOT NULL,
-          url VARCHAR(2000) NOT NULL UNIQUE,
-          summary TEXT,
-          published_date TIMESTAMPTZ,
-          source VARCHAR(200),
-          category VARCHAR(100),
-          processed BOOLEAN DEFAULT FALSE,
-          content_id VARCHAR REFERENCES contents(id),
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          processed_at TIMESTAMPTZ,
-          status VARCHAR(50) DEFAULT 'pending',
-          gate1_score INTEGER,
-          gate1_seo_score INTEGER,
-          gate1_aeo_score INTEGER,
-          gate1_virality_score INTEGER,
-          gate1_decision VARCHAR(20),
-          gate1_tier VARCHAR(10),
-          gate1_value VARCHAR(20),
-          gate1_cost VARCHAR(20),
-          gate1_reasoning TEXT,
-          gate1_writer_id VARCHAR(100),
-          gate1_writer_name VARCHAR(200),
-          gate1_keywords TEXT,
-          human_override BOOLEAN DEFAULT FALSE,
-          human_override_reason TEXT,
-          human_override_at TIMESTAMPTZ
-        )
-      `);
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS rss_feed_items (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid()::text,
+        feed_id VARCHAR NOT NULL REFERENCES rss_feeds(id) ON DELETE CASCADE,
+        title VARCHAR(500) NOT NULL,
+        url VARCHAR(2000) NOT NULL UNIQUE,
+        summary TEXT,
+        published_date TIMESTAMPTZ,
+        source VARCHAR(200),
+        category VARCHAR(100),
+        processed BOOLEAN DEFAULT FALSE,
+        content_id VARCHAR REFERENCES contents(id),
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        processed_at TIMESTAMPTZ,
+        status VARCHAR(50) DEFAULT 'pending',
+        gate1_score INTEGER,
+        gate1_seo_score INTEGER,
+        gate1_aeo_score INTEGER,
+        gate1_virality_score INTEGER,
+        gate1_decision VARCHAR(20),
+        gate1_tier VARCHAR(10),
+        gate1_value VARCHAR(20),
+        gate1_cost VARCHAR(20),
+        gate1_reasoning TEXT,
+        gate1_writer_id VARCHAR(100),
+        gate1_writer_name VARCHAR(200),
+        gate1_keywords TEXT,
+        human_override BOOLEAN DEFAULT FALSE,
+        human_override_reason TEXT,
+        human_override_at TIMESTAMPTZ
+      )
+    `);
 
-      // Add Gate1 columns if they don't exist (for existing tables)
-      await db.execute(sql`
-        DO $$
-        BEGIN
-          IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rss_feed_items' AND column_name = 'gate1_score') THEN
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_score INTEGER;
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_seo_score INTEGER;
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_aeo_score INTEGER;
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_virality_score INTEGER;
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_decision VARCHAR(20);
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_tier VARCHAR(10);
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_value VARCHAR(20);
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_cost VARCHAR(20);
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_reasoning TEXT;
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_writer_id VARCHAR(100);
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_writer_name VARCHAR(200);
-            ALTER TABLE rss_feed_items ADD COLUMN gate1_keywords TEXT;
-            ALTER TABLE rss_feed_items ADD COLUMN human_override BOOLEAN DEFAULT FALSE;
-            ALTER TABLE rss_feed_items ADD COLUMN human_override_reason TEXT;
-            ALTER TABLE rss_feed_items ADD COLUMN human_override_at TIMESTAMPTZ;
-            ALTER TABLE rss_feed_items ADD COLUMN status VARCHAR(50) DEFAULT 'pending';
-          END IF;
-        END $$
-      `);
+    // Add Gate1 columns if they don't exist (for existing tables)
+    await db.execute(sql`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'rss_feed_items' AND column_name = 'gate1_score') THEN
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_score INTEGER;
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_seo_score INTEGER;
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_aeo_score INTEGER;
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_virality_score INTEGER;
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_decision VARCHAR(20);
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_tier VARCHAR(10);
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_value VARCHAR(20);
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_cost VARCHAR(20);
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_reasoning TEXT;
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_writer_id VARCHAR(100);
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_writer_name VARCHAR(200);
+          ALTER TABLE rss_feed_items ADD COLUMN gate1_keywords TEXT;
+          ALTER TABLE rss_feed_items ADD COLUMN human_override BOOLEAN DEFAULT FALSE;
+          ALTER TABLE rss_feed_items ADD COLUMN human_override_reason TEXT;
+          ALTER TABLE rss_feed_items ADD COLUMN human_override_at TIMESTAMPTZ;
+          ALTER TABLE rss_feed_items ADD COLUMN status VARCHAR(50) DEFAULT 'pending';
+        END IF;
+      END $$
+    `);
 
-      await db.execute(sql`
-        CREATE INDEX IF NOT EXISTS idx_rss_feed_items_feed_id ON rss_feed_items(feed_id)
-      `);
+    await db.execute(sql`
+      CREATE INDEX IF NOT EXISTS idx_rss_feed_items_feed_id ON rss_feed_items(feed_id)
+    `);
 
-      await db.execute(sql`
-        CREATE INDEX IF NOT EXISTS idx_rss_feed_items_processed ON rss_feed_items(processed)
-      `);
+    await db.execute(sql`
+      CREATE INDEX IF NOT EXISTS idx_rss_feed_items_processed ON rss_feed_items(processed)
+    `);
 
-      await db.execute(sql`
-        CREATE INDEX IF NOT EXISTS idx_rss_feed_items_url ON rss_feed_items(url)
-      `);
+    await db.execute(sql`
+      CREATE INDEX IF NOT EXISTS idx_rss_feed_items_url ON rss_feed_items(url)
+    `);
 
-      await db.execute(sql`
-        CREATE INDEX IF NOT EXISTS idx_rss_feed_items_gate1_decision ON rss_feed_items(gate1_decision)
-      `);
+    await db.execute(sql`
+      CREATE INDEX IF NOT EXISTS idx_rss_feed_items_gate1_decision ON rss_feed_items(gate1_decision)
+    `);
 
-      await db.execute(sql`
-        CREATE INDEX IF NOT EXISTS idx_rss_feed_items_status ON rss_feed_items(status)
-      `);
+    await db.execute(sql`
+      CREATE INDEX IF NOT EXISTS idx_rss_feed_items_status ON rss_feed_items(status)
+    `);
 
-      this.initialized = true;
-    } catch (error) {
-      throw error;
-    }
+    this.initialized = true;
   }
 
   /**

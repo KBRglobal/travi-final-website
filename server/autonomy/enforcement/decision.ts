@@ -127,7 +127,7 @@ async function checkOverride(
 
     // Note: Overrides are stored separately, this is a simplified check
     // In production, use a dedicated overrides table
-    const result = override ? null : null; // Placeholder
+    const result = null; // Placeholder - overrides stored separately
 
     // Update cache
     if (overrideCache.size >= MAX_OVERRIDE_CACHE) {

@@ -61,6 +61,38 @@ interface DocUploadResult {
 // ============================================================================
 
 /**
+ * Detect if a paragraph is a heading:
+ * - ALL CAPS with mostly letters
+ * - Starts with number followed by period/colon (e.g., "1. Introduction")
+ * - Very short line ending with colon
+ */
+function isHeading(text: string): boolean {
+  const lines = text.split("\n");
+  const firstLine = lines[0].trim();
+
+  // Skip if too long or contains multiple sentences
+  if (firstLine.length > 80 || firstLine.split(".").length > 2) return false;
+
+  // ALL CAPS detection (must have at least 3 letter characters)
+  const letters = firstLine.replace(/[^A-Za-z]/g, "");
+  if (letters.length >= 3 && firstLine === firstLine.toUpperCase() && /[A-Z]/.test(firstLine)) {
+    return true;
+  }
+
+  // Numbered heading: "1. Title" or "1: Title"
+  if (/^\d+[.:]\s*[A-Z]/.test(firstLine) && firstLine.length < 60) {
+    return true;
+  }
+
+  // Short line ending with colon (title-like)
+  if (firstLine.length < 50 && firstLine.endsWith(":") && !firstLine.includes(".")) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Parse a TXT file buffer into structured content
  * Uses conservative heading detection to preserve paragraph structure
  */
@@ -76,36 +108,6 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
 
   const sections: Array<{ heading: string; content: string; level: number }> = [];
   let title = "Untitled Document";
-
-  // Detect if a paragraph is a heading:
-  // - ALL CAPS with mostly letters
-  // - Starts with number followed by period/colon (e.g., "1. Introduction")
-  // - Very short line ending with colon
-  function isHeading(text: string): boolean {
-    const lines = text.split("\n");
-    const firstLine = lines[0].trim();
-
-    // Skip if too long or contains multiple sentences
-    if (firstLine.length > 80 || firstLine.split(".").length > 2) return false;
-
-    // ALL CAPS detection (must have at least 3 letter characters)
-    const letters = firstLine.replace(/[^A-Za-z]/g, "");
-    if (letters.length >= 3 && firstLine === firstLine.toUpperCase() && /[A-Z]/.test(firstLine)) {
-      return true;
-    }
-
-    // Numbered heading: "1. Title" or "1: Title"
-    if (/^\d+[.:]\s*[A-Z]/.test(firstLine) && firstLine.length < 60) {
-      return true;
-    }
-
-    // Short line ending with colon (title-like)
-    if (firstLine.length < 50 && firstLine.endsWith(":") && !firstLine.includes(".")) {
-      return true;
-    }
-
-    return false;
-  }
 
   for (const paragraph of paragraphs) {
     if (isHeading(paragraph)) {

@@ -179,10 +179,10 @@ function detectRedundant(policies: PolicyRule[]): LintIssue[] {
   for (const policy of policies) {
     // Create fingerprint
     const fingerprint = JSON.stringify({
-      actions: [...policy.actions].sort(),
-      resources: [...policy.resources].sort(),
+      actions: [...policy.actions].sort((a, b) => a.localeCompare(b)),
+      resources: [...policy.resources].sort((a, b) => a.localeCompare(b)),
       effect: policy.effect,
-      roles: policy.roles?.toSorted(),
+      roles: policy.roles?.toSorted((a, b) => a.localeCompare(b)),
     });
 
     if (seen.has(fingerprint)) {

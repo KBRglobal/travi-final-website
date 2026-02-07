@@ -100,8 +100,7 @@ export function PublicNav({
 }: Readonly<PublicNavProps>) {
   const [internalMobileMenuOpen, setInternalMobileMenuOpen] = useState(false);
 
-  const mobileMenuOpen =
-    externalMobileMenuOpen !== undefined ? externalMobileMenuOpen : internalMobileMenuOpen;
+  const mobileMenuOpen = externalMobileMenuOpen ?? internalMobileMenuOpen;
   const setMobileMenuOpen = (value: boolean) => {
     setInternalMobileMenuOpen(value);
     onMobileMenuToggle?.(value);

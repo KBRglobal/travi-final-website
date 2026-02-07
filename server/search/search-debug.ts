@@ -286,7 +286,7 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
     const popularityBoost = calculatePopularityBoost(result.viewCount);
 
     const titleLower = result.title.toLowerCase();
-    const titleMatch = queryTerms.some(term => titleLower === term);
+    const titleMatch = queryTerms.includes(titleLower);
     const titleContains = queryTerms.some(term => titleLower.includes(term));
     let titleMatchBoost: number;
     if (titleMatch) titleMatchBoost = 2;

@@ -5,7 +5,7 @@
 
 type ListFieldName = "highlights" | "whatsIncluded" | "whatsExcluded";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -110,11 +110,11 @@ export default function AttractionDetail() {
   const [formData, setFormData] = useState<Partial<Attraction>>({});
 
   // Initialize form when data loads
-  useState(() => {
+  useEffect(() => {
     if (attraction) {
       setFormData(attraction);
     }
-  });
+  }, [attraction]);
 
   // Update mutation
   const saveMutation = useMutation({

@@ -274,9 +274,7 @@ async function generateWithDalle(
       });
 
       return response.data?.[0]?.url || null;
-    } catch (error2: unknown) {
-      const error2Message = error2 instanceof Error ? error2.message : String(error2);
-
+    } catch (_error: unknown) {
       return null;
     }
   }

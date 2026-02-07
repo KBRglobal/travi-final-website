@@ -220,7 +220,7 @@ function CinematicHero({
 }>) {
   const heroRef = useRef<HTMLDivElement>(null);
   const [imageError, setImageError] = useState(false);
-  const [, setImageLoaded] = useState(false);
+  const [_imageLoaded, setImageLoaded] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -594,9 +594,9 @@ function FAQsSection({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
+            {faqs.map(faq => (
               <div
-                key={index}
+                key={faq.question}
                 className="bg-white dark:bg-white/5 rounded-lg p-4 border border-slate-100 dark:border-white/10 shadow-sm"
               >
                 <h3 className="font-semibold text-slate-900 dark:text-white mb-2 flex items-start gap-2">
@@ -1171,7 +1171,7 @@ export default function GuideDetailPage() {
                           className="text-[#6443F4] hover:underline"
                         >
                           Wikivoyage
-                        </a>
+                        </a>{" "}
                         , a free travel guide that anyone can edit.
                       </p>
                       {guide.lastFetched && (

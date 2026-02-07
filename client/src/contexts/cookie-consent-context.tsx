@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 
 export type CookieConsentType = "all" | "essential" | "pending";
 
@@ -37,7 +37,7 @@ function loadGTM() {
   globalThis.__gtm_loaded = true;
 
   globalThis.dataLayer = globalThis.dataLayer || [];
-  globalThis.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+  globalThis.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
 
   const f = document.getElementsByTagName("script")[0];
   const j = document.createElement("script");
@@ -125,20 +125,30 @@ export function CookieConsentProvider({ children }: Readonly<{ children: React.R
     setShowBanner(true);
   }, []);
 
+  const contextValue = useMemo(
+    () => ({
+      consent,
+      preferences,
+      showBanner: showBanner || showSettings,
+      acceptAll,
+      rejectNonEssential,
+      savePreferences,
+      openSettings,
+    }),
+    [
+      consent,
+      preferences,
+      showBanner,
+      showSettings,
+      acceptAll,
+      rejectNonEssential,
+      savePreferences,
+      openSettings,
+    ]
+  );
+
   return (
-    <CookieConsentContext.Provider
-      value={{
-        consent,
-        preferences,
-        showBanner: showBanner || showSettings,
-        acceptAll,
-        rejectNonEssential,
-        savePreferences,
-        openSettings,
-      }}
-    >
-      {children}
-    </CookieConsentContext.Provider>
+    <CookieConsentContext.Provider value={contextValue}>{children}</CookieConsentContext.Provider>
   );
 }
 

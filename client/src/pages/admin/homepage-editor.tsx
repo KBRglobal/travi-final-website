@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, useMemo, createContext, useContext } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -184,8 +184,10 @@ export default function HomepageEditorPage() {
     },
   });
 
+  const localeContextValue = useMemo(() => ({ locale, setLocale }), [locale, setLocale]);
+
   return (
-    <LocaleContext.Provider value={{ locale, setLocale }}>
+    <LocaleContext.Provider value={localeContextValue}>
       <div className="space-y-6 p-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>

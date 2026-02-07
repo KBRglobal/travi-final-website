@@ -55,11 +55,6 @@ class JobQueue {
   private lastProcessedAt: Date | null = null;
   private lastTickAt: Date | null = null;
 
-  constructor() {
-    // DISABLED: Auto-start disabled for UI-only mode
-    // To re-enable: setTimeout(() => this.startProcessing(), 2000);
-  }
-
   /**
    * Register a handler for a job type
    */

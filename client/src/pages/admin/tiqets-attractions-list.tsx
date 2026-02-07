@@ -64,6 +64,51 @@ const contentStatusConfig: Record<string, { label: string; color: string }> = {
   failed: { label: "Failed", color: "text-destructive" },
 };
 
+function AttractionTitleCell(attraction: TiqetsAttraction) {
+  return (
+    <div className="flex flex-col gap-1">
+      <Link
+        href={`/admin/attractions/${attraction.id}`}
+        className="font-medium hover:underline text-foreground line-clamp-2"
+        data-testid={`link-attraction-${attraction.id}`}
+      >
+        {attraction.title}
+      </Link>
+      <span className="text-xs text-muted-foreground">{attraction.slug}</span>
+    </div>
+  );
+}
+
+function AttractionCityCell(attraction: TiqetsAttraction) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+      <span>{attraction.cityName}</span>
+    </div>
+  );
+}
+
+function AttractionStatusCell(attraction: TiqetsAttraction) {
+  const config = statusConfig[attraction.status] || statusConfig.imported;
+  return (
+    <Badge variant={config.variant} className="gap-1">
+      {config.icon}
+      {config.label}
+    </Badge>
+  );
+}
+
+function AttractionContentStatusCell(attraction: TiqetsAttraction) {
+  const status = attraction.contentGenerationStatus || "pending";
+  const config = contentStatusConfig[status] || contentStatusConfig.pending;
+  return (
+    <div className="flex items-center gap-1.5">
+      <Sparkles className={`h-3.5 w-3.5 ${config.color}`} />
+      <span className={`text-sm ${config.color}`}>{config.label}</span>
+    </div>
+  );
+}
+
 export default function TiqetsAttractionsList() {
   const [urlState, setUrlState] = useUrlState({
     search: "",
@@ -95,7 +140,9 @@ export default function TiqetsAttractionsList() {
     typeof data?.total === "string" ? Number.parseInt(data.total, 10) : (data?.total ?? 0);
 
   const cities = useMemo(() => {
-    const uniqueCities = [...new Set(attractions.map(a => a.cityName))].sort();
+    const uniqueCities = [...new Set(attractions.map(a => a.cityName))].sort((a, b) =>
+      (a ?? "").localeCompare(b ?? "")
+    );
     return uniqueCities;
   }, [attractions]);
 
@@ -125,58 +172,25 @@ export default function TiqetsAttractionsList() {
     {
       key: "title",
       header: "Attraction",
-      cell: attraction => (
-        <div className="flex flex-col gap-1">
-          <Link
-            href={`/admin/attractions/${attraction.id}`}
-            className="font-medium hover:underline text-foreground line-clamp-2"
-            data-testid={`link-attraction-${attraction.id}`}
-          >
-            {attraction.title}
-          </Link>
-          <span className="text-xs text-muted-foreground">{attraction.slug}</span>
-        </div>
-      ),
+      cell: AttractionTitleCell,
       sortable: true,
     },
     {
       key: "cityName",
       header: "City",
-      cell: attraction => (
-        <div className="flex items-center gap-1.5">
-          <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-          <span>{attraction.cityName}</span>
-        </div>
-      ),
+      cell: AttractionCityCell,
       sortable: true,
     },
     {
       key: "status",
       header: "Status",
-      cell: attraction => {
-        const config = statusConfig[attraction.status] || statusConfig.imported;
-        return (
-          <Badge variant={config.variant} className="gap-1">
-            {config.icon}
-            {config.label}
-          </Badge>
-        );
-      },
+      cell: AttractionStatusCell,
       sortable: true,
     },
     {
       key: "contentGenerationStatus",
       header: "AI Content",
-      cell: attraction => {
-        const status = attraction.contentGenerationStatus || "pending";
-        const config = contentStatusConfig[status] || contentStatusConfig.pending;
-        return (
-          <div className="flex items-center gap-1.5">
-            <Sparkles className={`h-3.5 w-3.5 ${config.color}`} />
-            <span className={`text-sm ${config.color}`}>{config.label}</span>
-          </div>
-        );
-      },
+      cell: AttractionContentStatusCell,
     },
   ];
 

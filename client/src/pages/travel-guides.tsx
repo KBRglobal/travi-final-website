@@ -619,9 +619,8 @@ export default function TravelGuidesPage() {
                     transition={{ duration: 0.8, delay: 0.4 }}
                   >
                     {/* Main Featured Image */}
-                    <div
+                    <section
                       className="bento-card relative flex-1 min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2 rounded-2xl overflow-hidden"
-                      role="region"
                       aria-label="Featured guide"
                     >
                       <AnimatePresence mode="wait">
@@ -680,7 +679,7 @@ export default function TravelGuidesPage() {
                           </Link>
                         </div>
                       </div>
-                    </div>
+                    </section>
 
                     {/* Thumbnail Navigation */}
                     <div

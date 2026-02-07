@@ -1,4 +1,4 @@
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState, useMemo, useCallback, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { I18nextProvider } from "react-i18next";
 import i18n, { isRTL, changeLanguage } from "./config";
@@ -15,8 +15,7 @@ export function LocaleProvider({ children }: Readonly<LocaleProviderProps>) {
   const [location] = useLocation();
   const [locale, setLocaleState] = useState<Locale>(() => {
     // Try to get locale from URL first
-    const pathParts = globalThis.location.pathname.split("/").filter(Boolean);
-    const urlLocale = pathParts[0] as Locale;
+    const urlLocale = globalThis.location.pathname.split("/").find(Boolean) as Locale;
     if (SUPPORTED_LOCALES.some(l => l.code === urlLocale)) {
       return urlLocale;
     }
@@ -42,8 +41,7 @@ export function LocaleProvider({ children }: Readonly<LocaleProviderProps>) {
 
   // Update locale from URL on location change
   useEffect(() => {
-    const pathParts = location.split("/").filter(Boolean);
-    const urlLocale = pathParts[0] as Locale;
+    const urlLocale = location.split("/").find(Boolean) as Locale;
     if (SUPPORTED_LOCALES.some(l => l.code === urlLocale) && urlLocale !== locale) {
       handleSetLocale(urlLocale);
     }
@@ -64,27 +62,33 @@ export function LocaleProvider({ children }: Readonly<LocaleProviderProps>) {
     }
   }, [locale]);
 
-  const handleSetLocale = async (newLocale: Locale) => {
+  const handleSetLocale = useCallback(async (newLocale: Locale) => {
     await changeLanguage(newLocale);
     setLocaleState(newLocale);
-  };
+  }, []);
 
   const localeInfo = SUPPORTED_LOCALES.find(l => l.code === locale);
 
-  const localePath = (path: string): string => {
-    if (locale === "en") return path;
-    const cleanPath = path.startsWith("/") ? path : `/${path}`;
-    return `/${locale}${cleanPath}`;
-  };
+  const localePath = useCallback(
+    (path: string): string => {
+      if (locale === "en") return path;
+      const cleanPath = path.startsWith("/") ? path : `/${path}`;
+      return `/${locale}${cleanPath}`;
+    },
+    [locale]
+  );
 
-  const value: LocaleContextType = {
-    locale,
-    setLocale: handleSetLocale,
-    isRTL: currentIsRTL,
-    localeInfo,
-    availableLocales: SUPPORTED_LOCALES,
-    localePath,
-  };
+  const value: LocaleContextType = useMemo(
+    () => ({
+      locale,
+      setLocale: handleSetLocale,
+      isRTL: currentIsRTL,
+      localeInfo,
+      availableLocales: SUPPORTED_LOCALES,
+      localePath,
+    }),
+    [locale, handleSetLocale, currentIsRTL, localeInfo, localePath]
+  );
 
   const Context = getLocaleContext();
   return (
@@ -95,16 +99,18 @@ export function LocaleProvider({ children }: Readonly<LocaleProviderProps>) {
 }
 
 // Hook to get localized URL
+// Build locale prefix pattern dynamically from supported locales
+const LOCALE_PREFIX_PATTERN = new RegExp(
+  `^\\/(${SUPPORTED_LOCALES.map(l => l.code).join("|")})\\/`
+);
+
 export function useLocalizedUrl() {
   const { locale } = useLocale();
 
   const getLocalizedUrl = (path: string, targetLocale?: Locale) => {
     const loc = targetLocale || locale;
     // Remove any existing locale prefix
-    const cleanPath = path.replace(
-      /^\/(en|ar|hi|ru|zh|de|fr|es|it|pt|nl|pl|uk|ta|te|bn|mr|gu|ml|kn|pa|ur|si|ne|ja|ko|th|vi|id|ms|tl|zh-TW|fa|tr|he|kk|uz|az|cs|el|sv|no|da|fi|hu|ro|sw|am)\//,
-      "/"
-    );
+    const cleanPath = path.replace(LOCALE_PREFIX_PATTERN, "/");
     return `/${loc}${cleanPath}`;
   };
 

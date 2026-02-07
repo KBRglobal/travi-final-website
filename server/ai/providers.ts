@@ -570,7 +570,7 @@ export function getModelForProvider(provider: string, tier: ContentTier = "stand
     case "anthropic":
       return "claude-sonnet-4-5";
     case "openrouter":
-      return tier === "premium" ? "anthropic/claude-3.5-sonnet" : "anthropic/claude-3.5-sonnet";
+      return "anthropic/claude-3.5-sonnet";
     case "deepseek":
       return "deepseek-chat";
     case "replit-ai":

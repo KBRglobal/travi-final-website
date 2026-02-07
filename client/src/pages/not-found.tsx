@@ -331,7 +331,7 @@ export default function NotFound() {
         if (!s.collected) {
           const dx = 60 + DUCK_SIZE / 2 - (s.x + STAMP_SIZE / 2);
           const dy = duckY + DUCK_SIZE / 2 - (s.y + STAMP_SIZE / 2);
-          if (Math.sqrt(dx * dx + dy * dy) < (DUCK_SIZE + STAMP_SIZE) / 2) {
+          if (Math.hypot(dx, dy) < (DUCK_SIZE + STAMP_SIZE) / 2) {
             s.collected = true;
             score += 3;
             scoreEl.textContent = score.toString();

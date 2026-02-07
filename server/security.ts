@@ -1209,11 +1209,11 @@ interface SSRFValidationResult {
 const PRIVATE_IP_PATTERNS = [
   /^127\./, // Loopback
   /^10\./, // Private Class A
-  /^172\.(1[6-9]|2[0-9]|3[0-1])\./, // Private Class B
+  /^172\.(1[6-9]|2\d|3[0-1])\./, // Private Class B
   /^192\.168\./, // Private Class C
   /^169\.254\./, // Link-local (AWS metadata, etc.)
   /^0\./, // Current network
-  /^100\.(6[4-9]|[7-9][0-9]|1[0-2][0-9])\./, // Shared address space
+  /^100\.(6[4-9]|[7-9]\d|1[0-2]\d)\./, // Shared address space
   /^198\.18\./, // Benchmark testing
   /^::1$/, // IPv6 loopback
   /^fe80:/i, // IPv6 link-local

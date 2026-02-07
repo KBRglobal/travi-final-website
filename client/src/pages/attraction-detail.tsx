@@ -341,8 +341,8 @@ function LivePricingWidget({
           Available Ticket Options
         </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-10 flex items-center gap-2">
-          <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
-          Tickets available – Check availability
+          <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" /> Tickets available
+          – Check availability
         </p>
 
         <div className="space-y-5">
@@ -684,9 +684,9 @@ function TicketOptionsTable({
                   </td>
                   <td className="py-4 px-5">
                     <ul className="space-y-1.5">
-                      {ticket.perks.map((perk, pIndex) => (
+                      {ticket.perks.map(perk => (
                         <li
-                          key={pIndex}
+                          key={perk}
                           className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400"
                         >
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#6443F4]" />

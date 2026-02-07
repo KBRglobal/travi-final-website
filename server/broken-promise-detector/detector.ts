@@ -249,7 +249,7 @@ function detectPromise(
  */
 function countListItems(body: string): number {
   const olItems = (body.match(/<li[^>]*>/gi) || []).length;
-  const bulletPoints = (body.match(/^[\s]*[-•*]\s/gm) || []).length;
+  const bulletPoints = (body.match(/^\s*[-•*]\s/gm) || []).length;
   return olItems + bulletPoints;
 }
 

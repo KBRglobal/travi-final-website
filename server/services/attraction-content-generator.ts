@@ -260,9 +260,7 @@ function repairJSON(jsonString: string): string {
   let inString = false;
   let escapeNext = false;
 
-  for (let i = 0; i < fixed.length; i++) {
-    const char = fixed[i];
-
+  for (const char of fixed) {
     if (escapeNext) {
       escapeNext = false;
       continue;
@@ -302,8 +300,7 @@ function repairJSON(jsonString: string): string {
     inString = false;
     escapeNext = false;
 
-    for (let i = 0; i < fixed.length; i++) {
-      const char = fixed[i];
+    for (const char of fixed) {
       if (escapeNext) {
         escapeNext = false;
         continue;
@@ -350,7 +347,7 @@ function findLastCompleteElement(json: string): number {
       return i;
     }
     // Numbers, booleans, null
-    if (/[0-9]/.test(char)) {
+    if (/\d/.test(char)) {
       // Walk back to find the full number
       let j = i;
       while (j > 0 && /[0-9.eE+-]/.test(json[j - 1])) j--;

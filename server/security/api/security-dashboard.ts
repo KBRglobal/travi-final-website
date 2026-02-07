@@ -100,12 +100,12 @@ class SecurityDashboardService {
    * Generate executive dashboard
    */
   async generateDashboard(): Promise<ExecutiveDashboard> {
-    const [posture, mode, threat, incidents, compliance, metrics, alerts] = await Promise.all([
+    const mode = this.getModeStatus();
+    const incidents = this.getIncidentStatus();
+    const compliance = this.getComplianceStatus();
+    const [posture, threat, metrics, alerts] = await Promise.all([
       this.calculatePosture(),
-      this.getModeStatus(),
       this.getThreatStatus(),
-      this.getIncidentStatus(),
-      this.getComplianceStatus(),
       this.getKeyMetrics(),
       this.getActiveAlerts(),
     ]);
@@ -126,22 +126,17 @@ class SecurityDashboardService {
    */
   async calculatePosture(): Promise<SecurityPosture> {
     let score = 100;
-    const deductions: { reason: string; points: number }[] = [];
 
     // Check threat level
     const threat = await assessThreatLevel();
     if (threat.level === "black") {
       score -= 40;
-      deductions.push({ reason: "Critical threat level", points: 40 });
     } else if (threat.level === "red") {
       score -= 30;
-      deductions.push({ reason: "High threat level", points: 30 });
     } else if (threat.level === "orange") {
       score -= 20;
-      deductions.push({ reason: "Elevated threat level", points: 20 });
     } else if (threat.level === "yellow") {
       score -= 10;
-      deductions.push({ reason: "Warning threat level", points: 10 });
     }
 
     // Check policy health
@@ -149,7 +144,6 @@ class SecurityDashboardService {
     if (policyLint.summary.errors > 0) {
       const policyDeduction = Math.min(20, policyLint.summary.errors * 5);
       score -= policyDeduction;
-      deductions.push({ reason: "Policy configuration errors", points: policyDeduction });
     }
 
     // Check for drift
@@ -157,10 +151,8 @@ class SecurityDashboardService {
       const drift = await scanForDrift();
       if (drift.summary.criticalDrifts > 0) {
         score -= 15;
-        deductions.push({ reason: "Critical security drift", points: 15 });
       } else if (drift.summary.highDrifts > 0) {
         score -= 10;
-        deductions.push({ reason: "High-severity drift", points: 10 });
       }
     } catch {
       // No baseline
@@ -170,14 +162,12 @@ class SecurityDashboardService {
     const chain = verifyEvidenceChain();
     if (!chain.valid) {
       score -= 10;
-      deductions.push({ reason: "Evidence chain integrity issue", points: 10 });
     }
 
     // Check mode
     const mode = getSecurityMode();
     if (mode === "monitor" && process.env.NODE_ENV === "production") {
       score -= 15;
-      deductions.push({ reason: "Production in monitor mode", points: 15 });
     }
 
     // Ensure score is within bounds

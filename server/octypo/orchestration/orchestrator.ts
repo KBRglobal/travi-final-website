@@ -231,7 +231,7 @@ export class OctypoOrchestrator {
           ),
         ]);
         results.push(styleResult);
-      } catch (timeoutErr) {
+      } catch (_error) {
         log.warn(`[Orchestrator] Style validation timed out, using fallback pass`);
         results.push({
           validatorId: "validator-aisha",

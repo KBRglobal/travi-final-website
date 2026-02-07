@@ -269,10 +269,8 @@ export async function governanceGuard(
     resource = "users";
     if (method !== "GET") action = "manage_users";
   } else if (path.includes("polic")) {
-    resource = "policies";
     if (method !== "GET") action = "manage_policies";
   } else if (path.includes("approval")) {
-    resource = "policies";
     if (path.includes("decide")) action = "approve";
     else if (method === "POST") action = "manage_policies";
   }

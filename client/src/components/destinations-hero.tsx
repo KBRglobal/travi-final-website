@@ -316,9 +316,8 @@ export function DestinationsHero({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <div
+                <section
                   className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2 transition-all duration-400"
-                  role="region"
                   aria-label={t("destinations.hero.galleryAriaLabel")}
                 >
                   <AnimatePresence mode="wait">
@@ -393,7 +392,7 @@ export function DestinationsHero({
                       </div>
                     </motion.div>
                   </div>
-                </div>
+                </section>
 
                 {displayDestinations.length > 1 && (
                   <div
@@ -445,9 +444,8 @@ export function DestinationsHero({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <div
+                <section
                   className="bento-card relative flex-1 min-h-[300px] lg:min-h-0 group bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-3xl overflow-hidden flex items-center justify-center"
-                  role="region"
                   aria-label={t("destinations.hero.placeholderAriaLabel")}
                 >
                   <div className="text-center p-8">
@@ -459,7 +457,7 @@ export function DestinationsHero({
                       {t("destinations.hero.browseCollection")}
                     </p>
                   </div>
-                </div>
+                </section>
               </motion.div>
             </div>
           )}

@@ -229,7 +229,7 @@ export default function AboutPage() {
                       Operated by{" "}
                       <span className="font-semibold text-foreground">
                         KBR Global Creative Consulting Ltd
-                      </span>
+                      </span>{" "}
                       , a company registered in Gibraltar (Company No. 125571).
                     </p>
                   </div>

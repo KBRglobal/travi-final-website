@@ -238,8 +238,9 @@ export function getDominantIntentSignal(signals: IntentSignal[]): IntentSignal |
   const freshSignals = signals.filter(s => isIntentFresh(s));
   if (freshSignals.length === 0) return null;
 
-  return freshSignals.reduce((dominant, current) =>
-    current.confidence > dominant.confidence ? current : dominant
+  return freshSignals.reduce(
+    (dominant, current) => (current.confidence > dominant.confidence ? current : dominant),
+    freshSignals[0]
   );
 }
 

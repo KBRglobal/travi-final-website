@@ -238,8 +238,8 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
         const { client: openai, provider } = aiClient;
 
         // Build the enhanced system and user prompts using centralized content rules
-        const systemPrompt = await getContentWriterSystemPrompt(category);
-        const userPrompt = await buildArticleGenerationPrompt(
+        const systemPrompt = getContentWriterSystemPrompt(category);
+        const userPrompt = buildArticleGenerationPrompt(
           cluster.topic || combinedText,
           sourceContent
         );

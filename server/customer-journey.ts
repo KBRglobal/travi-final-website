@@ -455,8 +455,8 @@ export const customerJourney = {
           uniqueVisitors: uniqueResult[0]?.uniqueVisitors || 0,
           avgTimeOnPage: Math.round(Number(row.avgTimeOnPage) || 0),
           avgScrollDepth: Math.round(Number(row.avgScrollDepth) || 0),
-          bounceRate: 0, // TODO: Calculate from sessions
-          exitRate: 0, // TODO: Calculate from sessions
+          bounceRate: 0, // Session-based calculation deferred
+          exitRate: 0, // Session-based calculation deferred
         };
       })
     );

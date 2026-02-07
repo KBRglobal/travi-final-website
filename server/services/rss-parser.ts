@@ -24,42 +24,34 @@ export async function parseRssFeed(url: string): Promise<RssFeedItem[]> {
     throw new Error(`Invalid RSS feed URL: ${ssrfCheck.error}`);
   }
 
-  try {
-    const response = await fetch(ssrfCheck.sanitizedUrl!);
-    const text = await response.text();
+  const response = await fetch(ssrfCheck.sanitizedUrl!);
+  const text = await response.text();
 
-    const items: RssFeedItem[] = [];
-    const itemMatches = text.match(/<item[^>]*>[\s\S]*?<\/item>/gi) || [];
+  const items: RssFeedItem[] = [];
+  const itemMatches = text.match(/<item[^>]*>[\s\S]*?<\/item>/gi) || [];
 
-    for (const itemXml of itemMatches) {
-      const titleMatch = itemXml.match(
-        /<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i
-      );
-      const linkMatch = itemXml.match(/<link[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/i);
-      const descMatch = itemXml.match(
-        /<description[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i
-      );
-      const dateMatch = itemXml.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/i);
+  for (const itemXml of itemMatches) {
+    const titleMatch = itemXml.match(/<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
+    const linkMatch = itemXml.match(/<link[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/i);
+    const descMatch = itemXml.match(
+      /<description[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i
+    );
+    const dateMatch = itemXml.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/i);
 
-      if (titleMatch && linkMatch) {
-        // Sanitize all content from RSS to prevent XSS attacks
-        const rawTitle = titleMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "");
-        const rawLink = linkMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "");
-        const rawDescription = descMatch
-          ? descMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "")
-          : "";
+    if (titleMatch && linkMatch) {
+      // Sanitize all content from RSS to prevent XSS attacks
+      const rawTitle = titleMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "");
+      const rawLink = linkMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "");
+      const rawDescription = descMatch ? descMatch[1].trim().replace(/<!\[CDATA\[|\]\]>/g, "") : "";
 
-        items.push({
-          title: sanitizeHtmlContent(rawTitle),
-          link: rawLink, // URLs are validated separately
-          description: sanitizeHtmlContent(rawDescription).substring(0, 500),
-          pubDate: dateMatch ? dateMatch[1].trim() : undefined,
-        });
-      }
+      items.push({
+        title: sanitizeHtmlContent(rawTitle),
+        link: rawLink, // URLs are validated separately
+        description: sanitizeHtmlContent(rawDescription).substring(0, 500),
+        pubDate: dateMatch ? dateMatch[1].trim() : undefined,
+      });
     }
-
-    return items;
-  } catch (error) {
-    throw error;
   }
+
+  return items;
 }

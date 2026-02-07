@@ -302,18 +302,16 @@ describe("SecurityGate", () => {
 
     it("should escalate threat on suspicious patterns", async () => {
       // Simulate multiple failed access attempts
-      const requests = Array(20)
-        .fill(null)
-        .map((_, i) => ({
-          actor: {
-            userId: "suspicious-actor",
-            roles: ["viewer"],
-            ipAddress: "10.0.0." + i,
-          },
-          action: "admin_action" as GatedAction,
-          resource: "system" as const,
-          context: {},
-        }));
+      const requests = new Array(20).fill(null).map((_, i) => ({
+        actor: {
+          userId: "suspicious-actor",
+          roles: ["viewer"],
+          ipAddress: "10.0.0." + i,
+        },
+        action: "admin_action" as GatedAction,
+        resource: "system" as const,
+        context: {},
+      }));
 
       for (const request of requests) {
         await SecurityGate.assertAllowed(request);

@@ -49,7 +49,7 @@ export function LiveChatWidget({
   const queryClient = useQueryClient();
   const visitorId = generateVisitorId();
 
-  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  const isOpen = externalIsOpen ?? internalIsOpen;
   const setIsOpen = onOpenChange || setInternalIsOpen;
 
   const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({

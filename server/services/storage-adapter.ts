@@ -69,7 +69,7 @@ export class R2StorageAdapter implements StorageAdapter {
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
 
-    if (!this.initPromise) {
+    if (this.initPromise === null) {
       this.initPromise = (async () => {
         const testKey = `.storage-test-${Date.now()}`;
         try {
@@ -280,11 +280,8 @@ export class StorageManager {
       process.env.CLOUDFLARE_EMAIL
     );
 
-    if (this.objectStorageEnabled) {
-      /* Object storage (R2) configured and available */
-    } else {
-      /* Object storage not configured - using local filesystem fallback */
-    }
+    // Object storage (R2) status logged at initialization
+    // If not configured, local filesystem fallback is used
   }
 
   /**

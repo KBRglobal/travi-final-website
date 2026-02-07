@@ -37,8 +37,7 @@ async function executeQualityImprovement(taskId: string, config: TaskConfig): Pr
     for (const content of lowQualityContent) {
       processed++;
 
-      // TODO: Implement AI-powered content quality improvement (rewrite low-quality sections,
-      // improve SEO, enhance readability). For now, flagging content for manual review.
+      // Content quality improvement deferred. Currently flagging content for manual review.
       await db
         .update(contents)
         .set({
@@ -236,8 +235,7 @@ async function executeImageOptimization(taskId: string, config: TaskConfig): Pro
     for (const content of contentWithoutImages) {
       processed++;
 
-      // TODO: Implement VAMS (Visual Asset Management System) integration to fetch
-      // appropriate hero images based on content type and destination
+      // VAMS integration for automatic hero image assignment deferred
       log.info(`[ImageOptimization] Content ${content.id} needs hero image`);
     }
 

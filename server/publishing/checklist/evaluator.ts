@@ -288,20 +288,12 @@ const CHECKS = {
 };
 
 /**
- * Get checks applicable to a content type
+ * Get checks applicable to a content type.
+ * Currently all checks apply to every content type.
+ * Can be customised per type in the future.
  */
-function getChecksForContentType(contentType: string): (typeof CHECKS)[keyof typeof CHECKS][] {
-  // All checks apply to all content types for now
-  // Could be customized per type in future
-  const allChecks = Object.values(CHECKS);
-
-  // Filter based on content type if needed
-  if (contentType === "article") {
-    // Articles might not need hero images as strictly
-    return allChecks;
-  }
-
-  return allChecks;
+function getChecksForContentType(_contentType: string): (typeof CHECKS)[keyof typeof CHECKS][] {
+  return Object.values(CHECKS);
 }
 
 /**

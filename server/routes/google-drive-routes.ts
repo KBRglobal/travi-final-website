@@ -169,18 +169,19 @@ export function registerGoogleDriveRoutes(app: Express): void {
                   file: safeFileName,
                   path: `/images/destinations/${cityName}/${safeFileName}`,
                 });
-              } catch (downloadErr: any) {
+              } catch (error: unknown) {
                 report.errors.push({
                   city: cityName,
                   file: file.name,
-                  error: downloadErr.message || "Download failed",
+                  error: error instanceof Error ? error.message : "Download failed",
                 });
               }
             }
-          } catch (cityErr: any) {
+          } catch (error_: unknown) {
             report.errors.push({
               city: cityName,
-              error: cityErr.message || "Failed to list city folder contents",
+              error:
+                error_ instanceof Error ? error_.message : "Failed to list city folder contents",
             });
           }
         }

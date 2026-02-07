@@ -37,7 +37,7 @@ async function captureSnapshot(): Promise<SystemSnapshot> {
   try {
     const rm = await import("../platform-readiness");
     if (rm.isPlatformReadinessEnabled()) {
-      const r = await rm.evaluateReadiness();
+      const r = rm.evaluateReadiness();
       readiness = { score: r.score, status: r.status, blockers: r.blockers.length };
     }
   } catch {

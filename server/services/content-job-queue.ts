@@ -510,7 +510,7 @@ export async function startSmartQueue(
 
     // Verify which providers are available
     const providerInstance = getMultiModelProvider();
-    const providerStatus = await providerInstance.checkAvailability();
+    const providerStatus = providerInstance.checkAvailability();
 
     const availableProviders: Array<
       | "anthropic"

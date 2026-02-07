@@ -553,7 +553,7 @@ class UnifiedEvidenceCollector {
     let securityScore = 100;
     if (gateStats.blocked > gateStats.allowed * 0.5) securityScore -= 20;
     if (intelSummary.highRiskUsers > 5) securityScore -= 15;
-    if (driftHistory.filter(d => d.severity === "critical").length > 0) securityScore -= 15;
+    if (driftHistory.some(d => d.severity === "critical")) securityScore -= 15;
     if (overrideStats.active > 10) securityScore -= 10;
     securityScore = Math.max(0, securityScore);
 

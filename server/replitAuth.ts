@@ -71,7 +71,7 @@ export function getSession() {
       // In development, secure:false allows cookies over HTTP for localhost testing
       // In production, secure:true requires HTTPS
       secure: !isDev,
-      sameSite: isDev ? "lax" : "lax",
+      sameSite: "lax",
       maxAge: sessionTtl,
     },
   });

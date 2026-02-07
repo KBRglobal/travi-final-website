@@ -17,13 +17,21 @@ import { getQualityThresholds } from "../cultural-contexts";
  * Universal technical terms that are acceptable in any locale
  * These are exempt from locale purity calculations
  */
+// Currency codes and measurement units (split out for regex complexity)
+const CURRENCY_CODES = "AED|USD|EUR|GBP|JPY|CNY|INR|RUB|SAR|QAR|BHD|OMR|KWD";
+const MEASUREMENT_UNITS = "km|mi|ft|min|hr|hours?|minutes?|kg|lb|cm|inch|mm";
+const MEASUREMENTS_PATTERN = new RegExp(
+  `\\b\\d+[.,]?\\d*\\s*(${CURRENCY_CODES}|${MEASUREMENT_UNITS}|m)\\b`,
+  "gi"
+);
+
 const UNIVERSAL_TECHNICAL_PATTERNS = [
   // Tech brands and apps
   /\b(WhatsApp|Google|Maps|Uber|WiFi|GPS|URL|HTTP|HTTPS|API|iOS|Android|iPhone|iPad|Samsung)\b/gi,
   // Time patterns
   /\b\d+:\d+\b/g,
   // Measurements and currencies
-  /\b\d+[.,]?\d*\s*(AED|USD|EUR|GBP|JPY|CNY|INR|RUB|SAR|QAR|BHD|OMR|KWD|km|m|mi|ft|min|hr|hours?|minutes?|kg|lb|cm|inch|mm)\b/gi,
+  MEASUREMENTS_PATTERN,
   // Years
   /\b(19|20)\d{2}\b/g,
   // Common brand names

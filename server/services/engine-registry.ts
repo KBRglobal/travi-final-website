@@ -546,23 +546,7 @@ class EngineRegistryClass {
   private loadKimiEngines(): void {
     // Kimi/Moonshot disabled - API key invalid (401 auth error)
     // To re-enable: obtain valid API key from https://platform.moonshot.cn
-    const key = process.env.KIMI_API_KEY;
-    if (key && false) {
-      // Disabled until valid API key is provided
-      this.engines.push({
-        id: "kimi",
-        name: "Kimi (Moonshot)",
-        provider: "kimi",
-        model: "moonshot-v1-128k",
-        apiKey: key,
-        baseURL: "https://api.moonshot.cn/v1",
-        maxTokens: 8192,
-        weight: 1,
-        isHealthy: true,
-        errorCount: 0,
-        successCount: 0,
-      });
-    }
+    // and uncomment the engine registration below
   }
 
   getNextEngine(): EngineConfig | null {

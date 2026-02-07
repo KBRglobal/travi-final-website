@@ -653,7 +653,10 @@ class DriftScanner {
   // ============================================================================
 
   private hashData(data: unknown): string {
-    const json = JSON.stringify(data, Object.keys((data as object) || {}).sort());
+    const json = JSON.stringify(
+      data,
+      Object.keys((data as object) || {}).sort((a, b) => a.localeCompare(b))
+    );
     return crypto.createHash("sha256").update(json).digest("hex").substring(0, 16);
   }
 

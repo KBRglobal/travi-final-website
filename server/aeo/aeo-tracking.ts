@@ -353,7 +353,7 @@ export async function getAEODashboard(
     const existing = crawlerMap.get(log.crawler) || { visits: 0, lastVisit: new Date(0) };
     crawlerMap.set(log.crawler, {
       visits: existing.visits + 1,
-      lastVisit: log.crawledAt! > existing.lastVisit ? log.crawledAt! : existing.lastVisit,
+      lastVisit: new Date(Math.max(log.crawledAt!.getTime(), existing.lastVisit.getTime())),
     });
   }
 

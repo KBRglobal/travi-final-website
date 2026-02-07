@@ -198,23 +198,9 @@ export function onContentPublished(contentId: string): void {
 /**
  * Trigger coverage evaluation after content update.
  * Fire-and-forget: does not block the update flow.
+ * Implementation is identical to onContentPublished.
  */
-export function onContentUpdated(contentId: string): void {
-  if (!isIntelligenceCoverageEnabled()) {
-    return;
-  }
-
-  // Fire and forget
-  processCoverageJob({
-    type: 'single',
-    contentId,
-  }).catch(error => {
-    logger.error('Background coverage evaluation failed', {
-      contentId,
-      error: error instanceof Error ? error.message : 'Unknown',
-    });
-  });
-}
+export const onContentUpdated = onContentPublished;
 
 // ============================================================================
 // Backfill Support

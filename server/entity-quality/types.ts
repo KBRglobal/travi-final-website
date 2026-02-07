@@ -3,8 +3,8 @@
  * Feature Flag: ENABLE_ENTITY_QUALITY=true
  */
 
-export type EntityType = 'hotel' | 'attraction' | 'dining' | 'transport' | 'district';
-export type SuggestionStatus = 'open' | 'ignored' | 'merged';
+export type EntityType = "hotel" | "attraction" | "dining" | "transport" | "district";
+export type SuggestionStatus = "open" | "ignored" | "merged";
 
 export interface EntityReference {
   id: string;
@@ -67,12 +67,12 @@ export interface EntityQualityStatus {
 }
 
 export type QualityDimension =
-  | 'completeness'
-  | 'accuracy'
-  | 'freshness'
-  | 'consistency'
-  | 'richness'
-  | 'engagement';
+  | "completeness"
+  | "accuracy"
+  | "freshness"
+  | "consistency"
+  | "richness"
+  | "engagement";
 
 export interface DimensionScore {
   score: number;
@@ -83,13 +83,13 @@ export interface DimensionScore {
 export interface QualityIssue {
   code: string;
   dimension: QualityDimension;
-  severity: 'low' | 'medium' | 'high';
+  severity: "low" | "medium" | "high";
   message: string;
 }
 
 export interface QualityScore {
   overall: number;
-  grade: 'A' | 'B' | 'C' | 'D' | 'F';
+  grade: "A" | "B" | "C" | "D" | "F";
   dimensions: Record<QualityDimension, DimensionScore>;
   issues: QualityIssue[];
   computedAt: Date;
@@ -102,15 +102,15 @@ export interface QualityStats {
   totalEvaluated: number;
 }
 
-export type QualityGrade = QualityScore['grade'];
+export type QualityGrade = QualityScore["grade"];
 
 export const DIMENSION_WEIGHTS: Record<QualityDimension, number> = {
   completeness: 0.25,
-  accuracy: 0.20,
+  accuracy: 0.2,
   freshness: 0.15,
   consistency: 0.15,
   richness: 0.15,
-  engagement: 0.10,
+  engagement: 0.1,
 };
 
 export const DEFAULT_THRESHOLDS = {

@@ -51,8 +51,10 @@ export function getLocaleFromQuery(req: Request): Locale {
 }
 
 export function requireValidLocale(req: Request, res: Response, next: NextFunction) {
-  const segments = req.path.split("/").filter(Boolean);
-  const firstSegment = segments[0]?.toLowerCase();
+  const firstSegment = req.path
+    .split("/")
+    .find(s => s.length > 0)
+    ?.toLowerCase();
 
   if (firstSegment?.length === 2 && !isValidLocale(firstSegment)) {
     return res.status(404).json({

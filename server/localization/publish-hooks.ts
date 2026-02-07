@@ -215,11 +215,9 @@ export async function updateSearchIndex(content: Content, locale: string): Promi
           searchableText = extractSearchableText(translation.blocks);
         }
       }
-    } else {
+    } else if (content.blocks) {
       // EN: build from source blocks
-      if (content.blocks) {
-        searchableText = extractSearchableText(content.blocks);
-      }
+      searchableText = extractSearchableText(content.blocks);
     }
 
     // Add title and meta to searchable text

@@ -236,7 +236,7 @@ export function buildScriptRegex(script: string): RegExp | null {
 export const SCRIPT_REGEX: Record<string, RegExp> = {
   latin: /[a-zA-Z\u00C0-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]/g,
   arabic: /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g,
-  devanagari: /[\u0900-\u097F\uA8E0-\uA8FF]/g,
+  devanagari: /[\u0900-\u097F]|[\uA8E0-\uA8FF]/g,
   bengali: /[\u0980-\u09FF]/g,
   thai: /[\u0E00-\u0E7F]/g,
   cjk: /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F]/g,

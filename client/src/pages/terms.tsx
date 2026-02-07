@@ -665,7 +665,7 @@ export default function TermsPage() {
                       data-testid="link-privacy-email"
                     >
                       privacy@travi.world
-                    </a>
+                    </a>{" "}
                     .
                   </p>
                 </div>

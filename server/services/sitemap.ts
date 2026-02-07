@@ -163,7 +163,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
   // Updated January 2026: Global travel platform (no Dubai bias at top level)
   const staticPages = [
     // Core Pages
-    { path: "", priority: 1.0, changefreq: "daily" as const },
+    { path: "", priority: 1, changefreq: "daily" as const },
 
     // Main Category Pages (ONLY pages with real content)
     { path: "/destinations", priority: 0.9, changefreq: "daily" as const },
@@ -342,73 +342,6 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
       sitemapLog.error({ err: error }, "Sitemap generation error");
     }
   }
-
-  // Help Center pages - DISABLED: Help center is currently broken
-  // Uncomment when help center is fixed and working
-  /*
-  if (locale === "en") {
-    try {
-      // Get active help categories
-      const categories = await db.select({
-        slug: helpCategories.slug,
-        updatedAt: helpCategories.updatedAt,
-      }).from(helpCategories)
-        .where(eq(helpCategories.isActive, true));
-
-      let helpCount = 0;
-      for (const category of categories) {
-        if (category.slug) {
-          const categoryPath = `/help/${category.slug}`;
-          const lastmod = category.updatedAt
-            ? new Date(category.updatedAt).toISOString().split("T")[0]
-            : now;
-
-          urls.push({
-            loc: `${BASE_URL}${categoryPath}`,
-            lastmod,
-            changefreq: "weekly",
-            priority: 0.5,
-          });
-          helpCount++;
-
-          // Get published articles in this category
-          const articles = await db.select({
-            slug: helpArticles.slug,
-            updatedAt: helpArticles.updatedAt,
-            categorySlug: helpCategories.slug,
-          }).from(helpArticles)
-            .innerJoin(helpCategories, eq(helpArticles.categoryId, helpCategories.id))
-            .where(and(
-              eq(helpCategories.slug, category.slug),
-              eq(helpArticles.status, "published")
-            ));
-
-          for (const article of articles) {
-            if (article.slug && article.categorySlug) {
-              const articlePath = `/help/${article.categorySlug}/${article.slug}`;
-              const articleLastmod = article.updatedAt
-                ? new Date(article.updatedAt).toISOString().split("T")[0]
-                : now;
-
-              urls.push({
-                loc: `${BASE_URL}${articlePath}`,
-                lastmod: articleLastmod,
-                changefreq: "monthly",
-                priority: 0.4,
-              });
-              helpCount++;
-            }
-          }
-        }
-      }
-      if (helpCount > 0) {
-        
-      }
-    } catch (error) {
-      
-    }
-  }
-  */
 
   return urls;
 }

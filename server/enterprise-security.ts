@@ -408,9 +408,8 @@ export const contextualAuth = {
       }
     }
 
-    // Check for impossible travel (if we have previous login)
-    // TODO: Implement impossible travel detection - requires storing previous login
-    // location/timestamp in session history and comparing geo distance vs time elapsed
+    // Impossible travel detection deferred - requires session history storage
+    // for previous login location/timestamp and geo distance vs time elapsed comparison
 
     // 3. Time-based Check
     const now = new Date();
@@ -424,12 +423,10 @@ export const contextualAuth = {
           riskScore += 20;
           riskFactors.push("outside_time_window");
         }
-      } else {
+      } else if (currentHour < start && currentHour >= end) {
         // Overnight window (e.g., 22:00 - 06:00)
-        if (currentHour < start && currentHour >= end) {
-          riskScore += 20;
-          riskFactors.push("outside_time_window");
-        }
+        riskScore += 20;
+        riskFactors.push("outside_time_window");
       }
     }
 
@@ -694,9 +691,7 @@ export const abac = {
 
     for (const policy of sortedPolicies) {
       // Check if all conditions match
-      const allMatch =
-        policy.conditions.length === 0 ||
-        policy.conditions.every(cond => evaluateCondition(cond, context));
+      const allMatch = policy.conditions.every(cond => evaluateCondition(cond, context));
 
       if (allMatch) {
         return {

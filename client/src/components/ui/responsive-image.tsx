@@ -13,18 +13,14 @@ const DEFAULT_WIDTHS = [400, 800, 1200];
 const DEFAULT_FALLBACK = "/placeholder-image.svg";
 
 /**
- * Check if a URL supports query-based resizing (local assets or known CDNs).
- * External URLs (tiqets, unsplash, etc.) are left as-is.
+ * No resize proxy is currently available, so srcSet generation is disabled.
+ * When a resize proxy is added, replace this constant with a function that
+ * checks whether the URL supports query-based resizing.
  */
-function supportsResize(src: string): boolean {
-  if (src.startsWith("/") || src.startsWith("./")) return false;
-  // For now, only local images that go through a resize proxy would qualify.
-  // Since we don't have a resize proxy, return false for all.
-  return false;
-}
+const SUPPORTS_RESIZE = false;
 
 function buildSrcSet(src: string, widths: number[]): string | undefined {
-  if (!supportsResize(src)) return undefined;
+  if (!SUPPORTS_RESIZE) return undefined;
   return widths.map(w => `${src}?w=${w} ${w}w`).join(", ");
 }
 

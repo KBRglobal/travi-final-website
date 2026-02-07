@@ -131,7 +131,7 @@ export function sanitizeUrl(url: string): string | null {
 export function detectSqlInjection(input: string): boolean {
   if (!input) return false;
   const patterns = [
-    /('|")\s*(OR|AND)\s*('|")/i,
+    /['"]\s*(OR|AND)\s*['"]/i,
     /;\s*(DROP|DELETE|UPDATE|INSERT|ALTER|TRUNCATE)/i,
     /UNION\s+(ALL\s+)?SELECT/i,
     /--\s*$/m,

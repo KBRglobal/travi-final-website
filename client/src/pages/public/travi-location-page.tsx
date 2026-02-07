@@ -316,8 +316,16 @@ function ImageGallery({ images }: Readonly<{ images: TraviLocationImage[] }>) {
         {displayImages.map((image, index) => (
           <div
             key={image.id}
+            role="button"
+            tabIndex={0}
             className="relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group"
             onClick={() => setSelectedIndex(index)}
+            onKeyDown={e => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setSelectedIndex(index);
+              }
+            }}
             data-testid={`gallery-image-${index}`}
           >
             <img

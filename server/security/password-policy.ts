@@ -98,7 +98,7 @@ export function validatePasswordStrength(
   }
 
   // Number check
-  if (PASSWORD_POLICY.requireNumbers && !/[0-9]/.test(password)) {
+  if (PASSWORD_POLICY.requireNumbers && !/\d/.test(password)) {
     errors.push("Password must contain at least one number");
   }
 
@@ -115,11 +115,12 @@ export function validatePasswordStrength(
     errors.push("Password cannot be all the same character");
   }
 
-  if (
-    /^(012|123|234|345|456|567|678|789|890|abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)+$/i.test(
-      password
-    )
-  ) {
+  // Numeric sequences (012-890) and alphabetic sequences (abc-xyz)
+  const numericSeqs = "012|123|234|345|456|567|678|789|890";
+  const alphaSeqs =
+    "abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz";
+  const sequencePattern = new RegExp(`^(${numericSeqs}|${alphaSeqs})+$`, "i");
+  if (sequencePattern.test(password)) {
     errors.push("Password cannot be a simple sequence");
   }
 

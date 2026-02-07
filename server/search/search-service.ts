@@ -268,8 +268,9 @@ export function applyIntentBoost(
     return results;
   }
 
-  const dominantIntent = freshIntents.reduce((best, current) =>
-    current.confidence > best.confidence ? current : best
+  const dominantIntent = freshIntents.reduce(
+    (best, current) => (current.confidence > best.confidence ? current : best),
+    freshIntents[0]
   );
 
   const boostedResults = results.map(result => {

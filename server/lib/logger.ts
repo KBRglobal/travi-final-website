@@ -102,14 +102,14 @@ export const log = {
   debug: (msg: string, data?: Record<string, unknown>) => logger.debug(data, msg),
   info: (msg: string, data?: Record<string, unknown>) => logger.info(data, msg),
   warn: (msg: string, data?: Record<string, unknown>) => logger.warn(data, msg),
-  error: (msg: string, error?: Error | unknown, data?: Record<string, unknown>) => {
+  error: (msg: string, error?: unknown, data?: Record<string, unknown>) => {
     if (error instanceof Error) {
       logger.error({ ...data, err: error }, msg);
     } else {
       logger.error({ ...data, error }, msg);
     }
   },
-  fatal: (msg: string, error?: Error | unknown) => {
+  fatal: (msg: string, error?: unknown) => {
     if (error instanceof Error) {
       logger.fatal({ err: error }, msg);
     } else {

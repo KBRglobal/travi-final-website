@@ -67,18 +67,14 @@ async function ensureGuideTableExists(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_pilot_localized_guides_locale ON pilot_localized_guides(locale);
   `;
 
-  try {
-    // Step 1: Ensure enum type exists
-    await pool.query(createEnumSQL);
-    // Step 2: Create table with proper enum type
-    await pool.query(createTableSQL);
-    // Step 3: Create indexes
-    await pool.query(createIndexesSQL);
+  // Step 1: Ensure enum type exists
+  await pool.query(createEnumSQL);
+  // Step 2: Create table with proper enum type
+  await pool.query(createTableSQL);
+  // Step 3: Create indexes
+  await pool.query(createIndexesSQL);
 
-    tableEnsured = true;
-  } catch (err) {
-    throw err;
-  }
+  tableEnsured = true;
 }
 
 // ============================================================================

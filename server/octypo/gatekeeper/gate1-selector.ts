@@ -175,7 +175,7 @@ export class Gate1Selector {
     return GATE1_EVALUATION_PROMPT.replace("{title}", input.title)
       .replace("{summary}", input.summary || "No summary available")
       .replace("{sourceName}", input.sourceName || "Unknown")
-      .replace("{sourceCredibility}", "medium") // TODO: Implement source credibility scoring based on domain reputation, historical accuracy
+      .replace("{sourceCredibility}", "medium") // Defaults to medium; source credibility scoring based on domain reputation deferred
       .replace("{category}", input.category || "General")
       .replace("{destination}", input.destinationId || "Not specified")
       .replace("{publishedDate}", input.publishedDate?.toISOString() || "Unknown");

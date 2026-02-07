@@ -243,7 +243,7 @@ function extractEssentialsFromSections(sections: GuideSection[]): Record<string,
       heading.includes("background")
     ) {
       const visaMatch =
-        /visa[s]?\s*(?:are\s*)?(?:required|not required|on arrival|free|exempt)/i.exec(content);
+        /visas?\s*(?:are\s*)?(?:required|not required|on arrival|free|exempt)/i.exec(content);
       if (visaMatch) {
         essentials.visa = visaMatch[0];
       }

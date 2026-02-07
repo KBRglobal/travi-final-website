@@ -16,7 +16,7 @@ export function CookieConsentBanner() {
     analytics: preferences.analytics,
     marketing: preferences.marketing,
   });
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   // Sync local preferences with context preferences when banner opens or preferences change
   useEffect(() => {
@@ -68,16 +68,14 @@ export function CookieConsentBanner() {
         className="fixed bottom-0 left-0 right-0 z-[9999] p-4 pointer-events-none"
         data-testid="cookie-banner"
       >
-        <div
+        <dialog
           ref={dialogRef}
-          role="dialog"
+          open
           aria-label={t("cookies.title")}
           aria-describedby="cookie-consent-description"
-          aria-modal="false"
           aria-live="polite"
-          tabIndex={-1}
           onKeyDown={handleKeyDown}
-          className="max-w-2xl mx-auto bg-card border shadow-lg rounded-lg pointer-events-auto"
+          className="max-w-2xl mx-auto bg-card border shadow-lg rounded-lg pointer-events-auto relative block"
         >
           {showManage ? (
             <div className="p-4 sm:p-6">
@@ -199,7 +197,7 @@ export function CookieConsentBanner() {
               </div>
             </div>
           )}
-        </div>
+        </dialog>
       </motion.div>
     </AnimatePresence>
   );

@@ -264,7 +264,7 @@ function HeroSection({
             </div>
 
             <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Discover the World's
+              Discover the World's{" "}
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
                 Latest Stories
               </span>
@@ -457,7 +457,7 @@ function FeaturedArticle({ article }: Readonly<{ article: Article }>) {
                 <Clock className="w-4 h-4" />
                 {formatTimeAgo(article.publishedAt || article.createdAt)}
               </span>
-              {article.readingTime && <span>{article.readingTime} min read</span>}
+              {!!article.readingTime && <span>{article.readingTime} min read</span>}
             </div>
 
             <span className="flex items-center gap-2 text-white font-medium group-hover:gap-3 transition-all">
@@ -547,7 +547,7 @@ function ArticleCard({ article, index = 0 }: Readonly<{ article: Article; index?
 
           {/* Footer */}
           <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
-            {article.readingTime && (
+            {!!article.readingTime && (
               <span className="text-xs text-gray-400">{article.readingTime} min read</span>
             )}
             <span className="flex items-center gap-1 text-sm text-primary font-medium group-hover:gap-2 transition-all">

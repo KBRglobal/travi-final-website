@@ -159,10 +159,6 @@ export class MultiModelProvider {
 
   private _initialized = false;
 
-  constructor() {
-    // Providers initialized lazily on first use
-  }
-
   private async ensureInitialized(): Promise<void> {
     if (this._initialized) return;
     await this.initializeProviders();

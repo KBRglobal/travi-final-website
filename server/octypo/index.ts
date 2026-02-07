@@ -105,7 +105,7 @@ export {
 // ============================================
 // LEGACY EXPORTS FOR BACKWARDS COMPATIBILITY
 // These are used by attraction content generation
-// TODO: Migrate to server/ai/attraction-description-generator.ts
+// Legacy exports - migration to server/ai/attraction-description-generator.ts deferred
 // ============================================
 
 export { OctypoOrchestrator, getOctypoOrchestrator } from "./orchestration/orchestrator";

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -145,24 +145,34 @@ export function MultiTabProvider({ children }: Readonly<MultiTabProviderProps>) 
 
   const getTab = useCallback((id: string) => tabs.find(t => t.id === id), [tabs]);
 
-  return (
-    <MultiTabContext.Provider
-      value={{
-        tabs,
-        activeTabId,
-        openTab,
-        closeTab,
-        closeOtherTabs,
-        closeAllTabs,
-        setActiveTab,
-        markDirty,
-        updateTabTitle,
-        getTab,
-      }}
-    >
-      {children}
-    </MultiTabContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      tabs,
+      activeTabId,
+      openTab,
+      closeTab,
+      closeOtherTabs,
+      closeAllTabs,
+      setActiveTab,
+      markDirty,
+      updateTabTitle,
+      getTab,
+    }),
+    [
+      tabs,
+      activeTabId,
+      openTab,
+      closeTab,
+      closeOtherTabs,
+      closeAllTabs,
+      setActiveTab,
+      markDirty,
+      updateTabTitle,
+      getTab,
+    ]
   );
+
+  return <MultiTabContext.Provider value={contextValue}>{children}</MultiTabContext.Provider>;
 }
 
 // Content type icons
@@ -214,10 +224,19 @@ export function EditorTabBar({ className }: Readonly<TabBarProps>) {
               return (
                 <div
                   key={tab.id}
+                  role="tab"
+                  tabIndex={0}
+                  aria-selected={isActive}
                   className={`group flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-colors min-w-0 max-w-[200px] ${
                     isActive ? "bg-background shadow-sm border" : "hover:bg-background/50"
                   }`}
                   onClick={() => handleTabClick(tab)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleTabClick(tab);
+                    }
+                  }}
                 >
                   <Icon className="h-3.5 w-3.5 flex-shrink-0 text-muted-foreground" />
                   <Tooltip>

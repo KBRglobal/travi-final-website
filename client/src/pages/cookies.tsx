@@ -402,7 +402,7 @@ export default function CookiesPage() {
                     className="text-[#6443F4] hover:underline"
                   >
                     Google Analytics Opt-out Browser Add-on
-                  </a>
+                  </a>{" "}
                   .
                 </p>
               </div>

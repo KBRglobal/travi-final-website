@@ -130,7 +130,7 @@ export function getKeysNeedingRotation(): KeyMetadata[] {
       if (needs || shouldAlert(keyId)) {
         keysToRotate.push({
           ...metadata,
-          expiresAt: new Date(metadata.expiresAt.getTime()), // Clone date
+          expiresAt: new Date(metadata.expiresAt), // Clone date
         });
       }
     }
