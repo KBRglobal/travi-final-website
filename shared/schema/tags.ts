@@ -13,7 +13,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 import { contentTypeEnum } from "./enums";
-import type { ContentBlock, SeoIssue, SeoSuggestion } from "./types";
+import type { ContentBlock } from "./types";
 
 import { users } from "./auth";
 import { contents } from "./content-base";

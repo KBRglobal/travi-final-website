@@ -21,7 +21,6 @@ import {
   refreshStaleContent,
   getTodayRefreshCount,
   freshnessConfig,
-  type DestinationFreshness,
 } from "../../services/content-freshness";
 
 export function registerGrowthRoutes(app: Express) {

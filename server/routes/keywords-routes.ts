@@ -3,7 +3,7 @@
  * Keyword management for SEO and content targeting
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { z } from "zod";
 import { storage } from "../storage";
 import { requirePermission, checkReadOnlyMode } from "../security";

@@ -13,14 +13,11 @@ import {
   contentPurchases,
   businessListings as businessListingsTable,
   leads as leadsTable,
-  type PremiumContentRow,
   type ContentPurchase as ContentPurchaseRow,
   type BusinessListing as BusinessListingRow,
   type Lead as LeadRow,
 } from "@shared/schema";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
-
-import * as crypto from "node:crypto";
 
 // ============================================================================
 // TYPES

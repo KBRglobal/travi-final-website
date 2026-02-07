@@ -1,4 +1,4 @@
-import { eq, db, siteSettings, type SiteSetting, type InsertSiteSetting } from "./base";
+import { eq, db, siteSettings, type SiteSetting } from "./base";
 
 export class SettingsStorage {
   async getSettings(): Promise<SiteSetting[]> {

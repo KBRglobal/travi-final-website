@@ -3,12 +3,12 @@
  * Data export, deletion, and consent management endpoints
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { storage } from "../storage";
 import { contents } from "@shared/schema";
-import { requireAuth, requirePermission, type AuthRequest } from "../security";
+import { requireAuth, requirePermission } from "../security";
 
 export function registerGdprRoutes(app: Express): void {
   // ============================================================================

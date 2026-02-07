@@ -3,7 +3,7 @@
  * Admin-only user CRUD operations with strict password policy enforcement
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import { storage } from "../storage";

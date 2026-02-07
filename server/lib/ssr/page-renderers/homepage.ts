@@ -5,7 +5,7 @@
 import { db } from "../../../db";
 import { storage } from "../../../storage";
 import { tiqetsAttractions } from "@shared/schema";
-import type { Content, Locale } from "@shared/schema";
+import type { Content } from "@shared/schema";
 import { desc } from "drizzle-orm";
 import { generateMetaTags, generateStructuredData, getCanonicalUrl } from "../../meta-tags";
 import { SITE_NAME } from "../constants";

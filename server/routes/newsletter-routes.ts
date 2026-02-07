@@ -3,7 +3,7 @@
  * Subscription, confirmation, unsubscribe, and subscriber management
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { eq } from "drizzle-orm";
 import crypto from "node:crypto";
 import { Resend } from "resend";

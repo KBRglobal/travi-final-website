@@ -14,7 +14,6 @@ import { eq, sql, and } from "drizzle-orm";
 import {
   insertInternalLinks,
   loadLinkableContentFromDB,
-  type LinkingResult,
   type InternalLink,
 } from "../../ai/internal-linking-engine";
 import { createLogger } from "../../lib/logger";

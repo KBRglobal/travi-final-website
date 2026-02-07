@@ -9,12 +9,7 @@
 
 import type { Express, Request, Response } from "express";
 import { requireAuth } from "../security";
-import {
-  debugSearch,
-  debugContentForQuery,
-  getRankingFactorExplanations,
-  type SearchDebugResponse,
-} from "./search-debug";
+import { debugSearch, debugContentForQuery, getRankingFactorExplanations } from "./search-debug";
 
 /**
  * Feature flag for search debug mode

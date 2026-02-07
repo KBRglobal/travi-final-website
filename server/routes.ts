@@ -4,18 +4,11 @@ import { type Server } from "node:http";
 import { storage } from "./storage";
 import multer from "multer";
 // Object Storage is now handled through the unified storage adapter
-import type OpenAI from "openai";
 import { authenticator } from "otplib";
 
 // Configure TOTP with time window tolerance for clock drift (1 step = 30 seconds before/after)
 authenticator.options = { window: 1 };
 import { Resend } from "resend";
-import {
-  type UserRole,
-  type HomepageSection,
-  type ContentBlock,
-  type InsertContent,
-} from "@shared/schema";
 import { setupAuth, getSession } from "./replitAuth";
 
 import passport from "passport";
@@ -27,16 +20,13 @@ import {
   securityHeaders,
   ipBlockMiddleware,
   approvedBotMiddleware,
-  logAuditEvent as logSecurityEvent,
 } from "./security";
 import { bootstrapFoundationDomains, bootstrapFoundationErrorHandler } from "./foundation";
 import {} from "./cms-translations";
 import * as fs from "node:fs";
 import * as path from "node:path";
 // Image generation functions from modular AI system
-import { type GeneratedImage, type ImageGenerationOptions } from "./ai";
 // AI client providers (single source of truth)
-import { type AIProvider, type ProviderStatus, type FailureReason } from "./ai/providers";
 // AI generators (stub modules - originals replaced by Octypo pipeline)
 // Security validators (single source of truth for sanitization)
 import { sanitizeHtml as sanitizeHtmlContent } from "./security/validators";
@@ -56,7 +46,6 @@ import {} from "./security/pre-auth-token";
 // File upload hardening with magic bytes validation
 // IDOR protection middleware for ownership and permission checks
 import {} from "./middleware/idor-protection";
-import { type TranslateJobData, type AiGenerateJobData } from "./job-queue";
 
 import {} from "./enterprise-security";
 import { registerEnterpriseRoutes } from "./enterprise-routes";
@@ -186,12 +175,10 @@ import { pcalRoutes } from "./pcal";
 import { registerGovernanceRoutes } from "./governance";
 import swaggerRouter from "./openapi/swagger-ui";
 import { getStorageManager } from "./services/storage-adapter";
-import { type ArticleResponse } from "./content-writer-guidelines";
 
 // ============================================================================
 // MODULARIZED HELPERS (from routes/helpers/)
 // ============================================================================
-import { type AuthRequest, type PermissionKey, type ConvertedImage } from "./routes/helpers";
 
 // [REMOVED] rss-processing deleted in Phase 4.1 cleanup
 // autoProcessRssFeeds is no longer needed - Gatekeeper pipeline handles RSS

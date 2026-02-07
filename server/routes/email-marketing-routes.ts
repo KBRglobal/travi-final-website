@@ -3,7 +3,7 @@
  * Email templates, A/B testing, segments, campaigns, and tracking
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { Resend } from "resend";
 import { storage } from "../storage";
 import { requirePermission, checkReadOnlyMode } from "../security";

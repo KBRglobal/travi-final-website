@@ -1,4 +1,4 @@
-import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
+import { SUPPORTED_LOCALES } from "@shared/schema";
 
 import { apiRequest } from "./queryClient";
 

@@ -3,7 +3,7 @@
  * DeepL Multi-Language SEO System
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { storage } from "../storage";
 import { requireAuth, requirePermission } from "../security";
 import { SUPPORTED_LOCALES } from "@shared/schema";

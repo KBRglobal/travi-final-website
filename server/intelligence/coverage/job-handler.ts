@@ -12,7 +12,7 @@ import {
   isIntelligenceCoverageEnabled,
 } from './evaluator';
 import { cacheCoverage, clearCoverageCache } from './persistence';
-import type { CoverageJobPayload, BatchEvaluationResult } from './types';
+import type { CoverageJobPayload }from './types';
 
 const logger = {
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[ICE-Job] ${msg}`, data),

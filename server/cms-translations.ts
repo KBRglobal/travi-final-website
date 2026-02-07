@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { cmsTranslations, type CmsTranslation, type InsertCmsTranslation } from "@shared/schema";
+import { cmsTranslations } from "@shared/schema";
 
 import { eq, and, inArray } from "drizzle-orm";
 

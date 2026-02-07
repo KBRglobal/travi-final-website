@@ -6,7 +6,6 @@ import {
   localizedAssetEntityTypes,
   localizedAssetUsages,
   supportedLocales,
-  type LocalizedAsset,
 } from "@shared/schema";
 import { eq, and, desc, asc } from "drizzle-orm";
 import { requireAuth, requirePermission } from "../security";

@@ -15,7 +15,6 @@ import {
   translationJobs,
   contents,
   type TranslationJob,
-  type InsertTranslationJob,
   type TranslationJobField,
   SUPPORTED_LOCALES,
 } from "@shared/schema";

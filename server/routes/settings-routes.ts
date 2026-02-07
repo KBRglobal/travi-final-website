@@ -3,7 +3,7 @@
  * Admin endpoints for managing site settings and checking content integrity
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express, Response } from "express";
 import { storage } from "../storage";
 import { isAuthenticated } from "../replitAuth";
 import { requireRole } from "../security/rbac/enforcer";

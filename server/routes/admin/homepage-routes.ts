@@ -4,7 +4,7 @@
  * Including sections, hero slides, cards, experience categories, destinations, region links, CTA, SEO meta
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { db } from "../../db";
 import { eq, and, inArray } from "drizzle-orm";
 import {

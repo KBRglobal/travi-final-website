@@ -3,7 +3,7 @@
  * Live Edit System and Sitemaps for Multilingual SEO Support
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { db } from "../db";
 import { eq, and } from "drizzle-orm";
 import { pageLayouts, SUPPORTED_LOCALES } from "@shared/schema";

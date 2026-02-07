@@ -3,7 +3,7 @@
  * Content clusters, tags, bulk operations, export, and templates
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { storage } from "../storage";
 import { requireAuth, requirePermission, checkReadOnlyMode, rateLimiters } from "../security";
 import { logAuditEvent } from "../utils/audit-logger";

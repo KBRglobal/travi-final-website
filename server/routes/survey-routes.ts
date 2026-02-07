@@ -3,7 +3,7 @@
  * CRUD for surveys and public survey response endpoints
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { storage } from "../storage";
 import { requireAuth, requirePermission, type AuthRequest } from "../security";
 

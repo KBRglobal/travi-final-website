@@ -3,7 +3,7 @@
  * Content performance tracking, metrics recording, and regeneration decisions
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { requireAuth } from "../security";
 
 export async function registerContentMetricsRoutes(app: Express): Promise<void> {

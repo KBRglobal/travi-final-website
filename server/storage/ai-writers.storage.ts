@@ -1,14 +1,4 @@
-import {
-  eq,
-  sql,
-  and,
-  or,
-  db,
-  aiWriters,
-  contents,
-  type AIWriter,
-  type InsertAIWriter,
-} from "./base";
+import { eq, sql, and, or, db, aiWriters, contents, type AIWriter } from "./base";
 
 export class AIWritersStorage {
   async getAllWriters(): Promise<

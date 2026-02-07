@@ -3,7 +3,7 @@
  * RSS feed management and content import
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { z } from "zod";
 import { storage } from "../storage";
 import { requireAuth, requirePermission, checkReadOnlyMode } from "../security";

@@ -14,7 +14,7 @@
  */
 
 import { db, pool } from "../../db";
-import { pilotLocalizedGuides, type InsertPilotLocalizedGuide } from "@shared/schema";
+import { pilotLocalizedGuides } from "@shared/schema";
 
 import { eq, and } from "drizzle-orm";
 import { calculateLocalePurity, LOCALE_PURITY_THRESHOLD } from "./localization-pilot";

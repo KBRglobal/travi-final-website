@@ -20,7 +20,6 @@ import {
   type InsertEditorialSchedule,
   type EditorialZone,
   type PlacementStatus,
-  type PlacementPriority,
 } from "@shared/schema";
 
 export class EditorialPlacementsStorage {

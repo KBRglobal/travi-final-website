@@ -3,7 +3,7 @@
  * Endpoints for analyzing content quality, gaps, watchlist, events, clusters, and internal links
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express, Response } from "express";
 import { storage } from "../storage";
 import { requireAuth, type AuthRequest } from "../security";
 

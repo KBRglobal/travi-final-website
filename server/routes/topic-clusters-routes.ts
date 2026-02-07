@@ -3,7 +3,7 @@
  * AI-powered article merging and RSS content processing
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { z } from "zod";
 import crypto from "node:crypto";
 import { storage } from "../storage";

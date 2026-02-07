@@ -1,13 +1,4 @@
-import {
-  eq,
-  desc,
-  sql,
-  db,
-  contents,
-  contentViews,
-  type ContentView,
-  type InsertContentView,
-} from "./base";
+import { eq, desc, sql, db, contents, contentViews } from "./base";
 
 export class AnalyticsStorage {
   async getAnalyticsOverview(): Promise<{
