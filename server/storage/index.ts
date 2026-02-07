@@ -33,60 +33,35 @@ import {
 import { VamsStorage, vamsStorage } from "./vams.storage";
 
 // Export all storage classes
+export { UsersStorage, usersStorage } from "./users.storage";
+export { ContentStorage, contentStorage } from "./content.storage";
+export { ContentTypesStorage, contentTypesStorage } from "./content-types.storage";
+export { RssStorage, rssStorage } from "./rss.storage";
+export { AffiliateStorage, affiliateStorage } from "./affiliate.storage";
+export { MediaStorage, mediaStorage } from "./media.storage";
+export { TopicBankStorage, topicBankStorage } from "./topic-bank.storage";
+export { VersionsStorage, versionsStorage } from "./versions.storage";
+export { TranslationsStorage, translationsStorage } from "./translations.storage";
+export { HomepageStorage, homepageStorage } from "./homepage.storage";
+export { AnalyticsStorage, analyticsStorage } from "./analytics.storage";
+export { AuditStorage, auditStorage } from "./audit.storage";
+export { NewsletterStorage, newsletterStorage } from "./newsletter.storage";
+export { PropertyLeadsStorage, propertyLeadsStorage } from "./property-leads.storage";
+export { ClustersStorage, clustersStorage } from "./clusters.storage";
+export { TagsStorage, tagsStorage } from "./tags.storage";
+export { BulkStorage, bulkStorage } from "./bulk.storage";
+export { TemplatesStorage, templatesStorage } from "./templates.storage";
+export { SettingsStorage, settingsStorage } from "./settings.storage";
+export { OtpStorage, otpStorage } from "./otp.storage";
+export { AIWritersStorage, aiWritersStorage } from "./ai-writers.storage";
+export { LiveChatStorage, liveChatStorage } from "./live-chat.storage";
+export { SurveysStorage, surveysStorage } from "./surveys.storage";
+export { ReferralsStorage, referralsStorage } from "./referrals.storage";
 export {
-  UsersStorage,
-  usersStorage,
-  ContentStorage,
-  contentStorage,
-  ContentTypesStorage,
-  contentTypesStorage,
-  RssStorage,
-  rssStorage,
-  AffiliateStorage,
-  affiliateStorage,
-  MediaStorage,
-  mediaStorage,
-  TopicBankStorage,
-  topicBankStorage,
-  VersionsStorage,
-  versionsStorage,
-  TranslationsStorage,
-  translationsStorage,
-  HomepageStorage,
-  homepageStorage,
-  AnalyticsStorage,
-  analyticsStorage,
-  AuditStorage,
-  auditStorage,
-  NewsletterStorage,
-  newsletterStorage,
-  PropertyLeadsStorage,
-  propertyLeadsStorage,
-  ClustersStorage,
-  clustersStorage,
-  TagsStorage,
-  tagsStorage,
-  BulkStorage,
-  bulkStorage,
-  TemplatesStorage,
-  templatesStorage,
-  SettingsStorage,
-  settingsStorage,
-  OtpStorage,
-  otpStorage,
-  AIWritersStorage,
-  aiWritersStorage,
-  LiveChatStorage,
-  liveChatStorage,
-  SurveysStorage,
-  surveysStorage,
-  ReferralsStorage,
-  referralsStorage,
   EditorialPlacementsStorage,
   editorialPlacementsStorage,
-  VamsStorage,
-  vamsStorage,
-};
+} from "./editorial-placements.storage";
+export { VamsStorage, vamsStorage } from "./vams.storage";
 
 // Import schema types for IStorage interface
 import type {

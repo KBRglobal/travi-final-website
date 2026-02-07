@@ -291,7 +291,7 @@ function suggestContentForQuery(
     if (match) {
       suggestions.push({
         type: "article",
-        title: `Top 10 Best ${match[1].trim()}${match[2] ? ` in ${match[2].trim()}` : ""}`,
+        title: `Top 10 Best ${match[1].trim()}${match[2] ? " in " + match[2].trim() : ""}`,
         reason: 'Query seeks "best" options - create ranked list content',
       });
     }

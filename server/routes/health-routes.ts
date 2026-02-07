@@ -146,7 +146,7 @@ export function registerHealthRoutes(app: Express): void {
       health.checks.cache = {
         status: cacheCheck.result.status,
         latency: cacheCheck.result.latency,
-        details: `${cacheCheck.result.type}${cacheCheck.result.error ? `: ${cacheCheck.result.error}` : ""}`,
+        details: `${cacheCheck.result.type}${cacheCheck.result.error ? ": " + cacheCheck.result.error : ""}`,
       };
     } else {
       health.checks.cache = {
@@ -160,7 +160,7 @@ export function registerHealthRoutes(app: Express): void {
       health.checks.storage = {
         status: storageCheck.result.status,
         latency: storageCheck.result.latency,
-        details: `${storageCheck.result.primary || "fallback"}: ${storageCheck.result.fallback}${storageCheck.result.error ? ` (${storageCheck.result.error})` : ""}`,
+        details: `${storageCheck.result.primary || "fallback"}: ${storageCheck.result.fallback}${storageCheck.result.error ? " (" + storageCheck.result.error + ")" : ""}`,
       };
     } else {
       health.checks.storage = {

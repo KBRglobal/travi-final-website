@@ -277,6 +277,7 @@ async function triggerOctypoGeneration(): Promise<boolean> {
     );
 
     if (response.ok) {
+      /* Parallel generation triggered successfully */
     } else {
       // If trigger fails, immediately mark as not running
       octypoState.setRunning(false);
@@ -355,8 +356,9 @@ async function runBackgroundTask(): Promise<void> {
         health.lastError = "Failed to trigger parallel generation";
       }
     } else if (pending > 0 && queueStatus.active) {
+      /* Queue already active - no additional trigger needed */
     } else if (pending === 0 && failed === 0 && inProgress === 0) {
-      // empty
+      /* All items processed - queue idle */
     }
 
     // Reset failed items periodically (every 5th run or when many failed)
@@ -364,7 +366,7 @@ async function runBackgroundTask(): Promise<void> {
       const toReset = Math.min(failed, 30);
       const reset = await resetFailedContent(toReset);
       if (reset > 0) {
-        // empty
+        /* Failed items reset for retry */
       }
     }
 

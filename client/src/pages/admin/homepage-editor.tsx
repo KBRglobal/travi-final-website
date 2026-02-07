@@ -583,17 +583,7 @@ function ServerImagePicker({
           Upload New Image (converts to WebP)
         </Label>
 
-        {!selectedFile ? (
-          <div className="flex items-center gap-2">
-            <Input
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              onChange={handleFileSelect}
-              className="flex-1"
-              data-testid="input-upload-image"
-            />
-          </div>
-        ) : (
+        {selectedFile ? (
           <div className="space-y-3 p-3 border rounded-md bg-background">
             <div className="flex items-start gap-3">
               {previewUrl && (
@@ -643,6 +633,16 @@ function ServerImagePicker({
                 )}
               </Button>
             </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleFileSelect}
+              className="flex-1"
+              data-testid="input-upload-image"
+            />
           </div>
         )}
       </div>
@@ -722,7 +722,7 @@ function HeroSlideItem({
   };
 
   return (
-    <Card className={!slide.isActive ? "opacity-60" : ""}>
+    <Card className={slide.isActive ? "" : "opacity-60"}>
       <CardContent className="p-4 space-y-3">
         {/* Header row with image preview and actions */}
         <div className="flex items-start gap-4">
@@ -1187,7 +1187,7 @@ function SectionItem({
   const isRtl = locale === "he" || locale === "ar";
 
   return (
-    <Card className={!section.isVisible ? "opacity-60" : ""}>
+    <Card className={section.isVisible ? "" : "opacity-60"}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-2">
@@ -1318,7 +1318,7 @@ function QuickCategoryItem({
   };
 
   return (
-    <Card className={!card.isActive ? "opacity-60" : ""}>
+    <Card className={card.isActive ? "" : "opacity-60"}>
       <CardContent className="p-4 space-y-3">
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">

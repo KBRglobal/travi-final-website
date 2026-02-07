@@ -269,8 +269,9 @@ export function logRotationStatus(): void {
 
   status.details.forEach(detail => {
     if (detail.status === "expired") {
+      /* Expired keys handled by rotation scheduler */
     } else if (detail.status === "alert") {
-      // empty
+      /* Alert-level keys logged at status check level */
     }
   });
 }

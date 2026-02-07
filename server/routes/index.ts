@@ -159,12 +159,10 @@ export async function registerAllRoutes(app: Express): Promise<void> {
 }
 
 // Export individual registrars for selective usage
-export {
-  registerContentRoutes,
-  registerPublicApiRoutes,
-  registerAdminApiRoutes,
-  registerAiApiRoutes,
-  registerLocalizationApiRoutes,
-  registerAutomationApiRoutes,
-  registerCmsApiRoutes,
-};
+export { registerContentRoutes } from "./content-routes";
+export { registerPublicApiRoutes } from "./public-api";
+export { registerAdminApiRoutes } from "./admin-api";
+export { registerAiApiRoutes } from "./ai-api";
+export { registerLocalizationApiRoutes } from "./localization-api";
+export { registerAutomationApiRoutes } from "./automation-api";
+export { registerCmsApiRoutes } from "./cms-api";

@@ -221,7 +221,8 @@ export default router;
 export const vamsRoutes = router;
 
 // Re-export service and storage
-export { getVamsService, VamsService, vamsStorage };
+export { getVamsService, VamsService } from "../services/vams-service";
+export { vamsStorage } from "../storage/vams.storage";
 
 // Re-export convenience functions
 export {
@@ -231,7 +232,7 @@ export {
   getContentGalleryImages,
   contentNeedsImages,
   getContentImages,
-};
+} from "../services/vams-service";
 
 // Provider exports (for backward compatibility)
 export class UnsplashProvider {

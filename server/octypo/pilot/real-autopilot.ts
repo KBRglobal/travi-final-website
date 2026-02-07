@@ -227,7 +227,7 @@ export class RealAutopilot {
       .where(eq(autopilotTasks.id, action.taskId))
       .limit(1);
 
-    if (!task || task.status !== "awaiting_approval") {
+    if (task?.status !== "awaiting_approval") {
       return false;
     }
 

@@ -177,7 +177,19 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
             )}
 
             {/* Form */}
-            {!isSubscribed ? (
+            {isSubscribed ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-4"
+                data-testid="newsletter-success"
+              >
+                <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500/20 text-green-700 font-medium">
+                  <Sparkles className="w-5 h-5" />
+                  You're subscribed! Check your inbox.
+                </div>
+              </motion.div>
+            ) : (
               <motion.form
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -221,18 +233,6 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
                   )}
                 </Button>
               </motion.form>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-4"
-                data-testid="newsletter-success"
-              >
-                <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500/20 text-green-700 font-medium">
-                  <Sparkles className="w-5 h-5" />
-                  You're subscribed! Check your inbox.
-                </div>
-              </motion.div>
             )}
           </motion.div>
         </motion.div>

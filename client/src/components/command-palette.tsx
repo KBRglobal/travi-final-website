@@ -260,13 +260,14 @@ export function CommandPalette({ open, onOpenChange }: Readonly<CommandPalettePr
           e.preventDefault();
           setSelectedIndex(i => Math.max(i - 1, 0));
           break;
-        case "Enter":
+        case "Enter": {
           e.preventDefault();
           const selected = flatResults[selectedIndex];
           if (selected) {
             handleSelect(selected);
           }
           break;
+        }
         case "Escape":
           onOpenChange(false);
           break;

@@ -140,7 +140,7 @@ function normalizeBlock(
     case "text":
       return { type: "text" as const, data };
 
-    case "highlights":
+    case "highlights": {
       let highlightItems = (data as any).items || (data as any).highlights;
       if (Array.isArray(highlightItems) && highlightItems.length > 0) {
         const highlightContent = highlightItems
@@ -166,8 +166,9 @@ function normalizeBlock(
             "Key attraction feature\nUnique experience offered\nMust-see element\nPopular activity",
         },
       };
+    }
 
-    case "tips":
+    case "tips": {
       let tipsArray = (data as any).tips || (data as any).items;
       if (Array.isArray(tipsArray) && tipsArray.length > 0) {
         const tipsContent = tipsArray.map((tip: unknown) => String(tip)).join("\n");
@@ -184,8 +185,9 @@ function normalizeBlock(
             "Visit during off-peak hours\nBook in advance\nWear comfortable clothing\nStay hydrated\nCheck local customs",
         },
       };
+    }
 
-    case "faq":
+    case "faq": {
       if (typeof (data as any).question === "string" && (data as any).question.length > 0) {
         return { type: "faq" as const, data };
       }
@@ -208,6 +210,7 @@ function normalizeBlock(
           answer: "Check the official website for current timings.",
         },
       };
+    }
 
     case "cta":
       return { type: "cta" as const, data };

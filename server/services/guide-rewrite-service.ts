@@ -755,7 +755,7 @@ Extract EVERY proper noun, price, time, address, phone number, and specific deta
     // Build fact checklist for prompt
     const factChecklist =
       facts.length > 0
-        ? `\nFACT CHECKLIST - You MUST include all of these:\n${facts.map(f => `- ${f.sourceText} (${f.category})`).join("\n")}\n\nREQUIRED COUNTS: ${JSON.stringify(counts)}\n`
+        ? `\nFACT CHECKLIST - You MUST include all of these:\n${facts.map(f => "- " + f.sourceText + " (" + f.category + ")").join("\n")}\n\nREQUIRED COUNTS: ${JSON.stringify(counts)}\n`
         : "";
 
     // PASS 2: Rewrite with up to 3 retries

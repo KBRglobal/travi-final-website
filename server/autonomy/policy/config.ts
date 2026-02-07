@@ -3,15 +3,11 @@
  * Default policies and configuration constants
  */
 
-import {
-  PolicyDefinition,
-  BudgetLimit,
-  PolicyTarget,
-} from './types';
+import { PolicyDefinition, BudgetLimit, PolicyTarget } from "./types";
 
 export interface AutonomyConfig {
   enabled: boolean;
-  defaultApprovalLevel: 'none' | 'auto' | 'review' | 'manual';
+  defaultApprovalLevel: "none" | "auto" | "review" | "manual";
   maxDecisionLogEntries: number;
   budgetCheckTimeoutMs: number;
   policyEvaluationTimeoutMs: number;
@@ -20,16 +16,16 @@ export interface AutonomyConfig {
 
 export const DEFAULT_AUTONOMY_CONFIG: AutonomyConfig = {
   enabled: false,
-  defaultApprovalLevel: 'auto',
+  defaultApprovalLevel: "auto",
   maxDecisionLogEntries: 10000,
   budgetCheckTimeoutMs: 5000,
   policyEvaluationTimeoutMs: 3000,
-  defaultTimezone: 'UTC',
+  defaultTimezone: "UTC",
 };
 
 // Default budget limits per period
 export const DEFAULT_HOURLY_BUDGET: BudgetLimit = {
-  period: 'hourly',
+  period: "hourly",
   maxActions: 100,
   maxAiSpend: 1000, // $10
   maxDbWrites: 500,
@@ -37,7 +33,7 @@ export const DEFAULT_HOURLY_BUDGET: BudgetLimit = {
 };
 
 export const DEFAULT_DAILY_BUDGET: BudgetLimit = {
-  period: 'daily',
+  period: "daily",
   maxActions: 1000,
   maxAiSpend: 10000, // $100
   maxDbWrites: 5000,
@@ -46,26 +42,16 @@ export const DEFAULT_DAILY_BUDGET: BudgetLimit = {
 
 // Default global policy
 export const DEFAULT_GLOBAL_POLICY: PolicyDefinition = {
-  id: 'default-global',
-  name: 'Default Global Policy',
-  description: 'Base policy applied to all autonomous operations',
-  target: { type: 'global' },
+  id: "default-global",
+  name: "Default Global Policy",
+  description: "Base policy applied to all autonomous operations",
+  target: { type: "global" },
   enabled: true,
   priority: 0,
-  allowedActions: [
-    'content_update',
-    'ai_generate',
-    'ai_enrich',
-    'db_write',
-    'notification',
-  ],
-  blockedActions: [
-    'content_delete',
-    'db_delete',
-    'bulk_operation',
-  ],
+  allowedActions: ["content_update", "ai_generate", "ai_enrich", "db_write", "notification"],
+  blockedActions: ["content_delete", "db_delete", "bulk_operation"],
   budgetLimits: [DEFAULT_HOURLY_BUDGET, DEFAULT_DAILY_BUDGET],
-  approvalLevel: 'auto',
+  approvalLevel: "auto",
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -73,53 +59,89 @@ export const DEFAULT_GLOBAL_POLICY: PolicyDefinition = {
 // Feature-specific default policies
 export const FEATURE_POLICIES: PolicyDefinition[] = [
   {
-    id: 'policy-octopus',
-    name: 'Octopus Feature Policy',
-    description: 'Policy for Octopus enrichment operations',
-    target: { type: 'feature', feature: 'octopus' },
+    id: "policy-octopus",
+    name: "Octopus Feature Policy",
+    description: "Policy for Octopus enrichment operations",
+    target: { type: "feature", feature: "octopus" },
     enabled: true,
     priority: 10,
-    allowedActions: ['ai_enrich', 'db_write', 'external_api'],
-    blockedActions: ['content_delete', 'bulk_operation'],
+    allowedActions: ["ai_enrich", "db_write", "external_api"],
+    blockedActions: ["content_delete", "bulk_operation"],
     budgetLimits: [
-      { period: 'hourly', maxActions: 50, maxAiSpend: 500, maxDbWrites: 200, maxContentMutations: 10 },
-      { period: 'daily', maxActions: 500, maxAiSpend: 5000, maxDbWrites: 2000, maxContentMutations: 50 },
+      {
+        period: "hourly",
+        maxActions: 50,
+        maxAiSpend: 500,
+        maxDbWrites: 200,
+        maxContentMutations: 10,
+      },
+      {
+        period: "daily",
+        maxActions: 500,
+        maxAiSpend: 5000,
+        maxDbWrites: 2000,
+        maxContentMutations: 50,
+      },
     ],
-    approvalLevel: 'auto',
+    approvalLevel: "auto",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'policy-aeo',
-    name: 'AEO Feature Policy',
-    description: 'Policy for Answer Engine Optimization',
-    target: { type: 'feature', feature: 'aeo' },
+    id: "policy-aeo",
+    name: "AEO Feature Policy",
+    description: "Policy for Answer Engine Optimization",
+    target: { type: "feature", feature: "aeo" },
     enabled: true,
     priority: 10,
-    allowedActions: ['ai_generate', 'content_update', 'db_write'],
-    blockedActions: ['content_delete', 'bulk_operation'],
+    allowedActions: ["ai_generate", "content_update", "db_write"],
+    blockedActions: ["content_delete", "bulk_operation"],
     budgetLimits: [
-      { period: 'hourly', maxActions: 30, maxAiSpend: 300, maxDbWrites: 100, maxContentMutations: 15 },
-      { period: 'daily', maxActions: 300, maxAiSpend: 3000, maxDbWrites: 1000, maxContentMutations: 100 },
+      {
+        period: "hourly",
+        maxActions: 30,
+        maxAiSpend: 300,
+        maxDbWrites: 100,
+        maxContentMutations: 15,
+      },
+      {
+        period: "daily",
+        maxActions: 300,
+        maxAiSpend: 3000,
+        maxDbWrites: 1000,
+        maxContentMutations: 100,
+      },
     ],
-    approvalLevel: 'auto',
+    approvalLevel: "auto",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   {
-    id: 'policy-chat',
-    name: 'Chat Feature Policy',
-    description: 'Policy for chat/AI assistant operations',
-    target: { type: 'feature', feature: 'chat' },
+    id: "policy-chat",
+    name: "Chat Feature Policy",
+    description: "Policy for chat/AI assistant operations",
+    target: { type: "feature", feature: "chat" },
     enabled: true,
     priority: 10,
-    allowedActions: ['ai_generate', 'db_write', 'notification'],
-    blockedActions: ['content_delete', 'content_publish', 'bulk_operation'],
+    allowedActions: ["ai_generate", "db_write", "notification"],
+    blockedActions: ["content_delete", "content_publish", "bulk_operation"],
     budgetLimits: [
-      { period: 'hourly', maxActions: 200, maxAiSpend: 2000, maxDbWrites: 50, maxContentMutations: 0 },
-      { period: 'daily', maxActions: 2000, maxAiSpend: 20000, maxDbWrites: 500, maxContentMutations: 0 },
+      {
+        period: "hourly",
+        maxActions: 200,
+        maxAiSpend: 2000,
+        maxDbWrites: 50,
+        maxContentMutations: 0,
+      },
+      {
+        period: "daily",
+        maxActions: 2000,
+        maxAiSpend: 20000,
+        maxDbWrites: 500,
+        maxContentMutations: 0,
+      },
     ],
-    approvalLevel: 'none',
+    approvalLevel: "none",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -131,7 +153,7 @@ export function generateTargetKey(target: PolicyTarget): string {
   if (target.feature) parts.push(target.feature as any);
   if (target.entity) parts.push(target.entity as any);
   if (target.locale) parts.push(target.locale as any);
-  return parts.join(':');
+  return parts.join(":");
 }
 
 // Check if currently within allowed time window
@@ -158,7 +180,7 @@ export function isWithinTimeWindow(
 }
 
 // Get period boundaries
-export function getPeriodBoundaries(period: 'hourly' | 'daily' | 'weekly' | 'monthly'): {
+export function getPeriodBoundaries(period: "hourly" | "daily" | "weekly" | "monthly"): {
   start: Date;
   end: Date;
 } {
@@ -167,22 +189,23 @@ export function getPeriodBoundaries(period: 'hourly' | 'daily' | 'weekly' | 'mon
   const end = new Date(now);
 
   switch (period) {
-    case 'hourly':
+    case "hourly":
       start.setMinutes(0, 0, 0);
       end.setMinutes(59, 59, 999);
       break;
-    case 'daily':
+    case "daily":
       start.setHours(0, 0, 0, 0);
       end.setHours(23, 59, 59, 999);
       break;
-    case 'weekly':
+    case "weekly": {
       const dayOfWeek = start.getDay();
       start.setDate(start.getDate() - dayOfWeek);
       start.setHours(0, 0, 0, 0);
       end.setDate(start.getDate() + 6);
       end.setHours(23, 59, 59, 999);
       break;
-    case 'monthly':
+    }
+    case "monthly":
       start.setDate(1);
       start.setHours(0, 0, 0, 0);
       end.setMonth(end.getMonth() + 1, 0);

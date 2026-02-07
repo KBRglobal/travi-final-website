@@ -142,7 +142,7 @@ export class ArticleIdeation {
     const entityContext = entities
       .map(
         e =>
-          `- ${e.name} (${e.type})${e.location ? ` in ${e.location}` : ""}${e.description ? `: ${e.description}` : ""}`
+          `- ${e.name} (${e.type})${e.location ? " in " + e.location : ""}${e.description ? ": " + e.description : ""}`
       )
       .join("\n");
 

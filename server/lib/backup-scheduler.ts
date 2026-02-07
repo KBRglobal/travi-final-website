@@ -161,4 +161,4 @@ export async function triggerBackup(): Promise<BackupResult> {
   return result;
 }
 
-export { BackupResult };
+export type { BackupResult } from "../scripts/backup-db";

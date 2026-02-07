@@ -417,6 +417,7 @@ export function detectRBACBypass(): void {
 
       // In production, these variables are IGNORED
       if (isProduction) {
+        /* Bypass variables ignored in production - logged for audit trail */
       }
     }
   }

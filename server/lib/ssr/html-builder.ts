@@ -88,9 +88,10 @@ export function renderContentBlocks(blocks: ContentBlock[], locale: Locale): str
           </figure>
         `;
 
-        case "heading":
+        case "heading": {
           const level = Math.min(Math.max(Number(data.level) || 2, 1), 6);
           return `<h${level}>${escapeHtml(String(data.text || ""))}</h${level}>`;
+        }
 
         case "text":
         case "paragraph":
@@ -104,7 +105,7 @@ export function renderContentBlocks(blocks: ContentBlock[], locale: Locale): str
           </figure>
         `;
 
-        case "gallery":
+        case "gallery": {
           const images = Array.isArray(data.images) ? data.images : [];
           if (images.length === 0) return "";
           return `
@@ -119,9 +120,10 @@ export function renderContentBlocks(blocks: ContentBlock[], locale: Locale): str
             ${data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : ""}
           </figure>
         `;
+        }
 
         case "FAQ":
-        case "faq":
+        case "faq": {
           const items = Array.isArray(data.items)
             ? data.items
             : Array.isArray(data.faqs)
@@ -143,8 +145,9 @@ export function renderContentBlocks(blocks: ContentBlock[], locale: Locale): str
             </dl>
           </section>
         `;
+        }
 
-        case "list":
+        case "list": {
           const listItems = Array.isArray(data.items) ? data.items : [];
           const ordered = data.ordered === true;
           const tag = ordered ? "ol" : "ul";
@@ -153,6 +156,7 @@ export function renderContentBlocks(blocks: ContentBlock[], locale: Locale): str
             ${listItems.map((item: any) => `<li>${escapeHtml(String(item.text || item || ""))}</li>`).join("")}
           </${tag}>
         `;
+        }
 
         case "quote":
         case "blockquote":

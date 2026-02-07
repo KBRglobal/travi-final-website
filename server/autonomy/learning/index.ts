@@ -12,4 +12,6 @@ export function initLearningEngine(): void {
   const enabled = process.env.ENABLE_AUTONOMY_LEARNING === "true";
 }
 
-export function shutdownLearningEngine(): void {}
+export function shutdownLearningEngine(): void {
+  /* Intentional no-op: learning engine shutdown is a placeholder for future implementation */
+}

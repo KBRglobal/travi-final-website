@@ -74,7 +74,7 @@ function mapWriterToDisplay(writer: WriterFromAPI, index: number): DisplayWriter
     initials: getInitials(writer.name),
     specialty: writer.specialty,
     type: "writer",
-    description: `Specialized in ${writer.expertise?.join(", ") || writer.specialty}. ${writer.stats?.generated > 0 ? `Has generated ${writer.stats.generated} pieces of content.` : ""}`,
+    description: `Specialized in ${writer.expertise?.join(", ") || writer.specialty}. ${writer.stats?.generated > 0 ? "Has generated " + writer.stats.generated + " pieces of content." : ""}`,
     experience: writer.experienceYears || 0,
     languages: writer.languagesCount || 0,
     traits: writer.traits || [],

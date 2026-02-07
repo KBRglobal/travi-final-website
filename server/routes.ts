@@ -447,6 +447,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
         });
       }
       if (contentToPublish.length > 0) {
+        /* Scheduled content published successfully */
       }
     } catch (error) {
       /* ignored */
@@ -535,6 +536,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   if (isAlertingEnabled()) {
     startAlertEngine();
   } else {
+    /* Alerting engine disabled - routes still mounted for admin visibility */
   }
 
   // ============================================================================

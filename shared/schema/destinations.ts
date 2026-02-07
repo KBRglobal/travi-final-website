@@ -40,7 +40,7 @@ export type {
   FeaturedArea,
   FeaturedHighlight,
   DestinationsIndexHeroSlide,
-};
+} from "./types";
 
 // Import users table for foreign key references
 import { users } from "./auth";

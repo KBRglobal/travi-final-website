@@ -19,12 +19,12 @@ import {
   sequenceTriggerEnum,
 } from "./enums";
 import { users } from "./auth";
-import { ConsentLogEntry, SequenceEmail } from "./types";
+import type { ConsentLogEntry, SequenceEmail } from "./types";
 
 // ============================================================================
 // TYPE RE-EXPORTS (from ./types for backwards compatibility)
 // ============================================================================
-export type { ConsentLogEntry, SequenceEmail };
+export type { ConsentLogEntry, SequenceEmail } from "./types";
 
 // Status types
 export type SubscriberStatus =

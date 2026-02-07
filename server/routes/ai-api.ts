@@ -1736,13 +1736,14 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           case "shorten":
             userPrompt = `Condense the following text to be more concise while keeping all important information. Aim for about half the length:\n\n${content}`;
             break;
-          case "translate":
+          case "translate": {
             const lang = targetLanguage || "Arabic";
             userPrompt = `Translate the following text to ${lang}. Maintain the tone and style:\n\n${content}`;
             break;
+          }
           case "seo_optimize":
             systemPrompt = "You are an SEO expert and content writer for a Dubai travel website.";
-            userPrompt = `Optimize the following text for SEO. Improve keyword usage, add relevant terms naturally, and make it more search-engine friendly while keeping it readable and engaging:\n\n${content}${context ? `\n\nContext/Keywords to target: ${context}` : ""}`;
+            userPrompt = `Optimize the following text for SEO. Improve keyword usage, add relevant terms naturally, and make it more search-engine friendly while keeping it readable and engaging:\n\n${content}${context ? "\n\nContext/Keywords to target: " + context : ""}`;
             break;
           case "improve_grammar":
             userPrompt = `Fix any grammar, spelling, or punctuation errors in the following text. Also improve sentence flow where needed:\n\n${content}`;

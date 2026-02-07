@@ -727,7 +727,7 @@ export class OctypoOrchestrator {
         attractionData?.venueName,
         attractionData?.cityName,
         destination,
-      ].filter((e): e is string => Boolean(e && e.trim()));
+      ].filter((e): e is string => Boolean(e?.trim()));
 
       // Validate locale purity
       const purityResult = validateLocalePurity(content, locale, exemptions);

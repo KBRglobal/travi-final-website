@@ -5,7 +5,7 @@ import i18n, { isRTL, changeLanguage } from "./config";
 import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
 import { getLocaleContext, useLocale, type LocaleContextType } from "./locale-context";
 
-export { useLocale };
+export { useLocale } from "./locale-context";
 
 interface LocaleProviderProps {
   children: ReactNode;

@@ -125,7 +125,7 @@ export class VamsService {
     for (const provider of providers) {
       // Check cache first
       const cached = await vamsStorage.getCachedSearch(provider, query);
-      if (cached && cached.results) {
+      if (cached?.results) {
         const cachedResults = (cached.results as any).items || [];
         results.push(
           ...cachedResults.map((item: any) => ({
@@ -557,7 +557,7 @@ export class VamsService {
       .join(" ")
       .toLowerCase();
 
-    if (image.title && image.title.toLowerCase().includes(searchTerms.substring(0, 20))) {
+    if (image.title?.toLowerCase().includes(searchTerms.substring(0, 20))) {
       score += 10;
     }
 

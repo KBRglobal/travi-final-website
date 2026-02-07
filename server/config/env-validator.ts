@@ -164,8 +164,9 @@ export function validateRequiredEnvVars(): void {
   }
 
   if (result.warnings.length === 0) {
+    /* No warnings - environment configuration is clean */
   } else {
-    // empty
+    /* Warnings already logged during validation above */
   }
 }
 

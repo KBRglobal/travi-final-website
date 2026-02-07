@@ -1224,6 +1224,7 @@ if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEP
     () => {
       const cleaned = sessionSecurity.cleanup();
       if (cleaned > 0) {
+        /* Stale sessions cleaned up successfully */
       }
     },
     60 * 60 * 1000

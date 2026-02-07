@@ -852,7 +852,7 @@ export async function logAuditEvent(entry: Omit<AuditLogEntry, "timestamp">) {
       actionType: mapActionToDbEnum(entry.action),
       entityType: entry.resourceType as any,
       entityId: entry.resourceId,
-      description: `${entry.action} on ${entry.resourceType}${entry.resourceId ? ` (${entry.resourceId})` : ""}`,
+      description: `${entry.action} on ${entry.resourceType}${entry.resourceId ? " (" + entry.resourceId + ")" : ""}`,
       ipAddress: entry.ip,
       userAgent: entry.userAgent,
       afterState: entry.details as Record<string, unknown>,

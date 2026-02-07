@@ -74,7 +74,7 @@ export function MagicAIButton({
           onGenerated?.(result.completed);
           toast({
             title: "Generation Complete",
-            description: `Successfully generated ${result.completed.length} translation${result.completed.length > 1 ? "s" : ""}${result.failed.length > 0 ? `, ${result.failed.length} failed` : ""}`,
+            description: `Successfully generated ${result.completed.length} translation${result.completed.length > 1 ? "s" : ""}${result.failed.length > 0 ? ", " + result.failed.length + " failed" : ""}`,
           });
         } else if (result.failed.length > 0) {
           toast({

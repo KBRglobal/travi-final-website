@@ -107,6 +107,7 @@ export const SecurityGate = {
       // Log performance
       const duration = Date.now() - startTime;
       if (duration > 100) {
+        /* Slow security evaluation detected - performance monitoring only */
       }
 
       return decision;

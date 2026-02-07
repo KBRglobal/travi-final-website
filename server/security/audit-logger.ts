@@ -202,7 +202,7 @@ export async function logSecurityEvent(event: SecurityEvent): Promise<void> {
       actionType: mapToAuditActionType(event.type) as any,
       entityType: "session",
       entityId: event.userId,
-      description: `${event.type}: ${event.success ? "Success" : "Failed"}${event.errorMessage ? ` - ${event.errorMessage}` : ""}`,
+      description: `${event.type}: ${event.success ? "Success" : "Failed"}${event.errorMessage ? " - " + event.errorMessage : ""}`,
       ipAddress: event.ipAddress,
       userAgent: event.userAgent,
       afterState: {

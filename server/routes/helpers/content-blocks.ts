@@ -39,7 +39,7 @@ export function normalizeBlock(
     case "text":
       return { type: "text" as const, data };
 
-    case "highlights":
+    case "highlights": {
       // Convert items array to content string (one per line) for editor compatibility
       let highlightItems = (data as any).items || (data as any).highlights;
       if (Array.isArray(highlightItems) && highlightItems.length > 0) {
@@ -70,8 +70,9 @@ export function normalizeBlock(
             "Key attraction feature\nUnique experience offered\nMust-see element\nPopular activity",
         },
       };
+    }
 
-    case "tips":
+    case "tips": {
       // Convert tips array to content string (one per line) for editor compatibility
       let tipsArray = (data as any).tips || (data as any).items;
       if (Array.isArray(tipsArray) && tipsArray.length > 0) {
@@ -92,8 +93,9 @@ export function normalizeBlock(
             "Visit during off-peak hours\nBook in advance\nWear comfortable clothing\nStay hydrated\nCheck local customs",
         },
       };
+    }
 
-    case "faq":
+    case "faq": {
       // For FAQ, editor expects individual blocks with question/answer strings
       // If data has question/answer directly, use it
       if (typeof (data as any).question === "string" && (data as any).question.length > 0) {
@@ -121,6 +123,7 @@ export function normalizeBlock(
           answer: "Check the official website for current timings.",
         },
       };
+    }
 
     case "cta":
       return { type: "cta" as const, data };
@@ -135,15 +138,16 @@ export function normalizeBlock(
     case "quote":
       return { type: "quote" as const, data };
 
-    case "banner":
+    case "banner": {
       // Ensure banner has image
       const bannerData = { ...data };
       if (!bannerData.image) {
         bannerData.image = "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1920";
       }
       return { type: "banner" as const, data: bannerData };
+    }
 
-    case "recommendations":
+    case "recommendations": {
       // Ensure recommendations have items with images
       const recData = data;
       let recItems = recData.items as Array<Record<string, unknown>> | undefined;
@@ -160,8 +164,9 @@ export function normalizeBlock(
         }));
       }
       return { type: "recommendations" as const, data: { ...data, items: recItems } };
+    }
 
-    case "related_articles":
+    case "related_articles": {
       // Ensure related articles have images
       const articleData = data;
       let articles = articleData.articles as Array<Record<string, unknown>> | undefined;
@@ -178,6 +183,7 @@ export function normalizeBlock(
         }));
       }
       return { type: "related_articles" as const, data: { ...data, articles } };
+    }
 
     default:
       // Check if type is valid, otherwise return text

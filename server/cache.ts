@@ -135,6 +135,7 @@ class CacheService {
         /* ignored */
       }
     } else {
+      /* Redis not configured - using in-memory cache */
     }
   }
 

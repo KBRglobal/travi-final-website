@@ -102,4 +102,4 @@ export async function getAlertStats(): Promise<AlertStats> {
   };
 }
 
-export { repository };
+export * as repository from "./alert-repository";

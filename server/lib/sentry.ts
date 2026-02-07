@@ -14,4 +14,4 @@ export function initSentry() {
   });
 }
 
-export { Sentry };
+export * as Sentry from "@sentry/node";

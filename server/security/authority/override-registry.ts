@@ -454,6 +454,7 @@ export const OverrideRegistry = {
     });
 
     if (cleaned > 0) {
+      /* Expired overrides cleaned up from registry */
     }
 
     return cleaned;

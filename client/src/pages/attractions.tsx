@@ -376,7 +376,9 @@ export default function Attractions() {
   // SEO-focused title and description
   const pageTitle =
     "Things to Do & Attractions – Eiffel Tower, Colosseum, Burj Khalifa & More | TRAVI";
-  const pageDescription = `Book skip-the-line tickets to top attractions worldwide. Eiffel Tower, Colosseum, Burj Khalifa, Statue of Liberty and ${totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : "thousands of"} experiences. Best prices guaranteed.`;
+  const attractionCount =
+    totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : "thousands of";
+  const pageDescription = `Book skip-the-line tickets to top attractions worldwide. Eiffel Tower, Colosseum, Burj Khalifa, Statue of Liberty and ${attractionCount} experiences. Best prices guaranteed.`;
 
   const runSearch = useCallback(
     async (value: string) => {

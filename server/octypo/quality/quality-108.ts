@@ -414,8 +414,7 @@ function checkTechnicalSEO(content: GeneratedAttractionContent): QualityCategory
     issues.push(`Meta description length: ${descLength} (target 120-170)`);
   }
 
-  const hasSchema =
-    content.schemaPayload && content.schemaPayload["@context"] === "https://schema.org";
+  const hasSchema = content.schemaPayload?.["@context"] === "https://schema.org";
   if (!hasSchema) {
     score -= 4;
     issues.push("Missing or invalid schema markup");

@@ -717,6 +717,7 @@ export const webhooksService = {
 
         setTimeout(() => this.sendWithRetry(webhook, event, payload, attempt + 1), delay);
       } else {
+        /* Max retries exhausted - webhook delivery abandoned */
       }
     }
   },

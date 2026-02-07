@@ -182,7 +182,7 @@ export function countCharsByScript(text: string): Record<string, number> {
     const charCode = char.charCodeAt(0);
 
     // Skip whitespace and common punctuation
-    if (/[\s\d.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-]/.test(char)) {
+    if (/[\s\d.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/-]/.test(char)) {
       continue;
     }
 

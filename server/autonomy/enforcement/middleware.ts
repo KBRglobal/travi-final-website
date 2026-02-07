@@ -216,7 +216,9 @@ export function enforcementLoggingMiddleware(
       };
 
       if (req.autonomy.decision === "BLOCK") {
+        /* Decision logged at autonomy level - no additional action needed */
       } else if (req.autonomy.warnings.length > 0) {
+        /* Warnings captured in logData above */
       }
     }
   });

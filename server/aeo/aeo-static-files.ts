@@ -6,7 +6,7 @@
 import { AI_CRAWLERS } from "./aeo-config";
 
 // Re-export AI_CRAWLERS for use in other modules
-export { AI_CRAWLERS };
+export { AI_CRAWLERS } from "./aeo-config";
 
 // Note: robots.txt generation is handled by server/services/sitemap.ts
 // The single authoritative source serves the production policy via the /robots.txt route

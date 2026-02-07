@@ -369,7 +369,7 @@ Generate a complete, SEO-optimized article ready for publication.`;
           }
         }
 
-        if (!result || !result.title || !result.content) {
+        if (!result?.title || !result.content) {
           addSystemLog(
             "error",
             "ai",
@@ -638,10 +638,11 @@ Generate a complete, SEO-optimized article ready for publication.`;
           case "shorten":
             userPrompt = `Condense the following text to be more concise while keeping all essential information. Reduce length by about 30-40%:\n\n${content}`;
             break;
-          case "translate":
+          case "translate": {
             const langName = targetLanguage || "Arabic";
             userPrompt = `Translate the following text to ${langName}. Maintain the same tone and style:\n\n${content}`;
             break;
+          }
           case "seo_optimize":
             userPrompt = `Optimize the following text for SEO while keeping it natural and engaging. Add relevant keywords and improve structure:\n\n${content}`;
             break;

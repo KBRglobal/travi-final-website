@@ -792,4 +792,4 @@ export async function getGuideLocalizationStatus(guideSlug: string): Promise<{
 }
 
 // Re-export the constant for use in this module
-export { LOCALE_PURITY_THRESHOLD };
+export { LOCALE_PURITY_THRESHOLD } from "./localization-pilot";

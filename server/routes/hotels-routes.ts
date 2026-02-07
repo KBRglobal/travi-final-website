@@ -452,7 +452,7 @@ export function registerHotelsRoutes(app: Express): void {
         checkInTime: hotelData.checkIn || "14:00",
         checkOutTime: hotelData.checkOut || "12:00",
         seoTitle: `${hotelData.name || hotelData.hotelName} | ${hotelData.stars || 5}-Star Luxury Hotel | TRAVI`,
-        seoDescription: `Book ${hotelData.name || hotelData.hotelName}${hotelData.location?.city || hotelData.cityName ? ` in ${hotelData.location?.city || hotelData.cityName}` : ""}. Premium amenities and exceptional service.`,
+        seoDescription: `Book ${hotelData.name || hotelData.hotelName}${hotelData.location?.city || hotelData.cityName ? " in " + (hotelData.location?.city || hotelData.cityName) : ""}. Premium amenities and exceptional service.`,
         highlights: [],
       };
 

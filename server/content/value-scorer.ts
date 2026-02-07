@@ -259,4 +259,5 @@ export function canImproveContent(entityId: string): {
   };
 }
 
-export { HIGH_PERFORMING_SCORE_THRESHOLD, HIGH_VALUE_THRESHOLD, LOW_VALUE_THRESHOLD };
+export { HIGH_PERFORMING_SCORE_THRESHOLD } from "./metrics/content-performance";
+export { HIGH_VALUE_THRESHOLD, LOW_VALUE_THRESHOLD };

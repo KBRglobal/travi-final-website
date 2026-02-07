@@ -260,6 +260,7 @@ export async function cleanupExpiredOverrides(): Promise<number> {
   }
 
   if (cleaned > 0) {
+    /* Expired overrides cleaned up successfully */
   }
 
   return cleaned;

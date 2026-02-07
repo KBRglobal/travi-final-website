@@ -71,14 +71,14 @@ export function calculateLocalePurity(
 
   // Remove dynamic exemptions (proper nouns, attraction names, etc.)
   for (const exemption of exemptions) {
-    if (exemption && exemption.trim()) {
+    if (exemption?.trim()) {
       const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }
 
   // Remove numbers and common punctuation
-  cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—\n\r\t]/g, " ");
+  cleanText = cleanText.replace(/[0-9.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/\-–—\n\r\t]/g, " ");
   cleanText = cleanText.trim();
 
   if (cleanText.length === 0) return 1;
@@ -132,13 +132,13 @@ export function calculateLocalePurityDetailed(
   }
 
   for (const exemption of exemptions) {
-    if (exemption && exemption.trim()) {
+    if (exemption?.trim()) {
       const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }
 
-  cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—\n\r\t]/g, " ");
+  cleanText = cleanText.replace(/[0-9.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/\-–—\n\r\t]/g, " ");
 
   // Count characters by script
   const breakdown = countCharsByScript(cleanText);

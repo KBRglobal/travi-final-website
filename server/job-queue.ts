@@ -227,6 +227,7 @@ class JobQueue {
         .returning();
 
       if (result.length > 0) {
+        /* Stale processing jobs reset to pending */
       }
     } catch (err) {
       /* ignored */
@@ -348,6 +349,7 @@ class JobQueue {
         .returning();
 
       if (result.length > 0) {
+        /* Old completed/failed jobs cleaned up */
       }
     } catch (err) {
       /* ignored */

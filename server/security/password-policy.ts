@@ -105,7 +105,7 @@ export function validatePasswordStrength(
   // Special character check
   if (
     PASSWORD_POLICY.requireSpecialChars &&
-    !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)
   ) {
     errors.push("Password must contain at least one special character");
   }

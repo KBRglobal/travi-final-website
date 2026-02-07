@@ -324,7 +324,7 @@ export function registerAuthRoutes(app: Express): void {
 
         // Check database for user
         const user = await storage.getUserByUsername(username);
-        if (!user || !user.passwordHash) {
+        if (!user?.passwordHash) {
           recordFailedAttempt(ip);
           recordDualLockoutFailure(username.toLowerCase(), ip); // Dual lockout tracking
           (res as any).recordFailure?.(); // Enterprise Security: Exponential backoff

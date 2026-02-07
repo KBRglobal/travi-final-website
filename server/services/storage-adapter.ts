@@ -281,8 +281,9 @@ export class StorageManager {
     );
 
     if (this.objectStorageEnabled) {
+      /* Object storage (R2) configured and available */
     } else {
-      // empty
+      /* Object storage not configured - using local filesystem fallback */
     }
   }
 

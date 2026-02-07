@@ -156,35 +156,38 @@ export function isLocaleSupported(locale: string): boolean {
 }
 
 // Export individual contexts for direct imports
-export {
-  englishContext,
-  arabicContext,
-  hindiContext,
-  chineseContext,
-  russianContext,
-  urduContext,
-  frenchContext,
-  indonesianContext,
-  germanContext,
-  persianContext,
-  bengaliContext,
-  filipinoContext,
-  thaiContext,
-  vietnameseContext,
-  malayContext,
-  spanishContext,
-  turkishContext,
-  italianContext,
-  japaneseContext,
-  koreanContext,
-  hebrewContext,
-  portugueseContext,
-  dutchContext,
-  polishContext,
-  swedishContext,
-  greekContext,
-  czechContext,
-  romanianContext,
-  ukrainianContext,
-  hungarianContext,
-};
+// Tier 1 - Core
+export { englishContext } from "./tier-1/en";
+export { arabicContext } from "./tier-1/ar";
+export { hindiContext } from "./tier-1/hi";
+// Tier 2 - High ROI
+export { chineseContext } from "./tier-2/zh";
+export { russianContext } from "./tier-2/ru";
+export { urduContext } from "./tier-2/ur";
+export { frenchContext } from "./tier-2/fr";
+export { indonesianContext } from "./tier-2/id";
+// Tier 3 - Growing
+export { germanContext } from "./tier-3/de";
+export { persianContext } from "./tier-3/fa";
+export { bengaliContext } from "./tier-3/bn";
+export { filipinoContext } from "./tier-3/fil";
+export { thaiContext } from "./tier-3/th";
+export { vietnameseContext } from "./tier-3/vi";
+export { malayContext } from "./tier-3/ms";
+// Tier 4 - Niche
+export { spanishContext } from "./tier-4/es";
+export { turkishContext } from "./tier-4/tr";
+export { italianContext } from "./tier-4/it";
+export { japaneseContext } from "./tier-4/ja";
+export { koreanContext } from "./tier-4/ko";
+export { hebrewContext } from "./tier-4/he";
+export { portugueseContext } from "./tier-4/pt";
+// Tier 5 - European Expansion
+export { dutchContext } from "./tier-5/nl";
+export { polishContext } from "./tier-5/pl";
+export { swedishContext } from "./tier-5/sv";
+export { greekContext } from "./tier-5/el";
+export { czechContext } from "./tier-5/cs";
+export { romanianContext } from "./tier-5/ro";
+export { ukrainianContext } from "./tier-5/uk";
+export { hungarianContext } from "./tier-5/hu";

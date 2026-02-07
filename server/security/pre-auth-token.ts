@@ -342,6 +342,7 @@ export async function consumePreAuthToken(token: string): Promise<boolean> {
     const deleted = (result as any).rowCount > 0;
 
     if (deleted) {
+      /* Token successfully revoked - no further action needed */
     }
 
     return deleted;

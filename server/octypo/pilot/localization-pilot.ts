@@ -224,7 +224,7 @@ export function calculateLocalePurity(
   }
 
   // Remove punctuation and numbers
-  cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—]/g, " ");
+  cleanText = cleanText.replace(/[0-9.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/\-–—]/g, " ");
   cleanText = cleanText.trim();
 
   if (cleanText.length === 0) return 1;
@@ -768,7 +768,7 @@ export function calculateLocalePurityExtended(
   }
 
   // Remove punctuation and numbers
-  cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—]/g, " ");
+  cleanText = cleanText.replace(/[0-9.,!?;:'"()[\]{}<>@#$%^&*+=_~`\\|/\-–—]/g, " ");
   cleanText = cleanText.trim();
 
   if (cleanText.length === 0) return 1;

@@ -67,7 +67,7 @@ export function registerGoogleDriveRoutes(app: Express): void {
 
         const websiteContents = await listFilesInFolder(websiteFolderId);
         const categoriesFolder = websiteContents.find(f => f.name?.toLowerCase() === "categories");
-        if (!categoriesFolder || !categoriesFolder.id) {
+        if (!categoriesFolder?.id) {
           report.errors.push({
             city: "",
             error: "Categories subfolder not found in Website folder",

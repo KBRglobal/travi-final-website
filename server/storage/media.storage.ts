@@ -64,7 +64,7 @@ export class MediaStorage {
           sql`${contents.deletedAt} IS NULL`,
           or(
             eq(contents.heroImage, mediaUrl),
-            sql`${contents.blocks}::text LIKE ${`%${mediaUrl}%`}`
+            sql`${contents.blocks}::text LIKE ${"%" + mediaUrl + "%"}`
           )
         )
       )
