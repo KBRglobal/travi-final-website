@@ -69,14 +69,14 @@ export function sanitizeHTML(dirty: string): string {
 /**
  * Trusted embed domains for iframe allowlist
  */
-const TRUSTED_EMBED_DOMAINS = [
+const TRUSTED_EMBED_DOMAINS = new Set([
   "www.youtube.com",
   "youtube.com",
   "www.youtube-nocookie.com",
   "player.vimeo.com",
   "www.google.com",
   "maps.google.com",
-];
+]);
 
 /**
  * Sanitize HTML content allowing iframes only from trusted embed domains.
@@ -102,7 +102,7 @@ export function sanitizeWithEmbeds(dirty: string): string {
   container.querySelectorAll("iframe").forEach(iframe => {
     try {
       const url = new URL(iframe.src);
-      if (!TRUSTED_EMBED_DOMAINS.includes(url.hostname)) {
+      if (!TRUSTED_EMBED_DOMAINS.has(url.hostname)) {
         iframe.remove();
       }
     } catch {

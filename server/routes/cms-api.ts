@@ -66,7 +66,7 @@ export function registerCmsApiRoutes(app: Express): void {
       try {
         const settings = await storage.getSettings();
         res.json(settings);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch settings" });
       }
     }
@@ -88,7 +88,7 @@ export function registerCmsApiRoutes(app: Express): void {
           grouped[setting.category][setting.key] = setting.value;
         }
         res.json(grouped);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch settings" });
       }
     }
@@ -107,8 +107,8 @@ export function registerCmsApiRoutes(app: Express): void {
         }
 
         // Validate allowed categories
-        const allowedCategories = ["site", "api", "content", "notifications", "security"];
-        const invalidCategories = Object.keys(settings).filter(c => !allowedCategories.includes(c));
+        const allowedCategories = new Set(["site", "api", "content", "notifications", "security"]);
+        const invalidCategories = Object.keys(settings).filter(c => !allowedCategories.has(c));
         if (invalidCategories.length > 0) {
           return res
             .status(400)
@@ -160,7 +160,7 @@ export function registerCmsApiRoutes(app: Express): void {
           `Updated ${updated.length} settings`
         );
         res.json({ success: true, updated: updated.length });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update settings" });
       }
     }
@@ -197,7 +197,7 @@ export function registerCmsApiRoutes(app: Express): void {
       );
 
       res.json(promotionsWithContent);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage promotions" });
     }
   });
@@ -257,7 +257,7 @@ export function registerCmsApiRoutes(app: Express): void {
       try {
         await storage.deleteHomepagePromotion(req.params.id);
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete homepage promotion" });
       }
     }

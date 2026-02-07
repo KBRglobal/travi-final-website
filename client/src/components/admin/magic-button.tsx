@@ -307,7 +307,7 @@ export function MagicButton({
             <DropdownMenuSeparator />
             {alternatives.map((alt, index) => (
               <DropdownMenuItem
-                key={index}
+                key={`alt-${String(alt).slice(0, 40)}-${index}`}
                 onClick={() => handleSelectAlternative(alt)}
                 className="cursor-pointer"
               >

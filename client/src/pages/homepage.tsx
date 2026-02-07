@@ -395,7 +395,7 @@ export default function Homepage() {
                       <ul className="space-y-1">
                         {region.destinations.map(
                           (dest: { name: string; slug: string }, i: number) => (
-                            <li key={i}>
+                            <li key={dest.slug}>
                               <Link
                                 href={dest.slug.startsWith("/") ? dest.slug : `/${dest.slug}`}
                                 className="flex items-center gap-2 py-2 px-3 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:text-[#6443F4] hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all"

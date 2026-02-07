@@ -13,7 +13,6 @@ export interface SecurityEvent extends GovernanceEvent {
   severity: string;
 }
 export type PolicyDecision = "allow" | "deny" | "review";
-export type SecurityEventType = string;
 export type PolicyEffect = "allow" | "deny" | "require_approval";
 
 // Policy types
@@ -33,11 +32,6 @@ export interface PolicyCondition {
   operator: string;
   value: unknown;
 }
-
-// Admin/Security types
-export type AdminRole = string;
-export type Resource = string;
-export type Action = string;
 
 export const ROLE_HIERARCHY: Record<string, number> = {
   viewer: 0,

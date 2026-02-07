@@ -227,7 +227,7 @@ class ReleaseGuard {
       const { pool } = await import("../../db");
 
       // SECURITY: Table name is validated against whitelist above
-      const result = await Promise.race([
+      await Promise.race([
         pool.query(`SELECT 1 FROM "${table}" LIMIT 1`),
         new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 5000)),
       ]);

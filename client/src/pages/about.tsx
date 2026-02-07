@@ -185,7 +185,7 @@ export default function AboutPage() {
             <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
               {stats.map((stat, index) => (
                 <div
-                  key={index}
+                  key={stat.label}
                   className="bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-white/10 text-center"
                   data-testid={`stat-card-${index}`}
                 >
@@ -300,7 +300,7 @@ export default function AboutPage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {offerings.map((item, index) => (
                 <div
-                  key={index}
+                  key={item.title}
                   className="group bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-white/10 hover-elevate transition-all duration-300"
                   data-testid={`offering-card-${index}`}
                 >
@@ -388,7 +388,7 @@ export default function AboutPage() {
               <div className="space-y-12">
                 {values.map((value, index) => (
                   <div
-                    key={index}
+                    key={value.title}
                     className={`relative flex items-center gap-8 ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
                     data-testid={`value-item-${index}`}
                   >

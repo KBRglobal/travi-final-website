@@ -701,7 +701,10 @@ export default function Attractions() {
                           srLabel: t("attractions.srLabel.rating", { rating: 4.9 }),
                         },
                       ].map((stat, i) => (
-                        <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
+                        <div
+                          key={stat.srLabel}
+                          className="flex items-center gap-4 sm:gap-6 md:gap-8"
+                        >
                           <div className="text-center lg:text-left">
                             <dt className="sr-only">{stat.srLabel}</dt>
                             <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white font-chillax">
@@ -882,7 +885,7 @@ export default function Attractions() {
                     >
                       {HERO_ATTRACTIONS.map((d, i) => (
                         <button
-                          key={i}
+                          key={d.slug}
                           onClick={() => goTo(i)}
                           role="tab"
                           aria-selected={currentIndex === i}
@@ -1015,7 +1018,7 @@ export default function Attractions() {
                       >
                         {HERO_ATTRACTIONS.slice(0, 5).map((attraction, i) => (
                           <button
-                            key={i}
+                            key={attraction.slug}
                             onClick={() => goTo(i)}
                             className={cn(
                               "thumb-item w-14 h-14 sm:w-16 sm:h-16 min-w-[44px] min-h-[44px] rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-[#6443F4]/20",

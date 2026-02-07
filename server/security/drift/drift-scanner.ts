@@ -11,7 +11,6 @@
  */
 
 import * as crypto from "node:crypto";
-import { AdminRole, Resource, Action } from "../../governance/types";
 import { logAdminEvent } from "../../governance/security-logger";
 
 // ============================================================================
@@ -80,8 +79,8 @@ export interface DriftScanResult {
 // ============================================================================
 
 interface PermissionSnapshot {
-  roles: Record<AdminRole, Record<Resource, Action[]>>;
-  userAssignments: Record<string, AdminRole[]>;
+  roles: Record<string, Record<string, string[]>>;
+  userAssignments: Record<string, string[]>;
 }
 
 interface PolicySnapshot {
@@ -312,9 +311,9 @@ class DriftScanner {
           roles: ["view", "create", "edit", "delete", "manage_roles"],
           policies: ["view", "create", "edit", "delete", "manage_policies"],
           system: ["view", "configure"],
-        } as Record<Resource, Action[]>,
+        } as Record<string, string[]>,
         // ... other roles would be captured here
-      } as Record<AdminRole, Record<Resource, Action[]>>,
+      } as Record<string, Record<string, string[]>>,
       userAssignments: {},
     };
   }
@@ -425,7 +424,7 @@ class DriftScanner {
 
     // Compare role permissions
     for (const [role, baselinePerms] of Object.entries(baseline.roles)) {
-      const currentPerms = current.roles[role as AdminRole];
+      const currentPerms = current.roles[role as string];
 
       if (!currentPerms) {
         reports.push({
@@ -445,10 +444,10 @@ class DriftScanner {
       }
 
       for (const [resource, baselineActions] of Object.entries(baselinePerms)) {
-        const currentActions = currentPerms[resource as Resource] || [];
+        const currentActions = currentPerms[resource as string] || [];
 
-        const addedActions = currentActions.filter((a: Action) => !baselineActions.includes(a));
-        const removedActions = baselineActions.filter((a: Action) => !currentActions.includes(a));
+        const addedActions = currentActions.filter((a: string) => !baselineActions.includes(a));
+        const removedActions = baselineActions.filter((a: string) => !currentActions.includes(a));
 
         if (addedActions.length > 0) {
           reports.push({
@@ -555,13 +554,18 @@ class DriftScanner {
   private analyzeConfigDrift(baseline: ConfigSnapshot, current: ConfigSnapshot): DriftReport[] {
     const reports: DriftReport[] = [];
 
-    const criticalSettings = ["rbacEnabled", "auditEnabled", "mfaRequired", "encryptionEnabled"];
+    const criticalSettings = new Set([
+      "rbacEnabled",
+      "auditEnabled",
+      "mfaRequired",
+      "encryptionEnabled",
+    ]);
 
     for (const [key, baselineValue] of Object.entries(baseline)) {
       const currentValue = (current as any)[key];
 
       if (JSON.stringify(baselineValue) !== JSON.stringify(currentValue)) {
-        const isCritical = criticalSettings.includes(key);
+        const isCritical = criticalSettings.has(key);
 
         reports.push({
           id: `DRIFT-${Date.now()}-config-${key}`,

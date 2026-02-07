@@ -274,9 +274,9 @@ export function registerGrowthRoutes(app: Express) {
             const contentTranslations = existingTranslations.filter(
               t => t.contentId === content.id
             );
-            const translatedLocales = contentTranslations.map(t => t.locale);
+            const translatedLocales = new Set(contentTranslations.map(t => t.locale));
             const missingLocales = locales
-              .filter(l => !translatedLocales.includes(l.code as any))
+              .filter(l => !translatedLocales.has(l.code as any))
               .map(l => ({ code: l.code, name: l.name, nativeName: l.nativeName }));
 
             return {
@@ -490,8 +490,6 @@ export function registerGrowthRoutes(app: Express) {
 
       const staleDestinations = freshnessResult.destinations.filter(d => d.isStale);
       const criticalDestinations = staleDestinations.filter(d => d.staleSeverity === "critical");
-      const highPriorityDestinations = staleDestinations.filter(d => d.staleSeverity === "high");
-
       res.json({
         summary: {
           totalDestinations: freshnessResult.totalDestinations,

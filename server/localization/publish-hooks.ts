@@ -25,7 +25,7 @@ const logger = {
 };
 
 // Content status that triggers hooks
-const TRIGGER_STATUSES = ["approved", "published"];
+const TRIGGER_STATUSES = new Set(["approved", "published"]);
 
 // Native content generation - enabled by default, can be disabled via env
 const NATIVE_CONTENT_ENABLED = process.env.NATIVE_CONTENT_ENABLED !== "false";
@@ -41,12 +41,12 @@ export async function onContentStatusChange(
   newStatus: string,
   previousStatus?: string
 ): Promise<void> {
-  if (!TRIGGER_STATUSES.includes(newStatus)) {
+  if (!TRIGGER_STATUSES.has(newStatus)) {
     return;
   }
 
   // Skip if transitioning between approved and published (already processed)
-  if (previousStatus && TRIGGER_STATUSES.includes(previousStatus) && newStatus !== "published") {
+  if (previousStatus && TRIGGER_STATUSES.has(previousStatus) && newStatus !== "published") {
     return;
   }
 

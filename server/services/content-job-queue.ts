@@ -1,6 +1,6 @@
 /**
  * Smart Content Generation Job Queue
- * 
+ *
  * Features:
  * - Persistent job state in database
  * - Work stealing between providers
@@ -68,7 +68,8 @@ function sendEvent(data: Record<string, unknown>) {
  */
 async function initializeQueue(): Promise<number> {
   // Get all pending attractions
-  const pendingAttractions = await db.select({ id: tiqetsAttractions.id })
+  const pendingAttractions = await db
+    .select({ id: tiqetsAttractions.id })
     .from(tiqetsAttractions)
     .where(eq(tiqetsAttractions.contentGenerationStatus, "pending"));
 
@@ -95,43 +96,12 @@ async function acquireJob(providerName: string): Promise<{ id: string; name: str
   // 3. AND not exceeded max attempts
   // 4. AND not currently being processed by another provider
   // 5. PREFER jobs where this provider wasn't the last to fail (model rotation)
-  
-  // Use a transaction to ensure atomic acquisition
-  const result = await db.transaction(async (tx) => {
-    // First, try to find a job where this provider WASN'T the last to fail (model rotation)
-    let candidates = await tx.select({
-      id: tiqetsAttractions.id,
-      name: tiqetsAttractions.name,
-      contentGenerationStatus: tiqetsAttractions.contentGenerationStatus,
-      contentGenerationAttempts: tiqetsAttractions.contentGenerationAttempts,
-      contentGenerationLockedBy: tiqetsAttractions.contentGenerationLockedBy,
-      contentGenerationLockedAt: tiqetsAttractions.contentGenerationLockedAt,
-      contentGenerationProvider: tiqetsAttractions.contentGenerationProvider,
-    })
-    .from(tiqetsAttractions)
-    .where(
-      and(
-        or(
-          eq(tiqetsAttractions.contentGenerationStatus, "pending"),
-          and(
-            eq(tiqetsAttractions.contentGenerationStatus, "in_progress"),
-            lt(tiqetsAttractions.contentGenerationLockedAt, lockExpiry)
-          )
-        ),
-        lt(sql`COALESCE(${tiqetsAttractions.contentGenerationAttempts}, 0)`, CONFIG.maxAttempts),
-        // Prefer jobs where this provider wasn't the one that last failed (rotation)
-        or(
-          isNull(tiqetsAttractions.contentGenerationProvider),
-          sql`${tiqetsAttractions.contentGenerationProvider} != ${providerName}`
-        )
-      )
-    )
-    .limit(1)
-    .for("update", { skipLocked: true }); // Skip locked rows for concurrency
 
-    // If no jobs found where we're not the last failed provider, fallback to any job
-    if (candidates.length === 0) {
-      candidates = await tx.select({
+  // Use a transaction to ensure atomic acquisition
+  const result = await db.transaction(async tx => {
+    // First, try to find a job where this provider WASN'T the last to fail (model rotation)
+    let candidates = await tx
+      .select({
         id: tiqetsAttractions.id,
         name: tiqetsAttractions.name,
         contentGenerationStatus: tiqetsAttractions.contentGenerationStatus,
@@ -150,11 +120,44 @@ async function acquireJob(providerName: string): Promise<{ id: string; name: str
               lt(tiqetsAttractions.contentGenerationLockedAt, lockExpiry)
             )
           ),
-          lt(sql`COALESCE(${tiqetsAttractions.contentGenerationAttempts}, 0)`, CONFIG.maxAttempts)
+          lt(sql`COALESCE(${tiqetsAttractions.contentGenerationAttempts}, 0)`, CONFIG.maxAttempts),
+          // Prefer jobs where this provider wasn't the one that last failed (rotation)
+          or(
+            isNull(tiqetsAttractions.contentGenerationProvider),
+            sql`${tiqetsAttractions.contentGenerationProvider} != ${providerName}`
+          )
         )
       )
       .limit(1)
-      .for("update", { skipLocked: true });
+      .for("update", { skipLocked: true }); // Skip locked rows for concurrency
+
+    // If no jobs found where we're not the last failed provider, fallback to any job
+    if (candidates.length === 0) {
+      candidates = await tx
+        .select({
+          id: tiqetsAttractions.id,
+          name: tiqetsAttractions.name,
+          contentGenerationStatus: tiqetsAttractions.contentGenerationStatus,
+          contentGenerationAttempts: tiqetsAttractions.contentGenerationAttempts,
+          contentGenerationLockedBy: tiqetsAttractions.contentGenerationLockedBy,
+          contentGenerationLockedAt: tiqetsAttractions.contentGenerationLockedAt,
+          contentGenerationProvider: tiqetsAttractions.contentGenerationProvider,
+        })
+        .from(tiqetsAttractions)
+        .where(
+          and(
+            or(
+              eq(tiqetsAttractions.contentGenerationStatus, "pending"),
+              and(
+                eq(tiqetsAttractions.contentGenerationStatus, "in_progress"),
+                lt(tiqetsAttractions.contentGenerationLockedAt, lockExpiry)
+              )
+            ),
+            lt(sql`COALESCE(${tiqetsAttractions.contentGenerationAttempts}, 0)`, CONFIG.maxAttempts)
+          )
+        )
+        .limit(1)
+        .for("update", { skipLocked: true });
     }
 
     if (candidates.length === 0) {
@@ -162,18 +165,26 @@ async function acquireJob(providerName: string): Promise<{ id: string; name: str
     }
 
     const candidate = candidates[0];
-    
+
     // Log if this is a retry with the same provider (shouldn't happen often with rotation)
-    if (candidate.contentGenerationProvider === providerName && candidate.contentGenerationAttempts && candidate.contentGenerationAttempts > 0) {
-      logger.info({
-        attractionId: candidate.id,
-        provider: providerName,
-        attempts: candidate.contentGenerationAttempts,
-      }, "Retrying with same provider (no other providers available)");
+    if (
+      candidate.contentGenerationProvider === providerName &&
+      candidate.contentGenerationAttempts &&
+      candidate.contentGenerationAttempts > 0
+    ) {
+      logger.info(
+        {
+          attractionId: candidate.id,
+          provider: providerName,
+          attempts: candidate.contentGenerationAttempts,
+        },
+        "Retrying with same provider (no other providers available)"
+      );
     }
 
     // Lock the job
-    await tx.update(tiqetsAttractions)
+    await tx
+      .update(tiqetsAttractions)
       .set({
         contentGenerationStatus: "in_progress",
         contentGenerationLockedBy: providerName,
@@ -192,7 +203,8 @@ async function acquireJob(providerName: string): Promise<{ id: string; name: str
  * Mark job as completed
  */
 async function completeJob(attractionId: string, providerName: string): Promise<void> {
-  await db.update(tiqetsAttractions)
+  await db
+    .update(tiqetsAttractions)
     .set({
       contentGenerationStatus: "completed",
       contentGenerationLockedBy: null,
@@ -210,17 +222,19 @@ async function completeJob(attractionId: string, providerName: string): Promise<
  * Stores the provider that failed so next retry uses a different provider
  */
 async function failJob(attractionId: string, error: string, providerName?: string): Promise<void> {
-  const attraction = await db.select({
-    attempts: tiqetsAttractions.contentGenerationAttempts,
-  })
-  .from(tiqetsAttractions)
-  .where(eq(tiqetsAttractions.id, attractionId))
-  .limit(1);
+  const attraction = await db
+    .select({
+      attempts: tiqetsAttractions.contentGenerationAttempts,
+    })
+    .from(tiqetsAttractions)
+    .where(eq(tiqetsAttractions.id, attractionId))
+    .limit(1);
 
   const attempts = attraction[0]?.attempts || 0;
   const isFinalFailure = attempts >= CONFIG.maxAttempts;
 
-  await db.update(tiqetsAttractions)
+  await db
+    .update(tiqetsAttractions)
     .set({
       contentGenerationStatus: isFinalFailure ? "failed" : "pending",
       contentGenerationLockedBy: null,
@@ -233,18 +247,24 @@ async function failJob(attractionId: string, error: string, providerName?: strin
 
   if (isFinalFailure) {
     failedJobs++;
-    logger.warn({
-      attractionId,
-      attempts,
-      error: error.substring(0, 200),
-    }, "Job permanently failed after max attempts");
+    logger.warn(
+      {
+        attractionId,
+        attempts,
+        error: error.substring(0, 200),
+      },
+      "Job permanently failed after max attempts"
+    );
   } else {
-    logger.info({
-      attractionId,
-      attempts,
-      nextAttempt: attempts + 1,
-      failedProvider: providerName,
-    }, "Job failed, will retry with different provider");
+    logger.info(
+      {
+        attractionId,
+        attempts,
+        nextAttempt: attempts + 1,
+        failedProvider: providerName,
+      },
+      "Job failed, will retry with different provider"
+    );
   }
 }
 
@@ -254,7 +274,8 @@ async function failJob(attractionId: string, error: string, providerName?: strin
 async function releaseStaleLocks(): Promise<number> {
   const lockExpiry = new Date(Date.now() - CONFIG.lockTimeoutMs);
 
-  const result = await db.update(tiqetsAttractions)
+  await db
+    .update(tiqetsAttractions)
     .set({
       contentGenerationStatus: "pending",
       contentGenerationLockedBy: null,
@@ -274,7 +295,17 @@ async function releaseStaleLocks(): Promise<number> {
  * Provider worker - continuously processes jobs until queue is empty
  */
 async function runProviderWorker(
-  providerName: "anthropic" | "openai" | "gemini" | "openrouter" | "deepseek" | "perplexity" | "groq" | "mistral" | "helicone" | "eden",
+  providerName:
+    | "anthropic"
+    | "openai"
+    | "gemini"
+    | "openrouter"
+    | "deepseek"
+    | "perplexity"
+    | "groq"
+    | "mistral"
+    | "helicone"
+    | "eden",
   generateContent: (attractionId: string) => Promise<GenerationResult>
 ): Promise<void> {
   const worker: ProviderWorker = {
@@ -296,7 +327,7 @@ async function runProviderWorker(
     try {
       // Acquire next job
       const job = await acquireJob(providerName);
-      
+
       if (!job) {
         // No more jobs available
         logger.info({ provider: providerName }, "No more jobs, worker finishing");
@@ -310,14 +341,14 @@ async function runProviderWorker(
 
       try {
         // Process the job
-        const result = await generateContent(job.id);
-        
+        await generateContent(job.id);
+
         // Mark as completed
         await completeJob(job.id, providerName);
-        
+
         worker.processed++;
         consecutiveErrors = 0;
-        
+
         const latencyMs = Date.now() - startTime;
 
         sendEvent({
@@ -332,27 +363,32 @@ async function runProviderWorker(
           remaining: totalJobs - completedJobs - failedJobs,
         });
 
-        logger.info({
-          provider: providerName,
-          attractionId: job.id,
-          latencyMs,
-          processed: worker.processed,
-        }, "Job completed");
-
+        logger.info(
+          {
+            provider: providerName,
+            attractionId: job.id,
+            latencyMs,
+            processed: worker.processed,
+          },
+          "Job completed"
+        );
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
         // Pass provider name so failed jobs rotate to different providers on retry
         await failJob(job.id, errorMsg, providerName);
-        
+
         worker.errors++;
         consecutiveErrors++;
 
-        logger.warn({
-          provider: providerName,
-          attractionId: job.id,
-          error: errorMsg,
-          consecutiveErrors,
-        }, "Job failed - will retry with different provider");
+        logger.warn(
+          {
+            provider: providerName,
+            attractionId: job.id,
+            error: errorMsg,
+            consecutiveErrors,
+          },
+          "Job failed - will retry with different provider"
+        );
 
         sendEvent({
           type: "job_error",
@@ -364,19 +400,23 @@ async function runProviderWorker(
 
         // If too many consecutive errors, this provider might be having issues
         if (consecutiveErrors >= maxConsecutiveErrors) {
-          logger.error({
-            provider: providerName,
-            consecutiveErrors,
-          }, "Too many consecutive errors, pausing worker");
+          logger.error(
+            {
+              provider: providerName,
+              consecutiveErrors,
+            },
+            "Too many consecutive errors, pausing worker"
+          );
 
           // Wait before retrying (exponential backoff)
-          await new Promise(resolve => setTimeout(resolve, Math.min(30000, 1000 * Math.pow(2, consecutiveErrors))));
+          await new Promise(resolve =>
+            setTimeout(resolve, Math.min(30000, 1000 * Math.pow(2, consecutiveErrors)))
+          );
           consecutiveErrors = 0; // Reset and try again
         }
       }
 
       worker.currentJob = null;
-
     } catch (error) {
       logger.error({ provider: providerName, error: String(error) }, "Worker error");
       await new Promise(resolve => setTimeout(resolve, 5000));
@@ -385,12 +425,15 @@ async function runProviderWorker(
 
   worker.active = false;
   workers.set(providerName, worker);
-  
-  logger.info({
-    provider: providerName,
-    processed: worker.processed,
-    errors: worker.errors,
-  }, "Worker finished");
+
+  logger.info(
+    {
+      provider: providerName,
+      processed: worker.processed,
+      errors: worker.errors,
+    },
+    "Worker finished"
+  );
 }
 
 /**
@@ -404,12 +447,13 @@ export async function getQueueStats(): Promise<{
   pending: number;
   workers: Array<{ name: string; active: boolean; processed: number; errors: number }>;
 }> {
-  const stats = await db.select({
-    status: tiqetsAttractions.contentGenerationStatus,
-    count: sql<number>`count(*)::int`,
-  })
-  .from(tiqetsAttractions)
-  .groupBy(tiqetsAttractions.contentGenerationStatus);
+  const stats = await db
+    .select({
+      status: tiqetsAttractions.contentGenerationStatus,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(tiqetsAttractions)
+    .groupBy(tiqetsAttractions.contentGenerationStatus);
 
   const statusCounts: Record<string, number> = {};
   for (const row of stats) {
@@ -451,7 +495,7 @@ export async function startSmartQueue(
   try {
     // Initialize queue
     const jobCount = await initializeQueue();
-    
+
     if (jobCount === 0) {
       sendEvent({ type: "complete", message: "No pending attractions to process" });
       queueRunning = false;
@@ -467,15 +511,26 @@ export async function startSmartQueue(
     // Verify which providers are available
     const providerInstance = getMultiModelProvider();
     const providerStatus = await providerInstance.checkAvailability();
-    
-    const availableProviders: Array<"anthropic" | "openai" | "gemini" | "openrouter" | "deepseek" | "perplexity" | "groq" | "mistral" | "helicone" | "eden"> = [];
-    
+
+    const availableProviders: Array<
+      | "anthropic"
+      | "openai"
+      | "gemini"
+      | "openrouter"
+      | "deepseek"
+      | "perplexity"
+      | "groq"
+      | "mistral"
+      | "helicone"
+      | "eden"
+    > = [];
+
     // Skip Groq due to aggressive rate limiting
-    const skipProviders = ["groq", "gemini"];
-    
+    const skipProviders = new Set(["groq", "gemini"]);
+
     for (const provider of providerStatus) {
-      if (provider.available && !skipProviders.includes(provider.name)) {
-        const name = provider.name as typeof availableProviders[number];
+      if (provider.available && !skipProviders.has(provider.name)) {
+        const name = provider.name as (typeof availableProviders)[number];
         try {
           // Quick test
           await providerInstance.generateWithSpecificProvider(name, "Reply: OK", {
@@ -485,7 +540,11 @@ export async function startSmartQueue(
           availableProviders.push(name);
           sendEvent({ type: "provider_verified", provider: name });
         } catch (error) {
-          sendEvent({ type: "provider_failed", provider: name, error: String(error).substring(0, 100) });
+          sendEvent({
+            type: "provider_failed",
+            provider: name,
+            error: String(error).substring(0, 100),
+          });
         }
       }
     }
@@ -505,7 +564,7 @@ export async function startSmartQueue(
 
     // Start worker for each provider
     const workerPromises = availableProviders.map(providerName =>
-      runProviderWorker(providerName, async (attractionId) => {
+      runProviderWorker(providerName, async attractionId => {
         return generateContentFn(attractionId, providerName);
       })
     );
@@ -541,13 +600,12 @@ export async function startSmartQueue(
 
     // Final statistics
     const finalStats = await getQueueStats();
-    
+
     sendEvent({
       type: "complete",
       stats: finalStats,
       message: `Completed ${finalStats.completed} attractions, ${finalStats.failed} failed`,
     });
-
   } catch (error) {
     logger.error({ error: String(error) }, "Queue processing error");
     sendEvent({ type: "error", message: String(error) });
@@ -601,24 +659,23 @@ export async function resetFailedAttractions(options: {
   const { maxToReset = 1000, cityName, excludeProvider } = options;
 
   // Build where clause
-  const whereConditions = [
-    eq(tiqetsAttractions.contentGenerationStatus, "failed"),
-  ];
+  const whereConditions = [eq(tiqetsAttractions.contentGenerationStatus, "failed")];
 
   if (cityName) {
     whereConditions.push(eq(tiqetsAttractions.cityName, cityName));
   }
 
   // Find failed attractions
-  const failedAttractions = await db.select({
-    id: tiqetsAttractions.id,
-    cityName: tiqetsAttractions.cityName,
-    lastProvider: tiqetsAttractions.contentGenerationProvider,
-    lastError: tiqetsAttractions.contentGenerationLastError,
-  })
-  .from(tiqetsAttractions)
-  .where(and(...whereConditions))
-  .limit(maxToReset);
+  const failedAttractions = await db
+    .select({
+      id: tiqetsAttractions.id,
+      cityName: tiqetsAttractions.cityName,
+      lastProvider: tiqetsAttractions.contentGenerationProvider,
+      lastError: tiqetsAttractions.contentGenerationLastError,
+    })
+    .from(tiqetsAttractions)
+    .where(and(...whereConditions))
+    .limit(maxToReset);
 
   if (failedAttractions.length === 0) {
     return { reset: 0, byCity: {} };
@@ -634,7 +691,8 @@ export async function resetFailedAttractions(options: {
 
   // Reset all failed attractions to pending
   // Clear the attempts counter so they get a fresh retry cycle
-  await db.update(tiqetsAttractions)
+  await db
+    .update(tiqetsAttractions)
     .set({
       contentGenerationStatus: "pending",
       contentGenerationAttempts: 0,
@@ -644,11 +702,14 @@ export async function resetFailedAttractions(options: {
     } as any)
     .where(inArray(tiqetsAttractions.id, attractionIds));
 
-  logger.info({
-    reset: failedAttractions.length,
-    byCity,
-    excludeProvider,
-  }, "Reset failed attractions for retry");
+  logger.info(
+    {
+      reset: failedAttractions.length,
+      byCity,
+      excludeProvider,
+    },
+    "Reset failed attractions for retry"
+  );
 
   return {
     reset: failedAttractions.length,
@@ -665,13 +726,14 @@ export async function getFailureStats(): Promise<{
   byCity: Record<string, number>;
   byError: Record<string, number>;
 }> {
-  const failedAttractions = await db.select({
-    cityName: tiqetsAttractions.cityName,
-    provider: tiqetsAttractions.contentGenerationProvider,
-    error: tiqetsAttractions.contentGenerationLastError,
-  })
-  .from(tiqetsAttractions)
-  .where(eq(tiqetsAttractions.contentGenerationStatus, "failed"));
+  const failedAttractions = await db
+    .select({
+      cityName: tiqetsAttractions.cityName,
+      provider: tiqetsAttractions.contentGenerationProvider,
+      error: tiqetsAttractions.contentGenerationLastError,
+    })
+    .from(tiqetsAttractions)
+    .where(eq(tiqetsAttractions.contentGenerationStatus, "failed"));
 
   const byProvider: Record<string, number> = {};
   const byCity: Record<string, number> = {};
@@ -730,8 +792,6 @@ export async function enableWorkStealing(): Promise<void> {
   // 3. The "skip locked" mechanism allows concurrent acquisition
 
   // Release any jobs locked by rate-limited providers
-  const rateLimitedProviders = ["anthropic", "openai", "gemini"]; // These can be dynamically determined
-  
   logger.info("Work stealing enabled - releasing jobs from rate-limited providers");
 }
 
@@ -740,7 +800,7 @@ export async function enableWorkStealing(): Promise<void> {
  */
 export function getLeastLoadedProvider(): string | null {
   const workerList = Array.from(workers.values()).filter(w => w.active);
-  
+
   if (workerList.length === 0) return null;
 
   // Find provider with least errors relative to processed
@@ -759,7 +819,9 @@ export function getLeastLoadedProvider(): string | null {
 export function getNextProviderInRotation(currentProvider: string | null): string {
   if (!currentProvider) return MODEL_ROTATION_ORDER[0];
 
-  const currentIndex = MODEL_ROTATION_ORDER.indexOf(currentProvider as typeof MODEL_ROTATION_ORDER[number]);
+  const currentIndex = MODEL_ROTATION_ORDER.indexOf(
+    currentProvider as (typeof MODEL_ROTATION_ORDER)[number]
+  );
   const nextIndex = (currentIndex + 1) % MODEL_ROTATION_ORDER.length;
   return MODEL_ROTATION_ORDER[nextIndex];
 }

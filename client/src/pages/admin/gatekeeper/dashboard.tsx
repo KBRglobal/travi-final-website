@@ -288,8 +288,8 @@ export default function GatekeeperDashboard() {
       {/* KPIs Row */}
       {kpisLoading ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {[...Array(6)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
+          {["k1", "k2", "k3", "k4", "k5", "k6"].map(id => (
+            <Card key={id} className="animate-pulse">
               <CardContent className="pt-6 h-24 bg-muted" />
             </Card>
           ))}
@@ -584,7 +584,7 @@ export default function GatekeeperDashboard() {
                   <div className="space-y-2">
                     {biasAlerts.map((alert, i) => (
                       <div
-                        key={i}
+                        key={`${alert.type}-${alert.severity}-${i}`}
                         className={`p-3 rounded-lg ${
                           alert.severity === "critical"
                             ? "bg-red-100 text-red-700"

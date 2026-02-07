@@ -569,9 +569,12 @@ export class GuideRewriteService {
 
     // Plaintext format - sections appear as standalone lines
     const headingPattern = mainSections
-      .map(h => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .map(h => h.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`))
       .join("|");
-    const plaintextHeadingRegex = new RegExp(`^\\s*(${headingPattern})\\s*[:.]?\\s*$`, "gmi");
+    const plaintextHeadingRegex = new RegExp(
+      String.raw`^\s*(` + headingPattern + String.raw`)\s*[:.]?\s*$`,
+      "gmi"
+    );
 
     const lines = content.split("\n");
     let currentHeading = "Overview";
@@ -1503,7 +1506,6 @@ Return ONLY valid JSON object with these keys:
     faqs: GuideFaq[],
     images: GuideImage[]
   ): GuideSchemaMarkup {
-    const year = new Date().getFullYear();
     const baseUrl = "https://travi.world";
 
     return {

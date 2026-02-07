@@ -641,7 +641,7 @@ function extractSchemaTypes(schema: any): string[] {
 
 function extractKeywords(text: string): string[] {
   // Remove common stop words and extract meaningful keywords
-  const stopWords = [
+  const stopWords = new Set([
     "the",
     "a",
     "an",
@@ -655,11 +655,11 @@ function extractKeywords(text: string): string[] {
     "or",
     "is",
     "are",
-  ];
+  ]);
   return text
     .toLowerCase()
     .split(/\s+/)
-    .filter(w => w.length > 3 && !stopWords.includes(w))
+    .filter(w => w.length > 3 && !stopWords.has(w))
     .slice(0, 5);
 }
 

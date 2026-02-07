@@ -1,17 +1,56 @@
-import DOMPurify from 'isomorphic-dompurify';
+import DOMPurify from "isomorphic-dompurify";
 
 export function sanitizeHtml(html: string): string {
-  if (!html) return '';
+  if (!html) return "";
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
-      'p', 'br', 'strong', 'em', 'u', 's', 'a', 'ul', 'ol', 'li',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code',
-      'img', 'figure', 'figcaption', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
-      'span', 'div', 'hr', 'sub', 'sup'
+      "p",
+      "br",
+      "strong",
+      "em",
+      "u",
+      "s",
+      "a",
+      "ul",
+      "ol",
+      "li",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "blockquote",
+      "pre",
+      "code",
+      "img",
+      "figure",
+      "figcaption",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+      "span",
+      "div",
+      "hr",
+      "sub",
+      "sup",
     ],
     ALLOWED_ATTR: [
-      'href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'id',
-      'width', 'height', 'style', 'data-*'
+      "href",
+      "target",
+      "rel",
+      "src",
+      "alt",
+      "title",
+      "class",
+      "id",
+      "width",
+      "height",
+      "style",
+      "data-*",
     ],
     ALLOW_DATA_ATTR: true,
   });
@@ -33,24 +72,24 @@ export function validateUrl(url: string): boolean {
 
 export function escapeHtml(text: string): string {
   const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
   };
-  return text.replace(/[&<>"']/g, (m) => map[m] || m);
+  return text.replace(/[&<>"']/g, m => map[m] || m);
 }
 
 /**
  * Sanitize plain text by escaping HTML entities and removing control characters
  */
 export function sanitizeText(text: string): string {
-  if (!text) return '';
+  if (!text) return "";
   // Escape HTML entities
   let result = escapeHtml(text);
   // Remove control characters except newlines and tabs
-  result = result.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+  result = result.replace(new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, "g"), "");
   return result.trim();
 }
 
@@ -62,7 +101,7 @@ export function sanitizeUrl(url: string): string | null {
   const trimmed = url.trim();
 
   // Block dangerous protocols
-  const dangerousProtocols = ['javascript:', 'data:', 'vbscript:', 'file:'];
+  const dangerousProtocols = ["javascript:", "data:", "vbscript:", "file:"];
   const lowerUrl = trimmed.toLowerCase();
   for (const protocol of dangerousProtocols) {
     if (lowerUrl.startsWith(protocol)) {
@@ -73,13 +112,13 @@ export function sanitizeUrl(url: string): string | null {
   try {
     const parsed = new URL(trimmed);
     // Only allow http, https, mailto, tel
-    if (!['http:', 'https:', 'mailto:', 'tel:'].includes(parsed.protocol)) {
+    if (!["http:", "https:", "mailto:", "tel:"].includes(parsed.protocol)) {
       return null;
     }
     return trimmed;
   } catch {
     // Relative URLs are OK
-    if (trimmed.startsWith('/') || trimmed.startsWith('#') || trimmed.startsWith('?')) {
+    if (trimmed.startsWith("/") || trimmed.startsWith("#") || trimmed.startsWith("?")) {
       return trimmed;
     }
     return null;
@@ -130,23 +169,23 @@ export function detectXss(input: string): boolean {
  * Sanitize filename for safe file system operations
  */
 export function sanitizeFilename(filename: string): string {
-  if (!filename) return '';
+  if (!filename) return "";
 
   // Remove path traversal attempts
-  let safe = filename.replace(/\.\./g, '');
+  let safe = filename.replace(/\.\./g, "");
 
   // Remove path separators
-  safe = safe.replace(/[/\\]/g, '');
+  safe = safe.replace(/[/\\]/g, "");
 
   // Remove dangerous and special characters (keep only alphanumeric, dash, underscore, dot)
-  safe = safe.replace(/[^a-zA-Z0-9._-]/g, '');
+  safe = safe.replace(/[^a-zA-Z0-9._-]/g, "");
 
   // Remove leading/trailing dots and spaces
-  safe = safe.replace(/^[\s.]+|[\s.]+$/g, '');
+  safe = safe.replace(/^[\s.]+|[\s.]+$/g, "");
 
   // Limit length
   if (safe.length > 255) {
-    const ext = safe.lastIndexOf('.');
+    const ext = safe.lastIndexOf(".");
     if (ext > 0) {
       const extension = safe.slice(ext);
       safe = safe.slice(0, 255 - extension.length) + extension;
@@ -155,14 +194,14 @@ export function sanitizeFilename(filename: string): string {
     }
   }
 
-  return safe || 'unnamed';
+  return safe || "unnamed";
 }
 
 /**
  * Remove control characters from text, preserving newlines and tabs
  */
 export function removeControlCharacters(text: string): string {
-  if (!text) return '';
+  if (!text) return "";
   // Remove ASCII control characters except \t (0x09), \n (0x0A), \r (0x0D)
-  return text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+  return text.replace(new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, "g"), "");
 }

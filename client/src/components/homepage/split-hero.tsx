@@ -265,7 +265,7 @@ export function SplitHero({
                 srLabel: t("home.srLabel.languages"),
               },
             ].map((stat, i) => (
-              <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
+              <div key={stat.srLabel} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                 <div className="text-center lg:text-left">
                   <dt className="sr-only">{stat.srLabel}</dt>
                   <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white font-chillax">
@@ -317,7 +317,7 @@ export function SplitHero({
           >
             {HERO_DESTINATIONS.map((d, i) => (
               <button
-                key={i}
+                key={d.slug}
                 onClick={() => goTo(i)}
                 role="tab"
                 aria-selected={currentIndex === i}

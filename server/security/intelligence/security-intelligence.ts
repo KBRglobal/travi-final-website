@@ -9,8 +9,6 @@
  * - Automated alerting
  */
 
-import { SecurityEventType } from "../../governance/types";
-
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -91,7 +89,7 @@ export interface CorrelationRule {
 }
 
 export interface EventPattern {
-  eventType: SecurityEventType;
+  eventType: string;
   count?: number;
   operator?: "gte" | "lte" | "eq";
   sameUser?: boolean;
@@ -188,7 +186,7 @@ const CORRELATION_RULES: CorrelationRule[] = [
 
 interface BufferedEvent {
   id: string;
-  type: SecurityEventType;
+  type: string;
   userId?: string;
   resourceType?: string;
   resourceId?: string;
@@ -210,7 +208,7 @@ class EventBuffer {
 
   getEvents(filter: {
     userId?: string;
-    type?: SecurityEventType;
+    type?: string;
     ipAddress?: string;
     since?: Date;
   }): BufferedEvent[] {
@@ -709,7 +707,7 @@ export const correlationEngine = new CorrelationEngine();
  */
 export function processSecurityEvent(event: {
   id: string;
-  type: SecurityEventType;
+  type: string;
   userId?: string;
   resourceType?: string;
   resourceId?: string;

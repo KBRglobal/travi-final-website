@@ -91,8 +91,8 @@ export default function DestinationSectionsTab({
   if (isLoading) {
     return (
       <div className="space-y-4">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Card key={i}>
+        {["sec-1", "sec-2", "sec-3"].map(id => (
+          <Card key={id}>
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <Skeleton className="w-10 h-10 rounded" />

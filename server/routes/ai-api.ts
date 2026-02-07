@@ -46,12 +46,12 @@ function cleanJsonFromMarkdown(content: string): string {
   }
   cleaned = cleaned.trim() || "{}";
   cleaned = cleaned.replace(/"([^"\\]|\\.)*"/g, match => {
-    return match.replace(/[\x00-\x1F\x7F]/g, char => {
+    return match.replace(new RegExp(String.raw`[\x00-\x1F\x7F]`, "g"), char => {
       const code = char.charCodeAt(0);
-      if (code === 0x09) return "\\t";
-      if (code === 0x0a) return "\\n";
-      if (code === 0x0d) return "\\r";
-      return `\\u${code.toString(16).padStart(4, "0")}`;
+      if (code === 0x09) return String.raw`\t`;
+      if (code === 0x0a) return String.raw`\n`;
+      if (code === 0x0d) return String.raw`\r`;
+      return String.raw`\u` + code.toString(16).padStart(4, "0");
     });
   });
   return cleaned;

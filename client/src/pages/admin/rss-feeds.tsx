@@ -200,7 +200,7 @@ export default function RssFeedsPage() {
       const response = await apiRequest("POST", "/api/octypo/rss/fetch-all");
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ["/api/rss-feeds"] });
       queryClient.invalidateQueries({ queryKey: ["/api/octypo/rss/items/recent"] });
       toast({
@@ -241,7 +241,9 @@ export default function RssFeedsPage() {
             onClick={() => fetchAllMutation.mutate()}
             disabled={fetchAllMutation.isPending || feeds.filter(f => f.isActive).length === 0}
           >
-            <RefreshCw className={`h-4 w-4 mr-2 ${fetchAllMutation.isPending ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${fetchAllMutation.isPending ? "animate-spin" : ""}`}
+            />
             {fetchAllMutation.isPending
               ? "Fetching all feeds..."
               : `Fetch All (${feeds.filter(f => f.isActive).length})`}
@@ -253,81 +255,81 @@ export default function RssFeedsPage() {
                 Add Feed
               </Button>
             </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add RSS Feed</DialogTitle>
-              <DialogDescription>
-                Add a new RSS feed to automatically generate content from.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Feed Name</Label>
-                <Input
-                  id="name"
-                  placeholder="e.g., TechCrunch Travel"
-                  value={newFeed.name}
-                  onChange={e => setNewFeed({ ...newFeed, name: e.target.value })}
-                />
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add RSS Feed</DialogTitle>
+                <DialogDescription>
+                  Add a new RSS feed to automatically generate content from.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Feed Name</Label>
+                  <Input
+                    id="name"
+                    placeholder="e.g., TechCrunch Travel"
+                    value={newFeed.name}
+                    onChange={e => setNewFeed({ ...newFeed, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="url">Feed URL</Label>
+                  <Input
+                    id="url"
+                    placeholder="https://example.com/feed.xml"
+                    value={newFeed.url}
+                    onChange={e => setNewFeed({ ...newFeed, url: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <Select
+                    value={newFeed.category}
+                    onValueChange={v => setNewFeed({ ...newFeed, category: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="news">News</SelectItem>
+                      <SelectItem value="travel">Travel</SelectItem>
+                      <SelectItem value="events">Events</SelectItem>
+                      <SelectItem value="food">Food & Dining</SelectItem>
+                      <SelectItem value="culture">Culture</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="destination">Target Destination</Label>
+                  <Select
+                    value={newFeed.destinationId}
+                    onValueChange={v => setNewFeed({ ...newFeed, destinationId: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select destination..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {destinations.map(dest => (
+                        <SelectItem key={dest.id} value={dest.id}>
+                          {dest.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="url">Feed URL</Label>
-                <Input
-                  id="url"
-                  placeholder="https://example.com/feed.xml"
-                  value={newFeed.url}
-                  onChange={e => setNewFeed({ ...newFeed, url: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Select
-                  value={newFeed.category}
-                  onValueChange={v => setNewFeed({ ...newFeed, category: v })}
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => createMutation.mutate(newFeed)}
+                  disabled={!newFeed.name || !newFeed.url || createMutation.isPending}
                 >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="news">News</SelectItem>
-                    <SelectItem value="travel">Travel</SelectItem>
-                    <SelectItem value="events">Events</SelectItem>
-                    <SelectItem value="food">Food & Dining</SelectItem>
-                    <SelectItem value="culture">Culture</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="destination">Target Destination</Label>
-                <Select
-                  value={newFeed.destinationId}
-                  onValueChange={v => setNewFeed({ ...newFeed, destinationId: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select destination..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {destinations.map(dest => (
-                      <SelectItem key={dest.id} value={dest.id}>
-                        {dest.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button
-                onClick={() => createMutation.mutate(newFeed)}
-                disabled={!newFeed.name || !newFeed.url || createMutation.isPending}
-              >
-                {createMutation.isPending ? "Creating..." : "Create Feed"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
+                  {createMutation.isPending ? "Creating..." : "Create Feed"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
           </Dialog>
         </div>
       </div>
@@ -503,7 +505,10 @@ export default function RssFeedsPage() {
               </div>
             ) : (
               previewItems.slice(0, 10).map((item, index) => (
-                <div key={index} className="p-3 border rounded-lg">
+                <div
+                  key={item.title || item.link || `item-${index}`}
+                  className="p-3 border rounded-lg"
+                >
                   <div className="font-medium">{item.title}</div>
                   {item.description && (
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-2">

@@ -276,7 +276,7 @@ export class EntityExtractor {
    * Count mentions of entity in text
    */
   private countMentions(text: string, entityName: string): number {
-    const regex = new RegExp(entityName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    const regex = new RegExp(entityName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`), "gi");
     const matches = text.match(regex);
     return matches ? matches.length : 0;
   }

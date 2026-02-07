@@ -408,7 +408,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
   // Background scheduler for auto-publishing scheduled content
   // Runs every minute to check for content that should be published
-  const runScheduledPublishing = async () => {
+  const _runScheduledPublishing = async () => {
     try {
       const contentToPublish = await storage.getScheduledContentToPublish();
       for (const content of contentToPublish) {

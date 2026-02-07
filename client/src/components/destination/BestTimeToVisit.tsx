@@ -54,7 +54,7 @@ export function BestTimeToVisit({ seasons, destinationName }: Readonly<BestTimeT
           {seasons.map((season, index) => {
             const SeasonIcon = SEASON_ICONS[season.name] || Cloud;
             return (
-              <motion.div key={index} variants={staggerItem}>
+              <motion.div key={season.name} variants={staggerItem}>
                 <Card className="h-full bg-card/80 backdrop-blur-md border border-border/30 shadow-sm hover-elevate">
                   <CardContent className="p-5">
                     <div className="flex items-center gap-3 mb-4">

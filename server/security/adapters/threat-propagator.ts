@@ -284,8 +284,6 @@ class ThreatPropagator {
     };
 
     // Get required actions for this threat level
-    const requiredActions = THREAT_ACTIONS[level];
-
     // Notify all adapters
     for (const [name, adapter] of adapters) {
       try {
@@ -341,7 +339,7 @@ class ThreatPropagator {
    * Propagate anomaly to all systems
    */
   async propagateAnomaly(anomaly: SecurityAnomaly): Promise<void> {
-    for (const [name, adapter] of adapters) {
+    for (const [, adapter] of adapters) {
       try {
         await adapter.onAnomalyDetected(anomaly);
       } catch (error) {
@@ -361,7 +359,7 @@ class ThreatPropagator {
    * Propagate high-risk user detection
    */
   async propagateHighRiskUser(user: ThreatScore): Promise<void> {
-    for (const [name, adapter] of adapters) {
+    for (const [, adapter] of adapters) {
       try {
         await adapter.onHighRiskUser(user);
       } catch (error) {

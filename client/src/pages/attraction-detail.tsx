@@ -383,7 +383,7 @@ function LivePricingWidget({
                       <ul className="space-y-2.5 mb-6">
                         {features.slice(0, 4).map((feature, featureIndex) => (
                           <li
-                            key={featureIndex}
+                            key={`feature-${feature.slice(0, 30)}-${featureIndex}`}
                             className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300"
                           >
                             <CheckCircle2 className="w-4 h-4 text-[#6443F4] flex-shrink-0 mt-0.5" />
@@ -562,7 +562,7 @@ function QuickFactsBox({ attraction }: { attraction: TiqetsAttraction }) {
                 const IconComponent = fact.icon;
                 return (
                   <div
-                    key={index}
+                    key={fact.label}
                     className="flex items-start gap-3"
                     data-testid={`quick-fact-${index}`}
                   >
@@ -659,7 +659,7 @@ function TicketOptionsTable({
             <tbody>
               {ticketOptions.map((ticket, index) => (
                 <tr
-                  key={index}
+                  key={ticket.type}
                   className={`border-b border-slate-200 dark:border-slate-700 transition-colors ${
                     ticket.popular
                       ? "bg-[#6443F4]/5 dark:bg-[#6443F4]/10"
@@ -778,7 +778,7 @@ function WhatToExpectSection({ attraction }: { attraction: TiqetsAttraction }) {
               "/cards/dubai.webp";
             return (
               <Card
-                key={index}
+                key={item.title}
                 className="overflow-hidden border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
                 data-testid={`highlight-card-${index}`}
               >
@@ -872,7 +872,7 @@ function VisitorTipsSection({ attraction }: { attraction: TiqetsAttraction }) {
         <div className="grid md:grid-cols-3 gap-6">
           {tips.map((tip, index) => (
             <Card
-              key={index}
+              key={tip.title}
               className="border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30"
               data-testid={`tip-card-${index}`}
             >
@@ -985,7 +985,7 @@ function HowToGetThereSection({ attraction }: { attraction: TiqetsAttraction }) 
             const IconComponent = getTransportIcon(option.mode);
             return (
               <Card
-                key={index}
+                key={option.mode}
                 className="border-slate-200 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30"
                 data-testid={`transport-option-${index}`}
               >
@@ -1051,8 +1051,8 @@ function FAQSection({ faqs, attractionName }: { faqs: FAQItem[] | null; attracti
         <Accordion type="single" collapsible className="w-full space-y-4">
           {displayFaqs.map((item, index) => (
             <AccordionItem
-              key={index}
-              value={`faq-${index}`}
+              key={item.question}
+              value={item.question}
               className="border border-slate-200 dark:border-slate-700 rounded-xl px-5 data-[state=open]:bg-[#6443F4]/5 dark:data-[state=open]:bg-[#6443F4]/10 data-[state=open]:border-[#6443F4]/30 transition-all duration-200"
             >
               <AccordionTrigger

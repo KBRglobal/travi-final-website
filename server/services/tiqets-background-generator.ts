@@ -329,9 +329,6 @@ async function runBackgroundTask(): Promise<void> {
     const failed = counts.failed || 0;
     const inProgress = (counts.in_progress || 0) + (counts.generating || 0);
 
-    const total = pending + completed + ready + failed + inProgress;
-    const percentComplete = total > 0 ? ((completed / total) * 100).toFixed(1) : "0";
-
     // Approve any ready content
     if (ready > 0) {
       const approved = await approveReadyContent();

@@ -511,9 +511,6 @@ export const IMAGE_CACHE_CONFIG = {
  * Get appropriate cache headers based on file path/type
  */
 export function getCacheHeaders(filePath: string): Record<string, string> {
-  // Check for WebP format - add Accept to Vary
-  const isWebP = filePath.endsWith(".webp");
-
   // AI generated images
   if (filePath.includes("ai-generated") || filePath.includes("generated")) {
     return IMAGE_CACHE_CONFIG.aiGenerated;

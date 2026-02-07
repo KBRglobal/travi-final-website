@@ -876,10 +876,20 @@ export class SEOValidationAgent {
     }
 
     // Common stopwords to skip (destination-agnostic)
-    const stopWords = ["guide", "complete", "best", "ultimate", "top", "travel", "the", "a", "an"];
+    const stopWords = new Set([
+      "guide",
+      "complete",
+      "best",
+      "ultimate",
+      "top",
+      "travel",
+      "the",
+      "a",
+      "an",
+    ]);
     const words = title.split(/\s+/);
     for (const word of words) {
-      if (word.length > 4 && !stopWords.includes(word.toLowerCase())) {
+      if (word.length > 4 && !stopWords.has(word.toLowerCase())) {
         return word;
       }
     }

@@ -1511,7 +1511,7 @@ router.post("/jobs/create", async (req: Request, res: Response) => {
 router.get("/sources/rss", async (req: Request, res: Response) => {
   try {
     const { rssFeeds, destinations } = await import("@shared/schema");
-    const { eq, isNull } = await import("drizzle-orm");
+    const { eq } = await import("drizzle-orm");
 
     const destinationId = req.query.destination as string | undefined;
 

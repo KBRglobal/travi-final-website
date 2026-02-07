@@ -218,7 +218,7 @@ export function calculateLocalePurity(
   // Remove dynamic exemptions (attraction name, venue name, etc.)
   for (const exemption of exemptions) {
     if (exemption && exemption.trim()) {
-      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }
@@ -762,7 +762,7 @@ export function calculateLocalePurityExtended(
   // Remove dynamic exemptions
   for (const exemption of exemptions) {
     if (exemption && exemption.trim()) {
-      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }

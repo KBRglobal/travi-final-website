@@ -373,7 +373,7 @@ export async function checkAiUsageLimit(req: Request, res: Response, next: NextF
         // Reset or new entry
         entry = { count: 0, resetTime: now + dayMs };
       }
-    } catch (err) {
+    } catch {
       entry = entry || { count: 0, resetTime: now + dayMs };
     }
   }
@@ -439,7 +439,7 @@ export async function initDevAutoAuth(getAdminUser: () => Promise<any>) {
   if (isDevEnvironment && process.env.DEV_AUTO_AUTH === "true") {
     try {
       devAutoAuthUser = await getAdminUser();
-    } catch (e) {
+    } catch {
       /* ignored */
     }
   }
@@ -857,7 +857,7 @@ export async function logAuditEvent(entry: Omit<AuditLogEntry, "timestamp">) {
       userAgent: entry.userAgent,
       afterState: entry.details as Record<string, unknown>,
     });
-  } catch (err) {
+  } catch {
     // Fallback to in-memory if DB fails
 
     auditLogFallback.push(logEntry);
@@ -894,7 +894,7 @@ export async function getAuditLogs(options?: {
       userAgent: log.userAgent || undefined,
       details: log.afterState || undefined,
     }));
-  } catch (err) {
+  } catch {
     // Return fallback logs if DB fails
     let logs = [...auditLogFallback];
     if (options?.action) logs = logs.filter(l => l.action === options.action);
@@ -1025,7 +1025,7 @@ function sanitizeString(value: string): string {
   let sanitized = value.replace(/\0/g, "");
 
   // Remove other control characters (except newline and tab)
-  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  sanitized = sanitized.replace(new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, "g"), "");
 
   return sanitized.trim();
 }
@@ -1055,7 +1055,9 @@ function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
         sanitized[key] = sanitizeString(value);
       } else {
         // For longer content (like body/content), just remove dangerous control chars
-        sanitized[key] = value.replace(/\0/g, "").replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+        sanitized[key] = value
+          .replace(/\0/g, "")
+          .replace(new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, "g"), "");
       }
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map(item => {
@@ -1229,7 +1231,7 @@ const BLOCKED_HOSTNAMES = [
 ];
 
 // Only allow these protocols
-const ALLOWED_PROTOCOLS = ["http:", "https:"];
+const ALLOWED_PROTOCOLS = new Set(["http:", "https:"]);
 
 /**
  * Validate a URL to prevent SSRF attacks
@@ -1244,7 +1246,7 @@ export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
     const url = new URL(urlString.trim());
 
     // Check protocol
-    if (!ALLOWED_PROTOCOLS.includes(url.protocol)) {
+    if (!ALLOWED_PROTOCOLS.has(url.protocol)) {
       return {
         valid: false,
         error: `Protocol not allowed: ${url.protocol}. Only HTTP and HTTPS are permitted.`,
@@ -1289,7 +1291,7 @@ export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
       valid: true,
       sanitizedUrl: url.toString(),
     };
-  } catch (err) {
+  } catch {
     return { valid: false, error: "Invalid URL format" };
   }
 }

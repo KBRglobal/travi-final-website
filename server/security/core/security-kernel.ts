@@ -175,7 +175,6 @@ export function setSecurityMode(
     };
   }
 
-  const previousMode = KERNEL_STATE.mode;
   KERNEL_STATE.mode = mode;
   KERNEL_STATE.lastModeChange = new Date();
 
@@ -192,7 +191,6 @@ export function setSecurityMode(
 export function setThreatLevel(level: ThreatLevel, reason: string): void {
   ensureInitialized();
 
-  const previousLevel = KERNEL_STATE.threatLevel;
   KERNEL_STATE.threatLevel = level;
 
   // Auto-escalate to lockdown on red/black

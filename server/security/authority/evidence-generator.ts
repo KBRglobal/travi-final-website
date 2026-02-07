@@ -430,8 +430,6 @@ export const EvidenceGenerator = {
     const findings: ComplianceFinding[] = [];
 
     // Check for data access patterns
-    const dataReads = evidence.filter(e => e.action === "data_read").length;
-    const dataWrites = evidence.filter(e => e.action === "data_write").length;
     const dataDeletes = evidence.filter(e => e.action === "data_delete").length;
     const dataExports = evidence.filter(e => e.action === "data_export").length;
 

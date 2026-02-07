@@ -85,15 +85,6 @@ export function log(
   }
 
   // Also log to console with formatting
-  const levelColors: Record<LogLevel, string> = {
-    error: "\x1b[31m", // Red
-    warning: "\x1b[33m", // Yellow
-    info: "\x1b[36m", // Cyan
-    debug: "\x1b[90m", // Gray
-  };
-  const reset = "\x1b[0m";
-  const color = levelColors[level];
-
   return entry;
 }
 

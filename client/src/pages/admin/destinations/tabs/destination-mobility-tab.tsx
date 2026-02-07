@@ -447,7 +447,10 @@ export default function DestinationMobilityTab({
                 </Button>
               </div>
               {formData.publicTransport?.keyModes.map((mode, index) => (
-                <div key={index} className="grid grid-cols-12 gap-2 items-start">
+                <div
+                  key={`mode-${mode.type}-${mode.name}-${index}`}
+                  className="grid grid-cols-12 gap-2 items-start"
+                >
                   <Input
                     className="col-span-3"
                     placeholder="Type (metro, bus...)"
@@ -757,7 +760,7 @@ export default function DestinationMobilityTab({
               </Button>
             </div>
             {formData.airportTransfers?.airports.map((airport, index) => (
-              <Card key={index} className="p-4">
+              <Card key={`airport-${airport.code}-${airport.name}-${index}`} className="p-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Code</Label>
@@ -1163,7 +1166,10 @@ export default function DestinationMobilityTab({
               </Button>
             </div>
             {formData.sources?.map((source, index) => (
-              <div key={index} className="grid grid-cols-12 gap-2 items-start">
+              <div
+                key={`source-${source.name}-${index}`}
+                className="grid grid-cols-12 gap-2 items-start"
+              >
                 <Input
                   className="col-span-3"
                   placeholder="Source name"

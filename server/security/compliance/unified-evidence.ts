@@ -652,7 +652,7 @@ class UnifiedEvidenceCollector {
     }
     lines.push("");
 
-    for (const [sectionName, section] of Object.entries(bundle.evidence)) {
+    for (const [, section] of Object.entries(bundle.evidence)) {
       lines.push(
         "-".repeat(60),
         section.name.toUpperCase(),

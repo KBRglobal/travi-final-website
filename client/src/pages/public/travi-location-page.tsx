@@ -228,7 +228,11 @@ function QuickInfoSidebar({
           if (!item.value) return null;
           const IconComponent = item.icon;
           return (
-            <div key={index} className="flex items-start gap-3" data-testid={`info-item-${index}`}>
+            <div
+              key={item.label}
+              className="flex items-start gap-3"
+              data-testid={`info-item-${index}`}
+            >
               <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
                 <IconComponent className="w-4 h-4 text-muted-foreground" />
               </div>
@@ -427,7 +431,7 @@ function HighlightsSection({ highlights }: { highlights: string[] }) {
       <div className="grid gap-3 md:gap-4">
         {highlights.map((highlight, index) => (
           <div
-            key={index}
+            key={highlight}
             className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-[#6443F4]/5 to-[#6443F4]/10 border border-[#6443F4]/10"
             data-testid={`highlight-${index}`}
           >
@@ -448,7 +452,7 @@ function WhatToBringSection({ items }: { items: { item: string; reason: string }
       <div className="grid gap-4 md:grid-cols-2">
         {items.map((item, index) => (
           <div
-            key={index}
+            key={item.item}
             className="p-4 rounded-xl bg-muted/50 border border-border"
             data-testid={`bring-item-${index}`}
           >
@@ -498,8 +502,8 @@ function FAQSection({
       <Accordion type="single" collapsible className="w-full">
         {faqItems.map((item, index) => (
           <AccordionItem
-            key={index}
-            value={`faq-${index}`}
+            key={item.question}
+            value={item.question}
             className="border border-border rounded-xl mb-3 px-4 bg-card"
             data-testid={`faq-item-${index}`}
           >

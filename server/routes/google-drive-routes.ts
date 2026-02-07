@@ -32,7 +32,7 @@ function sanitizePathSegment(name: string): string {
     .replace(/\s+/g, "-") // Convert spaces to hyphens
     .replace(/[^a-z0-9\-_.]/g, "") // Remove any non-safe characters
     .replace(/\.{2,}/g, ".") // Prevent multiple dots
-    .replace(/^\.+|\.+$/g, ""); // Remove leading/trailing dots
+    .replace(/(?:^\.+)|(?:\.+$)/g, ""); // Remove leading/trailing dots
 }
 
 export function registerGoogleDriveRoutes(app: Express): void {
@@ -77,7 +77,7 @@ export function registerGoogleDriveRoutes(app: Express): void {
         }
 
         const destinationFolders = await listFilesInFolder(categoriesFolder.id);
-        const imageMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+        const imageMimeTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
         const baseDestPath = path.join(process.cwd(), "client", "public", "images", "destinations");
 
         if (!fs.existsSync(baseDestPath)) {
@@ -133,7 +133,7 @@ export function registerGoogleDriveRoutes(app: Express): void {
                 continue;
               }
 
-              if (!imageMimeTypes.includes(file.mimeType || "")) {
+              if (!imageMimeTypes.has(file.mimeType || "")) {
                 report.skipped.push({
                   city: cityName,
                   file: file.name,

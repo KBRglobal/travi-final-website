@@ -525,7 +525,7 @@ export default function TravelGuidesPage() {
                       },
                       { num: "4.9", label: "RATING", srLabel: "4.9 star rating" },
                     ].map((stat, i) => (
-                      <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
+                      <div key={stat.srLabel} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                         <div className="text-center lg:text-left">
                           <dt className="sr-only">{stat.srLabel}</dt>
                           <dd className="text-2xl sm:text-3xl md:text-4xl font-medium text-slate-900 dark:text-white font-chillax">
@@ -592,7 +592,7 @@ export default function TravelGuidesPage() {
                   >
                     {HERO_GUIDES.map((d, i) => (
                       <button
-                        key={i}
+                        key={d.name}
                         onClick={() => goTo(i)}
                         role="tab"
                         aria-selected={currentIndex === i}
@@ -692,7 +692,7 @@ export default function TravelGuidesPage() {
                     >
                       {HERO_GUIDES.map((guide, i) => (
                         <button
-                          key={i}
+                          key={guide.name}
                           onClick={() => goTo(i)}
                           role="tab"
                           aria-selected={currentIndex === i}
@@ -732,8 +732,8 @@ export default function TravelGuidesPage() {
                 <Skeleton className="h-96 w-full rounded-3xl" />
                 {/* Grid skeleton */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="rounded-2xl overflow-hidden bg-white shadow-lg">
+                  {Array.from({ length: 6 }, (_, i) => `gs-${i}`).map(id => (
+                    <div key={id} className="rounded-2xl overflow-hidden bg-white shadow-lg">
                       <Skeleton className="h-56 w-full" />
                       <div className="p-5 space-y-3">
                         <Skeleton className="h-5 w-3/4" />

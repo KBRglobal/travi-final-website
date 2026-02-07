@@ -401,7 +401,7 @@ export default function RasAlKhaimahPage() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {WYNN_STATUS.features.map((feature, idx) => (
                   <motion.div
-                    key={idx}
+                    key={feature}
                     data-testid={`wynn-feature-${idx}`}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -482,9 +482,9 @@ export default function RasAlKhaimahPage() {
                         {zone.description}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {zone.highlights.map((highlight, i) => (
+                        {zone.highlights.map(highlight => (
                           <span
-                            key={i}
+                            key={highlight}
                             className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium"
                           >
                             {highlight}
@@ -519,7 +519,7 @@ export default function RasAlKhaimahPage() {
             <div className="grid md:grid-cols-3 gap-8">
               {FEATURED_ARTICLES.map((article, idx) => (
                 <motion.article
-                  key={idx}
+                  key={article.href}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -582,7 +582,7 @@ export default function RasAlKhaimahPage() {
                 },
               ].map((stat, idx) => (
                 <motion.div
-                  key={idx}
+                  key={stat.label}
                   data-testid={`stat-card-${idx}`}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -619,7 +619,7 @@ export default function RasAlKhaimahPage() {
             <Accordion type="single" collapsible className="space-y-4">
               {FAQ_DATA.map((faq, idx) => (
                 <motion.div
-                  key={idx}
+                  key={faq.question}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}

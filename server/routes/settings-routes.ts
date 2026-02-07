@@ -27,7 +27,7 @@ export function registerSettingsRoutes(app: Express): void {
       try {
         const settings = await storage.getSettings();
         res.json(settings);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch settings" });
       }
     }) as any
@@ -49,7 +49,7 @@ export function registerSettingsRoutes(app: Express): void {
           grouped[setting.category][setting.key] = setting.value;
         }
         res.json(grouped);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch settings" });
       }
     }) as any
@@ -68,8 +68,8 @@ export function registerSettingsRoutes(app: Express): void {
         }
 
         // Validate allowed categories
-        const allowedCategories = ["site", "api", "content", "notifications", "security"];
-        const invalidCategories = Object.keys(settings).filter(c => !allowedCategories.includes(c));
+        const allowedCategories = new Set(["site", "api", "content", "notifications", "security"]);
+        const invalidCategories = Object.keys(settings).filter(c => !allowedCategories.has(c));
         if (invalidCategories.length > 0) {
           return res
             .status(400)
@@ -121,7 +121,7 @@ export function registerSettingsRoutes(app: Express): void {
           `Updated ${updated.length} settings`
         );
         res.json({ success: true, updated: updated.length });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update settings" });
       }
     }) as any
@@ -160,7 +160,7 @@ export function registerSettingsRoutes(app: Express): void {
         }
 
         res.json({ total: links.length, broken: brokenLinks.length, brokenLinks });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to check broken links" });
       }
     }) as any
@@ -207,7 +207,7 @@ export function registerSettingsRoutes(app: Express): void {
           items: warnings,
           canProceed: true,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to check bulk delete" });
       }
     }) as any

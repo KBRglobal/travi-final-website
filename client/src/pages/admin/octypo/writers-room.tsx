@@ -265,8 +265,8 @@ export default function OctypoWritersRoomPage() {
                   </div>
 
                   <div className="flex flex-wrap gap-1 mb-4">
-                    {writer.traits.map((trait, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
+                    {writer.traits.map(trait => (
+                      <Badge key={trait} variant="outline" className="text-xs">
                         {trait}
                       </Badge>
                     ))}

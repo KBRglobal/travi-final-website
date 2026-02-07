@@ -123,10 +123,8 @@ export async function calculateInternalLinkingScore(
       .from(internalLinks)
       .where(eq(internalLinks.sourceContentId, contentId));
 
-    const genericAnchors = ["click here", "read more", "here", "link", "this"];
-    const badAnchors = links.filter(l =>
-      genericAnchors.includes(l.anchorText?.toLowerCase() || "")
-    );
+    const genericAnchors = new Set(["click here", "read more", "here", "link", "this"]);
+    const badAnchors = links.filter(l => genericAnchors.has(l.anchorText?.toLowerCase() || ""));
     const anchorQuality =
       links.length > 0 ? ((links.length - badAnchors.length) / links.length) * 100 : 100;
 

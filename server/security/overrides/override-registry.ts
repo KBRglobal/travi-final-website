@@ -13,7 +13,7 @@
 
 import * as crypto from "node:crypto";
 import { Router } from "express";
-import { AdminRole, ROLE_HIERARCHY } from "../../governance/types";
+import { ROLE_HIERARCHY } from "../../governance/types";
 import { logAdminEvent } from "../../governance/security-logger";
 import { processSecurityEvent } from "../intelligence/security-intelligence";
 import { generateEvidence } from "../compliance/evidence-generator";
@@ -30,11 +30,11 @@ export interface Override {
   scope: OverrideScope;
   grantedTo: {
     userId: string;
-    role: AdminRole;
+    role: string;
   };
   grantedBy: {
     userId: string;
-    role: AdminRole;
+    role: string;
   };
   justification: string;
   ticketReference: string;
@@ -67,7 +67,7 @@ export interface OverrideRequest {
   type: OverrideType;
   scope: OverrideScope;
   granteeUserId: string;
-  granteeRole: AdminRole;
+  granteeRole: string;
   justification: string;
   ticketReference: string; // Required: JIRA, ServiceNow, etc.
   evidence?: string;
@@ -111,7 +111,7 @@ export interface OverrideValidation {
 // ============================================================================
 
 // Who can grant overrides
-const OVERRIDE_GRANTERS: Record<OverrideType, AdminRole[]> = {
+const OVERRIDE_GRANTERS: Record<OverrideType, string[]> = {
   security_gate: ["super_admin"],
   mode_restriction: ["super_admin", "system_admin"],
   rbac_permission: ["super_admin", "system_admin"],
@@ -157,7 +157,7 @@ class OverrideRegistry {
   async requestOverride(
     request: OverrideRequest,
     granterId: string,
-    granterRole: AdminRole
+    granterRole: string
   ): Promise<OverrideResponse> {
     // CRITICAL: Block self-approval (granter cannot grant to self)
     if (granterId === request.granteeUserId) {
@@ -275,8 +275,8 @@ class OverrideRegistry {
     }
 
     // Cannot grant to higher role
-    const granterLevel = ROLE_HIERARCHY[granterRole];
-    const granteeLevel = ROLE_HIERARCHY[request.granteeRole];
+    const granterLevel = ROLE_HIERARCHY[granterRole as keyof typeof ROLE_HIERARCHY];
+    const granteeLevel = ROLE_HIERARCHY[request.granteeRole as keyof typeof ROLE_HIERARCHY];
     if (granteeLevel > granterLevel) {
       return {
         success: false,
@@ -453,7 +453,7 @@ class OverrideRegistry {
   revokeOverride(
     overrideId: string,
     revokerId: string,
-    revokerRole: AdminRole,
+    revokerRole: string,
     reason: string
   ): { success: boolean; error?: string } {
     const override = this.overrides.get(overrideId);
@@ -467,8 +467,8 @@ class OverrideRegistry {
     }
 
     // Only granter or higher can revoke
-    const revokerLevel = ROLE_HIERARCHY[revokerRole];
-    const granterLevel = ROLE_HIERARCHY[override.grantedBy.role];
+    const revokerLevel = ROLE_HIERARCHY[revokerRole as keyof typeof ROLE_HIERARCHY];
+    const granterLevel = ROLE_HIERARCHY[override.grantedBy.role as keyof typeof ROLE_HIERARCHY];
 
     if (revokerLevel < granterLevel && revokerId !== override.grantedBy.userId) {
       return { success: false, error: "Insufficient permissions to revoke" };
@@ -564,7 +564,7 @@ class OverrideRegistry {
    */
   private cleanupExpired(): void {
     const now = new Date();
-    for (const [id, override] of this.overrides) {
+    for (const [, override] of this.overrides) {
       if (override.status === "active" && override.expiresAt < now) {
         override.status = "expired";
         this.triggerAlert(override, "expired");

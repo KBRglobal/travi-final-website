@@ -195,7 +195,10 @@ export const queryRewriter = {
       // Limit to first 2 tokens
       const synonyms = synonymExpander.getSynonyms(token, locale);
       if (synonyms.length > 0) {
-        const suggestion = query.replace(new RegExp(`\\b${token}\\b`, "gi"), synonyms[0]);
+        const suggestion = query.replace(
+          new RegExp(String.raw`\b` + token + String.raw`\b`, "gi"),
+          synonyms[0]
+        );
         if (suggestion !== query) {
           suggestions.add(suggestion);
         }

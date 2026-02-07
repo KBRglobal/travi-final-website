@@ -18,7 +18,7 @@ export class QaRunner {
     try {
       // 1. Always run baseline checks first
 
-      const baselineResults = await this.runBaselineChecks();
+      await this.runBaselineChecks();
 
       // 2. Get all results for this run
       const results = await db.query.qaCheckResults.findMany({
@@ -323,7 +323,7 @@ export class QaRunner {
   private static async checkServerResponseTime(): Promise<CheckResult> {
     const startTime = Date.now();
     try {
-      const response = await fetch(`${this.BASE_URL}/`, {
+      await fetch(`${this.BASE_URL}/`, {
         method: "GET",
         signal: AbortSignal.timeout(5000),
       });
@@ -479,9 +479,6 @@ export class QaRunner {
         });
       }
     }
-
-    const passed = results.filter(r => r.passed).length;
-    const failed = results.filter(r => !r.passed).length;
 
     return results;
   }

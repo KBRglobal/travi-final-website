@@ -10,7 +10,7 @@
  */
 
 import { policyEngine } from "../../governance/policy-engine";
-import { PolicyRule, Action, Resource } from "../../governance/types";
+import { PolicyRule } from "../../governance/types";
 
 // ============================================================================
 // LINT RESULT TYPES
@@ -210,23 +210,21 @@ function detectRedundant(policies: PolicyRule[]): LintIssue[] {
 function detectOverlyPermissive(policies: PolicyRule[]): LintIssue[] {
   const issues: LintIssue[] = [];
 
-  const sensitiveActions: Action[] = [
+  const sensitiveActions = new Set<string>([
     "delete",
     "manage_users",
     "manage_roles",
     "manage_policies",
     "configure",
-  ];
-  const sensitiveResources: Resource[] = ["users", "roles", "policies", "system"];
+  ]);
+  const sensitiveResources = new Set<string>(["users", "roles", "policies", "system"]);
 
   for (const policy of policies) {
     if (policy.effect !== "allow") continue;
 
     // Check for wildcard-like behavior
-    const hasSensitiveAction = policy.actions.some(a => sensitiveActions.includes(a as Action));
-    const hasSensitiveResource = policy.resources.some(r =>
-      sensitiveResources.includes(r as Resource)
-    );
+    const hasSensitiveAction = policy.actions.some(a => sensitiveActions.has(a as string));
+    const hasSensitiveResource = policy.resources.some(r => sensitiveResources.has(r as string));
     const hasNoConditions = policy.conditions.length === 0;
     const hasNoRoleRestriction = !policy.roles || policy.roles.length === 0;
 

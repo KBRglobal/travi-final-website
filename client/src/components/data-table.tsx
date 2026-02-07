@@ -76,8 +76,8 @@ export function DataTable<T>({
       const newIds = Array.from(new Set([...selectedIds, ...paginatedData.map(getItemId)]));
       onSelectionChange(newIds);
     } else {
-      const pageIds = paginatedData.map(getItemId);
-      onSelectionChange(selectedIds.filter(id => !pageIds.includes(id)));
+      const pageIds = new Set(paginatedData.map(getItemId));
+      onSelectionChange(selectedIds.filter(id => !pageIds.has(id)));
     }
   };
 

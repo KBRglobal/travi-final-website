@@ -805,8 +805,8 @@ export default function PublicNews() {
           {/* Featured + Grid */}
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <ArticleCardSkeleton key={i} />
+              {Array.from({ length: 6 }, (_, i) => `skel-${i}`).map(id => (
+                <ArticleCardSkeleton key={id} />
               ))}
             </div>
           ) : filteredArticles.length > 0 ? (

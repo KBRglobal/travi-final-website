@@ -72,7 +72,7 @@ export function calculateLocalePurity(
   // Remove dynamic exemptions (proper nouns, attraction names, etc.)
   for (const exemption of exemptions) {
     if (exemption && exemption.trim()) {
-      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }
@@ -133,7 +133,7 @@ export function calculateLocalePurityDetailed(
 
   for (const exemption of exemptions) {
     if (exemption && exemption.trim()) {
-      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
   }

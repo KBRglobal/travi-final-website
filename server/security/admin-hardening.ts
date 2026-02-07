@@ -319,7 +319,6 @@ export function magicLinkDisableMiddleware(req: Request, res: Response, next: Ne
 export function logAdminSecurityConfig(): void {
   const killSwitchEnabled = process.env.ADMIN_AUTH_DISABLED === "true";
   const allowedIps = parseAllowedIps();
-  const magicLinkDisabled = process.env.DISABLE_MAGIC_LINK !== "false";
 
   if (killSwitchEnabled) {
     // empty

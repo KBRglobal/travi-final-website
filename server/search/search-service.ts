@@ -406,7 +406,6 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
   }
 
   // === QUERY NORMALIZATION ===
-  const normalizedQuery = normalizeQuery(trimmedQuery);
   const processed = queryProcessor.process(trimmedQuery);
 
   // === STEP 1: EXACT MATCH ===
@@ -437,7 +436,6 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
 
   // Check if exact match found
   if (allResults.length > 0) {
-    const totalBeforePagination = allResults.length;
     allResults = applyRankingSignals(
       allResults,
       trimmedQuery,

@@ -10,7 +10,7 @@
  * - Approval timeout exploitation
  */
 
-import { AdminRole, ROLE_HIERARCHY } from "../../governance/types";
+import { ROLE_HIERARCHY } from "../../governance/types";
 import { logAdminEvent } from "../../governance/security-logger";
 
 // ============================================================================
@@ -20,7 +20,7 @@ import { logAdminEvent } from "../../governance/security-logger";
 export interface ApprovalRequest {
   id: string;
   requesterId: string;
-  requesterRole: AdminRole;
+  requesterRole: string;
   action: string;
   resource: string;
   resourceId?: string;
@@ -358,11 +358,11 @@ function checkApproverDiversity(requesterId: string): ApprovalViolation | null {
  * Check role separation
  */
 function checkRoleSeparation(
-  requesterRole: AdminRole,
-  approverRole: AdminRole
+  requesterRole: string,
+  approverRole: string
 ): ApprovalViolation | null {
-  const requesterLevel = ROLE_HIERARCHY[requesterRole];
-  const approverLevel = ROLE_HIERARCHY[approverRole];
+  const requesterLevel = ROLE_HIERARCHY[requesterRole as keyof typeof ROLE_HIERARCHY];
+  const approverLevel = ROLE_HIERARCHY[approverRole as keyof typeof ROLE_HIERARCHY];
 
   // Approver should be at or above requester level
   if (approverLevel < requesterLevel) {
@@ -407,8 +407,9 @@ function checkPrivilegeEscalation(request: ApprovalRequest): ApprovalViolation |
 
   // If trying to grant higher role than requester has
   if (request.metadata?.targetRole) {
-    const targetRoleLevel = ROLE_HIERARCHY[request.metadata.targetRole as AdminRole];
-    const requesterLevel = ROLE_HIERARCHY[request.requesterRole];
+    const targetRoleLevel =
+      ROLE_HIERARCHY[request.metadata.targetRole as keyof typeof ROLE_HIERARCHY];
+    const requesterLevel = ROLE_HIERARCHY[request.requesterRole as keyof typeof ROLE_HIERARCHY];
 
     if (targetRoleLevel >= requesterLevel) {
       return {
@@ -436,7 +437,7 @@ function checkPrivilegeEscalation(request: ApprovalRequest): ApprovalViolation |
 export function checkApprovalSafety(
   request: ApprovalRequest,
   approverId: string,
-  approverRole: AdminRole,
+  approverRole: string,
   approvalTimeMs: number
 ): ApprovalSafetyResult {
   const violations: ApprovalViolation[] = [];
@@ -561,7 +562,7 @@ export function recordApproval(request: ApprovalRequest, approverId: string): vo
  */
 export function validateApprovalRequest(
   requesterId: string,
-  requesterRole: AdminRole,
+  requesterRole: string,
   action: string,
   proposedApprovers: string[]
 ): { valid: boolean; errors: string[] } {

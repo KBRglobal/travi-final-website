@@ -189,14 +189,6 @@ export async function logSecurityEvent(event: SecurityEvent): Promise<void> {
   try {
     const severity = event.severity || getSeverityForEventType(event.type);
 
-    // Log to console with severity indicator
-    const severityPrefix = {
-      [SecuritySeverity.LOW]: "🔵",
-      [SecuritySeverity.MEDIUM]: "🟡",
-      [SecuritySeverity.HIGH]: "🟠",
-      [SecuritySeverity.CRITICAL]: "🔴",
-    }[severity];
-
     // Prepare details with masked PII
     const maskedDetails = { ...event.details };
     if (event.userEmail) {

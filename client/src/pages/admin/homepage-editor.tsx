@@ -1129,8 +1129,8 @@ function SectionsManager() {
   if (isLoading) {
     return (
       <div className="space-y-4">
-        {[...Array(5)].map((_, i) => (
-          <Skeleton key={i} className="h-24" />
+        {["s1", "s2", "s3", "s4", "s5"].map(id => (
+          <Skeleton key={id} className="h-24" />
         ))}
       </div>
     );

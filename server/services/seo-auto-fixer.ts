@@ -353,7 +353,6 @@ export class SEOAutoFixer {
   private fixMetaTitle(article: Record<string, unknown>): FixResult {
     try {
       const title = (article.title as string) || "";
-      const primaryKw = (article.primaryKeyword as string) || "";
       const year = new Date().getFullYear();
 
       // Clean title
@@ -604,7 +603,6 @@ export class SEOAutoFixer {
   private fixHeroAltText(article: Record<string, unknown>): FixResult {
     try {
       const title = (article.title as string) || "attraction";
-      const category = (article.type as string) || (article.category as string) || "tourism";
 
       // Find location context from title (destination-agnostic)
       const titleLower = title.toLowerCase();

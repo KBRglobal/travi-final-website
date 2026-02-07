@@ -13,7 +13,7 @@ const BASE_URL = "https://travi.world";
 // All 30 locales enabled for infrastructure
 // January 2026: Expanded from 17 to 30 locales
 // ===========================================
-const ACTIVE_LOCALES: Locale[] = [
+const ACTIVE_LOCALES = new Set<Locale>([
   // Tier 1 - Core Markets
   "en", // English - primary
   "ar", // Arabic
@@ -51,11 +51,11 @@ const ACTIVE_LOCALES: Locale[] = [
   "hu", // Hungarian
   "da", // Danish
   "no", // Norwegian
-];
+]);
 
 // Helper to check if a locale is active
 function isLocaleActive(locale: Locale): boolean {
-  return ACTIVE_LOCALES.includes(locale);
+  return ACTIVE_LOCALES.has(locale);
 }
 
 // Get only active locales from SUPPORTED_LOCALES

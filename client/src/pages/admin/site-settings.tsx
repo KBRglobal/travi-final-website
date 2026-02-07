@@ -142,8 +142,8 @@ export default function SiteSettingsPage() {
       <div className="space-y-6 p-6">
         <Skeleton className="h-10 w-64" />
         <div className="grid gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="h-32" />
+          {["s1", "s2", "s3", "s4"].map(id => (
+            <Skeleton key={id} className="h-32" />
           ))}
         </div>
       </div>
@@ -303,7 +303,10 @@ export default function SiteSettingsPage() {
                   </div>
                 ) : (
                   formData.socialLinks.map((link, index) => (
-                    <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+                    <div
+                      key={`${link.platform}-${link.url}-${index}`}
+                      className="flex items-center gap-4 p-4 border rounded-lg"
+                    >
                       <div className="flex-1 grid gap-4 md:grid-cols-3">
                         <div className="space-y-1">
                           <Label>Platform</Label>

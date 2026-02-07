@@ -13,7 +13,6 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { AdminRole, Action, Resource } from "../../governance/types";
 import { checkUserPermission } from "../rbac/enforcer";
 import { isOperationAllowed, getSecurityMode, getModeConfiguration } from "../modes/security-modes";
 import { checkDataAccess } from "../exfiltration/exfiltration-guard";
@@ -30,12 +29,12 @@ import { generateEvidence } from "../compliance/evidence-generator";
 export interface SecurityGateRequest {
   actor: {
     userId: string;
-    role: AdminRole;
+    role: string;
     sessionId?: string;
     ipAddress?: string;
   };
-  action: Action | string;
-  resource: Resource | string;
+  action: string;
+  resource: string;
   resourceId?: string;
   context?: {
     recordCount?: number;
@@ -162,14 +161,14 @@ export async function assertAllowed(request: SecurityGateRequest): Promise<Secur
   gateStats.totalRequests++;
 
   const startTime = Date.now();
-  const { actor, action, resource, resourceId, context } = request;
+  const { actor, action, resource, context } = request;
 
   // ============================================================================
   // LAYER 1: KERNEL CHECK (Fail-closed foundation)
   // ============================================================================
   const kernelCheck = shouldAllow({
-    action: action as Action,
-    resource: resource as Resource,
+    action: action as any,
+    resource: resource as any,
     userId: actor.userId,
     role: actor.role,
     context: context || {},
@@ -283,7 +282,7 @@ export async function assertAllowed(request: SecurityGateRequest): Promise<Secur
     const exfilCheck = await checkDataAccess(
       actor.userId,
       actor.role,
-      resource as Resource,
+      resource,
       action === "export" ? "export" : "read",
       context.recordCount || 0,
       context.byteCount || 0
@@ -461,7 +460,7 @@ function getApprovalType(action: string): string {
 /**
  * Express middleware for Security Gate enforcement
  */
-export function securityGateMiddleware(action: Action | string, resource: Resource | string) {
+export function securityGateMiddleware(action: string, resource: string) {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (!SECURITY_GATE_ENABLED) {
       return next();
@@ -514,7 +513,7 @@ export function securityGateMiddleware(action: Action | string, resource: Resour
 /**
  * Decorator for async functions that require security gate
  */
-export function requiresSecurityGate(action: Action | string, resource: Resource | string) {
+export function requiresSecurityGate(action: string, resource: string) {
   // Decorator target must use any - this is standard TypeScript decorator pattern
 
   return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -594,7 +593,7 @@ export function resetGateStatistics(): void {
  */
 export async function gateDataDecision(
   userId: string,
-  role: AdminRole,
+  role: string,
   decisionType: string,
   context?: Record<string, unknown>
 ): Promise<SecurityGateResult> {
@@ -615,7 +614,7 @@ export async function gateDataDecision(
  */
 export async function gateSEOAction(
   userId: string,
-  role: AdminRole,
+  role: string,
   seoAction: string,
   context?: Record<string, unknown>
 ): Promise<SecurityGateResult> {
@@ -636,7 +635,7 @@ export async function gateSEOAction(
  */
 export async function gateDeployment(
   userId: string,
-  role: AdminRole,
+  role: string,
   deploymentType: string,
   context?: Record<string, unknown>
 ): Promise<SecurityGateResult> {
@@ -656,9 +655,9 @@ export async function gateDeployment(
  */
 export async function gateBulkOperation(
   userId: string,
-  role: AdminRole,
+  role: string,
   operation: "update" | "delete" | "export",
-  resource: Resource,
+  resource: string,
   recordCount: number
 ): Promise<SecurityGateResult> {
   return assertAllowed({

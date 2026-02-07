@@ -18,7 +18,6 @@ import { getSecurityMode, SecurityMode } from "../modes/security-modes";
 import { getThreatLevel, ThreatLevel } from "../core/security-kernel";
 import { assertAllowed, SecurityGateResult } from "../gate/security-gate";
 import { logAdminEvent } from "../../governance/security-logger";
-import { AdminRole } from "../../governance/types";
 
 // ============================================================================
 // TYPES
@@ -249,7 +248,7 @@ class AutonomyController {
     system: AutonomySystem,
     action: "destructive" | "publish" | "export" | "bulk" | "read",
     userId: string,
-    role: AdminRole,
+    role: string,
     context?: Record<string, unknown>
   ): Promise<{
     allowed: boolean;
@@ -338,7 +337,7 @@ class AutonomyController {
     system: AutonomySystem,
     enabled: boolean,
     userId: string,
-    role: AdminRole,
+    role: string,
     reason: string
   ): Promise<{ success: boolean; message: string }> {
     // Security Gate check FIRST

@@ -285,8 +285,8 @@ export function AdminTableSkeleton({ rows = 5, className }: Readonly<AdminSkelet
   return (
     <div className={cn("space-y-2", className)}>
       <div className="h-10 bg-muted rounded animate-pulse" />
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="h-14 bg-muted rounded animate-pulse" />
+      {Array.from({ length: rows }, (_, i) => `row-${i}`).map(id => (
+        <div key={id} className="h-14 bg-muted rounded animate-pulse" />
       ))}
     </div>
   );

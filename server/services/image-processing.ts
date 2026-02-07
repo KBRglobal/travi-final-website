@@ -119,7 +119,7 @@ export async function processImage(
 ): Promise<ProcessedImage> {
   const { format = "webp", quality = DEFAULT_QUALITY, maxWidth, maxHeight } = options;
 
-  let processedBuffer = buffer;
+  let processedBuffer: Buffer;
   let sharpInstance = sharp(buffer);
 
   // Resize if needed

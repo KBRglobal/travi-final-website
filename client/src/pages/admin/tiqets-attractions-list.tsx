@@ -210,8 +210,8 @@ export default function TiqetsAttractionsList() {
         <Card>
           <CardContent className="p-6">
             <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-16 w-full" />
+              {["s1", "s2", "s3", "s4", "s5"].map(id => (
+                <Skeleton key={id} className="h-16 w-full" />
               ))}
             </div>
           </CardContent>

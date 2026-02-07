@@ -200,8 +200,6 @@ export const SecurityGate = {
     sources: ThreatState["sources"],
     reason: string
   ): Promise<void> {
-    const previousLevel = currentThreatState.level;
-
     currentThreatState = {
       level,
       sources,
@@ -222,8 +220,6 @@ export const SecurityGate = {
    * Deescalate threat level
    */
   async deescalateThreat(level: ThreatLevel, reason: string): Promise<void> {
-    const previousLevel = currentThreatState.level;
-
     currentThreatState = {
       level,
       sources: currentThreatState.sources.filter(

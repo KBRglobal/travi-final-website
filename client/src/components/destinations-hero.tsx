@@ -405,7 +405,7 @@ export function DestinationsHero({
                   >
                     {displayDestinations.slice(0, 5).map((destination, i) => (
                       <button
-                        key={i}
+                        key={destination.slug}
                         onClick={() => goTo(i)}
                         className={cn(
                           "thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-[#6443F4]/20 transition-all",

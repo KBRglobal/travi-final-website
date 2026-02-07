@@ -61,16 +61,17 @@ export function generateSeoSlug(title: string, cityName: string): string {
 
   // Remove noise words
   for (const word of noiseWords) {
-    slug = slug.replace(new RegExp(`\\b${word}\\b`, "gi"), " ");
+    slug = slug.replace(new RegExp(String.raw`\b` + word + String.raw`\b`, "gi"), " ");
   }
 
   // Remove city name if it appears more than once or at the end
   const cityLower = cityName.toLowerCase();
-  const cityCount = (slug.match(new RegExp(`\\b${cityLower}\\b`, "g")) || []).length;
+  const cityCount = (slug.match(new RegExp(String.raw`\b` + cityLower + String.raw`\b`, "g")) || [])
+    .length;
   if (cityCount > 1) {
     // Remove all but first occurrence
     let found = false;
-    slug = slug.replace(new RegExp(`\\b${cityLower}\\b`, "g"), match => {
+    slug = slug.replace(new RegExp(String.raw`\b` + cityLower + String.raw`\b`, "g"), match => {
       if (!found) {
         found = true;
         return match;

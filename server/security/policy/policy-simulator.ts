@@ -8,9 +8,8 @@
  */
 
 import { policyEngine } from "../../governance/policy-engine";
-import { PolicyRule, PolicyEffect, Action, Resource, AdminRole } from "../../governance/types";
+import { PolicyRule, PolicyEffect } from "../../governance/types";
 
-type EvaluationContext = any;
 import { lintPolicies, LintResult } from "./policy-linter";
 
 // ============================================================================
@@ -19,10 +18,10 @@ import { lintPolicies, LintResult } from "./policy-linter";
 
 export interface SimulationScenario {
   userId: string;
-  role: AdminRole;
-  action: Action;
-  resource: Resource;
-  context?: Partial<EvaluationContext>;
+  role: string;
+  action: string;
+  resource: string;
+  context?: Partial<any>;
 }
 
 export interface AccessChange {
@@ -75,7 +74,7 @@ export interface PolicyChange {
  * Generate comprehensive test scenarios
  */
 function generateTestScenarios(): SimulationScenario[] {
-  const roles: AdminRole[] = [
+  const roles: string[] = [
     "super_admin",
     "system_admin",
     "manager",
@@ -85,7 +84,7 @@ function generateTestScenarios(): SimulationScenario[] {
     "viewer",
   ];
 
-  const actions: Action[] = [
+  const actions: string[] = [
     "view",
     "create",
     "edit",
@@ -99,7 +98,7 @@ function generateTestScenarios(): SimulationScenario[] {
     "approve",
   ];
 
-  const resources: Resource[] = [
+  const resources: string[] = [
     "content",
     "entity",
     "revenue",
@@ -225,15 +224,15 @@ function evaluateScenario(
  * Determine risk level of an access change
  */
 function assessChangeRisk(change: AccessChange): "low" | "medium" | "high" | "critical" {
-  const sensitiveResources: Resource[] = ["users", "roles", "policies", "system"];
-  const sensitiveActions: Action[] = [
+  const sensitiveResources: string[] = ["users", "roles", "policies", "system"];
+  const sensitiveActions: string[] = [
     "delete",
     "manage_users",
     "manage_roles",
     "manage_policies",
     "configure",
   ];
-  const privilegedRoles: AdminRole[] = ["super_admin", "system_admin"];
+  const privilegedRoles: string[] = ["super_admin", "system_admin"];
 
   const isSensitiveResource = sensitiveResources.includes(change.scenario.resource);
   const isSensitiveAction = sensitiveActions.includes(change.scenario.action);
@@ -465,12 +464,12 @@ export function simulateDeletePolicy(policyId: string): SimulationResult {
  * Quick impact check for a specific user/role
  */
 export function checkImpactForRole(
-  role: AdminRole,
+  role: string,
   changes: PolicyChange[]
 ): {
-  role: AdminRole;
-  gainsAccess: { action: Action; resource: Resource }[];
-  losesAccess: { action: Action; resource: Resource }[];
+  role: string;
+  gainsAccess: { action: string; resource: string }[];
+  losesAccess: { action: string; resource: string }[];
 } {
   const result = simulatePolicyChanges(changes);
 
@@ -517,11 +516,16 @@ export function validatePolicyForDeployment(policy: PolicyRule): {
   }
 
   // Check for overly broad permissions
-  const sensitiveActions: Action[] = ["delete", "manage_users", "manage_roles", "manage_policies"];
+  const sensitiveActions = new Set<string>([
+    "delete",
+    "manage_users",
+    "manage_roles",
+    "manage_policies",
+  ]);
 
   if (
     policy.effect === "allow" &&
-    policy.actions.some(a => sensitiveActions.includes(a)) &&
+    policy.actions.some(a => sensitiveActions.has(a)) &&
     (!policy.roles || policy.roles.length === 0) &&
     policy.conditions.length === 0
   ) {

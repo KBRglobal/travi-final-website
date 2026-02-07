@@ -70,7 +70,7 @@ export function Breadcrumbs({
           const label = item.label || item.labelKey || "";
 
           return (
-            <span key={index} className="flex items-center gap-2">
+            <span key={`${label}-${item.href ?? "current"}`} className="flex items-center gap-2">
               {index > 0 && <ChevronRight className="w-4 h-4" />}
               {isLast || !item.href ? (
                 <span className="text-slate-900 dark:text-white font-medium">{label}</span>

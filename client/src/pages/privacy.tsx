@@ -130,9 +130,9 @@ export default function PrivacyPage() {
         <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {privacyFeatures.map((feature, index) => (
+              {privacyFeatures.map(feature => (
                 <div
-                  key={index}
+                  key={feature.title}
                   className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 shadow-sm"
                 >
                   <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-3">
@@ -242,8 +242,8 @@ export default function PrivacyPage() {
                     "Pages visited and time spent",
                     "Referring website or source",
                     "General geographic location",
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-2">
+                  ].map(item => (
+                    <div key={item} className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-[#6443F4] mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{item}</span>
                     </div>
@@ -408,8 +408,8 @@ export default function PrivacyPage() {
                     "Viator",
                     "Skyscanner",
                     "Other travel providers",
-                  ].map((partner, i) => (
-                    <div key={i} className="flex items-center gap-2">
+                  ].map(partner => (
+                    <div key={partner} className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-[#6443F4] flex-shrink-0" />
                       <span className="text-sm">{partner}</span>
                     </div>
@@ -448,8 +448,8 @@ export default function PrivacyPage() {
                     "Does not use visitor personal data",
                     "Is not trained on user behavior",
                     "May contain inaccuracies (verify independently)",
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-2">
+                  ].map(item => (
+                    <div key={item} className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-[#6443F4] mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{item}</span>
                     </div>
@@ -655,8 +655,8 @@ export default function PrivacyPage() {
                     "Secure hosting infrastructure",
                     "Regular security updates and monitoring",
                     "Limited access on a need-to-know basis",
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-2">
+                  ].map(item => (
+                    <div key={item} className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{item}</span>
                     </div>

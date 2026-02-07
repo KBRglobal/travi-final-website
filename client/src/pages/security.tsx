@@ -106,9 +106,9 @@ export default function SecurityPage() {
       <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {securityFeatures.map((feature, index) => (
+            {securityFeatures.map(feature => (
               <div
-                key={index}
+                key={feature.title}
                 className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 shadow-sm"
               >
                 <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-3">
@@ -163,8 +163,8 @@ export default function SecurityPage() {
                   "Multi-layer access controls",
                   "Continuous software updates",
                   "Vulnerability scanning and patching",
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2">
+                ].map(item => (
+                  <div key={item} className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <span className="text-sm">{item}</span>
                   </div>
@@ -254,8 +254,8 @@ export default function SecurityPage() {
                   "Watch for phishing attempts",
                   "Avoid sharing sensitive info publicly",
                   "Use secure networks",
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2">
+                ].map(item => (
+                  <div key={item} className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-[#6443F4] mt-0.5 flex-shrink-0" />
                     <span className="text-sm">{item}</span>
                   </div>

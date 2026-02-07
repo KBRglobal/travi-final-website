@@ -251,7 +251,7 @@ export function removeClichesFromText(text: string): string {
 
   // For plain text, apply replacements directly
   for (const [cliche, replacement] of Object.entries(CLICHE_REPLACEMENTS)) {
-    const regex = new RegExp(`\\b${escapeRegex(cliche)}\\b`, "gi");
+    const regex = new RegExp(String.raw`\b` + escapeRegex(cliche) + String.raw`\b`, "gi");
     text = text.replace(regex, replacement);
   }
 
@@ -262,7 +262,7 @@ export function removeClichesFromText(text: string): string {
  * Escape special regex characters
  */
 function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return str.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 }
 
 /**
@@ -301,7 +301,7 @@ function removeClichesFromHtml(html: string): string {
  */
 function replaceClichesInProse(text: string): string {
   for (const [cliche, replacement] of Object.entries(CLICHE_REPLACEMENTS)) {
-    const regex = new RegExp(`\\b${escapeRegex(cliche)}\\b`, "gi");
+    const regex = new RegExp(String.raw`\b` + escapeRegex(cliche) + String.raw`\b`, "gi");
     text = text.replace(regex, replacement);
   }
   return text;

@@ -688,7 +688,10 @@ export default function OctypoDashboardPage() {
                 </div>
                 <div className="space-y-3 max-h-[250px] overflow-y-auto">
                   {manualEntries.map((entry, index) => (
-                    <div key={index} className="p-3 border rounded-lg space-y-2">
+                    <div
+                      key={`entry-${index}-${entry.title.slice(0, 20)}`}
+                      className="p-3 border rounded-lg space-y-2"
+                    >
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">Item {index + 1}</span>
                         {manualEntries.length > 1 && (

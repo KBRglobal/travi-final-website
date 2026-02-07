@@ -121,16 +121,16 @@ function evaluateRule(rule: GovernorRule, context: GovernorContext): boolean {
 // ============================================================================
 
 function determineDecision(rule: GovernorRule): Decision {
-  const blockingActions = ["force_read_only", "require_admin_override"];
-  const throttleActions = [
+  const blockingActions = new Set(["force_read_only", "require_admin_override"]);
+  const throttleActions = new Set([
     "throttle_ai",
     "reduce_concurrency",
     "disable_octopus",
     "disable_regeneration",
-  ];
+  ]);
 
-  const hasBlocking = rule.actions.some(a => blockingActions.includes(a.type));
-  const hasThrottle = rule.actions.some(a => throttleActions.includes(a.type));
+  const hasBlocking = rule.actions.some(a => blockingActions.has(a.type));
+  const hasThrottle = rule.actions.some(a => throttleActions.has(a.type));
 
   if (hasBlocking) return "BLOCK";
   if (hasThrottle) return "THROTTLE";

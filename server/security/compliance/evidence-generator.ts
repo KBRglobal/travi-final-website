@@ -17,7 +17,6 @@
  */
 
 import * as crypto from "node:crypto";
-import { AdminRole } from "../../governance/types";
 
 // ============================================================================
 // TYPES
@@ -62,7 +61,7 @@ export type EvidenceType =
 
 export interface Attestation {
   attesterId: string;
-  attesterRole: AdminRole;
+  attesterRole: string;
   attestedAt: Date;
   statement: string;
   signature: string;
@@ -390,7 +389,7 @@ class EvidenceGenerator {
   attestEvidence(
     evidenceId: string,
     attesterId: string,
-    attesterRole: AdminRole,
+    attesterRole: string,
     statement: string
   ): Attestation {
     const evidence = this.evidenceStore.find(e => e.id === evidenceId);

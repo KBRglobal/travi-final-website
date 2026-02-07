@@ -13,8 +13,6 @@
 import { Request, Response, NextFunction } from "express";
 import { assertAllowed, SecurityGateResult } from "../gate/security-gate";
 
-import { AdminRole, Action, Resource } from "../../governance/types";
-
 // ============================================================================
 // CONFIGURATION
 // ============================================================================
@@ -31,7 +29,7 @@ const BULK_APPROVAL_THRESHOLD = Number.parseInt(process.env.SECURITY_GATE_BULK_T
 interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
-    role?: AdminRole;
+    role?: string;
     roles?: string[];
   };
   sessionId?: string;
@@ -44,7 +42,7 @@ interface AuthenticatedRequest extends Request {
 
 function extractActor(req: AuthenticatedRequest): {
   userId: string;
-  role: AdminRole;
+  role: string;
   sessionId?: string;
   ipAddress?: string;
 } {
@@ -53,18 +51,18 @@ function extractActor(req: AuthenticatedRequest): {
   if (!user) {
     return {
       userId: "anonymous",
-      role: "viewer" as AdminRole,
+      role: "viewer",
       ipAddress: req.ip,
     };
   }
 
   // Determine role from user object
-  let role: AdminRole = "viewer";
+  let role: string = "viewer";
   if (user.role) {
     role = user.role;
   } else if (user.roles && user.roles.length > 0) {
     // Pick highest role
-    const roleHierarchy: AdminRole[] = [
+    const roleHierarchy: string[] = [
       "super_admin",
       "system_admin",
       "manager",
@@ -187,7 +185,7 @@ export function bulkGuard(operation: "update" | "delete" | "export" | "import") 
     try {
       const result = await assertAllowed({
         actor,
-        action: `bulk_${operation}` as Action,
+        action: `bulk_${operation}`,
         resource: "content",
         context: {
           recordCount,
@@ -256,8 +254,8 @@ export async function governanceGuard(
   const path = req.path.toLowerCase();
 
   // Determine action and resource from path
-  let action: Action = "view";
-  let resource: Resource = "policies";
+  let action: string = "view";
+  let resource: string = "policies";
 
   if (path.includes("role")) {
     resource = "roles";
@@ -331,7 +329,7 @@ export async function exportGuard(
   const path = req.path.toLowerCase();
 
   // Determine resource type from path
-  let resource: Resource = "content";
+  let resource: string = "content";
   if (path.includes("user") || path.includes("gdpr")) resource = "users";
   else if (path.includes("audit") || path.includes("log")) resource = "audit";
   else if (path.includes("entit")) resource = "entity";
@@ -476,7 +474,7 @@ export async function publishGuard(
 /**
  * Create a guard for any action/resource combination
  */
-export function createGuard(action: Action, resource: Resource) {
+export function createGuard(action: string, resource: string) {
   return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!SECURITY_GATE_ENABLED) return next();
 

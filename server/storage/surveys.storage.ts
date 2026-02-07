@@ -54,7 +54,7 @@ export class SurveysStorage {
   }
 
   async deleteSurvey(id: string): Promise<boolean> {
-    const result = await db.delete(surveys).where(eq(surveys.id, id));
+    await db.delete(surveys).where(eq(surveys.id, id));
     return true;
   }
 

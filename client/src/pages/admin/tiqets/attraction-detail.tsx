@@ -297,7 +297,10 @@ export default function AttractionDetail() {
             </CardHeader>
             <CardContent className="space-y-3">
               {(data.highlights || []).map((item, index) => (
-                <div key={index} className="flex items-center gap-2">
+                <div
+                  key={`highlight-${item.slice(0, 30)}-${index}`}
+                  className="flex items-center gap-2"
+                >
                   <Input
                     value={item}
                     onChange={e => updateListItem("highlights", index, e.target.value)}
@@ -326,7 +329,10 @@ export default function AttractionDetail() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {(data.whatsIncluded || []).map((item, index) => (
-                  <div key={index} className="flex items-center gap-2">
+                  <div
+                    key={`included-${item.slice(0, 30)}-${index}`}
+                    className="flex items-center gap-2"
+                  >
                     <Input
                       value={item}
                       onChange={e => updateListItem("whatsIncluded", index, e.target.value)}
@@ -353,7 +359,10 @@ export default function AttractionDetail() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {(data.whatsExcluded || []).map((item, index) => (
-                  <div key={index} className="flex items-center gap-2">
+                  <div
+                    key={`excluded-${item.slice(0, 30)}-${index}`}
+                    className="flex items-center gap-2"
+                  >
                     <Input
                       value={item}
                       onChange={e => updateListItem("whatsExcluded", index, e.target.value)}
@@ -542,7 +551,10 @@ export default function AttractionDetail() {
             </CardHeader>
             <CardContent className="space-y-4">
               {(data.faqs || []).map((faq, index) => (
-                <div key={index} className="border rounded-lg p-4 space-y-3">
+                <div
+                  key={`faq-${faq.question.slice(0, 30)}-${index}`}
+                  className="border rounded-lg p-4 space-y-3"
+                >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 space-y-3">
                       <div className="space-y-2">

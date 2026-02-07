@@ -28,7 +28,7 @@ const STATIC_REDIRECTS: RedirectRule[] = [
 ];
 
 // Valid destination cities for attraction redirects
-const VALID_DESTINATIONS = [
+const VALID_DESTINATIONS = new Set([
   "abu-dhabi",
   "amsterdam",
   "bangkok",
@@ -46,7 +46,7 @@ const VALID_DESTINATIONS = [
   "rome",
   "singapore",
   "tokyo",
-];
+]);
 
 /**
  * Get the canonical protocol, respecting proxy headers
@@ -112,7 +112,7 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
     const cityLower = city.toLowerCase();
 
     // Check if it's a valid destination
-    if (VALID_DESTINATIONS.includes(cityLower)) {
+    if (VALID_DESTINATIONS.has(cityLower)) {
       const newUrl = `/${cityLower}/attractions/${slug}`;
       res.redirect(301, newUrl);
       return;
@@ -143,7 +143,7 @@ export async function attractionSlugRedirectMiddleware(
   const cityLower = city.toLowerCase();
 
   // Skip if not a valid destination
-  if (!VALID_DESTINATIONS.includes(cityLower)) {
+  if (!VALID_DESTINATIONS.has(cityLower)) {
     return next();
   }
 

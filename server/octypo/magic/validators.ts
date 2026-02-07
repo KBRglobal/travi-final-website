@@ -284,7 +284,7 @@ export function validateSlug(slug: string): ValidationResult {
       .replace(/[^a-z0-9\s-]/g, "") // Remove special chars
       .replace(/\s+/g, "-") // Replace spaces with hyphens
       .replace(/-+/g, "-") // Collapse multiple hyphens
-      .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+      .replace(/(?:^-)|(?:-$)/g, ""); // Remove leading/trailing hyphens
     warnings.push(
       `Slug contained invalid characters. Sanitized from "${original}" to "${sanitized}"`
     );
@@ -298,7 +298,7 @@ export function validateSlug(slug: string): ValidationResult {
 
   // Check leading/trailing hyphens
   if (sanitized.startsWith("-") || sanitized.endsWith("-")) {
-    sanitized = sanitized.replace(/^-+|-+$/g, "");
+    sanitized = sanitized.replace(/(?:^-+)|(?:-+$)/g, "");
     warnings.push("Removed leading/trailing hyphens from slug");
   }
 
@@ -323,9 +323,9 @@ export function validateSlug(slug: string): ValidationResult {
   }
 
   // Check for stop words (optional warning)
-  const stopWords = ["the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for"];
+  const stopWords = new Set(["the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for"]);
   const slugParts = sanitized.split("-");
-  const stopWordsFound = slugParts.filter(part => stopWords.includes(part));
+  const stopWordsFound = slugParts.filter(part => stopWords.has(part));
   if (stopWordsFound.length > 2) {
     warnings.push(
       `Slug contains multiple stop words (${stopWordsFound.join(", ")}). Consider removing for cleaner URLs.`

@@ -163,7 +163,7 @@ const defaultSwConfig: ServiceWorkerConfig = {
     },
     // Images - cache first
     {
-      urlPattern: "\\.(png|jpg|jpeg|webp|gif|svg)$",
+      urlPattern: String.raw`\.(png|jpg|jpeg|webp|gif|svg)$`,
       handler: "CacheFirst",
       options: {
         cacheName: "images",
@@ -175,7 +175,7 @@ const defaultSwConfig: ServiceWorkerConfig = {
     },
     // CSS/JS - stale while revalidate
     {
-      urlPattern: "\\.(css|js)$",
+      urlPattern: String.raw`\.(css|js)$`,
       handler: "StaleWhileRevalidate",
       options: {
         cacheName: "static-assets",
@@ -187,7 +187,7 @@ const defaultSwConfig: ServiceWorkerConfig = {
     },
     // Fonts - cache first, long expiration
     {
-      urlPattern: "\\.(woff|woff2|ttf|eot)$",
+      urlPattern: String.raw`\.(woff|woff2|ttf|eot)$`,
       handler: "CacheFirst",
       options: {
         cacheName: "fonts",
@@ -267,6 +267,7 @@ export const pwaManager = {
    */
   generateServiceWorker(): string {
     const config = defaultSwConfig;
+    const bslash = String.fromCharCode(92);
 
     return `
 // Service Worker for Travi PWA
@@ -323,19 +324,19 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Images - Cache First
-  if (/\\.(png|jpg|jpeg|webp|gif|svg)$/i.test(url.pathname)) {
+  if (/${bslash}.(png|jpg|jpeg|webp|gif|svg)$/i.test(url.pathname)) {
     event.respondWith(cacheFirst(event.request, 'images'));
     return;
   }
 
   // Static assets - Stale While Revalidate
-  if (/\\.(css|js)$/i.test(url.pathname)) {
+  if (/${bslash}.(css|js)$/i.test(url.pathname)) {
     event.respondWith(staleWhileRevalidate(event.request, 'static-assets'));
     return;
   }
 
   // Fonts - Cache First (long expiration)
-  if (/\\.(woff|woff2|ttf|eot)$/i.test(url.pathname)) {
+  if (/${bslash}.(woff|woff2|ttf|eot)$/i.test(url.pathname)) {
     event.respondWith(cacheFirst(event.request, 'fonts'));
     return;
   }

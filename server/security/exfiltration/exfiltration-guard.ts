@@ -10,7 +10,6 @@
  */
 
 import type { Request, Response, NextFunction } from "express";
-import { AdminRole } from "../../governance/types";
 
 import { logDataAccessEvent } from "../../governance/security-logger";
 
@@ -46,7 +45,7 @@ export interface ExfiltrationRule {
   maxBytesPerHour: number;
   maxRequestsPerMinute: number;
   requiresApproval: boolean;
-  allowedRoles: AdminRole[];
+  allowedRoles: string[];
   sensitivityLevel: "public" | "internal" | "confidential" | "restricted";
 }
 
@@ -211,7 +210,7 @@ class ExfiltrationGuard {
    */
   async checkAccess(
     userId: string,
-    userRole: AdminRole,
+    userRole: string,
     resourceType: string,
     operation: "read" | "export" | "download" | "api",
     requestedRecords: number,
@@ -468,13 +467,7 @@ class ExfiltrationGuard {
   }[] {
     const patterns: ReturnType<typeof this.detectExfiltrationPatterns> = [];
 
-    // Aggregate access by user and resource
-    const userAccess = new Map<
-      string,
-      Map<string, { records: number; bytes: number; requests: number }>
-    >();
-
-    for (const rule of this.rules.values()) {
+    for (const _rule of this.rules.values()) {
       // Check each user's access patterns
       // In real implementation, would iterate through actual users
     }
@@ -560,7 +553,7 @@ export const exfiltrationGuard = new ExfiltrationGuard();
  */
 export async function checkDataAccess(
   userId: string,
-  userRole: AdminRole,
+  userRole: string,
   resourceType: string,
   operation: "read" | "export" | "download" | "api",
   requestedRecords: number,

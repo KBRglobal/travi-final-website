@@ -12,7 +12,7 @@ async function main() {
 
   // Initialize
   await rssReader.initialize();
-  const gate1 = getGate1Selector();
+  getGate1Selector();
   const dedupEngine = getDeduplicationEngine();
 
   // Get 5 unprocessed items

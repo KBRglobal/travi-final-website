@@ -108,7 +108,7 @@ export function KeyboardShortcuts({ open, onOpenChange }: Readonly<KeyboardShort
                     const Icon = shortcut.icon;
                     return (
                       <div
-                        key={idx}
+                        key={shortcut.description}
                         className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex items-center gap-2">
@@ -117,7 +117,7 @@ export function KeyboardShortcuts({ open, onOpenChange }: Readonly<KeyboardShort
                         </div>
                         <div className="flex items-center gap-1">
                           {shortcut.keys.map((key, keyIdx) => (
-                            <span key={keyIdx} className="flex items-center gap-1">
+                            <span key={key} className="flex items-center gap-1">
                               <kbd className="px-2 py-1 text-xs font-mono bg-muted border rounded shadow-sm">
                                 {key === "Cmd" ? (
                                   <span className="flex items-center gap-0.5">

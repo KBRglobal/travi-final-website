@@ -223,7 +223,7 @@ export function buildScriptRegex(script: string): RegExp | null {
     .map(range => {
       const start = range.start.toString(16).padStart(4, "0");
       const end = range.end.toString(16).padStart(4, "0");
-      return `\\u${start}-\\u${end}`;
+      return String.raw`\u` + start + "-" + String.raw`\u` + end;
     })
     .join("");
 

@@ -166,7 +166,7 @@ export function loadSecrets(password: string): OctypoSecrets | null {
   try {
     const encrypted = fs.readFileSync(SECRETS_PATH);
     return decryptSecrets(encrypted, password);
-  } catch (error) {
+  } catch {
     console.error("❌ Failed to decrypt secrets. Wrong password?");
     return null;
   }
@@ -489,11 +489,11 @@ const isMainModule =
   process.argv[1]?.includes("setup-octypo-secrets");
 
 if (isMainModule) {
-  const args = process.argv.slice(2);
+  const args = new Set(process.argv.slice(2));
 
-  if (args.includes("--setup") || args.includes("-s")) {
+  if (args.has("--setup") || args.has("-s")) {
     interactiveSetup().catch(console.error);
-  } else if (args.includes("--verify") || args.includes("-v")) {
+  } else if (args.has("--verify") || args.has("-v")) {
     const password = process.env.OCTYPO_SECRETS_PASSWORD || getSecretsPassword();
     const secrets = loadSecrets(password);
     if (secrets) {
@@ -504,7 +504,7 @@ if (isMainModule) {
       console.info("❌ Could not load secrets");
       process.exit(1);
     }
-  } else if (args.includes("--export-env")) {
+  } else if (args.has("--export-env")) {
     // Export as environment variables (for debugging only)
     const password = process.env.OCTYPO_SECRETS_PASSWORD || getSecretsPassword();
     if (loadSecretsToEnv(password)) {

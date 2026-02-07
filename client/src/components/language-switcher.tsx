@@ -14,7 +14,18 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
 import { cn } from "@/lib/utils";
 
-const POPULAR_LOCALES: Locale[] = ["en", "ar", "fr", "de", "es", "zh", "ja", "hi", "ru", "pt"];
+const POPULAR_LOCALES = new Set<Locale>([
+  "en",
+  "ar",
+  "fr",
+  "de",
+  "es",
+  "zh",
+  "ja",
+  "hi",
+  "ru",
+  "pt",
+]);
 
 interface LanguageSwitcherProps {
   variant?: "nav" | "footer" | "compact";
@@ -46,8 +57,8 @@ export function LanguageSwitcher({ variant = "nav", className }: Readonly<Langua
     setLocation(newPath.replace(/\/+/g, "/") || `/${newLocale}`);
   };
 
-  const popularLocales = SUPPORTED_LOCALES.filter(l => POPULAR_LOCALES.includes(l.code));
-  const otherLocales = SUPPORTED_LOCALES.filter(l => !POPULAR_LOCALES.includes(l.code));
+  const popularLocales = SUPPORTED_LOCALES.filter(l => POPULAR_LOCALES.has(l.code));
+  const otherLocales = SUPPORTED_LOCALES.filter(l => !POPULAR_LOCALES.has(l.code));
 
   if (variant === "compact") {
     return (

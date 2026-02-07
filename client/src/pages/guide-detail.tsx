@@ -1145,7 +1145,11 @@ export default function GuideDetailPage() {
                     </AnimatedSection>
                   ) : (
                     guide?.sections?.map((section, index) => (
-                      <ContentSection key={index} section={section} index={index} />
+                      <ContentSection
+                        key={section.heading || `section-${index}`}
+                        section={section}
+                        index={index}
+                      />
                     ))
                   )}
 

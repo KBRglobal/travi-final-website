@@ -631,12 +631,12 @@ export async function seedRssFeeds(
 const isMainModule = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 
 if (isMainModule) {
-  const args = process.argv.slice(2);
-  const dryRun = args.includes("--dry-run");
-  const force = args.includes("--force");
-  const clean = args.includes("--clean");
+  const args = new Set(process.argv.slice(2));
+  const dryRun = args.has("--dry-run");
+  const force = args.has("--force");
+  const clean = args.has("--clean");
 
-  if (args.includes("--help") || args.includes("-h")) {
+  if (args.has("--help") || args.has("-h")) {
     console.info(`
 Usage: npx tsx server/seeds/seed-rss-feeds.ts [options]
 

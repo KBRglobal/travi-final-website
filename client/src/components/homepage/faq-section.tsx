@@ -45,7 +45,7 @@ export function FAQSection() {
         <div className="space-y-4">
           {FAQ_ITEMS.map((faq, index) => (
             <div
-              key={index}
+              key={faq.q}
               className="animate-fade-in-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
