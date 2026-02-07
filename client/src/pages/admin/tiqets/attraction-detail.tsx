@@ -3,6 +3,8 @@
  * Elementor-style editor with tabs for different content sections
  */
 
+type ListFieldName = "highlights" | "whatsIncluded" | "whatsExcluded";
+
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
@@ -147,25 +149,18 @@ export default function AttractionDetail() {
   };
 
   // List management helpers
-  const addListItem = (field: "highlights" | "whatsIncluded" | "whatsExcluded") => {
+  const addListItem = (field: ListFieldName) => {
     const current = formData[field] || attraction?.[field] || [];
     updateField(field, [...current, ""]);
   };
 
-  const updateListItem = (
-    field: "highlights" | "whatsIncluded" | "whatsExcluded",
-    index: number,
-    value: string
-  ) => {
+  const updateListItem = (field: ListFieldName, index: number, value: string) => {
     const current = [...(formData[field] || attraction?.[field] || [])];
     current[index] = value;
     updateField(field, current);
   };
 
-  const removeListItem = (
-    field: "highlights" | "whatsIncluded" | "whatsExcluded",
-    index: number
-  ) => {
+  const removeListItem = (field: ListFieldName, index: number) => {
     const current = [...(formData[field] || attraction?.[field] || [])];
     current.splice(index, 1);
     updateField(field, current);

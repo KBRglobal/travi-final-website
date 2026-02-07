@@ -6,7 +6,11 @@ interface SkipLinkProps {
   isRTL?: boolean;
 }
 
-export function SkipLink({ href = "#main-content", className, isRTL = false }: SkipLinkProps) {
+export function SkipLink({
+  href = "#main-content",
+  className,
+  isRTL = false,
+}: Readonly<SkipLinkProps>) {
   const text = "Skip to main content";
 
   return (

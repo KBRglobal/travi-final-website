@@ -15,6 +15,8 @@
 
 import { log } from "../lib/logger";
 import { getLoadTierManager } from "../system/load-tiers";
+
+type PriorityLevel = "high" | "medium" | "low";
 // Inline stub: cost-analytics deleted in Phase 4.1 cleanup
 function getCostAnalytics() {
   return {
@@ -41,7 +43,7 @@ const logger = {
 
 export interface QueuedImprovement {
   entityId: string;
-  priority: "high" | "medium" | "low";
+  priority: PriorityLevel;
   reason: string;
   estimatedImpact: number;
   currentValue: number;
@@ -80,7 +82,7 @@ function isRecentlyImproved(entityId: string): boolean {
   return daysSinceUpdate < RECENT_SPEND_DAYS;
 }
 
-function calculatePriority(valueResult: ContentValueResult): "high" | "medium" | "low" {
+function calculatePriority(valueResult: ContentValueResult): PriorityLevel {
   if (valueResult.performance < 20 && valueResult.aiCost > 0.1) {
     return "high";
   }
@@ -284,7 +286,7 @@ export function getQueueSummary(): {
 export function shouldQueueImprovement(entityId: string): {
   should: boolean;
   reason: string;
-  priority?: "high" | "medium" | "low";
+  priority?: PriorityLevel;
 } {
   const performanceScore = getPerformanceScore(entityId);
 

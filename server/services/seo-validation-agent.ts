@@ -298,7 +298,7 @@ export class SEOValidationAgent {
       name: "meta_title",
       tier: "tier1_critical",
       passed: titleValid,
-      message: `Meta Title: ${titleLen} chars (need 50-60)${!titleHasKeyword ? " | Missing keyword" : ""}`,
+      message: `Meta Title: ${titleLen} chars (need 50-60)${titleHasKeyword ? "" : " | Missing keyword"}`,
       currentValue: metaTitle.substring(0, 60) || null,
       requiredValue: "50-60 chars with primary keyword",
       autoFixable: true,

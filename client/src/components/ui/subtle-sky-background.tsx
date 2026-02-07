@@ -5,7 +5,7 @@ interface SubtleSkyBackgroundProps {
   className?: string;
 }
 
-export default function SubtleSkyBackground({ className }: SubtleSkyBackgroundProps) {
+export default function SubtleSkyBackground({ className }: Readonly<SubtleSkyBackgroundProps>) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

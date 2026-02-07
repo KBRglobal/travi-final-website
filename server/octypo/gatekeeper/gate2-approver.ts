@@ -414,15 +414,19 @@ Please rewrite the article with these corrections applied.`;
     estimatedQuality -= issues.length * 10;
     estimatedQuality = Math.max(0, Math.min(100, estimatedQuality));
 
+    let recommendation: "likely_pass" | "needs_review" | "likely_fail";
+    if (estimatedQuality >= 80) {
+      recommendation = "likely_pass";
+    } else if (estimatedQuality >= 50) {
+      recommendation = "needs_review";
+    } else {
+      recommendation = "likely_fail";
+    }
+
     return {
       estimatedQuality,
       hasObviousIssues: issues.length > 0,
-      recommendation:
-        estimatedQuality >= 80
-          ? "likely_pass"
-          : estimatedQuality >= 50
-            ? "needs_review"
-            : "likely_fail",
+      recommendation,
     };
   }
 }

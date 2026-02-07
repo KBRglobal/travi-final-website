@@ -22,11 +22,13 @@ let aiGenerationBlocked = false;
 let lastHeartbeat = new Date();
 
 // Autopilot states
+type AutopilotState = "running" | "paused" | "blocked";
+
 interface AutopilotStates {
-  dataAutopilot: "running" | "paused" | "blocked";
-  seoAutopilot: "running" | "paused" | "blocked";
-  opsAutopilot: "running" | "paused" | "blocked";
-  contentAutopilot: "running" | "paused" | "blocked";
+  dataAutopilot: AutopilotState;
+  seoAutopilot: AutopilotState;
+  opsAutopilot: AutopilotState;
+  contentAutopilot: AutopilotState;
 }
 
 let autopilotStates: AutopilotStates = {
@@ -102,21 +104,21 @@ export const AutonomyAdapter: SystemAdapter = {
 
     const { restrictions } = config;
 
-    if (!restrictions.autopilotAllowed) {
-      allAutopilotsForcedOff = true;
-      autopilotStates = {
-        dataAutopilot: "blocked",
-        seoAutopilot: "blocked",
-        opsAutopilot: "blocked",
-        contentAutopilot: "blocked",
-      };
-    } else {
+    if (restrictions.autopilotAllowed) {
       allAutopilotsForcedOff = false;
       autopilotStates = {
         dataAutopilot: "running",
         seoAutopilot: "running",
         opsAutopilot: "running",
         contentAutopilot: "running",
+      };
+    } else {
+      allAutopilotsForcedOff = true;
+      autopilotStates = {
+        dataAutopilot: "blocked",
+        seoAutopilot: "blocked",
+        opsAutopilot: "blocked",
+        contentAutopilot: "blocked",
       };
     }
 

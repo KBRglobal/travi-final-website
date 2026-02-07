@@ -13,6 +13,8 @@ import type { Request, Response, NextFunction } from "express";
 
 import { logDataAccessEvent } from "../../governance/security-logger";
 
+type DataOperation = "read" | "export" | "download" | "api";
+
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -55,7 +57,7 @@ export interface DataAccessLog {
   recordCount: number;
   byteCount: number;
   timestamp: Date;
-  operation: "read" | "export" | "download" | "api";
+  operation: DataOperation;
   destination?: string;
 }
 
@@ -212,7 +214,7 @@ class ExfiltrationGuard {
     userId: string,
     userRole: string,
     resourceType: string,
-    operation: "read" | "export" | "download" | "api",
+    operation: DataOperation,
     requestedRecords: number,
     estimatedBytes: number
   ): Promise<ExfiltrationCheck> {
@@ -373,7 +375,7 @@ class ExfiltrationGuard {
     resourceType: string,
     recordCount: number,
     byteCount: number,
-    operation: "read" | "export" | "download" | "api",
+    operation: DataOperation,
     destination?: string
   ): void {
     accessTracker.record({

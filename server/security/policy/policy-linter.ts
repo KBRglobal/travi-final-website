@@ -223,8 +223,8 @@ function detectOverlyPermissive(policies: PolicyRule[]): LintIssue[] {
     if (policy.effect !== "allow") continue;
 
     // Check for wildcard-like behavior
-    const hasSensitiveAction = policy.actions.some(a => sensitiveActions.has(a as string));
-    const hasSensitiveResource = policy.resources.some(r => sensitiveResources.has(r as string));
+    const hasSensitiveAction = policy.actions.some(a => sensitiveActions.has(a));
+    const hasSensitiveResource = policy.resources.some(r => sensitiveResources.has(r));
     const hasNoConditions = policy.conditions.length === 0;
     const hasNoRoleRestriction = !policy.roles || policy.roles.length === 0;
 

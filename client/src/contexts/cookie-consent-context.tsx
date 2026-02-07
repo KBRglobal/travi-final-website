@@ -56,7 +56,7 @@ function loadGTM() {
   document.body.insertBefore(noscript, document.body.firstChild);
 }
 
-export function CookieConsentProvider({ children }: { children: React.ReactNode }) {
+export function CookieConsentProvider({ children }: Readonly<{ children: React.ReactNode }>) {
   const [consent, setConsent] = useState<CookieConsentType>("pending");
   const [preferences, setPreferences] = useState<CookiePreferences>({
     analytics: false,

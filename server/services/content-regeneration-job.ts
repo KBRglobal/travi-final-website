@@ -185,7 +185,7 @@ export async function regenerateAllAttractions(
         try {
           const result = await generateWithRetry(attraction, 2);
 
-          if (result && result.qualityScore.passed) {
+          if (result?.qualityScore.passed) {
             const saved = await saveContentToDatabase(
               attraction.id,
               result.content,

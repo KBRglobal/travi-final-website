@@ -65,7 +65,7 @@ export function SEOHead({
   noIndex = false,
   noindex,
   availableTranslations,
-}: SEOHeadProps) {
+}: Readonly<SEOHeadProps>) {
   const shouldNoIndex = noIndex || noindex || false;
   const { locale } = useLocale();
 
@@ -142,7 +142,7 @@ interface StructuredDataProps {
   data: Record<string, unknown>;
 }
 
-export function StructuredData({ type, data }: StructuredDataProps) {
+export function StructuredData({ type, data }: Readonly<StructuredDataProps>) {
   const { locale } = useLocale();
 
   const structuredData = {
@@ -374,7 +374,7 @@ interface ImageStructuredDataProps {
   pageUrl?: string;
 }
 
-export function ImageStructuredData({ image, pageUrl }: ImageStructuredDataProps) {
+export function ImageStructuredData({ image, pageUrl }: Readonly<ImageStructuredDataProps>) {
   const { locale } = useLocale();
 
   const structuredData = {
@@ -398,7 +398,7 @@ interface GalleryStructuredDataProps {
   pageUrl?: string;
 }
 
-export function GalleryStructuredData({ images, pageUrl }: GalleryStructuredDataProps) {
+export function GalleryStructuredData({ images, pageUrl }: Readonly<GalleryStructuredDataProps>) {
   const { locale } = useLocale();
 
   const structuredData = {

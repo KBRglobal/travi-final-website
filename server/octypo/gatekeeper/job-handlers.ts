@@ -8,6 +8,13 @@ import { db } from "../../db";
 import { contents, articles } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import { getGatekeeperOrchestrator } from "./orchestrator";
+
+/** Convert tier to job priority (lower = higher priority) */
+function tierToPriority(tier: string): number {
+  if (tier === "S1") return 1;
+  if (tier === "S2") return 2;
+  return 4;
+}
 import { getOctypoOrchestrator } from "../orchestration/orchestrator";
 import { onContentStatusChange } from "../../localization/publish-hooks";
 import { logger } from "../../lib/logger";
@@ -170,7 +177,7 @@ async function handleWriteJob(
         contentId: contentRecord.id,
         revisionCount: 0,
       },
-      { priority: data.tier === "S1" ? 1 : data.tier === "S2" ? 2 : 4 }
+      { priority: tierToPriority(data.tier) }
     );
 
     return {
@@ -580,7 +587,7 @@ async function handleAttractionWriteJob(
         contentId: contentRecord.id,
         revisionCount: 0,
       },
-      { priority: data.tier === "S1" ? 1 : data.tier === "S2" ? 2 : 4 }
+      { priority: tierToPriority(data.tier) }
     );
 
     return {

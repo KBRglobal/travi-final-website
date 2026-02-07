@@ -7,6 +7,8 @@ import type { Express, Response } from "express";
 import { storage } from "../storage";
 import { requireAuth, type AuthRequest } from "../security";
 
+type PriorityLevel = "high" | "medium" | "low";
+
 export function registerIntelligenceRoutes(app: Express): void {
   // ========== Content Intelligence Endpoints ==========
 
@@ -21,14 +23,14 @@ export function registerIntelligenceRoutes(app: Express): void {
         contentId: string;
         contentType: string;
         title: string;
-        gaps: Array<{ type: string; priority: "high" | "medium" | "low"; suggestion: string }>;
+        gaps: Array<{ type: string; priority: PriorityLevel; suggestion: string }>;
       }> = [];
 
       // Check each published content for gaps
       for (const content of publishedContent) {
         const gaps: Array<{
           type: string;
-          priority: "high" | "medium" | "low";
+          priority: PriorityLevel;
           suggestion: string;
         }> = [];
 
@@ -114,7 +116,7 @@ export function registerIntelligenceRoutes(app: Express): void {
         contentType: string;
         title: string;
         reason: string;
-        priority: "high" | "medium" | "low";
+        priority: PriorityLevel;
         lastChecked: string;
       }> = [];
 

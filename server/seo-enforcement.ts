@@ -498,9 +498,7 @@ export function enforceArticleSEO(article: any): any {
   if (!result.analysis?.secondaryKeywords || result.analysis.secondaryKeywords.length === 0) {
     const primaryKeyword = result.analysis?.primaryKeyword || result.meta?.keywords?.[0];
     // FAIL-FAST: Do not use implicit Dubai fallback for keywords
-    if (!primaryKeyword) {
-      /* Intentional no-op: fail-fast when no primary keyword available */
-    } else {
+    if (primaryKeyword) {
       result.analysis = result.analysis || {};
       result.analysis.secondaryKeywords = [
         `${primaryKeyword} guide`,
@@ -514,9 +512,7 @@ export function enforceArticleSEO(article: any): any {
   if (!result.article?.altTexts || result.article.altTexts.length === 0) {
     const topic = result.meta?.title || result.article?.h1;
     // FAIL-FAST: Do not use implicit Dubai fallback for alt texts
-    if (!topic) {
-      /* Intentional no-op: fail-fast when no topic available */
-    } else {
+    if (topic) {
       result.article = result.article || {};
       result.article.altTexts = [
         `${topic} exterior view`,

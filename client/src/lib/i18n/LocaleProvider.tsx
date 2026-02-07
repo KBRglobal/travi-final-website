@@ -11,7 +11,7 @@ interface LocaleProviderProps {
   children: ReactNode;
 }
 
-export function LocaleProvider({ children }: LocaleProviderProps) {
+export function LocaleProvider({ children }: Readonly<LocaleProviderProps>) {
   const [location] = useLocation();
   const [locale, setLocaleState] = useState<Locale>(() => {
     // Try to get locale from URL first

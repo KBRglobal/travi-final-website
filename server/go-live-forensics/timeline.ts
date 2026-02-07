@@ -292,7 +292,7 @@ export function getSummary(): ForensicsSummary {
     bySeverity,
     bySource,
     firstEvent: sorted[0]?.timestamp,
-    lastEvent: sorted[sorted.length - 1]?.timestamp,
+    lastEvent: sorted.at(-1)?.timestamp,
     uniqueActors: actors.size,
   };
 }
@@ -308,7 +308,7 @@ export function getStatus(): ForensicsStatus {
     enabled: isGoLiveForensicsEnabled(),
     totalEvents: eventLog.length,
     oldestEvent: sorted[0]?.timestamp,
-    newestEvent: sorted[sorted.length - 1]?.timestamp,
+    newestEvent: sorted.at(-1)?.timestamp,
     storageUsed,
   };
 }

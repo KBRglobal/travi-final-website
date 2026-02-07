@@ -1116,9 +1116,10 @@ if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEP
     () => {
       const now = Date.now();
       suspiciousIps.forEach((entry, ip) => {
-        if (entry.blockedUntil && entry.blockedUntil < now) {
-          suspiciousIps.delete(ip);
-        } else if (now - entry.lastAttempt > ATTEMPT_WINDOW * 2) {
+        if (
+          (entry.blockedUntil && entry.blockedUntil < now) ||
+          now - entry.lastAttempt > ATTEMPT_WINDOW * 2
+        ) {
           suspiciousIps.delete(ip);
         }
       });
@@ -1273,7 +1274,14 @@ export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
     }
 
     // Check for suspicious port usage (common internal service ports)
-    const port = url.port ? Number.parseInt(url.port, 10) : url.protocol === "https:" ? 443 : 80;
+    let port: number;
+    if (url.port) {
+      port = Number.parseInt(url.port, 10);
+    } else if (url.protocol === "https:") {
+      port = 443;
+    } else {
+      port = 80;
+    }
     const suspiciousPorts = [22, 23, 25, 3306, 5432, 6379, 11211, 27017, 9200, 9300];
     if (suspiciousPorts.includes(port)) {
       return { valid: false, error: `Port ${port} is not allowed for security reasons` };

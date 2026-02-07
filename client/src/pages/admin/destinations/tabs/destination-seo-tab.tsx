@@ -50,7 +50,10 @@ interface DestinationSeoTabProps {
   };
 }
 
-export default function DestinationSeoTab({ destinationId, destination }: DestinationSeoTabProps) {
+export default function DestinationSeoTab({
+  destinationId,
+  destination,
+}: Readonly<DestinationSeoTabProps>) {
   const { toast } = useToast();
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
@@ -112,9 +115,26 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
   const titleLength = metaTitle.length || seoData?.metaTitle?.length || 0;
   const descLength = metaDescription.length || seoData?.metaDescription?.length || 0;
 
-  const titleScore = titleLength >= 30 && titleLength <= 60 ? 100 : titleLength > 0 ? 60 : 0;
-  const descScore = descLength >= 120 && descLength <= 160 ? 100 : descLength > 0 ? 60 : 0;
+  let titleScore: number;
+  if (titleLength >= 30 && titleLength <= 60) titleScore = 100;
+  else if (titleLength > 0) titleScore = 60;
+  else titleScore = 0;
+
+  let descScore: number;
+  if (descLength >= 120 && descLength <= 160) descScore = 100;
+  else if (descLength > 0) descScore = 60;
+  else descScore = 0;
   const overallScore = Math.round((titleScore + descScore) / 2);
+
+  let scoreVariant: "default" | "secondary" | "destructive";
+  if (overallScore >= 80) scoreVariant = "default";
+  else if (overallScore >= 50) scoreVariant = "secondary";
+  else scoreVariant = "destructive";
+
+  let scoreLabel: string;
+  if (overallScore >= 80) scoreLabel = "Good";
+  else if (overallScore >= 50) scoreLabel = "Needs Work";
+  else scoreLabel = "Poor";
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -278,13 +298,7 @@ export default function DestinationSeoTab({ destinationId, destination }: Destin
         <CardContent className="space-y-6">
           <div className="text-center">
             <div className="text-5xl font-bold mb-2">{overallScore}</div>
-            <Badge
-              variant={
-                overallScore >= 80 ? "default" : overallScore >= 50 ? "secondary" : "destructive"
-              }
-            >
-              {overallScore >= 80 ? "Good" : overallScore >= 50 ? "Needs Work" : "Poor"}
-            </Badge>
+            <Badge variant={scoreVariant}>{scoreLabel}</Badge>
           </div>
 
           <div className="space-y-4">

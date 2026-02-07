@@ -52,20 +52,25 @@ export default function OctypoReviewQueuePage() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: reviewData, isLoading, refetch } = useQuery<ReviewQueueResponse>({
-    queryKey: ['/api/octypo/review-queue'],
+  const {
+    data: reviewData,
+    isLoading,
+    refetch,
+  } = useQuery<ReviewQueueResponse>({
+    queryKey: ["/api/octypo/review-queue"],
   });
   const reviewQueue = reviewData?.queue || [];
   const byPriority = reviewData?.byPriority || { high: 0, medium: 0, low: 0 };
 
   const approveMutation = useMutation({
-    mutationFn: (id: string) => apiRequest(`/api/octypo/review-queue/${id}/approve`, { 
-      method: 'POST',
-      body: JSON.stringify({ publishImmediately: false })
-    }),
+    mutationFn: (id: string) =>
+      apiRequest(`/api/octypo/review-queue/${id}/approve`, {
+        method: "POST",
+        body: JSON.stringify({ publishImmediately: false }),
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/octypo/review-queue'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/octypo/content'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/review-queue"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/content"] });
       toast({ title: "Content approved" });
     },
     onError: () => {
@@ -74,12 +79,13 @@ export default function OctypoReviewQueuePage() {
   });
 
   const rejectMutation = useMutation({
-    mutationFn: (id: string) => apiRequest(`/api/octypo/review-queue/${id}/reject`, { 
-      method: 'POST',
-      body: JSON.stringify({ reason: "Needs revision", sendBackToWriter: true })
-    }),
+    mutationFn: (id: string) =>
+      apiRequest(`/api/octypo/review-queue/${id}/reject`, {
+        method: "POST",
+        body: JSON.stringify({ reason: "Needs revision", sendBackToWriter: true }),
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/octypo/review-queue'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/octypo/review-queue"] });
       toast({ title: "Content rejected" });
     },
     onError: () => {
@@ -98,7 +104,9 @@ export default function OctypoReviewQueuePage() {
     <div className="space-y-6" data-testid="octypo-review-queue-page">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold" data-testid="text-page-title">Review Queue</h1>
+          <h1 className="text-2xl font-semibold" data-testid="text-page-title">
+            Review Queue
+          </h1>
           <p className="text-muted-foreground">Review and approve AI-generated content</p>
         </div>
         <Button variant="outline" onClick={() => refetch()} data-testid="button-refresh">
@@ -113,34 +121,48 @@ export default function OctypoReviewQueuePage() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Pending</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-primary" data-testid="text-pending">{stats.pending}</div>
+            <div className="text-3xl font-bold text-primary" data-testid="text-pending">
+              {stats.pending}
+            </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">High Priority</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              High Priority
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold" data-testid="text-in-review">{byPriority.high}</div>
+            <div className="text-3xl font-bold" data-testid="text-in-review">
+              {byPriority.high}
+            </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Medium Priority</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Medium Priority
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-600" data-testid="text-approved-today">{byPriority.medium}</div>
+            <div className="text-3xl font-bold text-green-600" data-testid="text-approved-today">
+              {byPriority.medium}
+            </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Low Priority</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Low Priority
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold" data-testid="text-avg-review-time">{byPriority.low}</div>
+            <div className="text-3xl font-bold" data-testid="text-avg-review-time">
+              {byPriority.low}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -160,11 +182,12 @@ export default function OctypoReviewQueuePage() {
         </Select>
       </div>
 
-      {isLoading ? (
+      {isLoading && (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
-      ) : reviewQueue.length === 0 ? (
+      )}
+      {!isLoading && reviewQueue.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
             <CheckCircle2 className="h-12 w-12 mx-auto text-green-500 mb-4" />
@@ -172,16 +195,17 @@ export default function OctypoReviewQueuePage() {
             <p className="text-muted-foreground">No content pending review at this time.</p>
           </CardContent>
         </Card>
-      ) : (
+      )}
+      {!isLoading && reviewQueue.length > 0 && (
         <div className="space-y-4">
-          {reviewQueue.map((item) => (
+          {reviewQueue.map(item => (
             <Card key={item.id} data-testid={`review-item-${item.id}`}>
               <CardContent className="pt-6">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                   <div className="flex-1 space-y-3">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <Badge 
-                        variant={item.priority === 'high' ? 'destructive' : 'outline'} 
+                      <Badge
+                        variant={item.priority === "high" ? "destructive" : "outline"}
                         className="text-xs"
                       >
                         {item.priority} priority
@@ -198,7 +222,9 @@ export default function OctypoReviewQueuePage() {
                     </div>
 
                     <div>
-                      <h3 className="font-semibold">{item.title || `Content ID: ${item.contentId}`}</h3>
+                      <h3 className="font-semibold">
+                        {item.title || `Content ID: ${item.contentId}`}
+                      </h3>
                       {item.issues && item.issues.length > 0 && (
                         <div className="flex items-center gap-2 mt-2">
                           <AlertCircle className="h-4 w-4 text-orange-500" />
@@ -226,7 +252,7 @@ export default function OctypoReviewQueuePage() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Button 
+                    <Button
                       className="bg-green-500"
                       onClick={() => approveMutation.mutate(item.id)}
                       disabled={approveMutation.isPending}
@@ -239,7 +265,7 @@ export default function OctypoReviewQueuePage() {
                       )}
                       Approve
                     </Button>
-                    <Button 
+                    <Button
                       variant="destructive"
                       onClick={() => rejectMutation.mutate(item.id)}
                       disabled={rejectMutation.isPending}
@@ -252,10 +278,7 @@ export default function OctypoReviewQueuePage() {
                       )}
                       Reject
                     </Button>
-                    <Button 
-                      variant="outline"
-                      data-testid={`button-changes-${item.id}`}
-                    >
+                    <Button variant="outline" data-testid={`button-changes-${item.id}`}>
                       <FileEdit className="h-4 w-4 mr-2" />
                       Changes
                     </Button>

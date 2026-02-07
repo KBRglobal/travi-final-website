@@ -631,11 +631,14 @@ export class SEOAutoFixer {
 
       // Build alt text without assuming specific location
       const cleanTitle = title.replace(/\s*-\s*Complete Guide.*/i, "").replace(/\s*Guide$/i, "");
-      const locationSuffix = location
-        ? ` - scenic view in ${location}`
-        : foundCity
-          ? ` - scenic view in ${foundCity}`
-          : " - scenic travel view";
+      let locationSuffix: string;
+      if (location) {
+        locationSuffix = ` - scenic view in ${location}`;
+      } else if (foundCity) {
+        locationSuffix = ` - scenic view in ${foundCity}`;
+      } else {
+        locationSuffix = " - scenic travel view";
+      }
       const altText = `${cleanTitle}${locationSuffix}`.substring(0, 125);
 
       return {

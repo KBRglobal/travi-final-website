@@ -179,7 +179,7 @@ export function registerHealthRoutes(app: Express): void {
       health.status = health.status === "unhealthy" ? "unhealthy" : "degraded";
     }
 
-    const statusCode = health.status === "healthy" ? 200 : health.status === "degraded" ? 200 : 503;
+    const statusCode = health.status === "unhealthy" ? 503 : 200;
     res.status(statusCode).json(health);
   });
 

@@ -585,7 +585,7 @@ export async function batchGenerateCapsules(
 
             if (
               existing?.qualityScore &&
-              existing.qualityScore >= ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable
+              existing?.qualityScore >= ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable
             ) {
               results.skipped++;
               return;

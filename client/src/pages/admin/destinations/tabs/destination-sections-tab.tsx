@@ -62,7 +62,7 @@ const SECTION_TYPES = {
 export default function DestinationSectionsTab({
   destinationId,
   destination,
-}: DestinationSectionsTabProps) {
+}: Readonly<DestinationSectionsTabProps>) {
   const { toast } = useToast();
 
   const sectionsUrl = `/api/admin/destinations/${destinationId}/sections`;

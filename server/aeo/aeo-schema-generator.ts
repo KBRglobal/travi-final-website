@@ -499,7 +499,7 @@ async function generateHowToSchema(content: any, contentId: string): Promise<any
       currentStep++;
     } else if (block.type === "paragraph" && steps.length > 0) {
       // Add paragraph content to current step
-      const lastStep = steps[steps.length - 1];
+      const lastStep = steps.at(-1)!;
       lastStep.text += (lastStep.text ? " " : "") + (block.content || block.text);
     }
   }

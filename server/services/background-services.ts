@@ -11,6 +11,8 @@
 
 import { log } from "../lib/logger";
 
+type ServiceMode = "off" | "supervised" | "full";
+
 // Service state tracking
 let servicesStarted = false;
 let shutdownHandlers: Array<() => void | Promise<void>> = [];
@@ -35,11 +37,11 @@ interface BackgroundServicesConfig {
     minQualityScore: number;
   };
   seoAutopilotConfig: {
-    mode: "off" | "supervised" | "full";
+    mode: ServiceMode;
     intervalMinutes: number;
   };
   dataDecisionsConfig: {
-    mode: "off" | "supervised" | "full";
+    mode: ServiceMode;
     intervalMinutes: number;
   };
   contentHealthConfig: {
@@ -84,15 +86,13 @@ function getConfig(): BackgroundServicesConfig {
 
     // SEO Autopilot settings
     seoAutopilotConfig: {
-      mode: (process.env.SEO_AUTOPILOT_MODE as "off" | "supervised" | "full") || "supervised",
+      mode: (process.env.SEO_AUTOPILOT_MODE as ServiceMode) || "supervised",
       intervalMinutes: Number.parseInt(process.env.SEO_AUTOPILOT_INTERVAL || "15", 10),
     },
 
     // Data Decisions settings
     dataDecisionsConfig: {
-      mode:
-        (process.env.DATA_DECISIONS_AUTOPILOT_MODE as "off" | "supervised" | "full") ||
-        "supervised",
+      mode: (process.env.DATA_DECISIONS_AUTOPILOT_MODE as ServiceMode) || "supervised",
       intervalMinutes: Number.parseInt(process.env.DATA_DECISIONS_INTERVAL || "5", 10),
     },
 
@@ -493,7 +493,9 @@ export async function getBackgroundServicesStatus(): Promise<{
   try {
     const { getQueueStatus } = await import("../localization/translation-queue");
     const qStatus = await getQueueStatus();
-    translationQueueStatus = qStatus.isRunning ? "running" : qStatus.isPaused ? "paused" : "idle";
+    if (qStatus.isRunning) translationQueueStatus = "running";
+    else if (qStatus.isPaused) translationQueueStatus = "paused";
+    else translationQueueStatus = "idle";
   } catch (error) {
     // Queue not available
     console.error(error);

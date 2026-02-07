@@ -294,7 +294,7 @@ router.post("/paraphrase/variations", async (req: Request, res: Response) => {
         : ["formal", "casual", "technical"];
       results = [];
       for (let i = 0; i < count; i++) {
-        const variationStyle = styles[i % styles.length] as ParaphraseStyle;
+        const variationStyle = styles[i % styles.length];
         const paraphraseResult = await paraphrase(content, variationStyle);
         results.push(paraphraseResult);
       }

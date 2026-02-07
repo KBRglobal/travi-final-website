@@ -548,8 +548,7 @@ export const EvidenceGenerator = {
       byType,
       recentCount,
       oldestTimestamp: evidenceStore.length > 0 ? evidenceStore[0].timestamp : undefined,
-      newestTimestamp:
-        evidenceStore.length > 0 ? evidenceStore[evidenceStore.length - 1].timestamp : undefined,
+      newestTimestamp: evidenceStore.length > 0 ? evidenceStore.at(-1)!.timestamp : undefined,
     };
   },
 

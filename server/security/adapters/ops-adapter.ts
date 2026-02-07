@@ -98,18 +98,18 @@ export const OpsAdapter: SystemAdapter = {
   async onModeChange(config: SecurityModeConfig): Promise<void> {
     const { restrictions } = config;
 
-    if (!restrictions.bulkOperationsAllowed) {
-      bulkOpsFrozen = true;
-    } else {
+    if (restrictions.bulkOperationsAllowed) {
       bulkOpsFrozen = false;
+    } else {
+      bulkOpsFrozen = true;
     }
 
-    if (!restrictions.deploymentAllowed) {
-      deploymentsBlocked = true;
-      cutoversBlocked = true;
-    } else {
+    if (restrictions.deploymentAllowed) {
       deploymentsBlocked = false;
       cutoversBlocked = false;
+    } else {
+      deploymentsBlocked = true;
+      cutoversBlocked = true;
     }
 
     // In lockdown, activate all kill switches

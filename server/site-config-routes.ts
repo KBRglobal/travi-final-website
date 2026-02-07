@@ -752,7 +752,7 @@ router.get("/public/navigation/:slug", async (req: Request, res: Response) => {
       .from(navigationMenus)
       .where(eq(navigationMenus.slug, req.params.slug));
 
-    if (!menu || !menu.isActive) {
+    if (!menu?.isActive) {
       return res.json({ items: [] });
     }
 
@@ -799,7 +799,7 @@ router.get("/public/pages/:slug", async (req: Request, res: Response) => {
   try {
     const [page] = await db.select().from(staticPages).where(eq(staticPages.slug, req.params.slug));
 
-    if (!page || !page.isActive) {
+    if (!page?.isActive) {
       return res.status(404).json({ error: "Page not found" });
     }
 

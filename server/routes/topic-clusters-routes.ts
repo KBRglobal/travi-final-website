@@ -369,24 +369,25 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
         });
 
         // Create article entry with enhanced fields
-        const articleCategory =
-          category === "food" || category === "restaurants" || category === "dining"
-            ? "food"
-            : category === "attractions" || category === "activities"
-              ? "attractions"
-              : category === "hotels" || category === "accommodation"
-                ? "hotels"
-                : category === "transport" ||
-                    category === "transportation" ||
-                    category === "logistics"
-                  ? "transport"
-                  : category === "events" || category === "festivals"
-                    ? "events"
-                    : category === "tips" || category === "guides"
-                      ? "tips"
-                      : category === "shopping" || category === "deals"
-                        ? "shopping"
-                        : "news";
+        const categoryMap: Record<string, string> = {
+          food: "food",
+          restaurants: "food",
+          dining: "food",
+          attractions: "attractions",
+          activities: "attractions",
+          hotels: "hotels",
+          accommodation: "hotels",
+          transport: "transport",
+          transportation: "transport",
+          logistics: "transport",
+          events: "events",
+          festivals: "events",
+          tips: "tips",
+          guides: "tips",
+          shopping: "shopping",
+          deals: "shopping",
+        };
+        const articleCategory = categoryMap[category] || "news";
 
         // Get personality info for article metadata
         const personalityKey = CATEGORY_PERSONALITY_MAPPING[category] || "A";

@@ -207,10 +207,8 @@ export function enforcementLoggingMiddleware(
 ) {
   res.on("finish", () => {
     if (req.autonomy) {
-      if (req.autonomy.decision === "BLOCK") {
-        /* Decision logged at autonomy level - no additional action needed */
-      } else if (req.autonomy.warnings.length > 0) {
-        /* Warnings captured at autonomy level */
+      if (req.autonomy.decision === "BLOCK" || req.autonomy.warnings.length > 0) {
+        /* Decisions and warnings captured at autonomy level - no additional action needed */
       }
     }
   });

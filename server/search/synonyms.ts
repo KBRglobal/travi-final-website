@@ -239,7 +239,10 @@ export const synonymExpander = {
     // Build query with weights (higher weight = more important)
     const weightedTerms = expansion.expanded.map(term => {
       const weight = expansion.weights[term] || 0.5;
-      const boostChar = weight >= 1 ? ":A" : weight >= 0.9 ? ":B" : ":C";
+      let boostChar: string;
+      if (weight >= 1) boostChar = ":A";
+      else if (weight >= 0.9) boostChar = ":B";
+      else boostChar = ":C";
       return `${term}${boostChar}`;
     });
 

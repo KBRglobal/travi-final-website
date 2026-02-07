@@ -232,16 +232,7 @@ function validateSEO(
 
   // Validate title
   const title = input.metaTitle || input.title;
-  if (!title) {
-    issues.push({
-      type: "seo",
-      severity: "critical",
-      field: "title",
-      message: "Title is missing",
-      fix: "Add a descriptive title between 50-60 characters",
-    });
-    results.titleValid = false;
-  } else {
+  if (title) {
     if (title.length < SEO_RULES.title.minLength) {
       warnings.push({
         type: "seo",
@@ -260,20 +251,20 @@ function validateSEO(
       });
       results.titleValid = false;
     }
+  } else {
+    issues.push({
+      type: "seo",
+      severity: "critical",
+      field: "title",
+      message: "Title is missing",
+      fix: "Add a descriptive title between 50-60 characters",
+    });
+    results.titleValid = false;
   }
 
   // Validate meta description
   const metaDesc = input.metaDescription;
-  if (!metaDesc) {
-    issues.push({
-      type: "seo",
-      severity: "major",
-      field: "metaDescription",
-      message: "Meta description is missing",
-      fix: "Add a compelling meta description between 150-155 characters",
-    });
-    results.metaDescriptionValid = false;
-  } else {
+  if (metaDesc) {
     if (metaDesc.length < SEO_RULES.metaDescription.minLength) {
       warnings.push({
         type: "seo",
@@ -291,6 +282,15 @@ function validateSEO(
         fix: "Shorten to prevent truncation in search results",
       });
     }
+  } else {
+    issues.push({
+      type: "seo",
+      severity: "major",
+      field: "metaDescription",
+      message: "Meta description is missing",
+      fix: "Add a compelling meta description between 150-155 characters",
+    });
+    results.metaDescriptionValid = false;
   }
 
   // Validate slug
@@ -385,16 +385,7 @@ function validateAEO(
   };
 
   // Validate answer capsule
-  if (!input.answerCapsule) {
-    issues.push({
-      type: "aeo",
-      severity: "critical",
-      field: "answerCapsule",
-      message: "Answer capsule is missing",
-      fix: "Generate an answer capsule (40-60 words) for AI platform optimization",
-    });
-    results.capsuleValid = false;
-  } else {
+  if (input.answerCapsule) {
     const capsule = input.answerCapsule;
     const wordCount = countWords(capsule);
 
@@ -464,17 +455,19 @@ function validateAEO(
 
     // Calculate quality score
     results.capsuleQuality = calculateCapsuleQuality(capsule);
+  } else {
+    issues.push({
+      type: "aeo",
+      severity: "critical",
+      field: "answerCapsule",
+      message: "Answer capsule is missing",
+      fix: "Generate an answer capsule (40-60 words) for AI platform optimization",
+    });
+    results.capsuleValid = false;
   }
 
   // Validate schema
-  if (!input.schemaMarkup) {
-    warnings.push({
-      type: "aeo",
-      field: "schema",
-      message: "No AEO schema enhancements found",
-      suggestion: "Add FAQPage, HowTo, or other relevant schema types",
-    });
-  } else {
+  if (input.schemaMarkup) {
     // Check for required schema types
     const schemaTypes = extractSchemaTypes(input.schemaMarkup);
     const hasFAQ = schemaTypes.includes("FAQPage");
@@ -498,6 +491,13 @@ function validateAEO(
     }
 
     results.faqPresent = hasFAQ;
+  } else {
+    warnings.push({
+      type: "aeo",
+      field: "schema",
+      message: "No AEO schema enhancements found",
+      suggestion: "Add FAQPage, HowTo, or other relevant schema types",
+    });
   }
 
   // Check first paragraph optimization

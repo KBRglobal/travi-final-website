@@ -241,13 +241,17 @@ export function registerHotelsRoutes(app: Express): void {
       const startIdx = (pageNum - 1) * pageSizeNum;
       const paginatedHotels = hotels.slice(startIdx, startIdx + pageSizeNum);
 
+      let hotelResults: any[];
+      if (paginatedHotels.length > 0) {
+        hotelResults = paginatedHotels;
+      } else if (pageNum === 1) {
+        hotelResults = sampleHotels.slice(0, pageSizeNum);
+      } else {
+        hotelResults = [];
+      }
+
       res.json({
-        hotels:
-          paginatedHotels.length > 0
-            ? paginatedHotels
-            : pageNum === 1
-              ? sampleHotels.slice(0, pageSizeNum)
-              : [],
+        hotels: hotelResults,
         source: paginatedHotels.length > 0 ? "xotelo" : "sample",
         total,
         page: pageNum,

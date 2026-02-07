@@ -38,7 +38,7 @@ function saveFavorites(favorites: FavoriteItem[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
 }
 
-export function FavoritesProvider({ children }: { children: ReactNode }) {
+export function FavoritesProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [mounted, setMounted] = useState(false);
 

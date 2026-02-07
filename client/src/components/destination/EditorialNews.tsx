@@ -101,7 +101,7 @@ function NewsCard({ placement }: Readonly<{ placement: NewsPlacement }>) {
   );
 }
 
-function FeaturedNewsCard({ placement }: { placement: NewsPlacement }) {
+function FeaturedNewsCard({ placement }: Readonly<{ placement: NewsPlacement }>) {
   const contentUrl = `/${placement.content.type}/${placement.content.slug}`;
   const image = placement.image || placement.content.heroImage || placement.content.cardImage;
   const publishedAt = placement.content.publishedAt

@@ -268,7 +268,7 @@ export function mergeIntentSignals(signals: IntentSignal[]): IntentSignal[] {
     merged.push({
       type,
       confidence: avgConfidence,
-      source: hasSearchSource && hasChatSource ? "search" : hasSearchSource ? "search" : "chat",
+      source: hasSearchSource ? "search" : "chat",
       timestamp: latestTimestamp,
     });
   });

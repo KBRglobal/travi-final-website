@@ -73,7 +73,7 @@ async function ensureTableExists(): Promise<void> {
 }
 
 // Initialize table on module load
-ensureTableExists();
+await ensureTableExists();
 
 /**
  * Pre-auth token configuration

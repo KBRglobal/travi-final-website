@@ -45,17 +45,25 @@ interface Destination {
 function getStatusBadge(destination: Destination) {
   const hasHero = !!destination.heroTitle;
   const hasImage = !!(destination.cardImage || destination.heroImage);
-  
+
   if (hasHero && hasImage) {
     return (
-      <Badge variant="default" className="bg-green-600 gap-1" data-testid={`badge-status-complete-${destination.id}`}>
+      <Badge
+        variant="default"
+        className="bg-green-600 gap-1"
+        data-testid={`badge-status-complete-${destination.id}`}
+      >
         <CheckCircle2 className="w-3 h-3" />
         Complete
       </Badge>
     );
   } else if (hasHero || hasImage) {
     return (
-      <Badge variant="secondary" className="bg-amber-500 text-white gap-1" data-testid={`badge-status-partial-${destination.id}`}>
+      <Badge
+        variant="secondary"
+        className="bg-amber-500 text-white gap-1"
+        data-testid={`badge-status-partial-${destination.id}`}
+      >
         <AlertTriangle className="w-3 h-3" />
         Partial
       </Badge>
@@ -78,33 +86,41 @@ export default function DestinationsListPage() {
     queryKey: ["/api/admin/destinations"],
   });
 
-  const filteredDestinations = destinations.filter((dest) => {
+  const filteredDestinations = destinations.filter(dest => {
     const query = searchQuery.toLowerCase().trim();
     // Use startsWith for prefix-based matching (better UX)
-    const matchesSearch = !query || 
+    const matchesSearch =
+      !query ||
       dest.name.toLowerCase().startsWith(query) ||
       dest.country.toLowerCase().startsWith(query);
-    
+
     // Status filter
     const hasHero = !!dest.heroTitle;
     const hasImage = !!(dest.cardImage || dest.heroImage);
-    const status = hasHero && hasImage ? "complete" : (hasHero || hasImage ? "partial" : "empty");
+    let status: "complete" | "partial" | "empty";
+    if (hasHero && hasImage) status = "complete";
+    else if (hasHero || hasImage) status = "partial";
+    else status = "empty";
     const matchesStatus = statusFilter === "all" || status === statusFilter;
-    
+
     // Has images filter
-    const matchesImages = hasImagesFilter === "all" || 
+    const matchesImages =
+      hasImagesFilter === "all" ||
       (hasImagesFilter === "yes" && hasImage) ||
       (hasImagesFilter === "no" && !hasImage);
-    
+
     return matchesSearch && matchesStatus && matchesImages;
   });
 
-  const groupedByCountry = filteredDestinations.reduce((acc, dest) => {
-    const country = dest.country || "Other";
-    if (!acc[country]) acc[country] = [];
-    acc[country].push(dest);
-    return acc;
-  }, {} as Record<string, Destination[]>);
+  const groupedByCountry = filteredDestinations.reduce(
+    (acc, dest) => {
+      const country = dest.country || "Other";
+      if (!acc[country]) acc[country] = [];
+      acc[country].push(dest);
+      return acc;
+    },
+    {} as Record<string, Destination[]>
+  );
 
   const renderContent = () => {
     if (isLoading) {
@@ -143,21 +159,32 @@ export default function DestinationsListPage() {
             <div key={country}>
               <div className="flex items-center gap-2 mb-4">
                 <Globe className="w-5 h-5 text-muted-foreground" />
-                <h2 className="text-lg font-semibold text-foreground" data-testid={`heading-country-${country.toLowerCase().replace(/\s+/g, '-')}`}>
+                <h2
+                  className="text-lg font-semibold text-foreground"
+                  data-testid={`heading-country-${country.toLowerCase().replace(/\s+/g, "-")}`}
+                >
                   {country}
                 </h2>
-                <Badge variant="secondary" data-testid={`badge-count-${country.toLowerCase().replace(/\s+/g, '-')}`}>{dests.length}</Badge>
+                <Badge
+                  variant="secondary"
+                  data-testid={`badge-count-${country.toLowerCase().replace(/\s+/g, "-")}`}
+                >
+                  {dests.length}
+                </Badge>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {dests.map((dest) => (
+                {dests.map(dest => (
                   <Link
                     key={dest.id}
                     href={`/admin/destinations/${dest.id}`}
                     data-testid={`link-destination-${dest.id}`}
                   >
-                    <Card className="overflow-hidden hover-elevate cursor-pointer h-full" data-testid={`card-destination-${dest.id}`}>
+                    <Card
+                      className="overflow-hidden hover-elevate cursor-pointer h-full"
+                      data-testid={`card-destination-${dest.id}`}
+                    >
                       <div className="aspect-video relative bg-muted">
-                        {(dest.cardImage || dest.heroImage) ? (
+                        {dest.cardImage || dest.heroImage ? (
                           <img
                             src={dest.cardImage || dest.heroImage || ""}
                             alt={dest.cardImageAlt || dest.name}
@@ -165,21 +192,28 @@ export default function DestinationsListPage() {
                             data-testid={`img-destination-${dest.id}`}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center" data-testid={`placeholder-destination-${dest.id}`}>
+                          <div
+                            className="w-full h-full flex items-center justify-center"
+                            data-testid={`placeholder-destination-${dest.id}`}
+                          >
                             <MapPin className="w-8 h-8 text-muted-foreground" />
                           </div>
                         )}
-                        <div className="absolute top-2 right-2">
-                          {getStatusBadge(dest)}
-                        </div>
+                        <div className="absolute top-2 right-2">{getStatusBadge(dest)}</div>
                       </div>
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between gap-2">
                           <div className="min-w-0">
-                            <h3 className="font-semibold text-foreground truncate" data-testid={`text-destination-name-${dest.id}`}>
+                            <h3
+                              className="font-semibold text-foreground truncate"
+                              data-testid={`text-destination-name-${dest.id}`}
+                            >
                               {dest.name}
                             </h3>
-                            <p className="text-sm text-muted-foreground truncate" data-testid={`text-destination-country-${dest.id}`}>
+                            <p
+                              className="text-sm text-muted-foreground truncate"
+                              data-testid={`text-destination-country-${dest.id}`}
+                            >
                               {dest.country}
                             </p>
                           </div>
@@ -223,33 +257,53 @@ export default function DestinationsListPage() {
             <Input
               placeholder="Search destinations..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-10"
               data-testid="input-search-destinations"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+            <Select
+              value={statusFilter}
+              onValueChange={v => setStatusFilter(v as typeof statusFilter)}
+            >
               <SelectTrigger className="w-32" data-testid="select-status-filter">
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all" data-testid="select-status-option-all">All Status</SelectItem>
-                <SelectItem value="complete" data-testid="select-status-option-complete">Complete</SelectItem>
-                <SelectItem value="partial" data-testid="select-status-option-partial">Partial</SelectItem>
-                <SelectItem value="empty" data-testid="select-status-option-empty">Empty</SelectItem>
+                <SelectItem value="all" data-testid="select-status-option-all">
+                  All Status
+                </SelectItem>
+                <SelectItem value="complete" data-testid="select-status-option-complete">
+                  Complete
+                </SelectItem>
+                <SelectItem value="partial" data-testid="select-status-option-partial">
+                  Partial
+                </SelectItem>
+                <SelectItem value="empty" data-testid="select-status-option-empty">
+                  Empty
+                </SelectItem>
               </SelectContent>
             </Select>
-            <Select value={hasImagesFilter} onValueChange={(v) => setHasImagesFilter(v as typeof hasImagesFilter)}>
+            <Select
+              value={hasImagesFilter}
+              onValueChange={v => setHasImagesFilter(v as typeof hasImagesFilter)}
+            >
               <SelectTrigger className="w-32" data-testid="select-images-filter">
                 <Image className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Images" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all" data-testid="select-images-option-all">All</SelectItem>
-                <SelectItem value="yes" data-testid="select-images-option-yes">Has Image</SelectItem>
-                <SelectItem value="no" data-testid="select-images-option-no">No Image</SelectItem>
+                <SelectItem value="all" data-testid="select-images-option-all">
+                  All
+                </SelectItem>
+                <SelectItem value="yes" data-testid="select-images-option-yes">
+                  Has Image
+                </SelectItem>
+                <SelectItem value="no" data-testid="select-images-option-no">
+                  No Image
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

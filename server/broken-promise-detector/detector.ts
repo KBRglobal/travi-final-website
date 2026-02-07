@@ -21,6 +21,18 @@ import { PROMISE_PATTERNS } from "./types";
 // Cache for analyzed content
 const analysisCache = new Map<string, PromiseAnalysis>();
 
+/** Helper to select recommendation text by promise status */
+function recommendationByStatus(
+  status: PromiseStatus,
+  brokenMsg: string,
+  partialMsg: string,
+  keptMsg: string
+): string {
+  if (status === "broken") return brokenMsg;
+  if (status === "partial") return partialMsg;
+  return keptMsg;
+}
+
 /**
  * Analyze content for broken promises
  */
@@ -150,12 +162,12 @@ function detectPromise(
       severity,
       status,
       confidence,
-      recommendation:
-        status === "broken"
-          ? `Add ${promisedCount - deliveredCount} more items or update the title`
-          : status === "partial"
-            ? `Consider adding more items or adjusting the promised count`
-            : "Promise fulfilled",
+      recommendation: recommendationByStatus(
+        status,
+        `Add ${promisedCount - deliveredCount} more items or update the title`,
+        "Consider adding more items or adjusting the promised count",
+        "Promise fulfilled"
+      ),
       detectedAt: new Date(),
     };
   }
@@ -181,12 +193,12 @@ function detectPromise(
       severity: status === "broken" ? "major" : "minor",
       status,
       confidence: 75,
-      recommendation:
-        status === "broken"
-          ? "Add numbered steps or clear instructions"
-          : status === "partial"
-            ? "Consider adding more explicit step formatting"
-            : "How-to format is adequate",
+      recommendation: recommendationByStatus(
+        status,
+        "Add numbered steps or clear instructions",
+        "Consider adding more explicit step formatting",
+        "How-to format is adequate"
+      ),
       detectedAt: new Date(),
     };
   }
@@ -219,12 +231,12 @@ function detectPromise(
       severity,
       status,
       confidence: 70,
-      recommendation:
-        status === "broken"
-          ? "Add more content sections to fulfill comprehensive promise"
-          : status === "partial"
-            ? "Consider expanding content depth"
-            : "Content appears comprehensive",
+      recommendation: recommendationByStatus(
+        status,
+        "Add more content sections to fulfill comprehensive promise",
+        "Consider expanding content depth",
+        "Content appears comprehensive"
+      ),
       detectedAt: new Date(),
     };
   }
@@ -257,9 +269,13 @@ function calculateTrustScore(promises: Omit<BrokenPromise, "id" | "contentId">[]
   let score = 100;
   for (const promise of promises) {
     if (promise.status === "broken") {
-      score -= promise.severity === "critical" ? 30 : promise.severity === "major" ? 20 : 10;
+      if (promise.severity === "critical") score -= 30;
+      else if (promise.severity === "major") score -= 20;
+      else score -= 10;
     } else if (promise.status === "partial") {
-      score -= promise.severity === "critical" ? 15 : promise.severity === "major" ? 10 : 5;
+      if (promise.severity === "critical") score -= 15;
+      else if (promise.severity === "major") score -= 10;
+      else score -= 5;
     }
   }
 

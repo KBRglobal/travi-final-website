@@ -7,6 +7,8 @@
 import type { Express, Request, Response } from "express";
 import { publicSearch, getSearchSuggestions } from "../search/search-service";
 
+type SearchResultType = "destination" | "hotel" | "article" | "category";
+
 export function registerPublicSearchRoutes(app: Express): void {
   /**
    * Public Search Endpoint
@@ -23,12 +25,12 @@ export function registerPublicSearchRoutes(app: Express): void {
       const limit = Math.min(Number.parseInt(req.query.limit as string) || 10, 50);
 
       // Parse types array from query params
-      let types: ("destination" | "hotel" | "article" | "category")[] | undefined;
+      let types: SearchResultType[] | undefined;
       if (req.query.types) {
         const typesParam = Array.isArray(req.query.types) ? req.query.types : [req.query.types];
-        types = typesParam.filter((t): t is "destination" | "hotel" | "article" | "category" =>
+        types = typesParam.filter((t): t is SearchResultType =>
           ["destination", "hotel", "article", "category"].includes(t as string)
-        ) as ("destination" | "hotel" | "article" | "category")[];
+        ) as SearchResultType[];
       }
 
       const result = await publicSearch({

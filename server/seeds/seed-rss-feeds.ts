@@ -653,15 +653,14 @@ Examples:
     process.exit(0);
   }
 
-  seedRssFeeds({ dryRun, skipExisting: !force, clean })
-    .then(results => {
-      console.info("\n✨ Done!");
-      process.exit(results.errors.length > 0 ? 1 : 0);
-    })
-    .catch(error => {
-      console.error("❌ Seed failed:", error);
-      process.exit(1);
-    });
+  try {
+    const results = await seedRssFeeds({ dryRun, skipExisting: !force, clean });
+    console.info("\n✨ Done!");
+    process.exit(results.errors.length > 0 ? 1 : 0);
+  } catch (error) {
+    console.error("❌ Seed failed:", error);
+    process.exit(1);
+  }
 }
 
 // Export the feed list for reference

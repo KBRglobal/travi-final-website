@@ -10,11 +10,20 @@ import { docUploadService } from "./doc-upload-service";
 import { db } from "./db";
 import { hotels, articles, attractions } from "@shared/schema";
 
+type DocContentType = "hotel" | "article" | "attraction" | "dining" | "district";
+
 // Security: Sanitize user input for logging to prevent log injection
 function sanitizeForLog(input: string): string {
   if (!input) return "";
   // Remove newlines, carriage returns, and null bytes to prevent log injection
   return input.replace(/[\r\n\x00]/g, "").substring(0, 200);
+}
+
+/** Map contentType to default article category */
+function defaultCategoryForType(contentType: string): string {
+  if (contentType === "dining") return "Dining";
+  if (contentType === "district") return "Districts";
+  return "General";
 }
 
 // SECURITY: Define valid file types - MIME type MUST match expected extension
@@ -73,12 +82,7 @@ export function registerDocUploadRoutes(app: Express) {
         return res.status(400).json({ error: "No file uploaded" });
       }
 
-      const contentType = (req.body.contentType || "article") as
-        | "hotel"
-        | "article"
-        | "attraction"
-        | "dining"
-        | "district";
+      const contentType = (req.body.contentType || "article") as DocContentType;
 
       const result = await docUploadService.processDocUpload(req.file.buffer, contentType, {
         overrideTitle: req.body.title,
@@ -113,12 +117,7 @@ export function registerDocUploadRoutes(app: Express) {
         return res.status(400).json({ error: "No file uploaded" });
       }
 
-      const contentType = (req.body.contentType || "article") as
-        | "hotel"
-        | "article"
-        | "attraction"
-        | "dining"
-        | "district";
+      const contentType = (req.body.contentType || "article") as DocContentType;
       const locale = req.body.locale || "en";
       const category = req.body.category;
 
@@ -172,13 +171,7 @@ export function registerDocUploadRoutes(app: Express) {
             metaDescription: result.content.metaDescription,
             summary: result.content.summary,
             content: result.content.content,
-            category:
-              category ||
-              (contentType === "dining"
-                ? "Dining"
-                : contentType === "district"
-                  ? "Districts"
-                  : "General"),
+            category: category || defaultCategoryForType(contentType),
             quickFacts: result.content.quickFacts,
             proTips: result.content.proTips,
             faqs: result.content.faqs,

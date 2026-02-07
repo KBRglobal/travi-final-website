@@ -22,14 +22,8 @@ export const SEOAdapter: SystemAdapter = {
   async onThreatEscalation(threat: ThreatState): Promise<void> {
     switch (threat.level) {
       case "critical":
-        // Immediately block all publishing
-        isPaused = true;
-        isPublishingBlocked = true;
-
-        break;
-
       case "high":
-        // Pause autopilot, block auto-publishing
+        // Immediately block all publishing and pause autopilot
         isPaused = true;
         isPublishingBlocked = true;
 
@@ -55,10 +49,10 @@ export const SEOAdapter: SystemAdapter = {
   async onModeChange(config: SecurityModeConfig): Promise<void> {
     const { restrictions } = config;
 
-    if (!restrictions.autopilotAllowed) {
-      isPaused = true;
-    } else {
+    if (restrictions.autopilotAllowed) {
       isPaused = false;
+    } else {
+      isPaused = true;
     }
 
     // In lockdown, block all publishing

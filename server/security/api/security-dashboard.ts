@@ -9,6 +9,8 @@
  * - Key risk indicators
  */
 
+type TrendDirection = "improving" | "stable" | "degrading";
+
 import { Router } from "express";
 import {
   getSecurityMode,
@@ -51,7 +53,7 @@ export interface ExecutiveDashboard {
   threatLevel: {
     level: string;
     score: number;
-    trend: "improving" | "stable" | "degrading";
+    trend: TrendDirection;
   };
   incidents: {
     active: number;
@@ -234,12 +236,12 @@ class SecurityDashboardService {
   private async getThreatStatus(): Promise<{
     level: string;
     score: number;
-    trend: "improving" | "stable" | "degrading";
+    trend: TrendDirection;
   }> {
     const threat = await assessThreatLevel();
 
     // Determine trend (would compare with historical data)
-    const trend: "improving" | "stable" | "degrading" = "stable";
+    const trend: TrendDirection = "stable";
 
     return {
       level: threat.level,
@@ -320,29 +322,38 @@ class SecurityDashboardService {
     const approvalMetrics = getApprovalSafetyMetrics();
     const policyLint = lintPolicies();
 
+    let anomalyStatus: "critical" | "warning" | "good";
+    if (intel.anomaliesLast24h > 20) anomalyStatus = "critical";
+    else if (intel.anomaliesLast24h > 10) anomalyStatus = "warning";
+    else anomalyStatus = "good";
+
+    let highRiskStatus: "critical" | "warning" | "good";
+    if (highRiskUsers.length > 5) highRiskStatus = "critical";
+    else if (highRiskUsers.length > 2) highRiskStatus = "warning";
+    else highRiskStatus = "good";
+
+    let policyStatus: "critical" | "warning" | "good";
+    if (policyLint.score < 70) policyStatus = "critical";
+    else if (policyLint.score < 90) policyStatus = "warning";
+    else policyStatus = "good";
+
     return [
       {
         name: "Anomalies Detected (24h)",
         value: intel.anomaliesLast24h,
-        status:
-          intel.anomaliesLast24h > 20
-            ? "critical"
-            : intel.anomaliesLast24h > 10
-              ? "warning"
-              : "good",
+        status: anomalyStatus,
         trend: "stable",
       },
       {
         name: "High-Risk Users",
         value: highRiskUsers.length,
-        status:
-          highRiskUsers.length > 5 ? "critical" : highRiskUsers.length > 2 ? "warning" : "good",
+        status: highRiskStatus,
       },
       {
         name: "Policy Health Score",
         value: policyLint.score,
         unit: "%",
-        status: policyLint.score < 70 ? "critical" : policyLint.score < 90 ? "warning" : "good",
+        status: policyStatus,
       },
       {
         name: "Approval Requests (24h)",

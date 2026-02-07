@@ -270,7 +270,10 @@ function usePreferredMotion() {
   return !prefersReducedMotion;
 }
 
-function DestinationChip({ destination, index }: { destination: Destination; index: number }) {
+function DestinationChip({
+  destination,
+  index,
+}: Readonly<{ destination: Destination; index: number }>) {
   const { t } = useTranslation();
   const shouldAnimate = usePreferredMotion();
   const { localePath } = useLocale();

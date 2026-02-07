@@ -180,7 +180,7 @@ if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEP
  * Generate unique event ID
  */
 function generateEventId(): string {
-  return `abuse_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `abuse_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
 
 /**

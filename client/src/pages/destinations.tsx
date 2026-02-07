@@ -71,7 +71,10 @@ function usePreferredMotion() {
   return !prefersReducedMotion;
 }
 
-function DestinationChip({ destination, index }: { destination: APIDestination; index: number }) {
+function DestinationChip({
+  destination,
+  index,
+}: Readonly<{ destination: APIDestination; index: number }>) {
   const shouldAnimate = usePreferredMotion();
 
   return (
@@ -113,7 +116,7 @@ function DestinationChip({ destination, index }: { destination: APIDestination; 
   );
 }
 
-function LightHero({ destinations }: { destinations: APIDestination[] }) {
+function LightHero({ destinations }: Readonly<{ destinations: APIDestination[] }>) {
   const { t } = useTranslation();
   const shouldAnimate = usePreferredMotion();
   const destinationCount = destinations.length;
@@ -277,7 +280,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
   );
 }
 
-function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) {
+function FeaturedCarousel({ destinations }: Readonly<{ destinations: APIDestination[] }>) {
   const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -452,7 +455,10 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
   );
 }
 
-function DestinationCard({ destination, index }: { destination: APIDestination; index: number }) {
+function DestinationCard({
+  destination,
+  index,
+}: Readonly<{ destination: APIDestination; index: number }>) {
   const { t } = useTranslation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -595,7 +601,7 @@ function LoadingState() {
   );
 }
 
-function ErrorState({ onRetry }: { onRetry: () => void }) {
+function ErrorState({ onRetry }: Readonly<{ onRetry: () => void }>) {
   const { t } = useTranslation();
 
   return (

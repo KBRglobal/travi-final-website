@@ -266,7 +266,7 @@ function transformApiResponse(
   slug: string,
   destinationMeta: DestinationMetadata | null
 ): DestinationData | null {
-  if (!apiResponse || !apiResponse.attractions || apiResponse.attractions.length === 0) {
+  if (!apiResponse?.attractions || apiResponse.attractions.length === 0) {
     return null;
   }
 

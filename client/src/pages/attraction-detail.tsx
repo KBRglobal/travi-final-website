@@ -117,7 +117,7 @@ function AttractionDetailSkeleton() {
   );
 }
 
-function AttractionError({ message }: { message: string }) {
+function AttractionError({ message }: Readonly<{ message: string }>) {
   return (
     <div className="min-h-screen bg-background" data-testid="error-container">
       <style dangerouslySetInnerHTML={{ __html: heroAnimationStyles }} />
@@ -150,13 +150,13 @@ function HeroSection({
   destination,
   onAffiliateClick,
   localePath,
-}: {
+}: Readonly<{
   attraction: TiqetsAttraction;
   heroImage: string;
   destination: string;
   onAffiliateClick: () => void;
   localePath: (path: string) => string;
-}) {
+}>) {
   const title = attraction.h1Title || attraction.title;
   const rating = attraction.tiqetsRating || "4.5";
   const reviewCount = attraction.tiqetsReviewCount || 0;
@@ -300,10 +300,10 @@ interface TicketOption {
 function LivePricingWidget({
   attraction,
   onAffiliateClick,
-}: {
+}: Readonly<{
   attraction: TiqetsAttraction;
   onAffiliateClick: () => void;
-}) {
+}>) {
   const highlights = attraction.highlights || attraction.tiqetsHighlights || [];
   const hasFreeCancellation =
     attraction.cancellationPolicy?.toLowerCase().includes("free") ||
@@ -443,7 +443,7 @@ function LivePricingWidget({
   );
 }
 
-function IntroductionSection({ attraction }: { attraction: TiqetsAttraction }) {
+function IntroductionSection({ attraction }: Readonly<{ attraction: TiqetsAttraction }>) {
   const title = attraction.title;
   const description = attraction.description || attraction.tiqetsDescription || "";
   const aiContent = attraction.aiContent as AIContent | null;
@@ -507,7 +507,7 @@ function IntroductionSection({ attraction }: { attraction: TiqetsAttraction }) {
   );
 }
 
-function QuickFactsBox({ attraction }: { attraction: TiqetsAttraction }) {
+function QuickFactsBox({ attraction }: Readonly<{ attraction: TiqetsAttraction }>) {
   const facts = [
     {
       icon: MapPin,
@@ -601,10 +601,10 @@ function QuickFactsBox({ attraction }: { attraction: TiqetsAttraction }) {
 function TicketOptionsTable({
   attraction,
   onAffiliateClick,
-}: {
+}: Readonly<{
   attraction: TiqetsAttraction;
   onAffiliateClick: () => void;
-}) {
+}>) {
   const ticketOptions = [
     {
       type: "Standard Entry",
@@ -724,7 +724,7 @@ function TicketOptionsTable({
   );
 }
 
-function WhatToExpectSection({ attraction }: { attraction: TiqetsAttraction }) {
+function WhatToExpectSection({ attraction }: Readonly<{ attraction: TiqetsAttraction }>) {
   const tiqetsImages = (attraction.tiqetsImages as TiqetsImage[]) || [];
   const aiContent = attraction.aiContent as AIContent | null;
 
@@ -826,7 +826,7 @@ function WhatToExpectSection({ attraction }: { attraction: TiqetsAttraction }) {
   );
 }
 
-function VisitorTipsSection({ attraction }: { attraction: TiqetsAttraction }) {
+function VisitorTipsSection({ attraction }: Readonly<{ attraction: TiqetsAttraction }>) {
   const aiContent = attraction.aiContent as AIContent | null;
 
   const defaultTips: AIContentItem[] = [
@@ -896,7 +896,7 @@ function VisitorTipsSection({ attraction }: { attraction: TiqetsAttraction }) {
   );
 }
 
-function HowToGetThereSection({ attraction }: { attraction: TiqetsAttraction }) {
+function HowToGetThereSection({ attraction }: Readonly<{ attraction: TiqetsAttraction }>) {
   const aiContent = attraction.aiContent as AIContent | null;
 
   const defaultTransport: AIContentTransport[] = [
@@ -1012,7 +1012,10 @@ function HowToGetThereSection({ attraction }: { attraction: TiqetsAttraction }) 
   );
 }
 
-function FAQSection({ faqs, attractionName }: { faqs: FAQItem[] | null; attractionName: string }) {
+function FAQSection({
+  faqs,
+  attractionName,
+}: Readonly<{ faqs: FAQItem[] | null; attractionName: string }>) {
   const defaultFaqs: FAQItem[] = [
     {
       question: `How do I book tickets for ${attractionName}?`,
@@ -1081,11 +1084,11 @@ function RelatedAttractionsSection({
   attractions,
   currentCity,
   localePath,
-}: {
+}: Readonly<{
   attractions: TiqetsAttraction[];
   currentCity: string;
   localePath: (path: string) => string;
-}) {
+}>) {
   if (!attractions || attractions.length === 0) return null;
 
   return (
@@ -1170,11 +1173,11 @@ function StickyBookingCTA({
   attractionName,
   productUrl,
   onAffiliateClick,
-}: {
+}: Readonly<{
   attractionName: string;
   productUrl?: string | null;
   onAffiliateClick: () => void;
-}) {
+}>) {
   if (!productUrl) return null;
 
   return (

@@ -274,18 +274,23 @@ router.get("/system-status", async (_req: Request, res: Response) => {
   try {
     const status = await getLocalizationSystemStatus();
 
+    let message: string;
+    if (status.status === "blocked_ai") {
+      message =
+        "Localization system infrastructure is COMPLETE. AI providers are currently unavailable.";
+    } else if (status.status === "running") {
+      message = "Content generation is in progress.";
+    } else {
+      message = "Localization system is ready for content generation.";
+    }
+
     return res.json({
       success: true,
       systemStatus: status.status,
       infrastructure: status.infrastructure,
       aiProviders: status.aiProviders,
       execution: status.execution,
-      message:
-        status.status === "blocked_ai"
-          ? "Localization system infrastructure is COMPLETE. AI providers are currently unavailable."
-          : status.status === "running"
-            ? "Content generation is in progress."
-            : "Localization system is ready for content generation.",
+      message,
     });
   } catch (error) {
     return res.status(500).json({

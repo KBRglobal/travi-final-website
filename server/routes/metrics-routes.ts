@@ -83,7 +83,7 @@ function registerMetric(name: string, help: string, type: Metric["type"]) {
  */
 export function incCounter(name: string, value: number = 1, labels: Record<string, string> = {}) {
   const metric = metrics.get(name);
-  if (!metric || metric.type !== "counter") return;
+  if (metric?.type !== "counter") return;
 
   const labelKey = JSON.stringify(labels);
   const existing = metric.values.find(v => JSON.stringify(v.labels) === labelKey);
@@ -101,7 +101,7 @@ export function incCounter(name: string, value: number = 1, labels: Record<strin
  */
 export function setGauge(name: string, value: number, labels: Record<string, string> = {}) {
   const metric = metrics.get(name);
-  if (!metric || metric.type !== "gauge") return;
+  if (metric?.type !== "gauge") return;
 
   const labelKey = JSON.stringify(labels);
   const existing = metric.values.find(v => JSON.stringify(v.labels) === labelKey);
@@ -120,7 +120,7 @@ export function setGauge(name: string, value: number, labels: Record<string, str
 export function observeHistogram(name: string, value: number, labels: Record<string, string> = {}) {
   // For simplicity, we'll track sum and count
   const metric = metrics.get(name);
-  if (!metric || metric.type !== "histogram") return;
+  if (metric?.type !== "histogram") return;
 
   const sumName = `${name}_sum`;
   const countName = `${name}_count`;

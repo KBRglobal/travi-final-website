@@ -72,7 +72,7 @@ interface MultiTabProviderProps {
   children: ReactNode;
 }
 
-export function MultiTabProvider({ children }: MultiTabProviderProps) {
+export function MultiTabProvider({ children }: Readonly<MultiTabProviderProps>) {
   const [tabs, setTabs] = useState<EditorTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
 
@@ -180,7 +180,7 @@ interface TabBarProps {
   className?: string;
 }
 
-export function EditorTabBar({ className }: TabBarProps) {
+export function EditorTabBar({ className }: Readonly<TabBarProps>) {
   const [, navigate] = useLocation();
   const { tabs, activeTabId, closeTab, closeOtherTabs, closeAllTabs, setActiveTab } = useMultiTab();
 
@@ -329,7 +329,7 @@ interface TabCountBadgeProps {
   className?: string;
 }
 
-export function TabCountBadge({ className }: TabCountBadgeProps) {
+export function TabCountBadge({ className }: Readonly<TabCountBadgeProps>) {
   const context = useMultiTabOptional();
 
   if (!context || context.tabs.length === 0) return null;

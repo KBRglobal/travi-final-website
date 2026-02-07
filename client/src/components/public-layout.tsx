@@ -24,7 +24,7 @@ export function PageContainer({
   className,
   navVariant = "default",
   navTone = "dark",
-}: PageContainerProps) {
+}: Readonly<PageContainerProps>) {
   const { isRTL } = useLocale();
 
   return (
@@ -66,7 +66,7 @@ export function Section({
   variant = "default",
   className,
   id,
-}: SectionProps) {
+}: Readonly<SectionProps>) {
   const { isRTL } = useLocale();
 
   const variantClasses = {
@@ -139,7 +139,7 @@ export function ContentCard({
   className,
   aspectRatio = "video",
   showGradientOverlay = true,
-}: ContentCardProps) {
+}: Readonly<ContentCardProps>) {
   const { localePath, isRTL } = useLocale();
 
   const aspectClasses = {
@@ -231,7 +231,7 @@ interface CategoryGridProps {
   className?: string;
 }
 
-export function CategoryGrid({ children, columns = 3, className }: CategoryGridProps) {
+export function CategoryGrid({ children, columns = 3, className }: Readonly<CategoryGridProps>) {
   const columnClasses = {
     2: "grid-cols-1 sm:grid-cols-2",
     3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
@@ -270,7 +270,7 @@ export function ContentSection({
   children,
   className,
   id,
-}: ContentSectionProps) {
+}: Readonly<ContentSectionProps>) {
   return (
     <Section title={title} subtitle={subtitle} variant={variant} className={className} id={id}>
       <CategoryGrid columns={columns}>{children}</CategoryGrid>

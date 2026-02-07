@@ -141,7 +141,11 @@ const HERO_GUIDES = [
 ];
 
 // Enhanced guide card with premium styling
-function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; index: number }) {
+function GuideCard({
+  guide,
+  locale,
+  index,
+}: Readonly<{ guide: Guide; locale: string; index: number }>) {
   const destinationId = guide.slug.replace("-travel-guide", "");
   const cardImage = `/cards/${destinationId}.webp`;
   const guideUrl = `/guides/${guide.slug}?locale=${locale}`;
@@ -237,7 +241,7 @@ function GuideCard({ guide, locale, index }: { guide: Guide; locale: string; ind
 }
 
 // Featured guide spotlight card
-function FeaturedGuideCard({ guide, locale }: { guide: Guide; locale: string }) {
+function FeaturedGuideCard({ guide, locale }: Readonly<{ guide: Guide; locale: string }>) {
   const destinationId = guide.slug.replace("-travel-guide", "");
   const cardImage = `/cards/${destinationId}.webp`;
   const guideUrl = `/guides/${guide.slug}?locale=${locale}`;

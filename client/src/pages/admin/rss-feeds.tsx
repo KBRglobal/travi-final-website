@@ -380,7 +380,7 @@ export default function RssFeedsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {feedsLoading ? (
+          {feedsLoading && (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -398,7 +398,8 @@ export default function RssFeedsPage() {
                 ))}
               </TableBody>
             </Table>
-          ) : feeds.length === 0 ? (
+          )}
+          {!feedsLoading && feeds.length === 0 && (
             <div className="text-center py-12">
               <Rss className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">No RSS Feeds</h3>
@@ -410,7 +411,8 @@ export default function RssFeedsPage() {
                 Add Your First Feed
               </Button>
             </div>
-          ) : (
+          )}
+          {!feedsLoading && feeds.length > 0 && (
             <Table>
               <TableHeader>
                 <TableRow>

@@ -288,7 +288,10 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
     const titleLower = result.title.toLowerCase();
     const titleMatch = queryTerms.some(term => titleLower === term);
     const titleContains = queryTerms.some(term => titleLower.includes(term));
-    const titleMatchBoost = titleMatch ? 2 : titleContains ? 1.3 : 1;
+    let titleMatchBoost: number;
+    if (titleMatch) titleMatchBoost = 2;
+    else if (titleContains) titleMatchBoost = 1.3;
+    else titleMatchBoost = 1;
 
     const matchedTerms = queryTerms.filter(
       term =>
@@ -401,7 +404,18 @@ export async function debugContentForQuery(
 
   const reasons: string[] = [];
 
-  if (!result) {
+  if (result) {
+    reasons.push(
+      `Content ranked #${rank} out of ${debugResult.results.length} results`,
+      `Adjusted score: ${result.adjustedScore.toFixed(2)} (base: ${result.baseScore.toFixed(2)})`
+    );
+
+    if (result.matchDetails.titleMatch) {
+      reasons.push("Title exactly matches a query term (+2.0x boost)");
+    } else if (result.matchDetails.titleContains) {
+      reasons.push("Title contains query term (+1.3x boost)");
+    }
+  } else {
     reasons.push(
       "Content was not returned in search results",
       `Query "${query}" may not match the content's title or description`
@@ -412,17 +426,6 @@ export async function debugContentForQuery(
       reasons.push(
         `Search filtered to content types: ${(debugResult.intentClassification.suggestedFilters.contentTypes as string[]).join(", ")}`
       );
-    }
-  } else {
-    reasons.push(
-      `Content ranked #${rank} out of ${debugResult.results.length} results`,
-      `Adjusted score: ${result.adjustedScore.toFixed(2)} (base: ${result.baseScore.toFixed(2)})`
-    );
-
-    if (result.matchDetails.titleMatch) {
-      reasons.push("Title exactly matches a query term (+2.0x boost)");
-    } else if (result.matchDetails.titleContains) {
-      reasons.push("Title contains query term (+1.3x boost)");
     }
   }
 

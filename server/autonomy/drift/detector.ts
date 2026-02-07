@@ -115,13 +115,16 @@ export function analyzeFeatureForDrift(
 
     // Override spike detection (compare to baseline)
     if (baselineMetrics) {
-      const overrideChange =
-        baselineMetrics.overrideRate > 0
-          ? (currentMetrics.overrideRate - baselineMetrics.overrideRate) /
-            baselineMetrics.overrideRate
-          : currentMetrics.overrideRate > 0
-            ? 1
-            : 0;
+      let overrideChange: number;
+      if (baselineMetrics.overrideRate > 0) {
+        overrideChange =
+          (currentMetrics.overrideRate - baselineMetrics.overrideRate) /
+          baselineMetrics.overrideRate;
+      } else if (currentMetrics.overrideRate > 0) {
+        overrideChange = 1;
+      } else {
+        overrideChange = 0;
+      }
 
       if (overrideChange > config.thresholds.overrideSpikeThreshold) {
         drifts.push(
@@ -143,13 +146,16 @@ export function analyzeFeatureForDrift(
       }
 
       // Incident spike detection
-      const incidentChange =
-        baselineMetrics.incidentRate > 0
-          ? (currentMetrics.incidentRate - baselineMetrics.incidentRate) /
-            baselineMetrics.incidentRate
-          : currentMetrics.incidentRate > 0
-            ? 1
-            : 0;
+      let incidentChange: number;
+      if (baselineMetrics.incidentRate > 0) {
+        incidentChange =
+          (currentMetrics.incidentRate - baselineMetrics.incidentRate) /
+          baselineMetrics.incidentRate;
+      } else if (currentMetrics.incidentRate > 0) {
+        incidentChange = 1;
+      } else {
+        incidentChange = 0;
+      }
 
       if (incidentChange > config.thresholds.incidentSpikeThreshold) {
         drifts.push(

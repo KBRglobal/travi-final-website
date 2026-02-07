@@ -27,7 +27,7 @@ async function ensureSessionTable(): Promise<void> {
 }
 
 // Initialize session table on module load
-ensureSessionTable();
+await ensureSessionTable();
 
 // Only attempt OIDC discovery when running inside Replit (REPL_ID exists)
 const getOidcConfig = memoize(

@@ -60,7 +60,7 @@ function isLocaleActive(locale: Locale): boolean {
 
 // Get only active locales from SUPPORTED_LOCALES
 function getActiveLocales() {
-  return SUPPORTED_LOCALES.filter(l => isLocaleActive(l.code as Locale));
+  return SUPPORTED_LOCALES.filter(l => isLocaleActive(l.code));
 }
 
 interface SitemapUrl {
@@ -229,7 +229,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
     // Only include alternates for ACTIVE locales
     const activeLocales = getActiveLocales();
     const alternates = activeLocales.map(l => ({
-      locale: l.code as Locale,
+      locale: l.code,
       url: l.code === "en" ? `${BASE_URL}${page.path || "/"}` : `${BASE_URL}/${l.code}${page.path}`,
     }));
 
@@ -448,7 +448,7 @@ export async function generateAllSitemaps(): Promise<Map<string, string>> {
 
   // Generate locale-specific sitemaps ONLY for active locales
   for (const locale of getActiveLocales()) {
-    const sitemapXml = await generateLocaleSitemap(locale.code as Locale);
+    const sitemapXml = await generateLocaleSitemap(locale.code);
     sitemaps.set(`sitemap-${locale.code}.xml`, sitemapXml);
   }
 

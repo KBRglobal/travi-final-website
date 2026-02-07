@@ -30,7 +30,7 @@ async function requireAdmin(req: Request, res: Response, next: NextFunction): Pr
   }
 
   const user = await storage.getUser(authReq.user.claims.sub);
-  if (!user || user.role !== "admin") {
+  if (user?.role !== "admin") {
     res.status(403).json({ error: "Admin access required" });
     return;
   }
@@ -56,11 +56,12 @@ export function registerSearchRoutes(app: Express) {
 
       const limit = Number.parseInt(req.query.limit as string) || 50;
       const page = Number.parseInt(req.query.page as string) || 1;
-      const type = Array.isArray(req.query.type)
-        ? (req.query.type as string[])
-        : req.query.type
-          ? [req.query.type as string]
-          : undefined;
+      let type: string[] | undefined;
+      if (Array.isArray(req.query.type)) {
+        type = req.query.type as string[];
+      } else if (req.query.type) {
+        type = [req.query.type as string];
+      }
       const locale = (req.query.locale as string) || undefined;
 
       const results = await searchEngine.search({

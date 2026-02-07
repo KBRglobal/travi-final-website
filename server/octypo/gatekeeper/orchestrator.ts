@@ -10,6 +10,13 @@ import { db } from "../../db";
 import { contents } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { Gate1Selector, getGate1Selector } from "./gate1-selector";
+
+/** Convert tier to job priority (lower = higher priority) */
+function tierToPriority(tier: string): number {
+  if (tier === "S1") return 1;
+  if (tier === "S2") return 3;
+  return 5;
+}
 import { Gate2Approver, getGate2Approver } from "./gate2-approver";
 import { getAttractionDetector } from "./attraction-detector";
 import {
@@ -432,7 +439,7 @@ export class GatekeeperOrchestrator {
         openingDate: detection?.openingDate || null,
         description: detection?.description || item.summary,
       },
-      { priority: selection.tier === "S1" ? 1 : selection.tier === "S2" ? 3 : 5 }
+      { priority: tierToPriority(selection.tier) }
     );
 
     logger.info(
@@ -462,7 +469,7 @@ export class GatekeeperOrchestrator {
         gate1Score: selection.totalScore,
         gate1Reasoning: selection.reasoning,
       },
-      { priority: selection.tier === "S1" ? 1 : selection.tier === "S2" ? 3 : 5 }
+      { priority: tierToPriority(selection.tier) }
     );
 
     logger.info(
@@ -470,7 +477,7 @@ export class GatekeeperOrchestrator {
         feedItemId: item.id,
         writer: selection.writerName,
         tier: selection.tier,
-        priority: selection.tier === "S1" ? 1 : selection.tier === "S2" ? 3 : 5,
+        priority: tierToPriority(selection.tier),
       },
       "[Gatekeeper] Writing job queued"
     );

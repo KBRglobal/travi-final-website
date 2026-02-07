@@ -309,7 +309,7 @@ export class AttractionDetector {
       const [newAttraction] = await db
         .insert(tiqetsAttractions)
         .values({
-          tiqetsId: `detected-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          tiqetsId: `detected-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
           title: detection.attractionName,
           slug: slug,
           seoSlug: slug,

@@ -1399,7 +1399,10 @@ router.post("/jobs/create", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Source type is required" });
     }
 
-    const priority = config.priority === "high" ? 10 : config.priority === "low" ? 1 : 5;
+    let priority: number;
+    if (config.priority === "high") priority = 10;
+    else if (config.priority === "low") priority = 1;
+    else priority = 5;
     const createdJobs: { id: string; type: string; destination?: string }[] = [];
 
     if (config.sourceType === "rss") {

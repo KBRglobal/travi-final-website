@@ -15,6 +15,8 @@
  * Compliance report requires ZERO manual work.
  */
 
+type TrendDirection = "improving" | "stable" | "degrading";
+
 import * as crypto from "node:crypto";
 import { evidenceGenerator, ComplianceFramework, ComplianceReport } from "./evidence-generator";
 import { getGateStatistics } from "../gate/security-gate";
@@ -78,9 +80,9 @@ export interface ExecutiveSummary {
     complianceGaps: number;
   };
   trends: {
-    securityScore: "improving" | "stable" | "degrading";
-    threatLevel: "improving" | "stable" | "degrading";
-    compliance: "improving" | "stable" | "degrading";
+    securityScore: TrendDirection;
+    threatLevel: TrendDirection;
+    compliance: TrendDirection;
   };
 }
 

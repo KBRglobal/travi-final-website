@@ -160,14 +160,14 @@ function ClickableStatsCard({
   description,
   loading,
   href,
-}: {
+}: Readonly<{
   title: string;
   value: string | number;
   icon: React.ElementType;
   description?: string;
   loading?: boolean;
   href?: string;
-}) {
+}>) {
   const [, setLocation] = useLocation();
 
   if (loading) return <StatsCardSkeleton />;
@@ -205,10 +205,10 @@ function ClickableStatsCard({
 function SystemHealthCard({
   health,
   loading,
-}: {
+}: Readonly<{
   health?: SystemHealthResponse;
   loading?: boolean;
-}) {
+}>) {
   if (loading) return <StatsCardSkeleton />;
 
   const getStatusColor = (status: string) => {
@@ -309,10 +309,10 @@ function SystemHealthCard({
 function AIGenerationCard({
   stats,
   loading,
-}: {
+}: Readonly<{
   stats?: DashboardStats["aiGeneration"];
   loading?: boolean;
-}) {
+}>) {
   if (loading) return <StatsCardSkeleton />;
 
   return (
@@ -374,7 +374,10 @@ function getActivityBadgeVariant(type: ActivityItem["type"]): "default" | "secon
   }
 }
 
-function ActivityFeed({ activities, loading }: { activities?: ActivityItem[]; loading?: boolean }) {
+function ActivityFeed({
+  activities,
+  loading,
+}: Readonly<{ activities?: ActivityItem[]; loading?: boolean }>) {
   if (loading) {
     return (
       <div className="space-y-1">
@@ -445,7 +448,7 @@ function ActivityFeed({ activities, loading }: { activities?: ActivityItem[]; lo
   );
 }
 
-function NotificationItem({ notification }: { notification: Notification }) {
+function NotificationItem({ notification }: Readonly<{ notification: Notification }>) {
   const getIcon = () => {
     switch (notification.type) {
       case "success":
@@ -483,10 +486,10 @@ function NotificationItem({ notification }: { notification: Notification }) {
 function NotificationsPanel({
   notifications,
   loading,
-}: {
+}: Readonly<{
   notifications?: Notification[];
   loading?: boolean;
-}) {
+}>) {
   if (loading) {
     return (
       <div className="space-y-2 p-4">

@@ -307,8 +307,10 @@ export async function generateImage(
 
   if (provider === "flux" || provider === "auto") {
     // Map size to aspect ratio for Flux
-    const aspectRatio =
-      options.size === "1792x1024" ? "16:9" : options.size === "1024x1792" ? "9:16" : "1:1";
+    let aspectRatio: "16:9" | "1:1" | "9:16";
+    if (options.size === "1792x1024") aspectRatio = "16:9";
+    else if (options.size === "1024x1792") aspectRatio = "9:16";
+    else aspectRatio = "1:1";
 
     const fluxResult = await generateWithFlux(prompt, aspectRatio);
     if (fluxResult) return fluxResult;

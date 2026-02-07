@@ -8,6 +8,9 @@ import { autonomyDecisionLogs } from "@shared/schema";
 
 import { eq, and, gt, desc, sql, count } from "drizzle-orm";
 import { getBudgetSummary, checkBudgetStatus } from "../policy/budgets";
+
+type TimePeriod = "hour" | "day" | "week";
+type ActivityType = "decision" | "override" | "policy_change";
 import { getPolicies } from "../policy/repository";
 import { getOverrideStats, listOverrides } from "./overrides";
 import { GuardedFeature, DEFAULT_ENFORCEMENT_CONFIG } from "../enforcement/types";
@@ -24,7 +27,7 @@ export interface DashboardStatus {
 }
 
 export interface DecisionSummary {
-  period: "hour" | "day" | "week";
+  period: TimePeriod;
   total: number;
   allowed: number;
   warned: number;
@@ -60,7 +63,7 @@ export interface ControlPlaneDashboard {
   activeOverrides: number;
   policyCount: number;
   recentActivity: Array<{
-    type: "decision" | "override" | "policy_change";
+    type: ActivityType;
     description: string;
     timestamp: Date;
   }>;
@@ -99,7 +102,7 @@ export async function getDashboardData(): Promise<ControlPlaneDashboard> {
 /**
  * Get decision summary for a time period
  */
-async function getDecisionSummary(period: "hour" | "day" | "week"): Promise<DecisionSummary> {
+async function getDecisionSummary(period: TimePeriod): Promise<DecisionSummary> {
   const now = new Date();
   let since: Date;
 
@@ -251,13 +254,13 @@ async function getTopOffenders(limit: number): Promise<TopOffender[]> {
  */
 async function getRecentActivity(limit: number): Promise<
   Array<{
-    type: "decision" | "override" | "policy_change";
+    type: ActivityType;
     description: string;
     timestamp: Date;
   }>
 > {
   const activity: Array<{
-    type: "decision" | "override" | "policy_change";
+    type: ActivityType;
     description: string;
     timestamp: Date;
   }> = [];

@@ -419,7 +419,7 @@ export class EditorialPlacementsStorage {
     for (const config of configs) {
       if (!config.autoRotate || !config.isActive) continue;
 
-      const activePlacements = await this.getActivePlacements(config.zone as EditorialZone);
+      const activePlacements = await this.getActivePlacements(config.zone);
 
       for (const placement of activePlacements) {
         if (placement.isPinned) continue; // Don't rotate pinned items

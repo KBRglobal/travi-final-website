@@ -4,6 +4,8 @@ import { db } from "../../db";
 import { tiqetsAttractions, tiqetsCities, type TiqetsCity } from "@shared/schema";
 import { requireAuth } from "../../security";
 
+type AIProviderName = "anthropic" | "openai" | "gemini" | "openrouter" | "deepseek" | "perplexity";
+
 /** Raw attraction row from pg query for Octypo processing */
 interface TiqetsAttractionRow {
   id: string;
@@ -723,17 +725,15 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       const { getMultiModelProvider } = await import("../../ai/multi-model-provider");
       const providerInstance = getMultiModelProvider();
       const providerStatus = await providerInstance.checkAvailability();
-      const potentialProviders = providerStatus.filter(p => p.available).map(p => p.name) as Array<
-        "anthropic" | "openai" | "gemini" | "openrouter" | "deepseek" | "perplexity"
-      >;
+      const potentialProviders = providerStatus
+        .filter(p => p.available)
+        .map(p => p.name) as Array<AIProviderName>;
 
       sendEvent({ type: "testing_providers", potential: potentialProviders });
 
       // Test each provider with a quick request
       const testPrompt = "Reply with just: OK";
-      const availableProviders: Array<
-        "anthropic" | "openai" | "gemini" | "openrouter" | "deepseek" | "perplexity"
-      > = [];
+      const availableProviders: Array<AIProviderName> = [];
 
       for (const providerName of potentialProviders) {
         try {
@@ -768,7 +768,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
 
       // Distribute attractions evenly among available providers
       const workloads: Array<{
-        provider: "anthropic" | "openai" | "gemini" | "openrouter" | "deepseek" | "perplexity";
+        provider: AIProviderName;
         attractions: typeof allAttractions;
       }> = availableProviders.map(p => ({ provider: p, attractions: [] }));
 
@@ -1158,12 +1158,14 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       const effectiveRate =
         currentHourlyRate > 0 ? currentHourlyRate : Number.parseFloat(hourlyRate);
       const hoursRemaining = effectiveRate > 0 ? pending / effectiveRate : null;
-      const etaText =
-        hoursRemaining === null
-          ? "Unable to estimate"
-          : hoursRemaining < 1
-            ? `${Math.round(hoursRemaining * 60)} minutes`
-            : `${hoursRemaining.toFixed(1)} hours`;
+      let etaText: string;
+      if (hoursRemaining === null) {
+        etaText = "Unable to estimate";
+      } else if (hoursRemaining < 1) {
+        etaText = `${Math.round(hoursRemaining * 60)} minutes`;
+      } else {
+        etaText = `${hoursRemaining.toFixed(1)} hours`;
+      }
 
       res.json({
         lastHour,

@@ -123,10 +123,7 @@ async function translateBlocks(
     // Translate text content in blocks - content is stored in data.content or data.text
     const textContent = block.data?.content || block.data?.text;
 
-    if (block.type === "text" && typeof textContent === "string") {
-      const { translation } = await translateText(textContent, sourceLocale, targetLocale);
-      translatedBlock.data.content = translation;
-    } else if (block.type === "heading" && typeof textContent === "string") {
+    if ((block.type === "text" || block.type === "heading") && typeof textContent === "string") {
       const { translation } = await translateText(textContent, sourceLocale, targetLocale);
       translatedBlock.data.content = translation;
     } else if (block.type === "list" && Array.isArray(block.data?.items)) {

@@ -733,7 +733,7 @@ export function registerPublicApiRoutes(app: Express): void {
       const { slug, locale } = req.params;
 
       const content = await storage.getContentBySlug(slug);
-      if (!content || content.status !== "published") {
+      if (content?.status !== "published") {
         return res.status(404).json({ error: "Content not found" });
       }
 
@@ -742,7 +742,7 @@ export function registerPublicApiRoutes(app: Express): void {
       }
 
       const translation = await storage.getTranslation(content.id, locale as any);
-      if (!translation || translation.status !== "completed") {
+      if (translation?.status !== "completed") {
         return res.json(content);
       }
 

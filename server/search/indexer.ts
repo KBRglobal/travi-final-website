@@ -40,7 +40,7 @@ export const searchIndexer = {
     // Fetch content
     const [content] = await db.select().from(contents).where(eq(contents.id, contentId)).limit(1);
 
-    if (!content || content.status !== "published") {
+    if (content?.status !== "published") {
       return;
     }
 

@@ -14,6 +14,8 @@
 
 import crypto from "node:crypto";
 
+type KeyStatus = "ok" | "alert" | "expired";
+
 /**
  * Key Rotation Configuration
  */
@@ -149,14 +151,14 @@ export function getRotationStatus(): {
     keyId: string;
     keyType: string;
     daysRemaining: number;
-    status: "ok" | "alert" | "expired";
+    status: KeyStatus;
   }>;
 } {
   const details: Array<{
     keyId: string;
     keyType: string;
     daysRemaining: number;
-    status: "ok" | "alert" | "expired";
+    status: KeyStatus;
   }> = [];
 
   let activeKeys = 0;
@@ -169,7 +171,7 @@ export function getRotationStatus(): {
       const { needsRotation: needs, daysRemaining } = needsRotation(keyId);
       const alert = shouldAlert(keyId);
 
-      let status: "ok" | "alert" | "expired" = "ok";
+      let status: KeyStatus = "ok";
       if (needs) {
         status = "expired";
         keysNeedingRotation++;
@@ -268,10 +270,8 @@ export function logRotationStatus(): void {
   }
 
   status.details.forEach(detail => {
-    if (detail.status === "expired") {
-      /* Expired keys handled by rotation scheduler */
-    } else if (detail.status === "alert") {
-      /* Alert-level keys logged at status check level */
+    if (detail.status === "expired" || detail.status === "alert") {
+      /* Expired/alert keys handled by rotation scheduler and logged at status check level */
     }
   });
 }

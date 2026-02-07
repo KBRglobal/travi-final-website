@@ -624,18 +624,14 @@ overrideRouter.post("/request", async (req, res) => {
 
   if (!result.success) {
     // Return human-readable error with appropriate status
-    const statusCode =
-      result.error?.code === "SELF_APPROVAL"
-        ? 400
-        : result.error?.code === "INSUFFICIENT_ROLE"
-          ? 403
-          : result.error?.code === "ROLE_ESCALATION"
-            ? 403
-            : result.error?.code === "MODE_RESTRICTED"
-              ? 503
-              : result.error?.code === "THREAT_LEVEL_BLOCKED"
-                ? 503
-                : 400;
+    const errorCodeToStatus: Record<string, number> = {
+      SELF_APPROVAL: 400,
+      INSUFFICIENT_ROLE: 403,
+      ROLE_ESCALATION: 403,
+      MODE_RESTRICTED: 503,
+      THREAT_LEVEL_BLOCKED: 503,
+    };
+    const statusCode = (result.error?.code && errorCodeToStatus[result.error.code]) || 400;
 
     return res.status(statusCode).json({
       success: false,

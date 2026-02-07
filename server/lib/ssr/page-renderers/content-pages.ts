@@ -53,12 +53,14 @@ export async function renderContentPage(
     section: contentType,
   });
 
-  const schemaType =
-    contentType === "hotel"
-      ? "Hotel"
-      : contentType === "attraction"
-        ? "TouristAttraction"
-        : "Article";
+  let schemaType: string;
+  if (contentType === "hotel") {
+    schemaType = "Hotel";
+  } else if (contentType === "attraction") {
+    schemaType = "TouristAttraction";
+  } else {
+    schemaType = "Article";
+  }
 
   const structuredData = [
     generateStructuredData({ content, type: schemaType as any, locale }),
@@ -301,24 +303,24 @@ export async function renderCategoryPage(
   const prevPageUrl = getCanonicalUrl(prevPagePath, locale);
   const nextPagePath = baseUrlPath + "?page=" + (currentPage + 1);
   const nextPageUrl = getCanonicalUrl(nextPagePath, locale);
-  const paginationHtml =
-    contentType === "attraction" && totalPages > 1
-      ? `
+  let paginationHtml = "";
+  if (contentType === "attraction" && totalPages > 1) {
+    const prevLink =
+      currentPage > 1
+        ? `<a href="${prevPageUrl}" rel="prev">Previous</a>`
+        : `<span>Previous</span>`;
+    const nextLink =
+      currentPage < totalPages
+        ? `<a href="${nextPageUrl}" rel="next">Next</a>`
+        : `<span>Next</span>`;
+    paginationHtml = `
           <nav aria-label="Pagination">
-            ${
-              currentPage > 1
-                ? `<a href="${prevPageUrl}" rel="prev">Previous</a>`
-                : `<span>Previous</span>`
-            }
+            ${prevLink}
             <span>Page ${currentPage} of ${totalPages}</span>
-            ${
-              currentPage < totalPages
-                ? `<a href="${nextPageUrl}" rel="next">Next</a>`
-                : `<span>Next</span>`
-            }
+            ${nextLink}
           </nav>
-  `
-      : "";
+  `;
+  }
 
   const html = wrapInHtml({
     metaTags,

@@ -147,12 +147,14 @@ export function registerAuthRoutes(app: Express): void {
         // This prevents timing attacks and reduces database load during lockout
         const lockoutStatus = checkDualLockout(username.toLowerCase(), ip);
         if (lockoutStatus.locked) {
-          const lockTypeMsg =
-            lockoutStatus.lockType === "both"
-              ? "IP and account"
-              : lockoutStatus.lockType === "ip"
-                ? "IP address"
-                : "account";
+          let lockTypeMsg: string;
+          if (lockoutStatus.lockType === "both") {
+            lockTypeMsg = "IP and account";
+          } else if (lockoutStatus.lockType === "ip") {
+            lockTypeMsg = "IP address";
+          } else {
+            lockTypeMsg = "account";
+          }
           logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
             success: false,
             resource: "auth",

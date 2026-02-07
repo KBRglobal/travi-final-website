@@ -152,7 +152,14 @@ export function logPerformance(
   durationMs: number,
   meta?: Record<string, unknown>
 ) {
-  const level = durationMs > 1000 ? "warn" : durationMs > 500 ? "info" : "debug";
+  let level: "warn" | "info" | "debug";
+  if (durationMs > 1000) {
+    level = "warn";
+  } else if (durationMs > 500) {
+    level = "info";
+  } else {
+    level = "debug";
+  }
   perfLog[level]({
     type: "performance",
     operation,

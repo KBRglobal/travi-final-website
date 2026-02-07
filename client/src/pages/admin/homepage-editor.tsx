@@ -475,11 +475,11 @@ function ServerImagePicker({
   value,
   onSelect,
   folder = "hero",
-}: {
+}: Readonly<{
   value: string;
   onSelect: (url: string) => void;
   folder?: "hero" | "cards" | "experiences" | "regions";
-}) {
+}>) {
   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
   const [customFilename, setCustomFilename] = useState("");
@@ -648,9 +648,8 @@ function ServerImagePicker({
       </div>
 
       {/* Existing images */}
-      {isLoading ? (
-        <Skeleton className="h-24" />
-      ) : images && images.length > 0 ? (
+      {isLoading && <Skeleton className="h-24" />}
+      {!isLoading && images && images.length > 0 && (
         <div className="space-y-2">
           <Label className="text-muted-foreground text-sm">Or select from existing images</Label>
           <div className="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto p-1">
@@ -676,7 +675,7 @@ function ServerImagePicker({
             ))}
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
@@ -686,12 +685,12 @@ function HeroSlideItem({
   onUpdate,
   onDelete,
   isRtl,
-}: {
+}: Readonly<{
   slide: HeroSlide;
   onUpdate: (data: Partial<HeroSlide>) => void;
   onDelete: () => void;
   isRtl: boolean;
-}) {
+}>) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     imageUrl: slide.imageUrl || "",
@@ -1167,10 +1166,10 @@ function SectionsManager() {
 function SectionItem({
   section,
   onUpdate,
-}: {
+}: Readonly<{
   section: HomepageSection;
   onUpdate: (data: Partial<HomepageSection>) => void;
-}) {
+}>) {
   const { locale } = useContext(LocaleContext);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -1286,12 +1285,12 @@ function QuickCategoryItem({
   onUpdate,
   onDelete,
   isRtl,
-}: {
+}: Readonly<{
   card: HomepageCard;
   onUpdate: (data: Partial<HomepageCard>) => void;
   onDelete: () => void;
   isRtl: boolean;
-}) {
+}>) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     icon: card.icon || "",
@@ -1630,12 +1629,12 @@ function ExperienceCategoryItem({
   onUpdate,
   onDelete,
   isRtl,
-}: {
+}: Readonly<{
   category: ExperienceCategory;
   onUpdate: (data: Partial<ExperienceCategory>) => void;
   onDelete: () => void;
   isRtl: boolean;
-}) {
+}>) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: category.name || "",
@@ -1668,7 +1667,7 @@ function ExperienceCategoryItem({
   };
 
   return (
-    <Card className={!category.isActive ? "opacity-60" : ""}>
+    <Card className={category.isActive ? "" : "opacity-60"}>
       <CardContent className="p-4 space-y-3">
         <div className="flex items-start gap-4">
           <div className="w-24 h-16 bg-muted rounded-md overflow-hidden flex-shrink-0">
@@ -2082,12 +2081,12 @@ function RegionLinkItem({
   onUpdate,
   onDelete,
   isRtl,
-}: {
+}: Readonly<{
   link: RegionLink;
   onUpdate: (data: Partial<RegionLink>) => void;
   onDelete: () => void;
   isRtl: boolean;
-}) {
+}>) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     regionName: link.regionName || "",
@@ -2125,7 +2124,7 @@ function RegionLinkItem({
   };
 
   return (
-    <Card className={!link.isActive ? "opacity-60" : ""}>
+    <Card className={link.isActive ? "" : "opacity-60"}>
       <CardContent className="p-4 space-y-3">
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
@@ -2615,12 +2614,12 @@ function DestinationItem({
   onUpdate,
   onDelete,
   isRtl,
-}: {
+}: Readonly<{
   destination: Destination;
   onUpdate: (data: Partial<Destination>) => void;
   onDelete: () => void;
   isRtl: boolean;
-}) {
+}>) {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -2692,7 +2691,7 @@ function DestinationItem({
   };
 
   return (
-    <Card className={!destination.isActive ? "opacity-60" : ""}>
+    <Card className={destination.isActive ? "" : "opacity-60"}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4 flex-1 min-w-0">

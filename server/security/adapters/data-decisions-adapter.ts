@@ -51,10 +51,10 @@ export const DataDecisionsAdapter: SystemAdapter = {
   async onModeChange(config: SecurityModeConfig): Promise<void> {
     const { restrictions } = config;
 
-    if (!restrictions.autopilotAllowed) {
-      isPaused = true;
-    } else {
+    if (restrictions.autopilotAllowed) {
       isPaused = false;
+    } else {
+      isPaused = true;
     }
 
     // In lockdown, block all writes

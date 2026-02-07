@@ -259,9 +259,9 @@ export async function governanceGuard(
 
   if (path.includes("role")) {
     resource = "roles";
-    if (method === "POST") action = "manage_roles";
-    else if (method === "PUT" || method === "PATCH") action = "manage_roles";
-    else if (method === "DELETE") action = "manage_roles";
+    if (method === "POST" || method === "PUT" || method === "PATCH" || method === "DELETE") {
+      action = "manage_roles";
+    }
   } else if (path.includes("permission")) {
     resource = "roles";
     action = "manage_roles";

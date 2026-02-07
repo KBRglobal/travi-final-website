@@ -128,13 +128,13 @@ function KPICard({
   subtitle,
   icon: Icon,
   trend,
-}: {
+}: Readonly<{
   title: string;
   value: string | number;
   subtitle?: string;
   icon: React.ComponentType<{ className?: string }>;
   trend?: "up" | "down" | "neutral";
-}) {
+}>) {
   return (
     <Card>
       <CardContent className="pt-6">
@@ -159,13 +159,11 @@ function KPICard({
   );
 }
 
-function ScoreBadge({ score, label }: { score: number; label: string }) {
-  const color =
-    score >= 70
-      ? "bg-green-100 text-green-700"
-      : score >= 50
-        ? "bg-yellow-100 text-yellow-700"
-        : "bg-red-100 text-red-700";
+function ScoreBadge({ score, label }: Readonly<{ score: number; label: string }>) {
+  let color: string;
+  if (score >= 70) color = "bg-green-100 text-green-700";
+  else if (score >= 50) color = "bg-yellow-100 text-yellow-700";
+  else color = "bg-red-100 text-red-700";
   return (
     <div className={`px-2 py-1 rounded text-xs font-medium ${color}`}>
       {label}: {score}
@@ -173,7 +171,7 @@ function ScoreBadge({ score, label }: { score: number; label: string }) {
   );
 }
 
-function TierBadge({ tier }: { tier: string }) {
+function TierBadge({ tier }: Readonly<{ tier: string }>) {
   const config: Record<string, { color: string; label: string }> = {
     S1: { color: "bg-red-500", label: "S1 Critical" },
     S2: { color: "bg-yellow-500", label: "S2 Important" },
@@ -183,7 +181,7 @@ function TierBadge({ tier }: { tier: string }) {
   return <Badge className={`${color} text-white`}>{label}</Badge>;
 }
 
-function DecisionBadge({ decision }: { decision: string }) {
+function DecisionBadge({ decision }: Readonly<{ decision: string }>) {
   const config: Record<
     string,
     { icon: React.ComponentType<{ className?: string }>; color: string; label: string }

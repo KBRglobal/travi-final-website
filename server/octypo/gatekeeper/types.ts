@@ -3,6 +3,8 @@
  * Intelligent content selection and approval system
  */
 
+type PriorityLevel = "high" | "medium" | "low";
+
 // ============================================================================
 // GATE 1: Content Selection (Pre-Writing)
 // ============================================================================
@@ -20,8 +22,8 @@ export interface ContentSelectionInput {
 
 export interface SEOAnalysis {
   score: number; // 0-100
-  searchVolumePotential: "high" | "medium" | "low";
-  competitionLevel: "high" | "medium" | "low";
+  searchVolumePotential: PriorityLevel;
+  competitionLevel: PriorityLevel;
   keywordOpportunities: string[];
   travelJourneyStage: "inspiration" | "research" | "booking" | "experience";
   eeaTScore: number; // E-E-A-T potential 0-100
@@ -30,7 +32,7 @@ export interface SEOAnalysis {
 
 export interface AEOAnalysis {
   score: number; // 0-100
-  extractability: "high" | "medium" | "low"; // How easily AI can cite this
+  extractability: PriorityLevel; // How easily AI can cite this
   schemaPotential: ("FAQ" | "HowTo" | "Event" | "Place" | "Review")[];
   answerBoxPotential: boolean;
   semanticClarity: number; // 0-100
@@ -41,7 +43,7 @@ export interface AEOAnalysis {
 export interface ViralityAnalysis {
   score: number; // 0-100
   emotionalTriggers: string[];
-  culturalRelevance: "high" | "medium" | "low";
+  culturalRelevance: PriorityLevel;
   timeliness: "breaking" | "trending" | "evergreen" | "stale";
   shareability: number; // K-factor estimate 0-2
   megaEventConnection?: string;
@@ -71,8 +73,8 @@ export interface ContentSelectionResult {
   writerName: string;
 
   // Content value matrix position
-  estimatedValue: "high" | "medium" | "low";
-  estimatedCost: "high" | "medium" | "low";
+  estimatedValue: PriorityLevel;
+  estimatedCost: PriorityLevel;
   valueMatrixQuadrant: "quick_win" | "strategic_investment" | "gap_filler" | "skip";
 
   // Explanation

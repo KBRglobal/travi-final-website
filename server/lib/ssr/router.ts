@@ -39,7 +39,14 @@ export async function renderSSR(
 
   // Normalize path - ensure it starts with / and handle empty paths
   // Do NOT strip locale here - middleware already handles that
-  const cleanPath = path === "" ? "/" : path.startsWith("/") ? path : `/${path}`;
+  let cleanPath: string;
+  if (path === "") {
+    cleanPath = "/";
+  } else if (path.startsWith("/")) {
+    cleanPath = path;
+  } else {
+    cleanPath = `/${path}`;
+  }
 
   if (cleanPath === "/" || cleanPath === "") {
     return renderHomepage(options);

@@ -313,11 +313,12 @@ export function MagicButton({
               >
                 <Check className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100" />
                 <span className="truncate text-sm">
-                  {typeof alt === "string"
-                    ? alt.length > 60
-                      ? `${alt.slice(0, 60)}...`
-                      : alt
-                    : JSON.stringify(alt).slice(0, 60)}
+                  {(() => {
+                    if (typeof alt === "string") {
+                      return alt.length > 60 ? `${alt.slice(0, 60)}...` : alt;
+                    }
+                    return JSON.stringify(alt).slice(0, 60);
+                  })()}
                 </span>
               </DropdownMenuItem>
             ))}

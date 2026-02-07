@@ -530,10 +530,10 @@ export const customerJourney = {
       visitorId,
       sessionId: events[0].sessionId,
       startTime: events[0].timestamp,
-      endTime: events[events.length - 1].timestamp,
+      endTime: events.at(-1)!.timestamp,
       totalPages: pageViews.length,
       totalEvents: events.length,
-      duration: events[events.length - 1].timestamp.getTime() - events[0].timestamp.getTime(),
+      duration: events.at(-1)!.timestamp.getTime() - events[0].timestamp.getTime(),
       events,
       conversionPath: pageViews.map(e => e.pagePath),
       converted: conversions.length > 0,
@@ -574,7 +574,7 @@ export const customerJourney = {
     }));
 
     const firstStep = stepStats[0]?.visitors || 0;
-    const lastStep = stepStats[stepStats.length - 1]?.visitors || 0;
+    const lastStep = stepStats.at(-1)?.visitors || 0;
 
     return {
       name: "Conversion Funnel",

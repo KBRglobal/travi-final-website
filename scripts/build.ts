@@ -294,7 +294,9 @@ async function buildApp() {
   console.log("Build completed successfully!");
 }
 
-buildApp().catch(err => {
+try {
+  await buildApp();
+} catch (err) {
   console.error("Build failed:", err);
   process.exit(1);
-});
+}

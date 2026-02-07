@@ -80,7 +80,7 @@ export async function createABTest(
     throw new Error("Content must have an existing capsule before A/B testing");
   }
 
-  const testId = `abt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const testId = `abt_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
   // Create variant A (control - existing capsule)
   const variantA: CapsuleVariant = {

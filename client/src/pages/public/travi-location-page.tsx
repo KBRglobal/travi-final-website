@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useParams } from "wouter";
+
+type LocationCategory = "attraction" | "restaurant" | "hotel";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { Badge } from "@/components/ui/badge";
@@ -78,7 +80,7 @@ interface TraviLocation {
   id: string;
   name: string;
   slug: string;
-  category: "attraction" | "restaurant" | "hotel";
+  category: LocationCategory;
   city: string;
   country: string | null;
   details: TraviLocationDetails | null;
@@ -113,15 +115,15 @@ function LocationHero({
   heroImage,
   imageAttribution,
   affiliateLink,
-}: {
+}: Readonly<{
   name: string;
-  category: "attraction" | "restaurant" | "hotel";
+  category: LocationCategory;
   city: string;
   country: string | null;
   heroImage: string;
   imageAttribution?: string | null;
   affiliateLink: string;
-}) {
+}>) {
   const CategoryIcon = categoryIcons[category];
 
   return (
@@ -207,11 +209,11 @@ function QuickInfoSidebar({
   details,
   category,
   affiliateLink,
-}: {
+}: Readonly<{
   details: TraviLocationDetails | null;
-  category: "attraction" | "restaurant" | "hotel";
+  category: LocationCategory;
   affiliateLink: string;
-}) {
+}>) {
   const infoItems = [
     { icon: MapPin, label: "Address", value: details?.address },
     { icon: Phone, label: "Phone", value: details?.phone },
@@ -296,7 +298,7 @@ function QuickInfoSidebar({
   );
 }
 
-function ImageGallery({ images }: { images: TraviLocationImage[] }) {
+function ImageGallery({ images }: Readonly<{ images: TraviLocationImage[] }>) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   if (!images || images.length === 0) return null;
@@ -406,12 +408,12 @@ function ContentSection({
   title,
   icon: Icon,
   children,
-}: {
+}: Readonly<{
   id: string;
   title: string;
   icon?: React.ComponentType<{ className?: string }>;
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <section id={id} className="scroll-mt-24 mb-12" data-testid={`section-${id}`}>
       <h2 className="font-chillax text-2xl md:text-3xl font-bold tracking-tight mb-6 flex items-center gap-2">
@@ -423,7 +425,7 @@ function ContentSection({
   );
 }
 
-function HighlightsSection({ highlights }: { highlights: string[] }) {
+function HighlightsSection({ highlights }: Readonly<{ highlights: string[] }>) {
   if (!highlights || highlights.length === 0) return null;
 
   return (
@@ -444,7 +446,7 @@ function HighlightsSection({ highlights }: { highlights: string[] }) {
   );
 }
 
-function WhatToBringSection({ items }: { items: { item: string; reason: string }[] }) {
+function WhatToBringSection({ items }: Readonly<{ items: { item: string; reason: string }[] }>) {
   if (!items || items.length === 0) return null;
 
   return (
@@ -468,10 +470,10 @@ function WhatToBringSection({ items }: { items: { item: string; reason: string }
 function FAQSection({
   faqItems,
   locationName,
-}: {
+}: Readonly<{
   faqItems: { question: string; answer: string }[];
   locationName: string;
-}) {
+}>) {
   if (!faqItems || faqItems.length === 0) return null;
 
   const faqSchema = {
@@ -524,11 +526,11 @@ function BookingCTASection({
   name,
   category,
   affiliateLink,
-}: {
+}: Readonly<{
   name: string;
-  category: "attraction" | "restaurant" | "hotel";
+  category: LocationCategory;
   affiliateLink: string;
-}) {
+}>) {
   return (
     <section className="mb-12" data-testid="section-booking-cta">
       <Card className="bg-gradient-to-br from-[#6443F4] to-[#5339D9] border-0 rounded-2xl overflow-hidden">

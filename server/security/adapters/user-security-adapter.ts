@@ -115,10 +115,10 @@ export const UserSecurityAdapter: SystemAdapter = {
   async onModeChange(config: SecurityModeConfig): Promise<void> {
     const { restrictions } = config;
 
-    if (!restrictions.userRegistrationAllowed) {
-      registrationBlocked = true;
-    } else {
+    if (restrictions.userRegistrationAllowed) {
       registrationBlocked = false;
+    } else {
+      registrationBlocked = true;
     }
 
     // In lockdown, require reauth and block new sessions

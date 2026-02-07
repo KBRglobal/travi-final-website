@@ -431,7 +431,10 @@ export async function generateAllFields(
     const model = getModelForMode(request.mode);
     const prompt = buildAllFieldsPrompt(request);
 
-    const maxTokens = request.mode === "premium" ? 8000 : request.mode === "full" ? 4000 : 2000;
+    let maxTokens: number;
+    if (request.mode === "premium") maxTokens = 8000;
+    else if (request.mode === "full") maxTokens = 4000;
+    else maxTokens = 2000;
 
     const result = await provider.generateCompletion({
       messages: [

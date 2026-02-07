@@ -132,7 +132,10 @@ async function enqueueNativeContentForAllLocales(content: Content): Promise<void
   for (const [tierStr, locales] of Object.entries(LOCALE_TIERS)) {
     const tier = Number.parseInt(tierStr, 10);
     // Higher tier = higher priority number = processed later
-    const priority = tier <= 2 ? 2 : tier <= 3 ? 5 : 8;
+    let priority: number;
+    if (tier <= 2) priority = 2;
+    else if (tier <= 3) priority = 5;
+    else priority = 8;
 
     for (const locale of locales) {
       if (locale === "en") continue; // Skip English - it's the source

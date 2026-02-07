@@ -310,16 +310,19 @@ export const SecurityModeManager = {
 // AUTONOMY IMPACT API
 // ============================================================================
 
+type AutopilotState = "running" | "paused" | "blocked";
+type OperationPermission = "allowed" | "approval_required" | "blocked";
+
 export interface AutonomyImpact {
   mode: SecurityMode;
   restrictions: SecurityRestrictions;
   impacts: {
-    dataAutopilot: "running" | "paused" | "blocked";
-    seoAutopilot: "running" | "paused" | "blocked";
-    opsAutopilot: "running" | "paused" | "blocked";
-    bulkOperations: "allowed" | "approval_required" | "blocked";
-    deployments: "allowed" | "approval_required" | "blocked";
-    contentPublishing: "allowed" | "approval_required" | "blocked";
+    dataAutopilot: AutopilotState;
+    seoAutopilot: AutopilotState;
+    opsAutopilot: AutopilotState;
+    bulkOperations: OperationPermission;
+    deployments: OperationPermission;
+    contentPublishing: OperationPermission;
     externalApis: "allowed" | "rate_limited" | "blocked";
   };
   recommendations: string[];
@@ -329,25 +332,28 @@ export function getAutonomyImpact(): AutonomyImpact {
   const mode = SecurityModeManager.getMode();
   const restrictions = mode.restrictions;
 
+  let bulkOpsStatus: OperationPermission;
+  if (restrictions.bulkOperationsAllowed) bulkOpsStatus = "allowed";
+  else if (restrictions.requireApprovalForAll) bulkOpsStatus = "approval_required";
+  else bulkOpsStatus = "blocked";
+
+  let deploymentsStatus: OperationPermission;
+  if (restrictions.deploymentAllowed) deploymentsStatus = "allowed";
+  else if (restrictions.requireApprovalForAll) deploymentsStatus = "approval_required";
+  else deploymentsStatus = "blocked";
+
+  let contentPubStatus: OperationPermission;
+  if (restrictions.destructiveActionsAllowed) contentPubStatus = "allowed";
+  else if (restrictions.requireApprovalForAll) contentPubStatus = "approval_required";
+  else contentPubStatus = "allowed";
+
   const impacts: AutonomyImpact["impacts"] = {
     dataAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
     seoAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
     opsAutopilot: restrictions.autopilotAllowed ? "running" : "blocked",
-    bulkOperations: restrictions.bulkOperationsAllowed
-      ? "allowed"
-      : restrictions.requireApprovalForAll
-        ? "approval_required"
-        : "blocked",
-    deployments: restrictions.deploymentAllowed
-      ? "allowed"
-      : restrictions.requireApprovalForAll
-        ? "approval_required"
-        : "blocked",
-    contentPublishing: restrictions.destructiveActionsAllowed
-      ? "allowed"
-      : restrictions.requireApprovalForAll
-        ? "approval_required"
-        : "allowed",
+    bulkOperations: bulkOpsStatus,
+    deployments: deploymentsStatus,
+    contentPublishing: contentPubStatus,
     externalApis: restrictions.externalApiCallsAllowed ? "allowed" : "blocked",
   };
 

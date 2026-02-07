@@ -251,15 +251,15 @@ export function registerRealEstatePagesRoutes(app: Express): void {
             .from(realEstatePages)
             .where(eq(realEstatePages.pageKey, page.pageKey));
 
-          if (!existing) {
+          if (existing) {
+            skipped++;
+          } else {
             await db.insert(realEstatePages).values({
               pageKey: page.pageKey,
               category: page.category as any,
               title: page.title,
             });
             created++;
-          } else {
-            skipped++;
           }
         }
 

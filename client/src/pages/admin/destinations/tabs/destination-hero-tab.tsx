@@ -49,7 +49,7 @@ interface DestinationHeroTabProps {
 export default function DestinationHeroTab({
   destinationId,
   destination,
-}: DestinationHeroTabProps) {
+}: Readonly<DestinationHeroTabProps>) {
   const { toast } = useToast();
   const [heroTitle, setHeroTitle] = useState(destination.heroTitle || "");
   const [heroSubtitle, setHeroSubtitle] = useState(destination.heroSubtitle || "");

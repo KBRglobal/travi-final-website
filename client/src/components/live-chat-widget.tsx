@@ -122,7 +122,7 @@ export function LiveChatWidget({
 
   return (
     <div className="fixed bottom-4 right-4 left-4 sm:left-auto z-50" data-testid="live-chat-widget">
-      {isOpen ? (
+      {isOpen && (
         <Card
           className="w-full sm:w-80 max-h-[80vh] h-96 flex flex-col shadow-xl box-border"
           role="region"
@@ -222,7 +222,8 @@ export function LiveChatWidget({
             </div>
           </div>
         </Card>
-      ) : showFloatingButton ? (
+      )}
+      {!isOpen && showFloatingButton && (
         <Button
           size="icon"
           className="w-14 h-14 rounded-full shadow-lg bg-travi-purple hover:bg-travi-purple/90 ml-auto"
@@ -233,7 +234,7 @@ export function LiveChatWidget({
         >
           <MessageCircle className="w-6 h-6" aria-hidden="true" />
         </Button>
-      ) : null}
+      )}
     </div>
   );
 }

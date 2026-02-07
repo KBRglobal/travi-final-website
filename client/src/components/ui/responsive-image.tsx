@@ -37,7 +37,7 @@ export function ResponsiveImage({
   className,
   loading = "lazy",
   ...props
-}: ResponsiveImageProps) {
+}: Readonly<ResponsiveImageProps>) {
   const srcSet = buildSrcSet(src, widths);
 
   return (

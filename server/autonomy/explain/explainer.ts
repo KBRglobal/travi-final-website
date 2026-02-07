@@ -452,8 +452,14 @@ function buildFeatureSummaries(
 
   for (const [feature, stats] of byFeature) {
     const blockRate = stats.total > 0 ? stats.blocked / stats.total : 0;
-    const status: FeatureSummary["status"] =
-      blockRate > 0.3 ? "critical" : blockRate > 0.1 ? "attention_needed" : "healthy";
+    let status: FeatureSummary["status"];
+    if (blockRate > 0.3) {
+      status = "critical";
+    } else if (blockRate > 0.1) {
+      status = "attention_needed";
+    } else {
+      status = "healthy";
+    }
 
     const displayName = FEATURE_DISPLAY_NAMES[feature] || feature;
 
@@ -514,13 +520,16 @@ function buildActionItems(
   // Add action items from drift signals
   for (const signal of signals.slice(0, 5)) {
     const priority =
-      signal.severity === "critical" ? "high" : signal.severity === "high" ? "high" : "medium";
+      signal.severity === "critical" || signal.severity === "high" ? "high" : "medium";
 
-    const category = signal.type.includes("budget")
-      ? "budget"
-      : signal.type.includes("incident")
-        ? "incident"
-        : "policy";
+    let category: "budget" | "incident" | "policy";
+    if (signal.type.includes("budget")) {
+      category = "budget";
+    } else if (signal.type.includes("incident")) {
+      category = "incident";
+    } else {
+      category = "policy";
+    }
 
     if (audience === "executive") {
       items.push({

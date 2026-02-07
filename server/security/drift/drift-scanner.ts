@@ -424,7 +424,7 @@ class DriftScanner {
 
     // Compare role permissions
     for (const [role, baselinePerms] of Object.entries(baseline.roles)) {
-      const currentPerms = current.roles[role as string];
+      const currentPerms = current.roles[role];
 
       if (!currentPerms) {
         reports.push({
@@ -444,7 +444,7 @@ class DriftScanner {
       }
 
       for (const [resource, baselineActions] of Object.entries(baselinePerms)) {
-        const currentActions = currentPerms[resource as string] || [];
+        const currentActions = currentPerms[resource] || [];
 
         const addedActions = currentActions.filter((a: string) => !baselineActions.includes(a));
         const removedActions = baselineActions.filter((a: string) => !currentActions.includes(a));

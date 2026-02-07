@@ -73,8 +73,16 @@ function evaluateFreshness(content: any): DimensionScore {
   const updatedAt = content.updatedAt ? new Date(content.updatedAt) : null;
   if (updatedAt) {
     const daysSinceUpdate = (Date.now() - updatedAt.getTime()) / (1000 * 60 * 60 * 24);
-    const freshnessScore =
-      daysSinceUpdate <= 30 ? 100 : daysSinceUpdate <= 90 ? 70 : daysSinceUpdate <= 180 ? 40 : 10;
+    let freshnessScore: number;
+    if (daysSinceUpdate <= 30) {
+      freshnessScore = 100;
+    } else if (daysSinceUpdate <= 90) {
+      freshnessScore = 70;
+    } else if (daysSinceUpdate <= 180) {
+      freshnessScore = 40;
+    } else {
+      freshnessScore = 10;
+    }
     components.push({ name: "recency", score: freshnessScore, max: 100 });
   } else {
     components.push({ name: "recency", score: 0, max: 100 });
@@ -120,16 +128,30 @@ function evaluateRichness(content: any): DimensionScore {
   const components: Array<{ name: string; score: number; max: number }> = [];
 
   const wordCount = content.wordCount || 0;
-  const wordCountScore =
-    wordCount >= 1000 ? 40 : wordCount >= 500 ? 30 : wordCount >= 200 ? 20 : 10;
+  let wordCountScore: number;
+  if (wordCount >= 1000) {
+    wordCountScore = 40;
+  } else if (wordCount >= 500) {
+    wordCountScore = 30;
+  } else if (wordCount >= 200) {
+    wordCountScore = 20;
+  } else {
+    wordCountScore = 10;
+  }
   components.push({ name: "wordCount", score: wordCountScore, max: 40 });
 
   const blockCount = content.blocks?.length || 0;
   const blockScore = Math.min(blockCount * 5, 30);
   components.push({ name: "blockVariety", score: blockScore, max: 30 });
 
-  const hasAeo =
-    content.answerCapsule && content.aeoScore > 50 ? 30 : content.answerCapsule ? 15 : 0;
+  let hasAeo: number;
+  if (content.answerCapsule && content.aeoScore > 50) {
+    hasAeo = 30;
+  } else if (content.answerCapsule) {
+    hasAeo = 15;
+  } else {
+    hasAeo = 0;
+  }
   components.push({ name: "aeoQuality", score: hasAeo, max: 30 });
 
   const total = components.reduce((sum, c) => sum + c.score, 0);
@@ -146,7 +168,16 @@ function evaluateEngagement(content: any): DimensionScore {
   const components: Array<{ name: string; score: number; max: number }> = [];
 
   const viewCount = content.viewCount || 0;
-  const viewScore = viewCount >= 1000 ? 100 : viewCount >= 100 ? 70 : viewCount >= 10 ? 40 : 10;
+  let viewScore: number;
+  if (viewCount >= 1000) {
+    viewScore = 100;
+  } else if (viewCount >= 100) {
+    viewScore = 70;
+  } else if (viewCount >= 10) {
+    viewScore = 40;
+  } else {
+    viewScore = 10;
+  }
   components.push({ name: "views", score: viewScore, max: 100 });
 
   const total = components.reduce((sum, c) => sum + c.score, 0);

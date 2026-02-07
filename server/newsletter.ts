@@ -779,9 +779,11 @@ async function seedDefaultSequences(): Promise<void> {
 }
 
 // Seed on module load (non-blocking)
-seedDefaultSequences().catch(err => {
+try {
+  await seedDefaultSequences();
+} catch (err) {
   console.error("Newsletter sequence seeding error:", err);
-});
+}
 
 // Helper to convert DB row to AutomatedSequence type
 function dbToSequence(row: typeof automatedSequences.$inferSelect): AutomatedSequence {

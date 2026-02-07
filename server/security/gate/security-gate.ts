@@ -364,7 +364,7 @@ function recordAndReturn(
 
   // Log security event
   processSecurityEvent({
-    id: `gate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    id: `gate_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
     type: result.allowed ? "permission_granted" : "permission_denied",
     userId: request.actor.userId,
     resourceType: request.resource,

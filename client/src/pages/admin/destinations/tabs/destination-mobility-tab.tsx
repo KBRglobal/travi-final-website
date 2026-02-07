@@ -143,7 +143,7 @@ const emptyMobilityData: MobilityData = {
 export default function DestinationMobilityTab({
   destinationId,
   destination,
-}: DestinationMobilityTabProps) {
+}: Readonly<DestinationMobilityTabProps>) {
   const { toast } = useToast();
   const [formData, setFormData] = useState<MobilityData>(emptyMobilityData);
 

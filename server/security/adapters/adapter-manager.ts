@@ -254,7 +254,7 @@ export const AdapterManager = {
         unhealthy.push(name);
       }
       if (health.errors.length > 0) {
-        recentErrors.push(`${name}: ${health.errors[health.errors.length - 1]}`);
+        recentErrors.push(`${name}: ${health.errors.at(-1)}`);
       }
     });
 

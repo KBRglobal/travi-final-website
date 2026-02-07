@@ -210,10 +210,10 @@ function formatTimeAgo(dateString: string): string {
 function HeroSection({
   searchQuery,
   setSearchQuery,
-}: {
+}: Readonly<{
   searchQuery: string;
   setSearchQuery: (q: string) => void;
-}) {
+}>) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Background Pattern */}
@@ -318,10 +318,10 @@ function HeroSection({
 function RegionFilter({
   selectedRegion,
   onRegionChange,
-}: {
+}: Readonly<{
   selectedRegion: string;
   onRegionChange: (region: string) => void;
-}) {
+}>) {
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
       {Object.entries(REGIONS).map(([key, region]) => (
@@ -356,10 +356,10 @@ function RegionFilter({
 function CategoryFilter({
   selectedCategory,
   onCategoryChange,
-}: {
+}: Readonly<{
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
-}) {
+}>) {
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
       {CATEGORIES.map(category => {
@@ -384,7 +384,7 @@ function CategoryFilter({
   );
 }
 
-function FeaturedArticle({ article }: { article: Article }) {
+function FeaturedArticle({ article }: Readonly<{ article: Article }>) {
   const destination = article.destinationId ? DESTINATIONS[article.destinationId] : null;
 
   return (
@@ -470,7 +470,7 @@ function FeaturedArticle({ article }: { article: Article }) {
   );
 }
 
-function ArticleCard({ article, index = 0 }: { article: Article; index?: number }) {
+function ArticleCard({ article, index = 0 }: Readonly<{ article: Article; index?: number }>) {
   const destination = article.destinationId ? DESTINATIONS[article.destinationId] : null;
 
   return (
@@ -582,11 +582,11 @@ function DestinationCard({
   destId,
   onClick,
   articleCount,
-}: {
+}: Readonly<{
   destId: string;
   onClick: () => void;
   articleCount: number;
-}) {
+}>) {
   const destination = DESTINATIONS[destId];
   if (!destination) return null;
 
@@ -613,7 +613,7 @@ function DestinationCard({
   );
 }
 
-function EmptyState({ onClear }: { onClear: () => void }) {
+function EmptyState({ onClear }: Readonly<{ onClear: () => void }>) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

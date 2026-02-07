@@ -34,9 +34,11 @@ export interface DeviceFingerprint {
   touchSupport?: boolean;
 }
 
+type DeviceType = "desktop" | "mobile" | "tablet" | "unknown";
+
 export interface DeviceInfo {
   fingerprintHash: string;
-  deviceType: "desktop" | "mobile" | "tablet" | "unknown";
+  deviceType: DeviceType;
   browser: string;
   browserVersion: string;
   os: string;
@@ -55,13 +57,13 @@ function parseUserAgent(ua: string): {
   browserVersion: string;
   os: string;
   osVersion: string;
-  deviceType: "desktop" | "mobile" | "tablet" | "unknown";
+  deviceType: DeviceType;
 } {
   let browser = "Unknown";
   let browserVersion = "";
   let os = "Unknown";
   let osVersion = "";
-  let deviceType: "desktop" | "mobile" | "tablet" | "unknown" = "unknown";
+  let deviceType: DeviceType = "unknown";
 
   // Detect browser
   if (ua.includes("Firefox/")) {
@@ -767,10 +769,10 @@ if (process.env.DISABLE_BACKGROUND_SERVICES !== "true" && process.env.REPLIT_DEP
     () => {
       const now = Date.now();
       backoffStore.forEach((state, key) => {
-        if (state.lockedUntil && state.lockedUntil < now) {
-          backoffStore.delete(key);
-        } else if (state.nextAllowedAt < now - 3600000) {
-          // 1 hour old
+        if (
+          (state.lockedUntil && state.lockedUntil < now) ||
+          state.nextAllowedAt < now - 3600000 // 1 hour old
+        ) {
           backoffStore.delete(key);
         }
       });
@@ -1292,14 +1294,10 @@ export const threatIntelligence = {
     const ipThreat = this.checkIp(ip);
     if (ipThreat) {
       indicators.push(ipThreat);
-      riskScore +=
-        ipThreat.severity === "critical"
-          ? 50
-          : ipThreat.severity === "high"
-            ? 35
-            : ipThreat.severity === "medium"
-              ? 20
-              : 10;
+      if (ipThreat.severity === "critical") riskScore += 50;
+      else if (ipThreat.severity === "high") riskScore += 35;
+      else if (ipThreat.severity === "medium") riskScore += 20;
+      else riskScore += 10;
     }
 
     // Check for suspicious user agents
@@ -1338,7 +1336,9 @@ export const threatIntelligence = {
           description: desc,
           detectedAt: new Date(),
         });
-        riskScore += severity === "critical" ? 50 : severity === "high" ? 35 : 20;
+        if (severity === "critical") riskScore += 50;
+        else if (severity === "high") riskScore += 35;
+        else riskScore += 20;
       }
     }
 

@@ -166,7 +166,7 @@ export function registerReferralRoutes(app: Express) {
         where: eq(referralCodes.code, code),
       });
 
-      if (!partnerCode || !partnerCode.isActive) {
+      if (!partnerCode?.isActive) {
         return res.status(404).json({ error: "Invalid or inactive referral code" });
       }
 

@@ -239,7 +239,11 @@ router.post(
     const threatSources = (sources || []).map(s => ({
       ...s,
       detectedAt: new Date(),
-      severity: level === "critical" ? "critical" : level === "high" ? "high" : "medium",
+      severity: (() => {
+        if (level === "critical") return "critical" as const;
+        if (level === "high") return "high" as const;
+        return "medium" as const;
+      })(),
     }));
 
     await SecurityGate.escalateThreat(level, threatSources as any, reason);

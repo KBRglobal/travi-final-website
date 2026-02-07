@@ -50,7 +50,9 @@ async function main() {
   process.exit(0);
 }
 
-main().catch(err => {
+try {
+  await main();
+} catch (err: any) {
   console.error("Error:", err.message);
   process.exit(1);
-});
+}

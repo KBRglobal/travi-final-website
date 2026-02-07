@@ -6,62 +6,62 @@ import { pool } from "../server/db";
 // Feed name patterns -> destination slugs
 const FEED_DESTINATION_MAP: Record<string, string> = {
   // Dubai
-  "whatson": "dubai",
+  whatson: "dubai",
   "dubai city guide": "dubai",
   "dubai.com": "dubai",
 
   // Abu Dhabi
   "abu dhabi": "abu-dhabi",
-  "abudhabicityguide": "abu-dhabi",
+  abudhabicityguide: "abu-dhabi",
 
   // Ras Al Khaimah
-  "raktda": "ras-al-khaimah",
-  "arabiannotes": "ras-al-khaimah",
+  raktda: "ras-al-khaimah",
+  arabiannotes: "ras-al-khaimah",
 
   // UAE General
   "travelmole me": "dubai", // Default UAE to Dubai
   "hotelier middle east": "dubai",
 
   // London
-  "london": "london",
+  london: "london",
   "sunny in london": "london",
   "lady in london": "london",
   "time out london": "london",
 
   // Paris
-  "paris": "paris",
+  paris: "paris",
   "hip paris": "paris",
   "secrets of paris": "paris",
   "paris perfect": "paris",
 
   // Barcelona
-  "barcelona": "barcelona",
+  barcelona: "barcelona",
   "spain by hanne": "barcelona",
 
   // Rome
-  "roman": "rome",
-  "rome": "rome",
+  roman: "rome",
+  rome: "rome",
   "mama loves rome": "rome",
-  "romeing": "rome",
+  romeing: "rome",
 
   // Amsterdam
-  "amsterdam": "amsterdam",
+  amsterdam: "amsterdam",
   "little black book": "amsterdam",
 
   // Tokyo
-  "tokyo": "tokyo",
-  "nippon": "tokyo",
+  tokyo: "tokyo",
+  nippon: "tokyo",
   "time out tokyo": "tokyo",
 
   // Singapore
-  "singapore": "singapore",
-  "alvinology": "singapore",
+  singapore: "singapore",
+  alvinology: "singapore",
   "occasional traveller": "singapore",
-  "iwandered": "singapore",
+  iwandered: "singapore",
 
   // Bangkok
-  "bangkok": "bangkok",
-  "thaizer": "bangkok",
+  bangkok: "bangkok",
+  thaizer: "bangkok",
   "tat newsroom": "bangkok",
 
   // Hong Kong
@@ -77,20 +77,20 @@ const FEED_DESTINATION_MAP: Record<string, string> = {
 
   // Las Vegas
   "las vegas": "las-vegas",
-  "vegas": "las-vegas",
+  vegas: "las-vegas",
 
   // Los Angeles
   "los angeles": "los-angeles",
   "time out la": "los-angeles",
-  "welikela": "los-angeles",
+  welikela: "los-angeles",
   "eater la": "los-angeles",
 
   // Miami
-  "miami": "miami",
+  miami: "miami",
   "eater miami": "miami",
 
   // Istanbul
-  "istanbul": "istanbul",
+  istanbul: "istanbul",
   "turkeys for life": "istanbul",
   "inside out in istanbul": "istanbul",
 };
@@ -133,10 +133,10 @@ async function updateFeedDestinations() {
 
       if (destSlug) {
         // Update the feed
-        await pool.query(
-          `UPDATE rss_feeds SET destination_id = $1 WHERE id = $2`,
-          [destSlug, feed.id]
-        );
+        await pool.query(`UPDATE rss_feeds SET destination_id = $1 WHERE id = $2`, [
+          destSlug,
+          feed.id,
+        ]);
         console.log(`  ✓ ${feed.name} → ${destSlug}`);
         updated++;
       } else {
@@ -169,4 +169,4 @@ async function updateFeedDestinations() {
   }
 }
 
-updateFeedDestinations();
+await updateFeedDestinations();

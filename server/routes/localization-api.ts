@@ -292,7 +292,7 @@ export function registerLocalizationApiRoutes(app: Express): void {
 
         const existingTranslation = await storage.getTranslation(contentId, targetLocale);
 
-        if (existingTranslation && existingTranslation.isManualOverride) {
+        if (existingTranslation?.isManualOverride) {
           return res.status(409).json({
             error: "Manual override exists. Use force=true to overwrite.",
             existingTranslation,

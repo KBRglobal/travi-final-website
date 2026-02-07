@@ -75,11 +75,11 @@ export async function findApplicablePolicies(target: PolicyTarget): Promise<Poli
     if (policy.target.type === "global") {
       applicable.push(policy);
     } else if (policy.target.type === target.type) {
-      if (target.type === "feature" && policy.target.feature === target.feature) {
-        applicable.push(policy);
-      } else if (target.type === "entity" && policy.target.entity === target.entity) {
-        applicable.push(policy);
-      } else if (target.type === "locale" && policy.target.locale === target.locale) {
+      if (
+        (target.type === "feature" && policy.target.feature === target.feature) ||
+        (target.type === "entity" && policy.target.entity === target.entity) ||
+        (target.type === "locale" && policy.target.locale === target.locale)
+      ) {
         applicable.push(policy);
       }
     }

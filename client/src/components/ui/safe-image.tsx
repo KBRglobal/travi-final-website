@@ -31,7 +31,7 @@ export function SafeImage({
   className,
   "data-testid": testId,
   ...props
-}: SafeImageProps) {
+}: Readonly<SafeImageProps>) {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -96,7 +96,7 @@ export function SafeBackgroundImage({
   className,
   children,
   "data-testid": testId,
-}: SafeBackgroundImageProps) {
+}: Readonly<SafeBackgroundImageProps>) {
   const [hasError, setHasError] = useState(false);
 
   // Empty src protection

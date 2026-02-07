@@ -303,16 +303,18 @@ export default function OctypoQueueMonitorPage() {
           <CardTitle>Recent Jobs</CardTitle>
         </CardHeader>
         <CardContent>
-          {jobLoading ? (
+          {jobLoading && (
             <div className="flex items-center justify-center py-8">
               <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
-          ) : (jobQueue?.recentJobs || []).length === 0 ? (
+          )}
+          {!jobLoading && (jobQueue?.recentJobs || []).length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
               <Layers className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p>No jobs in queue</p>
             </div>
-          ) : (
+          )}
+          {!jobLoading && (jobQueue?.recentJobs || []).length > 0 && (
             <Table>
               <TableHeader>
                 <TableRow>

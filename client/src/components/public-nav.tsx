@@ -97,7 +97,7 @@ export function PublicNav({
   hideOnMobile = false,
   onMobileMenuToggle,
   externalMobileMenuOpen,
-}: PublicNavProps) {
+}: Readonly<PublicNavProps>) {
   const [internalMobileMenuOpen, setInternalMobileMenuOpen] = useState(false);
 
   const mobileMenuOpen =
@@ -124,24 +124,24 @@ export function PublicNav({
   const isActive = (href: string) =>
     normalizedLocation === href || normalizedLocation.startsWith(href + "/");
 
+  let navBgClass: string;
+  if (scrolled) navBgClass = "backdrop-blur-xl shadow-lg shadow-black/20";
+  else if (isTransparent) navBgClass = "bg-transparent";
+  else navBgClass = "";
+
+  let navBgStyle: string;
+  if (scrolled) navBgStyle = "hsla(var(--travi-purple) / 0.95)";
+  else if (isTransparent) navBgStyle = "transparent";
+  else navBgStyle = "hsl(var(--travi-purple))";
+
   return (
     <header className={className} role="banner">
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           hideOnMobile ? "hidden lg:block" : ""
-        } ${
-          scrolled
-            ? "backdrop-blur-xl shadow-lg shadow-black/20"
-            : isTransparent
-              ? "bg-transparent"
-              : ""
-        }`}
+        } ${navBgClass}`}
         style={{
-          background: scrolled
-            ? "hsla(var(--travi-purple) / 0.95)"
-            : isTransparent
-              ? "transparent"
-              : "hsl(var(--travi-purple))",
+          background: navBgStyle,
         }}
         data-testid="nav-header"
         aria-label={t("nav.mainNavigation")}

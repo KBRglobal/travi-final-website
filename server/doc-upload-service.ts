@@ -8,6 +8,8 @@
  */
 
 import mammoth from "mammoth";
+
+type DocContentType = "hotel" | "article" | "attraction" | "dining" | "district";
 import type { ContentBlock } from "@shared/schema";
 import { generateBlockId, generateSlug } from "./ai/utils";
 
@@ -121,7 +123,7 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
       });
     } else if (sections.length > 0) {
       // Append to last section
-      const lastSection = sections[sections.length - 1];
+      const lastSection = sections.at(-1)!;
       lastSection.content = lastSection.content
         ? lastSection.content + "\n\n" + paragraph
         : paragraph;
@@ -354,7 +356,7 @@ function stripHtml(html: string): string {
  */
 export function convertToContentBlocks(
   parsed: ParsedDocContent,
-  contentType: "hotel" | "article" | "attraction" | "dining" | "district"
+  contentType: DocContentType
 ): ImportedContent {
   const blocks: ContentBlock[] = [];
   let blockOrder = 0;
@@ -500,7 +502,7 @@ export function convertToContentBlocks(
  */
 export async function processDocUpload(
   buffer: Buffer,
-  contentType: "hotel" | "article" | "attraction" | "dining" | "district",
+  contentType: DocContentType,
   options?: {
     overrideTitle?: string;
     category?: string;
@@ -553,7 +555,7 @@ export async function processDocUpload(
  */
 export async function processBatchDocUpload(
   files: Array<{ buffer: Buffer; filename: string }>,
-  contentType: "hotel" | "article" | "attraction" | "dining" | "district"
+  contentType: DocContentType
 ): Promise<Array<DocUploadResult & { filename: string }>> {
   const results: Array<DocUploadResult & { filename: string }> = [];
 

@@ -1,9 +1,11 @@
 import { EventEmitter } from "node:events";
 
+export type LogLevel = "info" | "warn" | "error" | "debug";
+
 export interface ConsoleLogEntry {
   id: string;
   timestamp: string;
-  level: "info" | "warn" | "error" | "debug";
+  level: LogLevel;
   category: string;
   rawMessage: string;
   humanMessage: string;
@@ -42,7 +44,7 @@ class ConsoleLogger extends EventEmitter {
     };
   }
 
-  private captureLog(level: "info" | "warn" | "error" | "debug", args: unknown[]) {
+  private captureLog(level: LogLevel, args: unknown[]) {
     const rawMessage = args
       .map(arg => (typeof arg === "object" ? JSON.stringify(arg) : String(arg)))
       .join(" ");
@@ -50,7 +52,7 @@ class ConsoleLogger extends EventEmitter {
     const { category, humanMessage } = this.translateMessage(rawMessage);
 
     const entry: ConsoleLogEntry = {
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date().toISOString(),
       level,
       category,
@@ -240,9 +242,9 @@ class ConsoleLogger extends EventEmitter {
     this.logs = [];
   }
 
-  addManualLog(level: "info" | "warn" | "error" | "debug", category: string, message: string) {
+  addManualLog(level: LogLevel, category: string, message: string) {
     const entry: ConsoleLogEntry = {
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       timestamp: new Date().toISOString(),
       level,
       category,

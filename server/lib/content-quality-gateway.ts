@@ -500,9 +500,13 @@ export function checkBannedPhrases(text: string): QualityCheck {
 
   const passed = found.length === 0;
   const score = passed ? 100 : 0; // Zero tolerance
-  const details = passed
-    ? "No banned phrases detected"
-    : `Banned phrases found (${found.length}): ${found.slice(0, 5).join(", ")}${found.length > 5 ? "..." : ""}`;
+  let details: string;
+  if (passed) {
+    details = "No banned phrases detected";
+  } else {
+    const suffix = found.length > 5 ? "..." : "";
+    details = `Banned phrases found (${found.length}): ${found.slice(0, 5).join(", ")}${suffix}`;
+  }
 
   return { name: "Banned Phrases", passed, score, details };
 }

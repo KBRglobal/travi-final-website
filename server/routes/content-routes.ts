@@ -129,7 +129,7 @@ export function registerContentRoutes(app: Express): void {
       // Get translation for the specified locale
       const translation = await storage.getTranslation(content.id, locale as any);
 
-      if (!translation || translation.status !== "completed") {
+      if (translation?.status !== "completed") {
         const typePath = getContentTypePath(content.type);
         return res.status(404).json({
           error: "Translation not available",
@@ -170,7 +170,7 @@ export function registerContentRoutes(app: Express): void {
       const { slug } = req.params;
 
       const content = await storage.getContentBySlug(slug);
-      if (!content || content.status !== "published") {
+      if (content?.status !== "published") {
         return res.status(404).json({ error: "Content not found" });
       }
 

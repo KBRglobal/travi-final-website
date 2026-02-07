@@ -320,12 +320,11 @@ router.get("/dashboard/bias-check", async (req, res) => {
         temporal: (timeBias as any).rows || [],
       },
       alerts,
-      overallHealth:
-        alerts.length === 0
-          ? "healthy"
-          : alerts.some(a => a.severity === "critical")
-            ? "critical"
-            : "warning",
+      overallHealth: (() => {
+        if (alerts.length === 0) return "healthy";
+        if (alerts.some(a => a.severity === "critical")) return "critical";
+        return "warning";
+      })(),
     });
   } catch (error) {
     console.error("[Gatekeeper Dashboard] Bias check error:", error);

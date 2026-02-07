@@ -78,12 +78,11 @@ export function registerSEORoutes(app: Express) {
               .map(c => ({
                 field: c.name,
                 issue: c.message,
-                severity:
-                  tierName === "tier1_critical"
-                    ? "critical"
-                    : tierName === "tier2_essential"
-                      ? "warning"
-                      : "info",
+                severity: (() => {
+                  if (tierName === "tier1_critical") return "critical" as const;
+                  if (tierName === "tier2_essential") return "warning" as const;
+                  return "info" as const;
+                })(),
                 fixable: c.autoFixable || false,
                 suggestion: c.fixSuggestion,
               })),

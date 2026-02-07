@@ -167,4 +167,4 @@ async function createVamsTables() {
   }
 }
 
-createVamsTables();
+await createVamsTables();

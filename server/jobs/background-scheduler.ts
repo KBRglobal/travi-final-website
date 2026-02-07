@@ -627,7 +627,7 @@ export class BackgroundScheduler {
    * Generate unique job ID
    */
   private generateJobId(): string {
-    return `bg-job-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `bg-job-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**

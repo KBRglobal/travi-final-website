@@ -32,6 +32,8 @@ import { EngineRegistry } from "../../services/engine-registry";
 import { getCulturalContext, getAllSupportedLocales } from "../../localization/cultural-contexts";
 import { validateLocalePurity as validateLocalePurityExternal } from "../../localization/validators/locale-purity";
 
+type PilotLocale = "en" | "ar" | "fr";
+
 import { getPrimaryScripts, SCRIPT_REGEX } from "../../localization/validators/script-validators";
 
 // ============================================================================
@@ -110,10 +112,10 @@ export async function getLocalizationSystemStatus(): Promise<LocalizationSystemS
   let status: LocalizationSystemStatus;
   if (currentGenerationCount > 0) {
     status = "running";
-  } else if (!aiProviders.available) {
-    status = "blocked_ai";
-  } else {
+  } else if (aiProviders.available) {
     status = "ready";
+  } else {
+    status = "blocked_ai";
   }
 
   return {
@@ -145,7 +147,7 @@ export interface PilotGenerationRequest {
   entityType: "attraction";
   entityId: string;
   destination: string; // REQUIRED - no fallback
-  locale: "en" | "ar" | "fr"; // Extended to support French
+  locale: PilotLocale; // Extended to support French
   strict?: boolean; // Strict mode - fail immediately on any error
 }
 
@@ -204,7 +206,7 @@ const FRENCH_LATIN_REGEX = /[a-zA-ZàâäæçéèêëïîôœùûüÿÀÂÄÆÇ�
 
 export function calculateLocalePurity(
   text: string,
-  targetLocale: "en" | "ar" | "fr",
+  targetLocale: PilotLocale,
   exemptions: string[] = []
 ): number {
   if (!text || text.trim().length === 0) return 1;
@@ -217,7 +219,7 @@ export function calculateLocalePurity(
 
   // Remove dynamic exemptions (attraction name, venue name, etc.)
   for (const exemption of exemptions) {
-    if (exemption && exemption.trim()) {
+    if (exemption?.trim()) {
       const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }
@@ -256,7 +258,7 @@ export function calculateLocalePurity(
 
 export function validateLocalePurity(
   content: GeneratedAttractionContent,
-  locale: "en" | "ar" | "fr",
+  locale: PilotLocale,
   exemptions: string[] = []
 ): { passed: boolean; score: number; threshold: number } {
   const allText = [
@@ -589,7 +591,7 @@ export async function generatePilotContent(
       attractionData.venueName, // Venue name is a proper noun
       attractionData.cityName, // City name is a proper noun
       request.destination, // Destination name is a proper noun
-    ].filter((e): e is string => Boolean(e && e.trim()));
+    ].filter((e): e is string => Boolean(e?.trim()));
 
     const completenessResult = validateCompleteness(result.content);
     const localePurityResult = validateLocalePurity(
@@ -761,7 +763,7 @@ export function calculateLocalePurityExtended(
 
   // Remove dynamic exemptions
   for (const exemption of exemptions) {
-    if (exemption && exemption.trim()) {
+    if (exemption?.trim()) {
       const escapedExemption = exemption.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
       cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
     }

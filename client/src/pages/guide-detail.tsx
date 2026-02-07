@@ -207,7 +207,7 @@ function CinematicHero({
   isLoading,
   destinationName,
   localePath,
-}: {
+}: Readonly<{
   heroImage: string;
   title: string;
   summary: string;
@@ -217,7 +217,7 @@ function CinematicHero({
   isLoading: boolean;
   destinationName: string;
   localePath: (path: string) => string;
-}) {
+}>) {
   const heroRef = useRef<HTMLDivElement>(null);
   const [imageError, setImageError] = useState(false);
   const [, setImageLoaded] = useState(false);
@@ -385,7 +385,7 @@ function CinematicHero({
   );
 }
 
-function ContentSection({ section, index }: { section: GuideSection; index: number }) {
+function ContentSection({ section, index }: Readonly<{ section: GuideSection; index: number }>) {
   const sanitizedContent = useMemo(() => {
     return sanitizeWithEmbeds(section.content);
   }, [section.content]);
@@ -427,11 +427,11 @@ function TableOfContents({
   sections,
   activeSection,
   scrollProgress,
-}: {
+}: Readonly<{
   sections: GuideSection[];
   activeSection: string;
   scrollProgress: number;
-}) {
+}>) {
   const activeIndex = sections.findIndex(s => slugify(s.heading) === activeSection);
   const progressPercent =
     sections.length > 0
@@ -509,10 +509,10 @@ function TableOfContents({
 function HolidaysSection({
   countryCode,
   destinationName,
-}: {
+}: Readonly<{
   countryCode: string;
   destinationName: string;
-}) {
+}>) {
   const { data: holidays, isLoading } = useQuery<Holiday[]>({
     queryKey: ["/api/public/holidays", countryCode],
     queryFn: async () => {
@@ -577,7 +577,10 @@ function HolidaysSection({
   );
 }
 
-function FAQsSection({ faqs, destinationName }: { faqs: GuideFaq[]; destinationName: string }) {
+function FAQsSection({
+  faqs,
+  destinationName,
+}: Readonly<{ faqs: GuideFaq[]; destinationName: string }>) {
   if (!faqs || faqs.length === 0) return null;
 
   return (
@@ -619,10 +622,10 @@ function FAQsSection({ faqs, destinationName }: { faqs: GuideFaq[]; destinationN
 function QuickFactsSection({
   quickFacts,
   destinationName,
-}: {
+}: Readonly<{
   quickFacts: Record<string, string>;
   destinationName: string;
-}) {
+}>) {
   if (!quickFacts || Object.keys(quickFacts).length === 0) return null;
 
   const factIcons: Record<string, React.ReactNode> = {
@@ -671,10 +674,10 @@ function QuickFactsSection({
 function BestTimeToVisitSection({
   bestTimeToVisit,
   destinationName,
-}: {
+}: Readonly<{
   bestTimeToVisit: BestTimeToVisit;
   destinationName: string;
-}) {
+}>) {
   if (!bestTimeToVisit) return null;
 
   const getRatingColor = (rating: string) => {
@@ -733,11 +736,11 @@ function AffiliateCTA({
   destinationName,
   destinationSlug,
   localePath,
-}: {
+}: Readonly<{
   destinationName: string;
   destinationSlug: string;
   localePath: (path: string) => string;
-}) {
+}>) {
   return (
     <AnimatedSection className="mb-12" data-testid="section-cta">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -799,11 +802,11 @@ function LanguageSelector({
   availableLocales,
   currentLocale,
   onLocaleChange,
-}: {
+}: Readonly<{
   availableLocales: string[];
   currentLocale: string;
   onLocaleChange: (locale: string) => void;
-}) {
+}>) {
   const availableLanguages = SUPPORTED_LANGUAGES.filter(lang =>
     availableLocales.includes(lang.code)
   );

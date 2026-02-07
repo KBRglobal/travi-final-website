@@ -360,7 +360,7 @@ class EvidenceGenerator {
     }
 
     const evidence: ComplianceEvidence = {
-      id: `EVD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `EVD-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       framework,
       controlId,
       controlName: control.controlName,
@@ -463,7 +463,7 @@ class EvidenceGenerator {
         controlName: control.controlName,
         status,
         evidenceCount: evidence.length,
-        lastEvidenceDate: evidence.length > 0 ? evidence[evidence.length - 1].timestamp : undefined,
+        lastEvidenceDate: evidence.length > 0 ? evidence.at(-1)!.timestamp : undefined,
         issues,
       });
 

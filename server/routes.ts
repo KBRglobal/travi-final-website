@@ -369,7 +369,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
     app.use("/api", async (req: Request, res: Response, next: NextFunction) => {
       // Skip if already authenticated
-      if (req.isAuthenticated && req.isAuthenticated()) {
+      if (req.isAuthenticated?.()) {
         return next();
       }
 

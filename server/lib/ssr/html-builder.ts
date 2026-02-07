@@ -124,11 +124,14 @@ export function renderContentBlocks(blocks: ContentBlock[], locale: Locale): str
 
         case "FAQ":
         case "faq": {
-          const items = Array.isArray(data.items)
-            ? data.items
-            : Array.isArray(data.faqs)
-              ? data.faqs
-              : [];
+          let items: any[];
+          if (Array.isArray(data.items)) {
+            items = data.items;
+          } else if (Array.isArray(data.faqs)) {
+            items = data.faqs;
+          } else {
+            items = [];
+          }
           if (items.length === 0) return "";
           return `
           <section aria-labelledby="faq-heading">

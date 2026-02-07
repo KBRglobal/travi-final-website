@@ -219,6 +219,15 @@ export async function findStaleTranslations(limit: number = 100): Promise<BatchF
     const isStale = isTimestampStale || isHashStale;
 
     if (isStale) {
+      let reason: string;
+      if (isTimestampStale && isHashStale) {
+        reason = "Source updated and hash changed";
+      } else if (isTimestampStale) {
+        reason = "Source updated after translation";
+      } else {
+        reason = "Source hash changed";
+      }
+
       staleResults.push({
         contentId: content.id,
         locale: translation.locale,
@@ -232,12 +241,7 @@ export async function findStaleTranslations(limit: number = 100): Promise<BatchF
           sourceLastUpdated,
           translationLastUpdated,
           sourceHashMatch,
-          reason:
-            isTimestampStale && isHashStale
-              ? "Source updated and hash changed"
-              : isTimestampStale
-                ? "Source updated after translation"
-                : "Source hash changed",
+          reason,
         } as any,
       });
 

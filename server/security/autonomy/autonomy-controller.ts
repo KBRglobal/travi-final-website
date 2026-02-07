@@ -578,7 +578,7 @@ autonomyRouter.delete("/override/:system", (req, res) => {
   const system = req.params.system as AutonomySystem;
   const user = (req as any).user;
 
-  if (!user || user.role !== "super_admin") {
+  if (user?.role !== "super_admin") {
     return res.status(403).json({ error: "Super admin required" });
   }
 
