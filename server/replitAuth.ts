@@ -27,8 +27,10 @@ async function ensureSessionTable(): Promise<void> {
 // Initialize session table on module load
 ensureSessionTable();
 
+// Only attempt OIDC discovery when running inside Replit (REPL_ID exists)
 const getOidcConfig = memoize(
   async () => {
+    if (!process.env.REPL_ID) return null;
     try {
       return await client.discovery(
         new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
@@ -112,33 +114,64 @@ async function upsertUser(claims: OIDCClaims) {
   });
 }
 
+/**
+ * setupAuth - Configures authentication for the Express app.
+ *
+ * STANDALONE MODE (default when no REPL_ID):
+ *   - Session + Passport are initialized by the caller (routes.ts lines 463-469)
+ *   - /api/login redirects to /login (React SPA login page)
+ *   - /api/auth/login handles username/password (registered in auth-routes.ts)
+ *   - /api/logout destroys session and redirects to /
+ *
+ * REPLIT FALLBACK (only when REPL_ID env var exists):
+ *   - Replit OIDC is configured as an additional Passport strategy
+ *   - /api/login triggers OIDC flow
+ *   - /api/callback handles OIDC response
+ */
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
-  app.use(getSession());
-  app.use(passport.initialize());
-  app.use(passport.session());
+  // NOTE: Session and Passport middleware are initialized by the caller (routes.ts)
+  // to avoid double-initialization. Do NOT add app.use(getSession()) here.
 
   const config = await getOidcConfig();
 
   if (!config) {
-    app.get("/api/login", (req, res) => {
-      res.status(503).json({ error: "Authentication service temporarily unavailable" });
+    // No OIDC config available - either not on Replit or OIDC discovery failed.
+    // Standalone auth (/api/auth/login) is registered in auth-routes.ts.
+    // These routes handle the legacy /api/login and /api/logout paths.
+
+    app.get("/api/login", (_req, res) => {
+      // Redirect to the SPA login page instead of showing a 503 error
+      res.redirect("/login");
     });
 
-    app.get("/api/callback", (req, res) => {
-      res.status(503).json({ error: "Authentication service temporarily unavailable" });
+    app.get("/api/callback", (_req, res) => {
+      res.redirect("/login");
     });
 
     app.get("/api/logout", (req, res) => {
-      res.redirect("/");
+      req.logout(() => {
+        req.session?.destroy(() => {
+          res.clearCookie("connect.sid");
+          res.redirect("/");
+        });
+      });
     });
 
-    passport.serializeUser((user, done) => done(null, user));
-    passport.deserializeUser((user: Express.User, done) => done(null, user));
+    // Access denied info endpoint (available in both modes)
+    app.get("/api/access-denied-info", (_req, res) => {
+      res.json({
+        error: "Access denied",
+        message: "This application is restricted to authorized administrators only.",
+      });
+    });
 
     return;
   }
 
+  // =====================================================================
+  // REPLIT OIDC MODE: Full OIDC strategy registration (only when REPL_ID exists)
+  // =====================================================================
   const verify: VerifyFunction = async (
     tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
     verified: passport.AuthenticateCallback
@@ -147,8 +180,6 @@ export async function setupAuth(app: Express) {
     if (!claims) {
       return verified(new Error("Authentication claims are required."), undefined);
     }
-
-    // Log ALL claims for debugging (helps identify what OIDC returns)
 
     // STRICT ACCESS RESTRICTION: Only allow specific admin emails or GitHub usernames
     const ALLOWED_EMAILS = ["traviquackson@gmail.com", "mzgdubai@gmail.com"];
@@ -242,7 +273,7 @@ export async function setupAuth(app: Express) {
   });
 
   // Access denied page
-  app.get("/api/access-denied-info", (req, res) => {
+  app.get("/api/access-denied-info", (_req, res) => {
     res.json({
       error: "Access denied",
       message: "This application is restricted to authorized administrators only.",
@@ -281,13 +312,14 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  // For password-based login, user has id and claims.sub but no expires_at
-  // Allow these users through without token refresh check
+  // For password-based login (standalone auth - PRIMARY path),
+  // user has id and claims.sub but no expires_at.
+  // Allow these users through without token refresh check.
   if (!user.expires_at && user.claims?.sub) {
     return next();
   }
 
-  // For OIDC login, check token expiration
+  // For OIDC login (Replit fallback), check token expiration
   if (!user.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -297,14 +329,19 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     return next();
   }
 
+  // OIDC token expired - attempt refresh (only works inside Replit)
   const refreshToken = user.refresh_token;
-  if (!refreshToken) {
+  if (!refreshToken || !process.env.REPL_ID) {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
 
   try {
     const config = await getOidcConfig();
+    if (!config) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
     const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
     updateUserSession(user, tokenResponse);
     return next();

@@ -21,7 +21,7 @@ function getVersionInfo() {
 export function registerHealthRoutes(app: Express): void {
   // Health check endpoint for monitoring and load balancers
   app.get("/api/health", async (_req: Request, res: Response) => {
-    const HEALTH_CHECK_TIMEOUT = 5000;
+    const HEALTH_CHECK_TIMEOUT = 3000;
     const startTime = Date.now();
 
     const health: {
@@ -87,24 +87,26 @@ export function registerHealthRoutes(app: Express): void {
     };
     if (!dbCheck.success) health.status = "unhealthy";
 
-    // Memory check
+    // Memory check - use fixed max-old-space-size (4096MB) as reference
+    // Node's heapTotal is dynamic and much smaller than the actual limit,
+    // causing false "critical" alerts when heapUsed/heapTotal > 95%
     const memUsage = process.memoryUsage();
     const heapUsedMB = Math.round(memUsage.heapUsed / 1024 / 1024);
-    const heapTotalMB = Math.round(memUsage.heapTotal / 1024 / 1024);
-    const memoryPercent = Math.round((heapUsedMB / heapTotalMB) * 100);
+    const MAX_HEAP_MB = 4096; // matches --max-old-space-size in Dockerfile
+    const memoryPercent = Math.round((heapUsedMB / MAX_HEAP_MB) * 100);
 
     let memoryStatus = "healthy";
-    if (memoryPercent > 95) {
+    if (memoryPercent > 90) {
       memoryStatus = "critical";
       health.status = "unhealthy";
-    } else if (memoryPercent > 85) {
+    } else if (memoryPercent > 75) {
       memoryStatus = "warning";
     }
 
     health.checks.memory = {
       status: memoryStatus,
       usage: memoryPercent,
-      details: `${heapUsedMB}MB / ${heapTotalMB}MB`,
+      details: `${heapUsedMB}MB / ${MAX_HEAP_MB}MB`,
     };
 
     // Event loop check
@@ -118,15 +120,27 @@ export function registerHealthRoutes(app: Express): void {
       details: eventLoopLag > 100 ? "Event loop may be blocked" : undefined,
     };
 
-    // Cache check
-    const cacheCheck = await runCheckWithTimeout(
-      "cache",
-      async () => {
-        const { cache } = await import("../cache");
-        return cache.healthCheck();
-      },
-      HEALTH_CHECK_TIMEOUT
-    );
+    // Cache and Storage checks run in parallel with short timeout
+    const SECONDARY_TIMEOUT = 2000;
+    const [cacheCheck, storageCheck] = await Promise.all([
+      runCheckWithTimeout(
+        "cache",
+        async () => {
+          const { cache } = await import("../cache");
+          return cache.healthCheck();
+        },
+        SECONDARY_TIMEOUT
+      ),
+      runCheckWithTimeout(
+        "storage",
+        async () => {
+          const { getStorageManager } = await import("../services/storage-adapter");
+          const storageManager = getStorageManager();
+          return storageManager.healthCheck();
+        },
+        SECONDARY_TIMEOUT
+      ),
+    ]);
 
     if (cacheCheck.success && cacheCheck.result) {
       health.checks.cache = {
@@ -141,17 +155,7 @@ export function registerHealthRoutes(app: Express): void {
       };
     }
 
-    // Storage check
-    const storageCheck = await runCheckWithTimeout(
-      "storage",
-      async () => {
-        const { getStorageManager } = await import("../services/storage-adapter");
-        const storageManager = getStorageManager();
-        return storageManager.healthCheck();
-      },
-      HEALTH_CHECK_TIMEOUT
-    );
-
+    // Storage timeout/failure should NOT make the whole health check unhealthy
     if (storageCheck.success && storageCheck.result) {
       health.checks.storage = {
         status: storageCheck.result.status,
@@ -161,7 +165,7 @@ export function registerHealthRoutes(app: Express): void {
     } else {
       health.checks.storage = {
         status: "unknown",
-        details: storageCheck.error || "Storage check failed",
+        details: storageCheck.error || "Storage check skipped (timeout)",
       };
     }
 

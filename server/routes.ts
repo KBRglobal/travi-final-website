@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { db } from "./db";
 import multer from "multer";
 // Object Storage is now handled through the unified storage adapter
-import OpenAI from "openai";
+import type OpenAI from "openai";
 import { authenticator } from "otplib";
 import QRCode from "qrcode";
 
@@ -530,7 +530,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // IP blocking for suspicious activity (approved bots bypass this)
   app.use("/api", ipBlockMiddleware);
 
-  // Setup Replit Auth FIRST (so CSRF can use req.isAuthenticated)
+  // Setup auth routes: standalone (username/password) is PRIMARY,
+  // Replit OIDC is fallback only when REPL_ID env var exists
   await setupAuth(app);
 
   // Global CSRF protection for admin write endpoints (AFTER setupAuth)
@@ -858,7 +859,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // MEDIA INTELLIGENCE (Performance analysis, recommendations, alt text quality)
   // Feature flag: ENABLE_MEDIA_INTELLIGENCE=true
   // ============================================================================
-  app.use("/api/admin/media-intelligence", mediaIntelligenceRoutes);
+  app.use("/api/admin/media-intelligence", requireAuth, mediaIntelligenceRoutes);
 
   // ============================================================================
   // LOCALIZED ASSETS (Per-locale media management)
@@ -869,7 +870,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // GROWTH OS (Autonomous Growth Operating System)
   // Feature flags: ENABLE_GROWTH_OS=true, ENABLE_GROWTH_OS_*=true
   // ============================================================================
-  app.use("/api/growth-os", growthOSRoutes);
+  app.use("/api/growth-os", requireAuth, growthOSRoutes);
 
   // ============================================================================
   // OCTYPO ENGINE (AI Content Generation System - Writers, Validators, Orchestrator)
@@ -1080,8 +1081,13 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // ============================================================================
   // OPENAPI/SWAGGER DOCUMENTATION
   // Interactive API documentation at /api/docs
+  // In production, require auth to prevent exposing API surface to attackers
   // ============================================================================
-  app.use("/api/docs", swaggerRouter);
+  if (process.env.NODE_ENV === "production") {
+    app.use("/api/docs", requireAuth, swaggerRouter);
+  } else {
+    app.use("/api/docs", swaggerRouter);
+  }
 
   // ============================================================================
   // INITIALIZE AUTONOMY POLICY ENGINE
@@ -1134,7 +1140,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // Zero surprises. Everything controlled.
   // ============================================================================
   const { deploymentSafetyRoutes } = await import("./deployment-safety");
-  app.use("/api/deploy-safety", deploymentSafetyRoutes);
+  app.use("/api/deploy-safety", requireAuth, deploymentSafetyRoutes);
   // DISABLED: initializeDeploymentSafety(); - Backend automation disabled
 
   // Google Drive sync routes moved to routes/google-drive-routes.ts

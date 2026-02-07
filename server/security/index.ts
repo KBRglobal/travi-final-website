@@ -235,8 +235,10 @@ export function setupSecurityMiddleware(app: Express): void {
           ],
           connectSrc: [
             "'self'",
-            "https://*.replit.dev",
-            "https://*.replit.app",
+            "https://travi.world",
+            "https://www.travi.world",
+            "https://travi.travel",
+            "https://www.travi.travel",
             "https://api.deepl.com",
             "https://api.openai.com",
             "https://api.anthropic.com", // Anthropic AI API

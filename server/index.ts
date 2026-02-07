@@ -334,9 +334,7 @@ app.get("/sitemap", async (_req, res) => {
       // Continue with empty destinations - never fail
     }
 
-    const baseUrl = process.env.REPLIT_DEV_DOMAIN
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
-      : "https://travi.travel";
+    const baseUrl = process.env.SITE_URL || "https://travi.travel";
 
     const html = `<!DOCTYPE html>
 <html lang="en">

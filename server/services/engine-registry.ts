@@ -1,7 +1,42 @@
-import Anthropic from "@anthropic-ai/sdk";
-import OpenAI from "openai";
-import { GoogleGenAI } from "@google/genai";
-import Groq from "groq-sdk";
+import type Anthropic from "@anthropic-ai/sdk";
+import type OpenAI from "openai";
+import type { GoogleGenAI } from "@google/genai";
+import type Groq from "groq-sdk";
+
+// Lazy-loaded SDK constructors to avoid heavy imports at server startup
+let _Anthropic: typeof import("@anthropic-ai/sdk").default | null = null;
+let _OpenAI: typeof import("openai").default | null = null;
+let _GoogleGenAI: typeof GoogleGenAI | null = null;
+let _Groq: typeof import("groq-sdk").default | null = null;
+
+async function getAnthropicCtor() {
+  if (!_Anthropic) {
+    const m = await import("@anthropic-ai/sdk");
+    _Anthropic = m.default;
+  }
+  return _Anthropic;
+}
+async function getOpenAICtor() {
+  if (!_OpenAI) {
+    const m = await import("openai");
+    _OpenAI = m.default;
+  }
+  return _OpenAI;
+}
+async function getGoogleGenAICtor() {
+  if (!_GoogleGenAI) {
+    const m = await import("@google/genai");
+    _GoogleGenAI = m.GoogleGenAI;
+  }
+  return _GoogleGenAI;
+}
+async function getGroqCtor() {
+  if (!_Groq) {
+    const m = await import("groq-sdk");
+    _Groq = m.default;
+  }
+  return _Groq;
+}
 
 export type ProviderType =
   | "anthropic"
@@ -879,7 +914,8 @@ async function generateWithAnthropic(
   systemPrompt: string,
   userPrompt: string
 ): Promise<string> {
-  const client = new Anthropic({
+  const Ctor = await getAnthropicCtor();
+  const client = new Ctor({
     apiKey: engine.apiKey,
     baseURL: engine.baseURL,
     defaultHeaders: engine.headers,
@@ -904,7 +940,8 @@ async function generateWithOpenAI(
   systemPrompt: string,
   userPrompt: string
 ): Promise<string> {
-  const client = new OpenAI({
+  const Ctor = await getOpenAICtor();
+  const client = new Ctor({
     apiKey: engine.apiKey,
     baseURL: engine.baseURL,
   });
@@ -931,7 +968,8 @@ async function generateWithGemini(
   systemPrompt: string,
   userPrompt: string
 ): Promise<string> {
-  const ai = new GoogleGenAI({ apiKey: engine.apiKey });
+  const Ctor = await getGoogleGenAICtor();
+  const ai = new Ctor({ apiKey: engine.apiKey });
 
   const response = await ai.models.generateContent({
     model: engine.model,
@@ -949,7 +987,8 @@ async function generateWithGroq(
   systemPrompt: string,
   userPrompt: string
 ): Promise<string> {
-  const client = new Groq({ apiKey: engine.apiKey });
+  const Ctor = await getGroqCtor();
+  const client = new Ctor({ apiKey: engine.apiKey });
 
   const response = await client.chat.completions.create({
     model: engine.model,
