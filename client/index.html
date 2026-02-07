@@ -2,10 +2,78 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Emergency Service Worker cleanup - runs FIRST before any other JS -->
+    <!-- Preconnect to critical external origins (early in head for maximum benefit) -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+
+    <!-- DNS prefetch for analytics/tag origins (non-critical, loaded later) -->
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link rel="dns-prefetch" href="https://us.i.posthog.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+
+    <!-- Performance: Preload primary font (critical for FCP/LCP) -->
+    <link rel="preload" href="/fonts/Satoshi-Regular_1767041885349.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Primary Meta Tags -->
+    <title>TRAVI - Your Complete Travel Guide | Hotels, Attractions & Dining Worldwide</title>
+    <meta name="title" content="TRAVI - Your Complete Travel Guide | Hotels, Attractions & Dining Worldwide">
+    <meta name="description" content="Explore the world with TRAVI. Discover hotels, attractions, dining, and travel guides for 16+ destinations including Dubai, London, Paris, Tokyo, and more.">
+    <meta name="author" content="TRAVI">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="language" content="English">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://travi.world/">
+    <meta property="og:title" content="TRAVI - Your Complete Travel Guide | Hotels, Attractions & Dining Worldwide">
+    <meta property="og:description" content="Explore the world with TRAVI. Discover hotels, attractions, dining, and travel guides for 16+ destinations including Dubai, London, Paris, Tokyo, and more.">
+    <meta property="og:image" content="https://travi.world/ogImage.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="TRAVI World Travel Guide - Explore Hotels, Attractions and Dining Worldwide">
+    <meta property="og:site_name" content="TRAVI">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://travi.world/">
+    <meta name="twitter:title" content="TRAVI - Your Complete Travel Guide | Hotels, Attractions & Dining Worldwide">
+    <meta name="twitter:description" content="Explore the world with TRAVI. Discover hotels, attractions, dining, and travel guides for 16+ destinations including Dubai, London, Paris, Tokyo, and more.">
+    <meta name="twitter:image" content="https://travi.world/ogImage.jpg">
+    <meta name="twitter:image:alt" content="TRAVI World Travel Guide - Explore Hotels, Attractions and Dining Worldwide">
+    <meta name="twitter:site" content="@traviworld">
+    <meta name="twitter:creator" content="@traviworld">
+
+    <!-- Additional SEO - canonical/hreflang set dynamically by SEOHead component based on locale -->
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#6443F4">
+    <meta name="theme-color" content="#6443F4">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Structured Data: WebSite/Organization schemas generated dynamically by React components -->
+
+    <!-- JetBrains Mono for code blocks only - async loaded via preload/onload pattern -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Service Worker cleanup - runs AFTER main app script on page load -->
     <script>
-      (function() {
+      window.addEventListener('load', function() {
         try {
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -26,75 +94,10 @@
             }
           }
         } catch (e) {}
-      })();
+      });
     </script>
 
-    <!-- Google Tag Manager - Loaded conditionally via cookie consent -->
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Performance: Only preload primary font, others load via CSS with font-display:swap -->
-    <link rel="preload" href="/fonts/Satoshi-Regular_1767041885349.woff2" as="font" type="font/woff2" crossorigin>
-    
-    <!-- Hero image preload removed - handled conditionally in React component for mobile optimization -->
-    
-    <!-- Preconnect to external image origins -->
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-    <link rel="dns-prefetch" href="https://images.unsplash.com">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="manifest" href="/site.webmanifest">
-
-    <!-- Primary Meta Tags -->
-    <title>TRAVI - Your Complete Travel Guide | Hotels, Attractions & Dining Worldwide</title>
-    <meta name="title" content="TRAVI - Your Complete Travel Guide | Hotels, Attractions & Dining Worldwide">
-    <meta name="description" content="Explore the world with TRAVI. Discover hotels, attractions, dining, and travel guides for 16+ destinations including Dubai, London, Paris, Tokyo, and more.">
-    <meta name="author" content="TRAVI">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="language" content="English">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://travi.world/">
-    <meta property="og:title" content="TRAVI - Your Complete Travel Guide | Hotels, Attractions & Dining Worldwide">
-    <meta property="og:description" content="Explore the world with TRAVI. Discover hotels, attractions, dining, and travel guides for 16+ destinations including Dubai, London, Paris, Tokyo, and more.">
-    <meta property="og:image" content="https://travi.world/ogImage.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="TRAVI World Travel Guide - Explore Hotels, Attractions and Dining Worldwide">
-    <meta property="og:site_name" content="TRAVI">
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://travi.world/">
-    <meta name="twitter:title" content="TRAVI - Your Complete Travel Guide | Hotels, Attractions & Dining Worldwide">
-    <meta name="twitter:description" content="Explore the world with TRAVI. Discover hotels, attractions, dining, and travel guides for 16+ destinations including Dubai, London, Paris, Tokyo, and more.">
-    <meta name="twitter:image" content="https://travi.world/ogImage.jpg">
-    <meta name="twitter:image:alt" content="TRAVI World Travel Guide - Explore Hotels, Attractions and Dining Worldwide">
-    <meta name="twitter:site" content="@traviworld">
-    <meta name="twitter:creator" content="@traviworld">
-    
-    <!-- Additional SEO - canonical/hreflang set dynamically by SEOHead component based on locale -->
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#6443F4">
-    <meta name="theme-color" content="#6443F4">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="format-detection" content="telephone=no">
-
-    <!-- Structured Data: WebSite/Organization schemas generated dynamically by React components -->
-
-    <!-- Critical fonts only - others loaded via CSS -->
-    <!-- Note: Main fonts (Satoshi, Chillax) loaded in index.css from cdnfonts -->
-    <!-- JetBrains Mono for code blocks only - lazy loaded -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
-
-    <!-- Travelpayouts Affiliate Verification Script -->
-    <!-- Deferred for performance - loads after page interactive -->
+    <!-- Travelpayouts Affiliate Verification Script - deferred via requestIdleCallback/setTimeout -->
     <script>
       if (typeof requestIdleCallback !== 'undefined') {
         requestIdleCallback(function() {
@@ -109,13 +112,8 @@
           s.async = 1;
           s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
           document.head.appendChild(s);
-        }, 2000);
+        }, 3000);
       }
     </script>
-  </head>
-  <body>
-    <!-- Google Tag Manager noscript - Loaded conditionally via cookie consent -->
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

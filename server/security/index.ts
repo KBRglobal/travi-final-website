@@ -194,20 +194,32 @@ export function setupSecurityMiddleware(app: Express): void {
     "https://static.cloudflareinsights.com", // Cloudflare Web Analytics
   ];
 
+  // TODO: To fully remove 'unsafe-inline' from script-src in production (STRICT_CSP),
+  // the inline scripts in client/index.html (SW cleanup IIFE and Travelpayouts loader)
+  // must be moved to external .js files loaded with defer. Until then, 'unsafe-inline'
+  // is required in both modes to avoid breaking those scripts. Removing it without
+  // externalizing them would block script execution and break the site.
   const scriptSrcDirective = STRICT_CSP
-    ? commonScriptSrc // Strict: no unsafe-inline/unsafe-eval
+    ? [
+        ...commonScriptSrc,
+        "'unsafe-inline'", // TEMPORARY: required for inline scripts in index.html (SW cleanup, Travelpayouts)
+        // 'unsafe-eval' is intentionally excluded in production for security
+      ]
     : [
         ...commonScriptSrc,
-        "'unsafe-inline'", // Required: Vite HMR, React inline handlers
+        "'unsafe-inline'", // Required: Vite HMR, React inline handlers, index.html inline scripts
         "'unsafe-eval'", // Required: Vite dev server hot module replacement
       ];
 
   // Helmet - Security headers
-  // NOTE: HSTS is DISABLED here because Cloudflare already sets it with max-age=63072000
-  // Having both creates duplicate headers with different max-age values
+  // NOTE: HSTS is intentionally DISABLED here because Cloudflare CDN (in front of this app)
+  // already sets Strict-Transport-Security: max-age=63072000; includeSubDomains; preload.
+  // Enabling helmet's HSTS would create duplicate headers with potentially conflicting
+  // max-age values, which browsers may handle unpredictably. Cloudflare's HSTS config
+  // is managed via their dashboard at the DNS/CDN layer.
   app.use(
     helmet({
-      // Disable HSTS - Cloudflare handles this with max-age=63072000; includeSubDomains
+      // HSTS disabled - Cloudflare handles this (see comment above)
       strictTransportSecurity: false,
       contentSecurityPolicy: {
         directives: {
@@ -277,7 +289,19 @@ export function setupSecurityMiddleware(app: Express): void {
     res.setHeader("X-Frame-Options", "SAMEORIGIN");
     res.setHeader("X-XSS-Protection", "1; mode=block");
     res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+    next();
+  });
+
+  // Cache headers for static assets
+  // Long-lived immutable cache for fingerprinted assets (JS, CSS, fonts, images)
+  // No-cache for HTML to ensure fresh content on every navigation
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.path.match(/\.(js|css|woff2|woff|ttf|png|jpg|jpeg|webp|svg|ico)$/)) {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    } else if (req.path.endsWith(".html") || req.path === "/") {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    }
     next();
   });
 
