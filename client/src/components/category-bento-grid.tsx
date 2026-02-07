@@ -31,7 +31,11 @@ function getCategoryLink(destinationSlug: string, category: CategoryImage["categ
   }
 }
 
-export function CategoryBentoGrid({ destinationSlug, destinationName, className = "" }: CategoryBentoGridProps) {
+export function CategoryBentoGrid({
+  destinationSlug,
+  destinationName,
+  className = "",
+}: Readonly<CategoryBentoGridProps>) {
   const config = getDestinationCategoryConfig(destinationSlug);
 
   if (!config || config.images.length < 3) {
@@ -53,7 +57,7 @@ export function CategoryBentoGrid({ destinationSlug, destinationName, className 
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-6xl mx-auto">
-          <Link 
+          <Link
             href={getCategoryLink(destinationSlug, attractionImage.category)}
             className="group relative block h-[400px] lg:h-[520px] rounded-xl overflow-hidden hover-elevate"
             data-testid={`category-card-${attractionImage.category}`}
@@ -84,7 +88,7 @@ export function CategoryBentoGrid({ destinationSlug, destinationName, className 
           </Link>
 
           <div className="flex flex-col gap-4">
-            <Link 
+            <Link
               href={getCategoryLink(destinationSlug, foodImage.category)}
               className="group relative block h-[200px] lg:h-[254px] rounded-xl overflow-hidden hover-elevate"
               data-testid={`category-card-${foodImage.category}`}
@@ -102,16 +106,14 @@ export function CategoryBentoGrid({ destinationSlug, destinationName, className 
                     {foodImage.categoryLabel}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-1">
-                  {destinationName} Dining
-                </h3>
+                <h3 className="text-xl font-bold text-white mb-1">{destinationName} Dining</h3>
                 <span className="inline-flex items-center gap-2 text-white/90 text-sm font-medium group-hover:gap-3 transition-all">
                   Discover <ArrowRight className="w-3 h-3" />
                 </span>
               </div>
             </Link>
 
-            <Link 
+            <Link
               href={getCategoryLink(destinationSlug, cultureImage.category)}
               className="group relative block h-[200px] lg:h-[254px] rounded-xl overflow-hidden hover-elevate"
               data-testid={`category-card-${cultureImage.category}`}
@@ -129,9 +131,7 @@ export function CategoryBentoGrid({ destinationSlug, destinationName, className 
                     {cultureImage.categoryLabel}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-1">
-                  {destinationName} Culture
-                </h3>
+                <h3 className="text-xl font-bold text-white mb-1">{destinationName} Culture</h3>
                 <span className="inline-flex items-center gap-2 text-white/90 text-sm font-medium group-hover:gap-3 transition-all">
                   Explore <ArrowRight className="w-3 h-3" />
                 </span>

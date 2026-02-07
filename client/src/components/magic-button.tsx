@@ -95,7 +95,7 @@ export function MagicButton({
   disabled = false,
   size = "sm",
   className,
-}: MagicButtonProps) {
+}: Readonly<MagicButtonProps>) {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
@@ -196,7 +196,7 @@ export function MagicAllButton({
   onResults,
   disabled = false,
   className,
-}: MagicAllButtonProps) {
+}: Readonly<MagicAllButtonProps>) {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 

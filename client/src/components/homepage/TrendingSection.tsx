@@ -34,7 +34,10 @@ interface EditorialPlacement {
   content: PlacementContent;
 }
 
-function TrendingItem({ placement, index }: { placement: EditorialPlacement; index: number }) {
+function TrendingItem({
+  placement,
+  index,
+}: Readonly<{ placement: EditorialPlacement; index: number }>) {
   const contentUrl = `/${placement.content.type}/${placement.content.slug}`;
   const image = placement.image || placement.content.heroImage || placement.content.cardImage;
 

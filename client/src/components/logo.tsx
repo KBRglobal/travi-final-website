@@ -14,7 +14,7 @@ export function Logo({
   type = "logotype",
   height = 32,
   linkTo = "/",
-}: LogoProps) {
+}: Readonly<LogoProps>) {
   const getLogoSrc = () => {
     if (type === "full") {
       if (variant === "dark-bg") return "/logos/Full_Logo_for_Dark_Background.svg";
@@ -57,11 +57,11 @@ export function Mascot({
   className = "",
   variant = "light-bg",
   size = 48,
-}: {
+}: Readonly<{
   className?: string;
   variant?: "dark-bg" | "light-bg";
   size?: number;
-}) {
+}>) {
   return (
     <img
       src="/logos/Mascot_for_Dark_Background.png"

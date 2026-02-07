@@ -19,7 +19,6 @@
  */
 
 import {
-  searchIndex,
   searchAll,
   getPopularDestinations,
   getRecentArticles,
@@ -34,11 +33,7 @@ import { searchTelemetry } from "./search-telemetry";
 import { getEntityTypeFrequencies } from "../session/intent-memory";
 
 type IntentEntityType = any;
-import {
-  type UnifiedIntentType,
-  type IntentSignal,
-  INTENT_ENTITY_BOOSTS,
-} from "../../shared/intent-schema";
+import { type UnifiedIntentType, type IntentSignal } from "../../shared/intent-schema";
 import {
   syncSearchIntentToChat,
   getIntentBoostForEntityType,

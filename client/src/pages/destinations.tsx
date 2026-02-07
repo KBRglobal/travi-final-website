@@ -213,7 +213,7 @@ function LightHero({ destinations }: { destinations: APIDestination[] }) {
                   icon: Globe,
                 },
               ].map((stat, i) => (
-                <div key={i} className="flex items-center gap-4 sm:gap-6 md:gap-8">
+                <div key={stat.label} className="flex items-center gap-4 sm:gap-6 md:gap-8">
                   <div className="text-center lg:text-left flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6443F4]/10 to-[#E84C9A]/10 flex items-center justify-center">
                       <stat.icon className="w-5 h-5 text-[#6443F4]" aria-hidden="true" />
@@ -417,7 +417,7 @@ function FeaturedCarousel({ destinations }: { destinations: APIDestination[] }) 
         >
           {featuredDestinations.map((dest, idx) => (
             <button
-              key={idx}
+              key={dest.name}
               onClick={() => goTo(idx)}
               className={cn(
                 "min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-all duration-300"

@@ -6,15 +6,14 @@
 
 import { Router, type Request, type Response } from "express";
 import { db } from "../../db";
-import { tiqetsAttractions, contents, workflowInstances, aiWriters } from "@shared/schema";
-import { eq, isNull, isNotNull, sql, desc, and, gte } from "drizzle-orm";
+import { tiqetsAttractions, contents, workflowInstances } from "@shared/schema";
+import { eq, isNull, isNotNull, sql, desc, and } from "drizzle-orm";
 import { log } from "../../lib/logger";
 import {
   AgentRegistry,
   initializeWriterAgents,
   initializeValidatorAgents,
   generateAttractionWithOctypo,
-  getOctypoOrchestrator,
 } from "../../octypo";
 import { octypoState } from "../../octypo/state";
 import { EngineRegistry } from "../../services/engine-registry";
@@ -1963,7 +1962,7 @@ router.post("/rss/generate-from-items", async (req: Request, res: Response) => {
 
 import { getExplosionOrchestrator } from "../../octypo/exploder";
 import { getEntityExtractor } from "../../octypo/exploder/entity-extractor";
-import { contentEntities, explosionJobs, explodedArticles } from "@shared/schema";
+import { contentEntities } from "@shared/schema";
 
 /**
  * POST /api/octypo/exploder/entities/extract/:contentId
@@ -2230,7 +2229,7 @@ router.get("/exploder/entities", async (req: Request, res: Response) => {
 // ============================================================================
 
 import { autopilotAPI, getRealAutopilot, getAutopilotScheduler } from "../../octypo/pilot";
-import { autopilotTasks, autopilotSchedules } from "@shared/schema";
+import { autopilotTasks } from "@shared/schema";
 
 /**
  * GET /api/octypo/real-autopilot/status

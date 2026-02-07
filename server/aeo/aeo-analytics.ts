@@ -557,12 +557,15 @@ export async function analyzePlatformPerformance(days: number = 30): Promise<Pla
       0
     );
 
-    const citationGrowth =
-      previousCitationCount > 0
-        ? ((currentCitationCount - previousCitationCount) / previousCitationCount) * 100
-        : currentCitationCount > 0
-          ? 100
-          : 0;
+    let citationGrowth: number;
+    if (previousCitationCount > 0) {
+      citationGrowth =
+        ((currentCitationCount - previousCitationCount) / previousCitationCount) * 100;
+    } else if (currentCitationCount > 0) {
+      citationGrowth = 100;
+    } else {
+      citationGrowth = 0;
+    }
 
     // Get top content for this platform
     const contentCounts = new Map<string, number>();

@@ -4,14 +4,8 @@
  */
 
 import { db } from "../../db";
-import {
-  contents,
-  contentEntities,
-  explosionJobs,
-  explodedArticles,
-  articles,
-} from "@shared/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { contents, explosionJobs, explodedArticles, articles } from "@shared/schema";
+import { eq, sql } from "drizzle-orm";
 import { getEntityExtractor } from "./entity-extractor";
 import { getEntityMatcher } from "./entity-matcher";
 import { getArticleIdeation } from "./article-ideation";

@@ -80,7 +80,10 @@ interface DestinationsHeroProps {
   regionCount: number;
 }
 
-export function DestinationsHero({ destinationCount, regionCount }: DestinationsHeroProps) {
+export function DestinationsHero({
+  destinationCount,
+  regionCount,
+}: Readonly<DestinationsHeroProps>) {
   const { t } = useTranslation();
   const { localePath } = useLocale();
   const shouldAnimate = usePreferredMotion();

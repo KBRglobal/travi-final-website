@@ -11,7 +11,7 @@
  */
 
 import { AdminRole, ROLE_HIERARCHY } from "../../governance/types";
-import { securityLogger, logAdminEvent } from "../../governance/security-logger";
+import { logAdminEvent } from "../../governance/security-logger";
 
 // ============================================================================
 // TYPES

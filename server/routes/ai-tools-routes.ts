@@ -6,8 +6,8 @@
  * Use Octypo system for content generation and scoring.
  */
 
-import type { Express, Request, Response } from "express";
-import { requireAuth, type AuthRequest } from "../security";
+import type { Express } from "express";
+import { requireAuth } from "../security";
 
 export function registerAiToolsRoutes(app: Express): void {
   // ============================================================================

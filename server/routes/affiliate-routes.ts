@@ -3,11 +3,11 @@
  * Partner management, affiliate links, tracking, and payouts
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { eq, desc } from "drizzle-orm";
 import { db } from "../db";
 import { partners, payouts } from "@shared/schema";
-import { requireAuth, requirePermission, type AuthRequest } from "../security";
+import { requireAuth, requirePermission } from "../security";
 
 export function registerAffiliateRoutes(app: Express): void {
   // ============================================================================

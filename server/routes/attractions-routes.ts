@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { eq, and, sql, ilike, desc, or } from "drizzle-orm";
 import { db } from "../db";
-import { tiqetsAttractions, tiqetsCities, affiliateClicks } from "@shared/schema";
+import { tiqetsAttractions, affiliateClicks } from "@shared/schema";
 import { generateAttractionContent } from "../ai/attraction-description-generator";
 import {
   TIQETS_AFFILIATE_LINK,

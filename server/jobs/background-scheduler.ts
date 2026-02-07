@@ -1,13 +1,13 @@
 /**
  * Background Scheduler - Low-Priority Job Processing
- * 
+ *
  * TASK 8: Background Optimizers
- * 
+ *
  * Processes background optimization jobs when users are idle:
  * - SEO improvement: Enhance meta descriptions
  * - Internal linking: Add related content links
  * - Content enrichment: Add missing fields
- * 
+ *
  * HARD CONSTRAINTS:
  * - Must pause automatically under load (yellow/red tiers)
  * - No blocking of user-facing requests
@@ -15,8 +15,8 @@
  * - Resume when tier returns to green
  */
 
-import { log } from '../lib/logger';
-import { getLoadTierManager, type LoadTier } from '../system/load-tiers';
+import { log } from "../lib/logger";
+import { getLoadTierManager, type LoadTier } from "../system/load-tiers";
 
 const logger = {
   info: (msg: string, data?: Record<string, unknown>) =>
@@ -29,20 +29,15 @@ const logger = {
     log.info(`[BackgroundScheduler][AUDIT] ${msg}`, data),
 };
 
-export type BackgroundJobType = 
-  | 'seo-improvement'
-  | 'internal-linking'
-  | 'content-enrichment'
-  | 'content-value-improvement';
+export type BackgroundJobType =
+  | "seo-improvement"
+  | "internal-linking"
+  | "content-enrichment"
+  | "content-value-improvement";
 
-export type BackgroundJobPriority = 'low' | 'medium';
+export type BackgroundJobPriority = "low" | "medium";
 
-export type BackgroundJobStatus = 
-  | 'pending'
-  | 'processing'
-  | 'completed'
-  | 'failed'
-  | 'paused';
+export type BackgroundJobStatus = "pending" | "processing" | "completed" | "failed" | "paused";
 
 export interface BackgroundJob {
   id: string;
@@ -116,7 +111,7 @@ export class BackgroundScheduler {
     this.isRunning = false;
     this.totalProcessingTimeMs = 0;
     this.processedCount = 0;
-    
+
     this.metrics = {
       totalScheduled: 0,
       totalCompleted: 0,
@@ -128,7 +123,7 @@ export class BackgroundScheduler {
       averageProcessingTimeMs: 0,
     };
 
-    logger.info('Background Scheduler initialized', {
+    logger.info("Background Scheduler initialized", {
       maxConcurrentJobs: this.config.maxConcurrentJobs,
       processingIntervalMs: this.config.processingIntervalMs,
     });
@@ -136,7 +131,7 @@ export class BackgroundScheduler {
 
   /**
    * Schedule a background job for processing
-   * 
+   *
    * Jobs are queued and processed when:
    * 1. System load is in GREEN tier
    * 2. Processing capacity is available
@@ -144,16 +139,16 @@ export class BackgroundScheduler {
   scheduleBackgroundJob(
     type: BackgroundJobType,
     entityId: string,
-    priority: BackgroundJobPriority = 'low'
+    priority: BackgroundJobPriority = "low"
   ): string {
     const jobId = this.generateJobId();
-    
+
     const job: BackgroundJob = {
       id: jobId,
       type,
       entityId,
       priority,
-      status: 'pending',
+      status: "pending",
       createdAt: new Date(),
       retryCount: 0,
       maxRetries: this.config.maxRetries,
@@ -163,7 +158,7 @@ export class BackgroundScheduler {
     this.metrics.totalScheduled++;
     this.updateQueueMetrics();
 
-    logger.info('Background job scheduled', {
+    logger.info("Background job scheduled", {
       jobId,
       type,
       entityId,
@@ -171,7 +166,7 @@ export class BackgroundScheduler {
       queueSize: this.jobQueue.size,
     });
 
-    logger.audit('JOB_SCHEDULED', {
+    logger.audit("JOB_SCHEDULED", {
       jobId,
       type,
       entityId,
@@ -184,7 +179,7 @@ export class BackgroundScheduler {
 
   /**
    * Process pending background jobs
-   * 
+   *
    * CRITICAL: Checks load tier before processing
    * - GREEN tier: Process jobs normally
    * - YELLOW/RED tier: Pause all processing
@@ -192,13 +187,13 @@ export class BackgroundScheduler {
   async processBackgroundJobs(): Promise<JobResult[]> {
     const loadTierManager = getLoadTierManager();
     const currentTier = loadTierManager.getLoadTier();
-    
+
     if (this.shouldPause(currentTier)) {
       this.pauseProcessing(currentTier);
       return [];
     }
 
-    if (this.isPaused && currentTier === 'green') {
+    if (this.isPaused && currentTier === "green") {
       this.resumeProcessing();
     }
 
@@ -217,7 +212,7 @@ export class BackgroundScheduler {
     }
 
     const results: JobResult[] = [];
-    
+
     for (const job of pendingJobs) {
       const tierCheck = loadTierManager.getLoadTier();
       if (this.shouldPause(tierCheck)) {
@@ -237,13 +232,13 @@ export class BackgroundScheduler {
    */
   private async processJob(job: BackgroundJob): Promise<JobResult> {
     const startTime = Date.now();
-    
-    job.status = 'processing';
+
+    job.status = "processing";
     job.startedAt = new Date();
     this.processingJobs.add(job.id);
     this.updateQueueMetrics();
 
-    logger.info('Processing background job', {
+    logger.info("Processing background job", {
       jobId: job.id,
       type: job.type,
       entityId: job.entityId,
@@ -251,9 +246,9 @@ export class BackgroundScheduler {
 
     try {
       await this.executeJob(job);
-      
+
       const durationMs = Date.now() - startTime;
-      job.status = 'completed';
+      job.status = "completed";
       job.completedAt = new Date();
       this.metrics.totalCompleted++;
       this.metrics.lastProcessedAt = new Date();
@@ -261,13 +256,13 @@ export class BackgroundScheduler {
       this.processedCount++;
       this.updateAverageProcessingTime();
 
-      logger.info('Background job completed', {
+      logger.info("Background job completed", {
         jobId: job.id,
         type: job.type,
         durationMs,
       });
 
-      logger.audit('JOB_COMPLETED', {
+      logger.audit("JOB_COMPLETED", {
         jobId: job.id,
         type: job.type,
         entityId: job.entityId,
@@ -286,15 +281,15 @@ export class BackgroundScheduler {
       };
     } catch (error) {
       const durationMs = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+
       job.retryCount++;
       if (job.retryCount >= job.maxRetries) {
-        job.status = 'failed';
+        job.status = "failed";
         job.error = errorMessage;
         this.metrics.totalFailed++;
-        
-        logger.error('Background job failed permanently', {
+
+        logger.error("Background job failed permanently", {
           jobId: job.id,
           type: job.type,
           error: errorMessage,
@@ -303,9 +298,9 @@ export class BackgroundScheduler {
 
         this.jobQueue.delete(job.id);
       } else {
-        job.status = 'pending';
-        
-        logger.warn('Background job failed, will retry', {
+        job.status = "pending";
+
+        logger.warn("Background job failed, will retry", {
           jobId: job.id,
           type: job.type,
           error: errorMessage,
@@ -328,7 +323,7 @@ export class BackgroundScheduler {
 
   /**
    * Execute job based on type
-   * 
+   *
    * Job types:
    * - seo-improvement: Enhance meta descriptions
    * - internal-linking: Add related content links
@@ -337,16 +332,16 @@ export class BackgroundScheduler {
    */
   private async executeJob(job: BackgroundJob): Promise<void> {
     switch (job.type) {
-      case 'seo-improvement':
+      case "seo-improvement":
         await this.executeSeoImprovement(job.entityId);
         break;
-      case 'internal-linking':
+      case "internal-linking":
         await this.executeInternalLinking(job.entityId);
         break;
-      case 'content-enrichment':
+      case "content-enrichment":
         await this.executeContentEnrichment(job.entityId);
         break;
-      case 'content-value-improvement':
+      case "content-value-improvement":
         await this.executeContentValueImprovement(job.entityId);
         break;
       default:
@@ -359,17 +354,17 @@ export class BackgroundScheduler {
    * Enhances meta descriptions for content
    */
   private async executeSeoImprovement(entityId: string): Promise<void> {
-    logger.info('Executing SEO improvement', { entityId });
-    
+    logger.info("Executing SEO improvement", { entityId });
+
     // Stub implementation - in production would:
     // 1. Fetch content by entityId
     // 2. Analyze current meta description
     // 3. Generate improved meta description via AI
     // 4. Update content with new meta description
-    
+
     await this.simulateWork(500, 1500);
-    
-    logger.info('SEO improvement completed', { entityId });
+
+    logger.info("SEO improvement completed", { entityId });
   }
 
   /**
@@ -377,17 +372,17 @@ export class BackgroundScheduler {
    * Adds related content links
    */
   private async executeInternalLinking(entityId: string): Promise<void> {
-    logger.info('Executing internal linking', { entityId });
-    
+    logger.info("Executing internal linking", { entityId });
+
     // Stub implementation - in production would:
     // 1. Fetch content by entityId
     // 2. Find related content using semantic similarity
     // 3. Insert internal links at appropriate locations
     // 4. Update content with new links
-    
+
     await this.simulateWork(800, 2000);
-    
-    logger.info('Internal linking completed', { entityId });
+
+    logger.info("Internal linking completed", { entityId });
   }
 
   /**
@@ -395,58 +390,58 @@ export class BackgroundScheduler {
    * Adds missing fields to content
    */
   private async executeContentEnrichment(entityId: string): Promise<void> {
-    logger.info('Executing content enrichment', { entityId });
-    
+    logger.info("Executing content enrichment", { entityId });
+
     // Stub implementation - in production would:
     // 1. Fetch content by entityId
     // 2. Identify missing fields (excerpt, schema, etc.)
     // 3. Generate missing content via AI
     // 4. Update content with enriched fields
-    
+
     await this.simulateWork(600, 1800);
-    
-    logger.info('Content enrichment completed', { entityId });
+
+    logger.info("Content enrichment completed", { entityId });
   }
 
   /**
    * Content Value Improvement Job
    * AI-driven content improvement based on value score
-   * 
+   *
    * TASK 3: CONTENT VALUE AUTOMATION
    * Only processes content that is NOT protected (score <= 80)
    */
   private async executeContentValueImprovement(entityId: string): Promise<void> {
-    logger.info('Executing content value improvement', { entityId });
-    
+    logger.info("Executing content value improvement", { entityId });
+
     // Import dynamically to avoid circular dependencies
-    const { canImproveContent } = await import('../content/value-scorer');
-    
+    const { canImproveContent } = await import("../content/value-scorer");
+
     const checkResult = canImproveContent(entityId);
-    
+
     if (!checkResult.allowed) {
-      logger.warn('Content value improvement blocked', {
+      logger.warn("Content value improvement blocked", {
         entityId,
         reason: checkResult.reason,
       });
       return;
     }
-    
+
     // Stub implementation - in production would:
     // 1. Fetch content by entityId
     // 2. Analyze current content quality and performance
     // 3. Generate AI improvements (titles, meta, structure)
     // 4. Apply improvements and update content
     // 5. Record new AI cost
-    
+
     await this.simulateWork(800, 2500);
-    
-    logger.info('Content value improvement completed', { 
+
+    logger.info("Content value improvement completed", {
       entityId,
       previousValue: checkResult.value?.value,
       previousRatio: checkResult.value?.ratio,
     });
-    
-    logger.audit('CONTENT_VALUE_IMPROVEMENT_COMPLETED', {
+
+    logger.audit("CONTENT_VALUE_IMPROVEMENT_COMPLETED", {
       entityId,
       previousValue: checkResult.value?.value,
       previousRatio: checkResult.value?.ratio,
@@ -466,7 +461,7 @@ export class BackgroundScheduler {
    * Check if processing should pause based on load tier
    */
   private shouldPause(tier: LoadTier): boolean {
-    return tier === 'yellow' || tier === 'red';
+    return tier === "yellow" || tier === "red";
   }
 
   /**
@@ -474,7 +469,7 @@ export class BackgroundScheduler {
    */
   private pauseProcessing(tier: LoadTier): void {
     if (this.isPaused) return;
-    
+
     this.isPaused = true;
     this.pauseReason = `Load tier is ${tier.toUpperCase()} - background jobs paused`;
     this.metrics.isPaused = true;
@@ -484,18 +479,18 @@ export class BackgroundScheduler {
     for (const jobId of this.processingJobs) {
       const job = this.jobQueue.get(jobId);
       if (job) {
-        job.status = 'paused';
+        job.status = "paused";
       }
     }
 
-    logger.warn('Background processing PAUSED', {
+    logger.warn("Background processing PAUSED", {
       tier,
       reason: this.pauseReason,
       queueSize: this.jobQueue.size,
       processingCount: this.processingJobs.size,
     });
 
-    logger.audit('PROCESSING_PAUSED', {
+    logger.audit("PROCESSING_PAUSED", {
       tier,
       reason: this.pauseReason,
       queueSize: this.jobQueue.size,
@@ -508,7 +503,7 @@ export class BackgroundScheduler {
    */
   private resumeProcessing(): void {
     if (!this.isPaused) return;
-    
+
     const previousReason = this.pauseReason;
     this.isPaused = false;
     this.pauseReason = undefined;
@@ -517,18 +512,18 @@ export class BackgroundScheduler {
 
     for (const jobId of this.processingJobs) {
       const job = this.jobQueue.get(jobId);
-      if (job && job.status === 'paused') {
-        job.status = 'pending';
+      if (job?.status === "paused") {
+        job.status = "pending";
       }
     }
     this.processingJobs.clear();
 
-    logger.info('Background processing RESUMED', {
+    logger.info("Background processing RESUMED", {
       previousReason,
       queueSize: this.jobQueue.size,
     });
 
-    logger.audit('PROCESSING_RESUMED', {
+    logger.audit("PROCESSING_RESUMED", {
       previousReason,
       queueSize: this.jobQueue.size,
       timestamp: new Date().toISOString(),
@@ -540,9 +535,9 @@ export class BackgroundScheduler {
    */
   private getPendingJobs(limit: number): BackgroundJob[] {
     const pending: BackgroundJob[] = [];
-    
+
     for (const job of this.jobQueue.values()) {
-      if (job.status === 'pending') {
+      if (job.status === "pending") {
         pending.push(job);
       }
     }
@@ -562,12 +557,12 @@ export class BackgroundScheduler {
    */
   start(): void {
     if (this.isRunning) {
-      logger.warn('Scheduler already running');
+      logger.warn("Scheduler already running");
       return;
     }
 
     this.isRunning = true;
-    
+
     this.processingTimer = setInterval(async () => {
       if (!this.isRunning) return;
       await this.processBackgroundJobs();
@@ -577,7 +572,7 @@ export class BackgroundScheduler {
       if (!this.isRunning) return;
       const loadTierManager = getLoadTierManager();
       const tier = loadTierManager.getLoadTier();
-      
+
       if (this.shouldPause(tier) && !this.isPaused) {
         this.pauseProcessing(tier);
       } else if (!this.shouldPause(tier) && this.isPaused) {
@@ -585,7 +580,7 @@ export class BackgroundScheduler {
       }
     }, this.config.pauseCheckIntervalMs);
 
-    logger.info('Background Scheduler started', {
+    logger.info("Background Scheduler started", {
       processingIntervalMs: this.config.processingIntervalMs,
     });
   }
@@ -595,20 +590,20 @@ export class BackgroundScheduler {
    */
   stop(): void {
     if (!this.isRunning) return;
-    
+
     this.isRunning = false;
-    
+
     if (this.processingTimer) {
       clearInterval(this.processingTimer);
       this.processingTimer = undefined;
     }
-    
+
     if (this.pauseCheckTimer) {
       clearInterval(this.pauseCheckTimer);
       this.pauseCheckTimer = undefined;
     }
 
-    logger.info('Background Scheduler stopped');
+    logger.info("Background Scheduler stopped");
   }
 
   /**
@@ -624,8 +619,7 @@ export class BackgroundScheduler {
    */
   private updateAverageProcessingTime(): void {
     if (this.processedCount > 0) {
-      this.metrics.averageProcessingTimeMs = 
-        this.totalProcessingTimeMs / this.processedCount;
+      this.metrics.averageProcessingTimeMs = this.totalProcessingTimeMs / this.processedCount;
     }
   }
 
@@ -654,8 +648,7 @@ export class BackgroundScheduler {
    * Get all pending jobs
    */
   getPendingJobsList(): BackgroundJob[] {
-    return Array.from(this.jobQueue.values())
-      .filter(job => job.status === 'pending');
+    return Array.from(this.jobQueue.values()).filter(job => job.status === "pending");
   }
 
   /**
@@ -664,16 +657,16 @@ export class BackgroundScheduler {
   cancelJob(jobId: string): boolean {
     const job = this.jobQueue.get(jobId);
     if (!job) return false;
-    
-    if (job.status === 'processing') {
-      logger.warn('Cannot cancel job in processing state', { jobId });
+
+    if (job.status === "processing") {
+      logger.warn("Cannot cancel job in processing state", { jobId });
       return false;
     }
-    
+
     this.jobQueue.delete(jobId);
     this.updateQueueMetrics();
-    
-    logger.info('Job cancelled', { jobId, type: job.type });
+
+    logger.info("Job cancelled", { jobId, type: job.type });
     return true;
   }
 
@@ -682,16 +675,16 @@ export class BackgroundScheduler {
    */
   clearQueue(): number {
     const pendingCount = this.getPendingJobsList().length;
-    
+
     for (const [jobId, job] of this.jobQueue) {
-      if (job.status === 'pending') {
+      if (job.status === "pending") {
         this.jobQueue.delete(jobId);
       }
     }
-    
+
     this.updateQueueMetrics();
-    logger.info('Queue cleared', { clearedCount: pendingCount });
-    
+    logger.info("Queue cleared", { clearedCount: pendingCount });
+
     return pendingCount;
   }
 
@@ -719,9 +712,7 @@ export function getBackgroundScheduler(): BackgroundScheduler {
   return schedulerInstance;
 }
 
-export function initBackgroundScheduler(
-  config?: Partial<SchedulerConfig>
-): BackgroundScheduler {
+export function initBackgroundScheduler(config?: Partial<SchedulerConfig>): BackgroundScheduler {
   schedulerInstance = new BackgroundScheduler(config);
   return schedulerInstance;
 }
@@ -736,7 +727,7 @@ export function resetBackgroundScheduler(): void {
 export function scheduleBackgroundJob(
   type: BackgroundJobType,
   entityId: string,
-  priority: BackgroundJobPriority = 'low'
+  priority: BackgroundJobPriority = "low"
 ): string {
   return getBackgroundScheduler().scheduleBackgroundJob(type, entityId, priority);
 }

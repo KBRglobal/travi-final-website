@@ -11,9 +11,8 @@ import {
   searchIndex,
   internalLinks,
   entityTags,
-  entityPlacements,
 } from '@shared/schema';
-import { eq, sql, count, and } from 'drizzle-orm';
+import { eq, sql, count } from 'drizzle-orm';
 import { log } from '../../lib/logger';
 import type {
   ContentCoverage,

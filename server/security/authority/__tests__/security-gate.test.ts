@@ -9,10 +9,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { SecurityGate, SecurityGateError } from "../security-gate";
+import { SecurityGate } from "../security-gate";
 import { SecurityModeManager } from "../security-modes";
 import { OverrideRegistry } from "../override-registry";
-import type { GateRequest, GatedAction, SecurityMode } from "../types";
+import type { GateRequest, GatedAction } from "../types";
 
 // Mock the audit logger to prevent actual logging during tests
 vi.mock("../../audit-logger", () => ({

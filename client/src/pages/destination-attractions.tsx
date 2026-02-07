@@ -1211,7 +1211,7 @@ function DestinationAttractionsPage() {
                     const TipIcon = getTipIcon(tip.icon);
                     return (
                       <motion.div
-                        key={index}
+                        key={tip.title}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
@@ -1260,8 +1260,8 @@ function DestinationAttractionsPage() {
                 <Accordion type="single" collapsible className="space-y-3">
                   {data.faq.map((item, index) => (
                     <AccordionItem
-                      key={index}
-                      value={`faq-${index}`}
+                      key={item.question}
+                      value={item.question}
                       className="bg-gradient-to-br from-[#6443F4]/5 to-white dark:from-slate-800 dark:to-slate-900 rounded-xl border border-[#6443F4]/10 px-6 overflow-hidden"
                       data-testid={`faq-item-${index}`}
                     >

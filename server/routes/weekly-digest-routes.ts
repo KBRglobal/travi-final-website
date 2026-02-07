@@ -3,8 +3,8 @@
  * Endpoints for managing and triggering weekly digest emails
  */
 
-import type { Express, Request, Response } from "express";
-import { requireAuth, requirePermission, type AuthRequest } from "../security";
+import type { Express } from "express";
+import { requireAuth, requirePermission } from "../security";
 
 export function registerWeeklyDigestRoutes(app: Express): void {
   // ============================================================================

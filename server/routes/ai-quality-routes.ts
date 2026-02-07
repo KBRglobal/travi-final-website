@@ -22,12 +22,6 @@ import {
   type ReadabilityMetrics,
   type ParaphraseResult,
   type ParaphraseStyle,
-  type FeedbackEntry,
-  type FeedbackStats,
-  type IssueLabel,
-  type Experiment,
-  type ExperimentSummary,
-  type PromptVariant,
 } from "../ingestion/update-9987";
 
 const router = Router();

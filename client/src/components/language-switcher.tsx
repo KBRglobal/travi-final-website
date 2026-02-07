@@ -21,27 +21,29 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
-export function LanguageSwitcher({ variant = "nav", className }: LanguageSwitcherProps) {
+export function LanguageSwitcher({ variant = "nav", className }: Readonly<LanguageSwitcherProps>) {
   const { locale, setLocale, isRTL } = useLocale();
   const [location, setLocation] = useLocation();
   const { t } = useTranslation();
-  
+
   const currentLocale = SUPPORTED_LOCALES.find(l => l.code === locale) || SUPPORTED_LOCALES[0];
-  
+
   const handleLocaleChange = (newLocale: Locale) => {
-    const localePattern = new RegExp(`^/(${SUPPORTED_LOCALES.map(l => l.code).join('|')})(/|$)`);
+    const localePattern = new RegExp(`^/(${SUPPORTED_LOCALES.map(l => l.code).join("|")})(/|$)`);
     const match = location.match(localePattern);
     let pathWithoutLocale = location;
-    
+
     if (match) {
-      pathWithoutLocale = location.slice(match[1].length + 1) || '/';
+      pathWithoutLocale = location.slice(match[1].length + 1) || "/";
     }
-    
-    const cleanPath = pathWithoutLocale.startsWith('/') ? pathWithoutLocale : `/${pathWithoutLocale}`;
-    const newPath = `/${newLocale}${cleanPath === '/' ? '' : cleanPath}`;
-    
+
+    const cleanPath = pathWithoutLocale.startsWith("/")
+      ? pathWithoutLocale
+      : `/${pathWithoutLocale}`;
+    const newPath = `/${newLocale}${cleanPath === "/" ? "" : cleanPath}`;
+
     setLocale(newLocale);
-    setLocation(newPath.replace(/\/+/g, '/') || `/${newLocale}`);
+    setLocation(newPath.replace(/\/+/g, "/") || `/${newLocale}`);
   };
 
   const popularLocales = SUPPORTED_LOCALES.filter(l => POPULAR_LOCALES.includes(l.code));
@@ -61,8 +63,8 @@ export function LanguageSwitcher({ variant = "nav", className }: LanguageSwitche
             <Globe className="w-5 h-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent 
-          align={isRTL ? "start" : "end"} 
+        <DropdownMenuContent
+          align={isRTL ? "start" : "end"}
           className="w-48 max-h-80 overflow-y-auto"
           data-testid="dropdown-language-menu"
         >
@@ -70,7 +72,7 @@ export function LanguageSwitcher({ variant = "nav", className }: LanguageSwitche
             {t("nav.selectLanguage")}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {SUPPORTED_LOCALES.map((l) => (
+          {SUPPORTED_LOCALES.map(l => (
             <DropdownMenuItem
               key={l.code}
               onClick={() => handleLocaleChange(l.code)}
@@ -105,15 +107,15 @@ export function LanguageSwitcher({ variant = "nav", className }: LanguageSwitche
           <ChevronDown className="w-3 h-3 opacity-60" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent 
-        align={isRTL ? "start" : "end"} 
+      <DropdownMenuContent
+        align={isRTL ? "start" : "end"}
         className="w-56 max-h-[70vh] overflow-y-auto"
         data-testid="dropdown-language-menu"
       >
         <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
           {t("nav.popularLanguages")}
         </DropdownMenuLabel>
-        {popularLocales.map((l) => (
+        {popularLocales.map(l => (
           <DropdownMenuItem
             key={l.code}
             onClick={() => handleLocaleChange(l.code)}
@@ -124,10 +126,7 @@ export function LanguageSwitcher({ variant = "nav", className }: LanguageSwitche
             data-testid={`menu-item-lang-${l.code}`}
           >
             <div className="flex flex-col">
-              <span className={cn(
-                "font-medium",
-                RTL_LOCALES.includes(l.code) && "font-arabic"
-              )}>
+              <span className={cn("font-medium", RTL_LOCALES.includes(l.code) && "font-arabic")}>
                 {l.nativeName}
               </span>
               <span className="text-xs text-muted-foreground">{l.name}</span>
@@ -135,12 +134,12 @@ export function LanguageSwitcher({ variant = "nav", className }: LanguageSwitche
             {l.code === locale && <Check className="w-4 h-4 text-foreground shrink-0" />}
           </DropdownMenuItem>
         ))}
-        
+
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
           {t("nav.allLanguages")}
         </DropdownMenuLabel>
-        {otherLocales.map((l) => (
+        {otherLocales.map(l => (
           <DropdownMenuItem
             key={l.code}
             onClick={() => handleLocaleChange(l.code)}
@@ -151,10 +150,7 @@ export function LanguageSwitcher({ variant = "nav", className }: LanguageSwitche
             data-testid={`menu-item-lang-${l.code}`}
           >
             <div className="flex flex-col">
-              <span className={cn(
-                "font-medium",
-                RTL_LOCALES.includes(l.code) && "font-arabic"
-              )}>
+              <span className={cn("font-medium", RTL_LOCALES.includes(l.code) && "font-arabic")}>
                 {l.nativeName}
               </span>
               <span className="text-xs text-muted-foreground">{l.name}</span>

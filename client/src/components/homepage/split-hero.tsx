@@ -20,11 +20,11 @@ export function SplitHero({
   currentIndex,
   onIndexChange,
   siteStats,
-}: {
+}: Readonly<{
   currentIndex: number;
   onIndexChange: (idx: number) => void;
   siteStats?: { destinations: number; attractions: number };
-}) {
+}>) {
   const { t } = useTranslation();
   const { localePath } = useLocale();
   const [isAnimating, setIsAnimating] = useState(false);

@@ -150,8 +150,7 @@ export async function translateCapsule(
   });
 
   if (
-    existingTranslation &&
-    existingTranslation.qualityScore &&
+    existingTranslation?.qualityScore &&
     existingTranslation.qualityScore >= ANSWER_CAPSULE_CONFIG.qualityThresholds.acceptable
   ) {
     return {

@@ -104,8 +104,8 @@ export function normalizeBlock(
       if (Array.isArray(faqsArray) && faqsArray.length > 0) {
         const firstFaq = faqsArray[0];
         if (typeof firstFaq === "object" && firstFaq) {
-          const q = (firstFaq as any).question || (firstFaq as any).q || "Question?";
-          const a = (firstFaq as any).answer || (firstFaq as any).a || "Answer pending.";
+          const q = firstFaq.question || firstFaq.q || "Question?";
+          const a = firstFaq.answer || firstFaq.a || "Answer pending.";
           // Store the remaining FAQs for later extraction
           return {
             type: "faq" as const,
@@ -145,7 +145,7 @@ export function normalizeBlock(
 
     case "recommendations":
       // Ensure recommendations have items with images
-      const recData = data as Record<string, unknown>;
+      const recData = data;
       let recItems = recData.items as Array<Record<string, unknown>> | undefined;
       if (Array.isArray(recItems)) {
         const defaultImages = [
@@ -163,7 +163,7 @@ export function normalizeBlock(
 
     case "related_articles":
       // Ensure related articles have images
-      const articleData = data as Record<string, unknown>;
+      const articleData = data;
       let articles = articleData.articles as Array<Record<string, unknown>> | undefined;
       if (Array.isArray(articles)) {
         const defaultArticleImages = [

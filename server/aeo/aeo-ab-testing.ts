@@ -256,7 +256,7 @@ export function recordABTestEvent(
   eventType: "impression" | "citation" | "clickthrough"
 ): void {
   const test = abTests.get(testId);
-  if (!test || test.status !== "running") {
+  if (test?.status !== "running") {
     return;
   }
 
@@ -365,7 +365,7 @@ function calculateStatisticalSignificance(variantA: VariantStats, variantB: Vari
  */
 export async function applyWinningVariant(testId: string): Promise<void> {
   const test = abTests.get(testId);
-  if (!test || !test.winningVariant) {
+  if (!test?.winningVariant) {
     throw new Error("No winning variant to apply");
   }
 

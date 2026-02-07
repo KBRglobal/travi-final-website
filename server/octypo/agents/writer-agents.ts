@@ -8,13 +8,11 @@ import {
   AgentPersona,
   WriterTask,
   GeneratedAttractionContent,
-  FAQ,
   BLUEPRINT_REQUIREMENTS,
   AttractionData,
 } from "../types";
 import { buildAttractionPrompt } from "../prompts/content-prompts";
 import { getCulturalContext, getWriterPromptAdditions } from "../../localization/cultural-contexts";
-import type { CulturalContext } from "../../localization/cultural-contexts/types";
 
 const WRITER_PERSONAS: AgentPersona[] = [
   {

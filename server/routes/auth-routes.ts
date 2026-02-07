@@ -5,7 +5,6 @@
 
 import type { Express, Request, Response } from "express";
 import bcrypt from "bcrypt";
-import passport from "passport";
 import { storage } from "../storage";
 import { ROLE_PERMISSIONS, type UserRole } from "@shared/schema";
 import { isAuthenticated } from "../replitAuth";

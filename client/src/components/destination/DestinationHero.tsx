@@ -27,39 +27,42 @@ export function DestinationHero({
   destinationName,
   mood,
   images,
-}: DestinationHeroProps) {
+}: Readonly<DestinationHeroProps>) {
   const heroRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  
-  const prefersReducedMotion = useMemo(() => 
-    typeof window !== "undefined" && 
-    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+
+  const prefersReducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
     []
   );
-  
+
   // Prepare carousel images - use CMS images or fallback to single image
   const carouselImages = useMemo<HeroImage[]>(() => {
     if (images && images.length > 0) {
       return images.filter(img => img.isActive !== false).sort((a, b) => a.order - b.order);
     }
     // Fallback to single image
-    return [{
-      filename: "hero",
-      url: imageUrl,
-      alt: imageAlt,
-      order: 0,
-    }];
+    return [
+      {
+        filename: "hero",
+        url: imageUrl,
+        alt: imageAlt,
+        order: 0,
+      },
+    ];
   }, [images, imageUrl, imageAlt]);
 
   // Auto-advance carousel - match homepage timing
   useEffect(() => {
     if (!isAutoPlaying || carouselImages.length <= 1 || prefersReducedMotion) return;
-    
+
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % carouselImages.length);
     }, 3000); // Fast 3 second interval for dynamic feel
-    
+
     return () => clearInterval(interval);
   }, [isAutoPlaying, carouselImages.length, prefersReducedMotion]);
 
@@ -77,12 +80,12 @@ export function DestinationHero({
   const prevSlide = useCallback(() => {
     goToSlide((currentSlide - 1 + carouselImages.length) % carouselImages.length);
   }, [currentSlide, carouselImages.length, goToSlide]);
-  
+
   const { scrollYProgress } = useScroll({
     target: heroRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
-  
+
   // Multi-layer parallax for depth
   const bgY = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [0, 200]);
   const contentY = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [0, -50]);
@@ -90,19 +93,14 @@ export function DestinationHero({
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.5], [0.08, 0.25]);
   const scale = useTransform(scrollYProgress, [0, 0.5], prefersReducedMotion ? [1, 1] : [1, 1.1]);
 
-  const currentImage = carouselImages[currentSlide];
-
   return (
-    <div 
-      ref={heroRef} 
+    <div
+      ref={heroRef}
       className="relative h-screen min-h-[700px] overflow-hidden"
       data-testid="destination-hero"
     >
       {/* Background Image Layer - Cross-fade Carousel (matches homepage) */}
-      <motion.div 
-        className="absolute inset-0"
-        style={{ y: bgY, scale }}
-      >
+      <motion.div className="absolute inset-0" style={{ y: bgY, scale }}>
         {/* Cross-fade: all images stacked, only active one visible - NO white flash */}
         {carouselImages.map((img, index) => {
           const isActive = index === currentSlide;
@@ -115,9 +113,9 @@ export function DestinationHero({
               loading={index === 0 ? "eager" : "lazy"}
               initial={{ opacity: 0 }}
               animate={{ opacity: isActive ? 1 : 0 }}
-              transition={{ 
-                duration: prefersReducedMotion ? 0 : 1.4, 
-                ease: [0.4, 0, 0.2, 1] // Match homepage easing
+              transition={{
+                duration: prefersReducedMotion ? 0 : 1.4,
+                ease: [0.4, 0, 0.2, 1], // Match homepage easing
               }}
             />
           );
@@ -147,33 +145,26 @@ export function DestinationHero({
       )}
 
       {/* Gradient Overlay - Destination Specific */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0"
-        style={{ 
+        style={{
           opacity: overlayOpacity,
-          background: `linear-gradient(180deg, ${mood.gradientFrom} 0%, ${mood.gradientTo} 100%)`
+          background: `linear-gradient(180deg, ${mood.gradientFrom} 0%, ${mood.gradientTo} 100%)`,
         }}
       />
-      
+
       {/* Additional atmospheric overlay - minimal for clear images */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
       {/* Hero Content */}
-      <motion.div 
+      <motion.div
         className="relative z-20 flex flex-col items-center justify-center h-full px-4 pt-24 pb-24"
         style={{ y: contentY }}
       >
         <div className="max-w-5xl mx-auto text-center">
           {/* Destination tagline - Premium glass pill */}
-          <motion.div
-            variants={revealFromBlur}
-            initial="hidden"
-            animate="visible"
-            className="mb-8"
-          >
-            <span 
-              className="inline-block px-8 py-3 rounded-full text-sm font-semibold tracking-[0.2em] uppercase bg-white/15 backdrop-blur-xl border border-white/30 text-white shadow-lg"
-            >
+          <motion.div variants={revealFromBlur} initial="hidden" animate="visible" className="mb-8">
+            <span className="inline-block px-8 py-3 rounded-full text-sm font-semibold tracking-[0.2em] uppercase bg-white/15 backdrop-blur-xl border border-white/30 text-white shadow-lg">
               {mood.tagline}
             </span>
           </motion.div>
@@ -184,9 +175,9 @@ export function DestinationHero({
             initial="hidden"
             animate="visible"
             className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extrabold text-white mb-6 leading-[0.85] tracking-[-0.02em]"
-            style={{ 
+            style={{
               fontFamily: "'Chillax', var(--font-sans)",
-              textShadow: "0 4px 60px rgba(0,0,0,0.5)"
+              textShadow: "0 4px 60px rgba(0,0,0,0.5)",
             }}
             data-testid="destination-hero-title"
           >
@@ -213,15 +204,15 @@ export function DestinationHero({
             className="mb-8"
           >
             <Link href={ctaLink}>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="group text-base sm:text-lg px-8 sm:px-12 py-6 sm:py-7 rounded-full font-bold transition-all duration-300"
                 style={{
                   background: "rgba(255, 255, 255, 0.85)",
                   backdropFilter: "blur(20px)",
                   WebkitBackdropFilter: "blur(20px)",
                   border: "1px solid rgba(255, 255, 255, 0.4)",
-                  color: '#1e293b',
+                  color: "#1e293b",
                   boxShadow: "0 4px 24px rgba(0, 0, 0, 0.1)",
                 }}
                 data-testid="destination-hero-cta"
@@ -233,7 +224,6 @@ export function DestinationHero({
           </motion.div>
         </div>
       </motion.div>
-
 
       {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />

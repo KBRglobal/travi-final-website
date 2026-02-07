@@ -190,9 +190,9 @@ export default function ContactPage() {
             viewport={{ once: true }}
             variants={stagger}
           >
-            {contactOptions.map((option, index) => (
+            {contactOptions.map(option => (
               <motion.div
-                key={index}
+                key={option.title}
                 variants={fadeInUp}
                 className="group relative bg-white dark:bg-slate-900 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 data-testid={`card-contact-${option.title.toLowerCase().replace(/\s+/g, "-")}`}
@@ -253,7 +253,7 @@ export default function ContactPage() {
               <ul className="space-y-4">
                 {helpTopics.map((topic, index) => (
                   <motion.li
-                    key={index}
+                    key={topic}
                     className="flex items-start gap-4 group"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}

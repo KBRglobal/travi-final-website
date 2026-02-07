@@ -177,7 +177,7 @@ const contentTypeColors: Record<string, string> = {
   dining: "text-orange-600",
 };
 
-export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
+export function CommandPalette({ open, onOpenChange }: Readonly<CommandPaletteProps>) {
   const [, navigate] = useLocation();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -326,7 +326,6 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   Quick Actions
                 </div>
                 {results.actions.map(action => {
-                  const Icon = action.icon;
                   const isSelected = currentIndex === selectedIndex;
                   const itemIndex = currentIndex++;
 

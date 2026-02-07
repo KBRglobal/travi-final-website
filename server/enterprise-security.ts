@@ -12,9 +12,6 @@
  */
 
 import type { Request, Response, NextFunction } from "express";
-import { db } from "./db";
-import { users, sessions } from "@shared/schema";
-import { eq, and, gte, desc, sql } from "drizzle-orm";
 import * as crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import { auditLogger } from "./advanced-security";

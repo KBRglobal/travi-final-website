@@ -4,11 +4,11 @@
  */
 
 import { getRealAutopilot } from "../real-autopilot";
-import { TaskConfig, TaskResult, AutopilotTaskType } from "../types";
+import { TaskConfig, TaskResult } from "../types";
 import { executeContentGeneration } from "./content-generation-executor";
 import { db } from "../../../db";
-import { contents, seoMetadata, internalLinks, vamsAssets } from "@shared/schema";
-import { eq, and, sql, lt, isNull, desc } from "drizzle-orm";
+import { contents, seoMetadata, internalLinks } from "@shared/schema";
+import { eq, and, sql, lt, isNull } from "drizzle-orm";
 import { log } from "../../../lib/logger";
 
 /**

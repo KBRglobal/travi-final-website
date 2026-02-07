@@ -1137,7 +1137,7 @@ export default function Attractions() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {isLoadingDestinations ? (
                   Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="overflow-hidden rounded-lg">
+                    <div key={`dest-skeleton-${i}`} className="overflow-hidden rounded-lg">
                       <Skeleton className="aspect-[4/3] w-full" />
                     </div>
                   ))
@@ -1325,7 +1325,7 @@ export default function Attractions() {
               <div className="space-y-4">
                 {FAQ_DATA.map((faq, i) => (
                   <motion.div
-                    key={i}
+                    key={faq.question}
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}

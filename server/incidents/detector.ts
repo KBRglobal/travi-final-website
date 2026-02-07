@@ -3,11 +3,11 @@
  * Checks various system health signals
  */
 
-import { createLogger } from '../lib/logger';
-import { INCIDENTS_CONFIG } from './config';
-import type { DetectorResult, IncidentSource, IncidentSeverity } from './types';
+import { createLogger } from "../lib/logger";
+import { INCIDENTS_CONFIG } from "./config";
+import type { DetectorResult } from "./types";
 
-const logger = createLogger('incident-detector');
+const logger = createLogger("incident-detector");
 
 // Track last known states for detecting issues
 let lastJobQueueTick: Date | null = null;
@@ -48,10 +48,10 @@ function detectJobQueueStalled(): DetectorResult {
   if (!lastJobQueueTick) {
     return {
       hasIssue: false,
-      source: 'job_queue_stalled',
-      severity: 'info',
-      title: 'Job queue status unknown',
-      description: 'Job queue has not reported any ticks yet',
+      source: "job_queue_stalled",
+      severity: "info",
+      title: "Job queue status unknown",
+      description: "Job queue has not reported any ticks yet",
     };
   }
 
@@ -60,9 +60,9 @@ function detectJobQueueStalled(): DetectorResult {
   if (msSinceLastTick > stalledThreshold) {
     return {
       hasIssue: true,
-      source: 'job_queue_stalled',
-      severity: msSinceLastTick > stalledThreshold * 2 ? 'critical' : 'warn',
-      title: 'Job queue appears stalled',
+      source: "job_queue_stalled",
+      severity: msSinceLastTick > stalledThreshold * 2 ? "critical" : "warn",
+      title: "Job queue appears stalled",
       description: `Last tick was ${Math.round(msSinceLastTick / 1000)}s ago (threshold: ${stalledThreshold / 1000}s)`,
       metadata: { lastTick: lastJobQueueTick.toISOString(), msSinceLastTick },
     };
@@ -70,10 +70,10 @@ function detectJobQueueStalled(): DetectorResult {
 
   return {
     hasIssue: false,
-    source: 'job_queue_stalled',
-    severity: 'info',
-    title: 'Job queue healthy',
-    description: 'Job queue is ticking normally',
+    source: "job_queue_stalled",
+    severity: "info",
+    title: "Job queue healthy",
+    description: "Job queue is ticking normally",
   };
 }
 
@@ -81,19 +81,20 @@ function detectEventBusNotInitialized(): DetectorResult {
   if (!eventBusInitialized) {
     return {
       hasIssue: true,
-      source: 'event_bus_not_initialized',
-      severity: 'critical',
-      title: 'Event bus not initialized',
-      description: 'The event bus system has not been initialized. Event-driven features will not work.',
+      source: "event_bus_not_initialized",
+      severity: "critical",
+      title: "Event bus not initialized",
+      description:
+        "The event bus system has not been initialized. Event-driven features will not work.",
     };
   }
 
   return {
     hasIssue: false,
-    source: 'event_bus_not_initialized',
-    severity: 'info',
-    title: 'Event bus initialized',
-    description: 'Event bus is running normally',
+    source: "event_bus_not_initialized",
+    severity: "info",
+    title: "Event bus initialized",
+    description: "Event bus is running normally",
   };
 }
 
@@ -103,9 +104,9 @@ function detectDbSlow(): DetectorResult {
   if (lastDbQueryMs > threshold) {
     return {
       hasIssue: true,
-      source: 'db_slow',
-      severity: lastDbQueryMs > threshold * 3 ? 'critical' : 'warn',
-      title: 'Database queries slow',
+      source: "db_slow",
+      severity: lastDbQueryMs > threshold * 3 ? "critical" : "warn",
+      title: "Database queries slow",
       description: `Last query took ${lastDbQueryMs}ms (threshold: ${threshold}ms)`,
       metadata: { lastQueryMs: lastDbQueryMs, threshold },
     };
@@ -113,10 +114,10 @@ function detectDbSlow(): DetectorResult {
 
   return {
     hasIssue: false,
-    source: 'db_slow',
-    severity: 'info',
-    title: 'Database performance normal',
-    description: 'Database queries within threshold',
+    source: "db_slow",
+    severity: "info",
+    title: "Database performance normal",
+    description: "Database queries within threshold",
   };
 }
 
@@ -126,9 +127,9 @@ function detectSearchIndexLag(): DetectorResult {
   if (searchIndexLagSeconds > threshold) {
     return {
       hasIssue: true,
-      source: 'search_index_lag',
-      severity: searchIndexLagSeconds > threshold * 2 ? 'critical' : 'warn',
-      title: 'Search index lagging',
+      source: "search_index_lag",
+      severity: searchIndexLagSeconds > threshold * 2 ? "critical" : "warn",
+      title: "Search index lagging",
       description: `Search index is ${searchIndexLagSeconds}s behind (threshold: ${threshold}s)`,
       metadata: { lagSeconds: searchIndexLagSeconds, threshold },
     };
@@ -136,10 +137,10 @@ function detectSearchIndexLag(): DetectorResult {
 
   return {
     hasIssue: false,
-    source: 'search_index_lag',
-    severity: 'info',
-    title: 'Search index up to date',
-    description: 'Search indexing is within acceptable lag',
+    source: "search_index_lag",
+    severity: "info",
+    title: "Search index up to date",
+    description: "Search indexing is within acceptable lag",
   };
 }
 
@@ -153,25 +154,25 @@ export function runAllDetectors(): DetectorResult[] {
   try {
     results.push(detectJobQueueStalled());
   } catch (err) {
-    logger.error({ err }, 'Job queue detector failed');
+    logger.error({ err }, "Job queue detector failed");
   }
 
   try {
     results.push(detectEventBusNotInitialized());
   } catch (err) {
-    logger.error({ err }, 'Event bus detector failed');
+    logger.error({ err }, "Event bus detector failed");
   }
 
   try {
     results.push(detectDbSlow());
   } catch (err) {
-    logger.error({ err }, 'DB slow detector failed');
+    logger.error({ err }, "DB slow detector failed");
   }
 
   try {
     results.push(detectSearchIndexLag());
   } catch (err) {
-    logger.error({ err }, 'Search index detector failed');
+    logger.error({ err }, "Search index detector failed");
   }
 
   return results;

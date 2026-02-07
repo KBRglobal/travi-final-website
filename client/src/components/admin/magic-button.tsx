@@ -200,7 +200,7 @@ export function MagicButton({
   disabled = false,
   size = "md",
   className,
-}: MagicButtonProps) {
+}: Readonly<MagicButtonProps>) {
   const [isLoading, setIsLoading] = useState(false);
   const [alternatives, setAlternatives] = useState<unknown[]>([]);
   const [showAlternatives, setShowAlternatives] = useState(false);

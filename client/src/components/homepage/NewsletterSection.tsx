@@ -34,7 +34,7 @@ const defaultConfig: NewsletterConfig = {
   backgroundImage: "/newsletter/home-newsletter-duck-surfing-wave.webp",
 };
 
-export function NewsletterSection({ config = defaultConfig }: NewsletterSectionProps) {
+export function NewsletterSection({ config = defaultConfig }: Readonly<NewsletterSectionProps>) {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);

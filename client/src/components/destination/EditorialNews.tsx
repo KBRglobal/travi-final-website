@@ -50,7 +50,7 @@ function NewsCardSkeleton() {
   );
 }
 
-function NewsCard({ placement }: { placement: NewsPlacement }) {
+function NewsCard({ placement }: Readonly<{ placement: NewsPlacement }>) {
   const contentUrl = `/${placement.content.type}/${placement.content.slug}`;
   const image = placement.image || placement.content.heroImage || placement.content.cardImage;
   const publishedAt = placement.content.publishedAt
@@ -156,7 +156,7 @@ function FeaturedNewsCard({ placement }: { placement: NewsPlacement }) {
   );
 }
 
-export function EditorialNews({ destinationName, destinationSlug }: EditorialNewsProps) {
+export function EditorialNews({ destinationName, destinationSlug }: Readonly<EditorialNewsProps>) {
   const {
     data: placements,
     isLoading,

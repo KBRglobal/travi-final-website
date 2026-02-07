@@ -13,7 +13,6 @@ import {
   BLUEPRINT_REQUIREMENTS,
   BlueprintCompliance,
   LinkProcessorResult,
-  Quality108Score,
 } from "../types";
 import { calculateQuality108Score } from "../quality/quality-108";
 import { log } from "../../lib/logger";
@@ -23,20 +22,12 @@ import {
   initializeWriterAgents,
   getWriterForAttraction,
 } from "../agents/writer-agents";
-import {
-  ValidatorAgent,
-  initializeValidatorAgents,
-  getValidators,
-} from "../agents/validator-agents";
-import { schemaGenerator, aeoValidator } from "../aeo/answer-capsule";
+import { initializeValidatorAgents, getValidators } from "../agents/validator-agents";
+import { schemaGenerator } from "../aeo/answer-capsule";
 import { buildCorrectionPrompt } from "../prompts/content-prompts";
 import { EngineRegistry, generateWithEngine } from "../../services/engine-registry";
 import { processContentLinks } from "../post-processors/link-processor";
-import {
-  getCulturalContext,
-  getQualityThresholds,
-  type CulturalContext,
-} from "../../localization/cultural-contexts";
+import { getCulturalContext } from "../../localization/cultural-contexts";
 import { validateLocalePurity } from "../../localization/validators/locale-purity";
 import { runQualityGates } from "../../localization/validators/quality-gates";
 import { getBestWriterForLocale } from "../../localization/writer-language-matrix";

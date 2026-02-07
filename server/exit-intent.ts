@@ -9,9 +9,8 @@
  */
 
 import { db } from "./db";
-import { contents, siteSettings } from "@shared/schema";
+import { contents } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { cache } from "./cache";
 
 // ============================================================================
 // POPUP TYPES

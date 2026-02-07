@@ -27,16 +27,13 @@ const SEASON_ICONS: Record<string, typeof Sun> = {
 
 const CROWD_COLORS: Record<string, string> = {
   Low: "bg-green-100 text-green-700",
-  Medium: "bg-yellow-100 text-yellow-700", 
+  Medium: "bg-yellow-100 text-yellow-700",
   High: "bg-red-100 text-red-700",
 };
 
-export function BestTimeToVisit({ seasons, destinationName }: BestTimeToVisitProps) {
+export function BestTimeToVisit({ seasons, destinationName }: Readonly<BestTimeToVisitProps>) {
   return (
-    <AnimatedSection 
-      className="py-12 md:py-16 bg-transparent"
-      data-testid="section-best-time"
-    >
+    <AnimatedSection className="py-12 md:py-16 bg-transparent" data-testid="section-best-time">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">
@@ -47,7 +44,7 @@ export function BestTimeToVisit({ seasons, destinationName }: BestTimeToVisitPro
           </p>
         </div>
 
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
           variants={staggerContainer}
           initial="hidden"
@@ -65,7 +62,10 @@ export function BestTimeToVisit({ seasons, destinationName }: BestTimeToVisitPro
                         <SeasonIcon className="w-6 h-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-lg" data-testid={`season-name-${season.name.toLowerCase()}`}>
+                        <h3
+                          className="font-bold text-lg"
+                          data-testid={`season-name-${season.name.toLowerCase()}`}
+                        >
                           {season.name}
                         </h3>
                         <p className="text-sm text-muted-foreground">{season.months}</p>

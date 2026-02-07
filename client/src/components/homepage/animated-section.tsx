@@ -6,12 +6,12 @@ export function AnimatedSection({
   className,
   delay = 0,
   ariaLabel,
-}: {
+}: Readonly<{
   children: React.ReactNode;
   className?: string;
   delay?: number;
   ariaLabel?: string;
-}) {
+}>) {
   const ref = useRef<HTMLElement>(null);
   const [isInView, setIsInView] = useState(false);
 

@@ -24,7 +24,7 @@ const router = Router();
 // Admin-only middleware
 const requireAdmin = (req: Request, res: Response, next: Function) => {
   const user = (req as any).user;
-  if (!user || user.role !== "admin") {
+  if (user?.role !== "admin") {
     return res.status(403).json({
       error: "Forbidden",
       message: "Admin access required",

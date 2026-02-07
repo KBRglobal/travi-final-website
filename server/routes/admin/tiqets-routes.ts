@@ -1,5 +1,5 @@
-import type { Express, Request, Response } from "express";
-import { eq, and, sql, ilike, desc, or, inArray } from "drizzle-orm";
+import type { Express } from "express";
+import { eq, and, sql } from "drizzle-orm";
 import { db } from "../../db";
 import { tiqetsAttractions, tiqetsCities, type TiqetsCity } from "@shared/schema";
 import { requireAuth } from "../../security";

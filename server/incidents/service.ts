@@ -3,9 +3,9 @@
  * Orchestrates detection, creation, and management of incidents
  */
 
-import { createLogger } from '../lib/logger';
-import { isIncidentsEnabled, INCIDENTS_CONFIG } from './config';
-import { runAllDetectors, getDetectedIssues } from './detector';
+import { createLogger } from "../lib/logger";
+import { isIncidentsEnabled, INCIDENTS_CONFIG } from "./config";
+import { getDetectedIssues } from "./detector";
 import {
   createIncident,
   getIncidents,
@@ -15,7 +15,7 @@ import {
   findOpenIncidentBySource,
   getIncidentSummary,
   getOpenCriticalCount,
-} from './repository';
+} from "./repository";
 import type {
   Incident,
   IncidentCreateInput,
@@ -24,9 +24,9 @@ import type {
   IncidentStatus,
   IncidentSeverity,
   IncidentSource,
-} from './types';
+} from "./types";
 
-const logger = createLogger('incident-service');
+const logger = createLogger("incident-service");
 
 let detectionInterval: NodeJS.Timeout | null = null;
 
@@ -50,27 +50,24 @@ function processDetectionResults(): void {
         description: issue.description,
         metadata: issue.metadata,
       });
-      logger.warn({ incident }, 'New incident created');
+      logger.warn({ incident }, "New incident created");
     }
   }
 }
 
 export function startDetectionLoop(): void {
   if (!isIncidentsEnabled()) {
-    logger.info('Incidents feature disabled, not starting detection loop');
+    logger.info("Incidents feature disabled, not starting detection loop");
     return;
   }
 
   if (detectionInterval) {
-    logger.warn('Detection loop already running');
+    logger.warn("Detection loop already running");
     return;
   }
 
-  logger.info('Starting incident detection loop');
-  detectionInterval = setInterval(
-    processDetectionResults,
-    INCIDENTS_CONFIG.detectionIntervalMs
-  );
+  logger.info("Starting incident detection loop");
+  detectionInterval = setInterval(processDetectionResults, INCIDENTS_CONFIG.detectionIntervalMs);
 
   // Run immediately on start
   processDetectionResults();
@@ -80,7 +77,7 @@ export function stopDetectionLoop(): void {
   if (detectionInterval) {
     clearInterval(detectionInterval);
     detectionInterval = null;
-    logger.info('Incident detection loop stopped');
+    logger.info("Incident detection loop stopped");
   }
 }
 
@@ -88,10 +85,10 @@ export function stopDetectionLoop(): void {
 // Incident Management
 // ============================================================================
 
-export function raiseManualIncident(input: Omit<IncidentCreateInput, 'source'>): Incident {
+export function raiseManualIncident(input: Omit<IncidentCreateInput, "source">): Incident {
   return createIncident({
     ...input,
-    source: 'manual',
+    source: "manual",
   });
 }
 
@@ -112,19 +109,15 @@ export function getIncident(id: string): Incident | null {
 export function ackIncident(id: string, actorId: string): Incident | null {
   const result = acknowledgeIncident(id, actorId);
   if (result) {
-    logger.info({ incidentId: id, actorId }, 'Incident acknowledged');
+    logger.info({ incidentId: id, actorId }, "Incident acknowledged");
   }
   return result;
 }
 
-export function closeIncident(
-  id: string,
-  actorId: string,
-  notes?: string
-): Incident | null {
+export function closeIncident(id: string, actorId: string, notes?: string): Incident | null {
   const result = resolveIncident(id, actorId, notes);
   if (result) {
-    logger.info({ incidentId: id, actorId, notes }, 'Incident resolved');
+    logger.info({ incidentId: id, actorId, notes }, "Incident resolved");
   }
   return result;
 }

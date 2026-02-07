@@ -45,7 +45,7 @@ function CardSkeleton() {
   );
 }
 
-function NewsCard({ placement }: { placement: EditorialPlacement }) {
+function NewsCard({ placement }: Readonly<{ placement: EditorialPlacement }>) {
   const contentUrl = `/${placement.content.type}/${placement.content.slug}`;
   const image = placement.image || placement.content.heroImage || placement.content.cardImage;
   const publishedAt = placement.content.publishedAt

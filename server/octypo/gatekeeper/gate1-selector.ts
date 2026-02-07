@@ -11,7 +11,7 @@
  * - Generate writer prompt
  */
 
-import { EngineRegistry, EngineConfig, generateWithEngine } from "../../services/engine-registry";
+import { EngineRegistry, generateWithEngine } from "../../services/engine-registry";
 import { WRITERS } from "@shared/writers.config";
 import {
   ContentSelectionInput,
@@ -27,7 +27,6 @@ import {
 import { logger } from "../../lib/logger";
 import { getDeduplicationEngine } from "./deduplication";
 import { EVALUATOR_PROMPTS } from "./prompts/evaluator-prompts";
-import { DECISION_ENGINE_RULES } from "./prompts/decision-engine-rules";
 
 // Use the 2026-optimized prompts from the prompts module
 const GATE1_SYSTEM_PROMPT = EVALUATOR_PROMPTS.SYSTEM;

@@ -3,18 +3,18 @@
  * Identifies potential duplicate entities
  */
 
-import { createLogger } from '../lib/logger';
-import { ENTITY_QUALITY_CONFIG } from './config';
-import {
-  normalizeText,
-  stringSimilarity,
-  geoSimilarity,
-  phoneSimilarity,
-  websiteSimilarity,
-} from './normalizer';
-import type { EntityReference, MatchReason, MergeSuggestion, EntityType, DedupScanResult } from './types';
+import { createLogger } from "../lib/logger";
+import { ENTITY_QUALITY_CONFIG } from "./config";
+import { stringSimilarity, geoSimilarity, phoneSimilarity, websiteSimilarity } from "./normalizer";
+import type {
+  EntityReference,
+  MatchReason,
+  MergeSuggestion,
+  EntityType,
+  DedupScanResult,
+} from "./types";
 
-const logger = createLogger('dedup-scanner');
+const logger = createLogger("dedup-scanner");
 
 // ============================================================================
 // Match Scoring
@@ -25,10 +25,7 @@ export interface MatchResult {
   reasons: MatchReason[];
 }
 
-export function calculateMatch(
-  entity1: EntityReference,
-  entity2: EntityReference
-): MatchResult {
+export function calculateMatch(entity1: EntityReference, entity2: EntityReference): MatchResult {
   const reasons: MatchReason[] = [];
   const weights = ENTITY_QUALITY_CONFIG.weights;
 
@@ -36,7 +33,7 @@ export function calculateMatch(
   const nameSim = stringSimilarity(entity1.normalizedName, entity2.normalizedName);
   if (nameSim > 0.7) {
     reasons.push({
-      field: 'name',
+      field: "name",
       similarity: nameSim,
       description: `Names are ${Math.round(nameSim * 100)}% similar`,
     });
@@ -52,7 +49,7 @@ export function calculateMatch(
   );
   if (geoSim > 0) {
     reasons.push({
-      field: 'geo',
+      field: "geo",
       similarity: geoSim,
       description: `Locations are within proximity (${Math.round(geoSim * 100)}%)`,
     });
@@ -62,7 +59,7 @@ export function calculateMatch(
   const webSim = websiteSimilarity(entity1.website, entity2.website);
   if (webSim > 0.8) {
     reasons.push({
-      field: 'website',
+      field: "website",
       similarity: webSim,
       description: `Websites match (${Math.round(webSim * 100)}%)`,
     });
@@ -72,7 +69,7 @@ export function calculateMatch(
   const phoneSim = phoneSimilarity(entity1.phone, entity2.phone);
   if (phoneSim > 0.8) {
     reasons.push({
-      field: 'phone',
+      field: "phone",
       similarity: phoneSim,
       description: `Phone numbers match (${Math.round(phoneSim * 100)}%)`,
     });
@@ -107,7 +104,7 @@ export function scanForDuplicates(
   // Limit to batch size
   const toScan = entities.slice(0, batchSize);
 
-  logger.debug({ entityType, count: toScan.length }, 'Starting dedup scan');
+  logger.debug({ entityType, count: toScan.length }, "Starting dedup scan");
 
   // Compare each pair (O(n²) but bounded by batch size)
   for (let i = 0; i < toScan.length; i++) {
@@ -130,7 +127,7 @@ export function scanForDuplicates(
           duplicateEntity: entity2,
           confidenceScore: match.similarity,
           matchReasons: match.reasons,
-          status: 'open',
+          status: "open",
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -140,12 +137,15 @@ export function scanForDuplicates(
   }
 
   const duration = Date.now() - startTime;
-  logger.info({
-    entityType,
-    scanned: toScan.length,
-    found: suggestions.length,
-    durationMs: duration,
-  }, 'Dedup scan completed');
+  logger.info(
+    {
+      entityType,
+      scanned: toScan.length,
+      found: suggestions.length,
+      durationMs: duration,
+    },
+    "Dedup scan completed"
+  );
 
   return suggestions;
 }

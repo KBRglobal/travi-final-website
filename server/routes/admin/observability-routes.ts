@@ -15,7 +15,7 @@ import {
   topicClusterItems,
   aiGenerationLogs,
 } from "@shared/schema";
-import { eq, desc, and, sql, count, isNull, isNotNull, gte } from "drizzle-orm";
+import { eq, desc, sql, count, isNotNull, gte } from "drizzle-orm";
 
 // Track RSS processing stats (in-memory for now)
 let rssProcessingStats = {

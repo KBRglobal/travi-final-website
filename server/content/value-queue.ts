@@ -27,7 +27,6 @@ function getCostAnalytics() {
 import {
   calculateContentValue,
   getImprovementCandidates,
-  isContentProtected,
   type ContentValueResult,
   HIGH_PERFORMING_SCORE_THRESHOLD,
 } from "./value-scorer";

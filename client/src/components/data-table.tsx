@@ -57,7 +57,7 @@ export function DataTable<T>({
   emptyMessage = "No items found",
   onRowClick,
   showSelectAllBanner = true,
-}: DataTableProps<T>) {
+}: Readonly<DataTableProps<T>>) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(data.length / pageSize);
@@ -69,8 +69,6 @@ export function DataTable<T>({
 
   const allDataSelected =
     data.length > 0 && data.every(item => selectedIds.includes(getItemId(item)));
-
-  const someSelected = selectedIds.length > 0 && selectedIds.length < data.length;
 
   const handleSelectAll = (checked: boolean) => {
     if (!onSelectionChange) return;

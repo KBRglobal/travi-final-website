@@ -148,7 +148,7 @@ export function MagicAllButton({
   size = "md",
   className,
   showConfirmation = true,
-}: MagicAllButtonProps) {
+}: Readonly<MagicAllButtonProps>) {
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [progress, setProgress] = useState<MagicAllProgress>({

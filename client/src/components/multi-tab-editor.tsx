@@ -287,7 +287,6 @@ export function EditorTabBar({ className }: TabBarProps) {
 // Hook to register current editor as a tab
 export function useRegisterTab(contentType: string, contentId: string, title: string) {
   const context = useMultiTabOptional();
-  const [, navigate] = useLocation();
 
   const registerTab = useCallback(() => {
     if (!context) return;

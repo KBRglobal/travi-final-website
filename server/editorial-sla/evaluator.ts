@@ -4,7 +4,7 @@
 
 import { db } from "../db";
 import { contents } from "@shared/schema";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import {
   type SlaPolicy,
   type ContentSlaStatus,
@@ -45,7 +45,9 @@ export function getAllPolicies(): SlaPolicy[] {
 
 export function findPolicyForContentType(contentType: string): SlaPolicy | undefined {
   ensureInitialized();
-  return Array.from(policies.values()).find(p => p.isActive && p.contentTypes.includes(contentType));
+  return Array.from(policies.values()).find(
+    p => p.isActive && p.contentTypes.includes(contentType)
+  );
 }
 
 export function setExemption(contentId: string, reason: string, expiresAt?: Date): void {
@@ -62,22 +64,24 @@ export function calculateSlaStatus(
   isExempt: boolean
 ): { status: SlaStatus; daysSinceUpdate: number; daysUntilBreach: number } {
   if (isExempt) {
-    return { status: 'exempt', daysSinceUpdate: 0, daysUntilBreach: Infinity };
+    return { status: "exempt", daysSinceUpdate: 0, daysUntilBreach: Infinity };
   }
 
   if (!policy || !lastUpdatedAt) {
-    return { status: 'compliant', daysSinceUpdate: 0, daysUntilBreach: Infinity };
+    return { status: "compliant", daysSinceUpdate: 0, daysUntilBreach: Infinity };
   }
 
   const now = new Date();
-  const daysSinceUpdate = Math.floor((now.getTime() - lastUpdatedAt.getTime()) / (1000 * 60 * 60 * 24));
+  const daysSinceUpdate = Math.floor(
+    (now.getTime() - lastUpdatedAt.getTime()) / (1000 * 60 * 60 * 24)
+  );
   const daysUntilBreach = policy.maxAgeDays - daysSinceUpdate;
 
-  let status: SlaStatus = 'compliant';
+  let status: SlaStatus = "compliant";
   if (daysUntilBreach <= 0) {
-    status = 'breached';
+    status = "breached";
   } else if (daysUntilBreach <= policy.warningThresholdDays) {
-    status = 'at_risk';
+    status = "at_risk";
   }
 
   return { status, daysSinceUpdate, daysUntilBreach };
@@ -99,17 +103,17 @@ export async function evaluateContentSla(contentId: string): Promise<ContentSlaS
   if (!content) {
     return {
       contentId,
-      contentTitle: 'Unknown',
-      contentType: 'unknown',
+      contentTitle: "Unknown",
+      contentType: "unknown",
       lastUpdatedAt: null,
       lastReviewedAt: null,
       policyId: null,
-      status: 'exempt',
+      status: "exempt",
       daysSinceUpdate: 0,
       daysUntilBreach: 0,
       nextReviewDue: null,
       isExempt: true,
-      exemptReason: 'Content not found',
+      exemptReason: "Content not found",
     };
   }
 
@@ -123,9 +127,10 @@ export async function evaluateContentSla(contentId: string): Promise<ContentSlaS
     !!isExempt
   );
 
-  const nextReviewDue = policy && content.updatedAt
-    ? new Date(content.updatedAt.getTime() + policy.reviewIntervalDays * 24 * 60 * 60 * 1000)
-    : null;
+  const nextReviewDue =
+    policy && content.updatedAt
+      ? new Date(content.updatedAt.getTime() + policy.reviewIntervalDays * 24 * 60 * 60 * 1000)
+      : null;
 
   return {
     contentId: content.id,
@@ -154,7 +159,7 @@ export async function getStaleContent(limit: number = 50): Promise<ContentSlaSta
       updatedAt: contents.updatedAt,
     })
     .from(contents)
-    .where(eq(contents.status, 'published'))
+    .where(eq(contents.status, "published"))
     .orderBy(contents.updatedAt)
     .limit(limit * 2);
 
@@ -173,7 +178,7 @@ export async function getStaleContent(limit: number = 50): Promise<ContentSlaSta
       false
     );
 
-    if (status === 'breached' || status === 'at_risk') {
+    if (status === "breached" || status === "at_risk") {
       results.push({
         contentId: content.id,
         contentTitle: content.title,
@@ -184,7 +189,9 @@ export async function getStaleContent(limit: number = 50): Promise<ContentSlaSta
         status,
         daysSinceUpdate,
         daysUntilBreach,
-        nextReviewDue: new Date(content.updatedAt!.getTime() + policy.reviewIntervalDays * 24 * 60 * 60 * 1000),
+        nextReviewDue: new Date(
+          content.updatedAt!.getTime() + policy.reviewIntervalDays * 24 * 60 * 60 * 1000
+        ),
         isExempt: false,
       });
     }
@@ -205,9 +212,12 @@ export async function getSlaStats(): Promise<SlaStats> {
       updatedAt: contents.updatedAt,
     })
     .from(contents)
-    .where(eq(contents.status, 'published'));
+    .where(eq(contents.status, "published"));
 
-  let compliant = 0, atRisk = 0, breached = 0, exempt = 0;
+  let compliant = 0,
+    atRisk = 0,
+    breached = 0,
+    exempt = 0;
   let totalDays = 0;
 
   for (const content of allContent) {
@@ -219,10 +229,18 @@ export async function getSlaStats(): Promise<SlaStats> {
     totalDays += daysSinceUpdate;
 
     switch (status) {
-      case 'compliant': compliant++; break;
-      case 'at_risk': atRisk++; break;
-      case 'breached': breached++; break;
-      case 'exempt': exempt++; break;
+      case "compliant":
+        compliant++;
+        break;
+      case "at_risk":
+        atRisk++;
+        break;
+      case "breached":
+        breached++;
+        break;
+      case "exempt":
+        exempt++;
+        break;
     }
   }
 
@@ -236,14 +254,18 @@ export async function getSlaStats(): Promise<SlaStats> {
   };
 }
 
-export function recordViolation(contentId: string, policyId: string, type: 'staleness' | 'review_overdue'): SlaViolation {
+export function recordViolation(
+  contentId: string,
+  policyId: string,
+  type: "staleness" | "review_overdue"
+): SlaViolation {
   const violation: SlaViolation = {
     id: `vio-${Date.now()}`,
     contentId,
     policyId,
     violationType: type,
     detectedAt: new Date(),
-    severity: type === 'staleness' ? 'critical' : 'warning',
+    severity: type === "staleness" ? "critical" : "warning",
   };
   violations.push(violation);
   return violation;

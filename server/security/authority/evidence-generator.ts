@@ -28,7 +28,6 @@ import {
   ResourceType,
 } from "./types";
 import { SecurityGate } from "./security-gate";
-import { OverrideRegistry } from "./override-registry";
 import { SecurityModeManager } from "./security-modes";
 import { SecuritySeverity } from "../audit-logger";
 

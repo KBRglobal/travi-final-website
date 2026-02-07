@@ -117,9 +117,9 @@ export default function CookiesPage() {
       <section className="py-16 bg-slate-50 dark:bg-slate-900/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {cookieFeatures.map((feature, index) => (
+            {cookieFeatures.map(feature => (
               <div
-                key={index}
+                key={feature.title}
                 className="bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 shadow-sm"
               >
                 <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#6443F4]/10 to-[#6443F4]/10 flex items-center justify-center mb-3">
@@ -342,8 +342,8 @@ export default function CookiesPage() {
                     "Delete all or specific cookies",
                     "Block all cookies or only third-party cookies",
                     "Set your browser to notify you when a cookie is set",
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-2">
+                  ].map(item => (
+                    <div key={item} className="flex items-start gap-2">
                       <CheckCircle className="w-4 h-4 text-[#6443F4] mt-0.5 flex-shrink-0" />
                       <span className="text-sm text-muted-foreground">{item}</span>
                     </div>
@@ -426,8 +426,8 @@ export default function CookiesPage() {
                   "Blocking analytics cookies will not affect your ability to use the Website",
                   "Your cookie preferences may be reset if you delete the cookie that stores your choices",
                   "Some features may not work as intended",
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2">
+                ].map(item => (
+                  <div key={item} className="flex items-start gap-2">
                     <Eye className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
                     <span className="text-sm">{item}</span>
                   </div>

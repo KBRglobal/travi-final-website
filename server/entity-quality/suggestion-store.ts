@@ -3,13 +3,8 @@
  * Storage and management of merge suggestions
  */
 
-import { ENTITY_QUALITY_CONFIG } from './config';
-import type {
-  MergeSuggestion,
-  SuggestionQueryOptions,
-  SuggestionStatus,
-  EntityType,
-} from './types';
+import { ENTITY_QUALITY_CONFIG } from "./config";
+import type { MergeSuggestion, SuggestionQueryOptions, EntityType } from "./types";
 
 // In-memory storage (bounded)
 const suggestions: MergeSuggestion[] = [];
@@ -22,7 +17,7 @@ const maxSize = ENTITY_QUALITY_CONFIG.maxSuggestionsStored;
 function enforceMaxSize(): void {
   while (suggestions.length > maxSize) {
     // Remove oldest non-open suggestions first
-    const closedIndex = suggestions.findIndex(s => s.status !== 'open');
+    const closedIndex = suggestions.findIndex(s => s.status !== "open");
     if (closedIndex >= 0) {
       suggestions.splice(closedIndex, 1);
     } else {
@@ -87,7 +82,7 @@ export function ignoreSuggestion(id: string, actorId: string): MergeSuggestion |
   const suggestion = suggestions.find(s => s.id === id);
   if (!suggestion) return null;
 
-  suggestion.status = 'ignored';
+  suggestion.status = "ignored";
   suggestion.ignoredBy = actorId;
   suggestion.ignoredAt = new Date();
   suggestion.updatedAt = new Date();
@@ -99,7 +94,7 @@ export function markAsMerged(id: string, actorId: string): MergeSuggestion | nul
   const suggestion = suggestions.find(s => s.id === id);
   if (!suggestion) return null;
 
-  suggestion.status = 'merged';
+  suggestion.status = "merged";
   suggestion.mergedBy = actorId;
   suggestion.mergedAt = new Date();
   suggestion.updatedAt = new Date();
@@ -134,7 +129,7 @@ export function getSuggestionStats(): {
 }
 
 export function getOpenCount(): number {
-  return suggestions.filter(s => s.status === 'open').length;
+  return suggestions.filter(s => s.status === "open").length;
 }
 
 // ============================================================================

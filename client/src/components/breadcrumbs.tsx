@@ -23,7 +23,11 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
-export function Breadcrumbs({ items, showDestination = false, className = "" }: BreadcrumbsProps) {
+export function Breadcrumbs({
+  items,
+  showDestination = false,
+  className = "",
+}: Readonly<BreadcrumbsProps>) {
   const { currentDestination, destinationSlug } = useDestinationContext();
   const { localePath } = useLocale();
 

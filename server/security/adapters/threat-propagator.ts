@@ -11,13 +11,12 @@
  */
 
 import { ThreatLevel, getThreatLevel, onThreatLevelChange } from "../core/security-kernel";
-import { getSecurityMode, SecurityMode } from "../modes/security-modes";
 import {
   SecurityAnomaly,
   getHighRiskUsers,
   ThreatScore,
 } from "../intelligence/security-intelligence";
-import { autonomyController, AutonomySystem } from "../autonomy/autonomy-controller";
+import { autonomyController } from "../autonomy/autonomy-controller";
 import { logAdminEvent } from "../../governance/security-logger";
 import { generateEvidence } from "../compliance/evidence-generator";
 

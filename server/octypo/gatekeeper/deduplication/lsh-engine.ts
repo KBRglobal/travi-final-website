@@ -13,13 +13,8 @@
 
 import { db } from "../../../db";
 import { contentFingerprints } from "@shared/schema";
-import { eq, and, gte, sql } from "drizzle-orm";
-import {
-  generateFingerprint,
-  generateMinHash,
-  calculateJaccardSimilarity,
-  parseFingerprint,
-} from "./fingerprint";
+import { eq, and, sql } from "drizzle-orm";
+import { generateFingerprint } from "./fingerprint";
 import {
   isDuplicate,
   findSimilarContent,
@@ -27,7 +22,6 @@ import {
   getDeduplicationStats,
   SIMILARITY_THRESHOLD,
   RELATED_THRESHOLD,
-  DuplicateCheckResult,
   SimilarityResult,
 } from "./similarity";
 import { logger } from "../../../lib/logger";

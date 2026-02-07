@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
 import { NAV_ITEMS } from "./homepage-data";
 
-export function HomepageHeader({ isScrolled }: { isScrolled: boolean }) {
+export function HomepageHeader({ isScrolled }: Readonly<{ isScrolled: boolean }>) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (

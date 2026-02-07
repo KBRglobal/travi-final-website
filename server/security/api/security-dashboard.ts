@@ -15,23 +15,20 @@ import {
   getModeConfiguration,
   assessThreatLevel,
   setSecurityMode,
-  ThreatAssessment,
 } from "../modes/security-modes";
 import {
   getIntelligenceSummary,
   getRecentAnomalies,
   getHighRiskUsers,
 } from "../intelligence/security-intelligence";
-import { lintPolicies, LintResult } from "../policy/policy-linter";
-import { scanForDrift, getDriftHistory, DriftScanResult } from "../drift/drift-scanner";
+import { lintPolicies } from "../policy/policy-linter";
+import { scanForDrift, getDriftHistory } from "../drift/drift-scanner";
 import {
   generateComplianceReport,
   verifyEvidenceChain,
   ComplianceFramework,
 } from "../compliance/evidence-generator";
-import { exfiltrationGuard } from "../exfiltration/exfiltration-guard";
 import { getApprovalSafetyMetrics } from "../approvals/approval-safety";
-import { AdminRole } from "../../governance/types";
 
 // ============================================================================
 // TYPES

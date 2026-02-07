@@ -21,15 +21,15 @@ export interface GenerationOptions {
 }
 
 export function getLocaleInfo(code: string) {
-  return SUPPORTED_LOCALES.find((l) => l.code === code);
+  return SUPPORTED_LOCALES.find(l => l.code === code);
 }
 
 export function getLocalesByTier(tier: number) {
-  return SUPPORTED_LOCALES.filter((l) => l.tier === tier);
+  return SUPPORTED_LOCALES.filter(l => l.tier === tier);
 }
 
 export function getAllLocaleCodes(): string[] {
-  return SUPPORTED_LOCALES.map((l) => l.code);
+  return SUPPORTED_LOCALES.map(l => l.code);
 }
 
 export function getTierLabel(tier: number): string {
@@ -49,9 +49,7 @@ export function getTierLabel(tier: number): string {
   }
 }
 
-export async function generateFieldContent(
-  options: GenerationOptions
-): Promise<GenerationResult> {
+export async function generateFieldContent(options: GenerationOptions): Promise<GenerationResult> {
   const { field, context, targetLanguages, onProgress } = options;
   const locales = targetLanguages || getAllLocaleCodes();
 
@@ -85,7 +83,7 @@ export async function generateFieldContent(
       });
     }
 
-    result.pending = result.pending.filter((l) => l !== locale);
+    result.pending = result.pending.filter(l => l !== locale);
     onProgress?.(result);
   }
 
@@ -95,7 +93,7 @@ export async function generateFieldContent(
 export async function generateFieldContentMock(
   options: GenerationOptions
 ): Promise<GenerationResult> {
-  const { field, context, targetLanguages, onProgress } = options;
+  const { field, targetLanguages, onProgress } = options;
   const locales = targetLanguages || getAllLocaleCodes();
 
   const result: GenerationResult = {
@@ -107,7 +105,7 @@ export async function generateFieldContentMock(
   onProgress?.(result);
 
   for (const locale of locales) {
-    await new Promise((resolve) => setTimeout(resolve, 200 + Math.random() * 300));
+    await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 300));
 
     const localeInfo = getLocaleInfo(locale);
 
@@ -124,7 +122,7 @@ export async function generateFieldContentMock(
       });
     }
 
-    result.pending = result.pending.filter((l) => l !== locale);
+    result.pending = result.pending.filter(l => l !== locale);
     onProgress?.(result);
   }
 

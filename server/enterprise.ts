@@ -4,7 +4,7 @@
  */
 
 import { db } from "./db";
-import { eq, and, desc, sql, inArray, isNull, gt, lt } from "drizzle-orm";
+import { eq, and, desc, sql, gt, lt } from "drizzle-orm";
 import {
   teams,
   teamMembers,
@@ -28,11 +28,9 @@ import {
   type WorkflowInstance,
   type WorkflowApproval,
   type InsertWorkflowTemplate,
-  type InsertWorkflowInstance,
   type Activity,
   type InsertActivity,
   type ContentLock,
-  type InsertContentLock,
   type Notification,
   type InsertNotification,
   type Webhook,
@@ -396,7 +394,7 @@ export const lockService = {
     }
 
     // If user already has lock, extend it
-    if (existingLock && existingLock.lock.userId === userId) {
+    if (existingLock?.lock.userId === userId) {
       const [updated] = await db
         .update(contentLocks)
         .set({ expiresAt: new Date(Date.now() + LOCK_DURATION_MINUTES * 60 * 1000) })

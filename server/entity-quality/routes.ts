@@ -12,7 +12,6 @@ import {
   ignoreSuggestion,
   markAsMerged,
   getSuggestionStats,
-  getOpenCount,
 } from "./suggestion-store";
 import type { EntityType, SuggestionStatus, EntityQualityStatus } from "./types";
 

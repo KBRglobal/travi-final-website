@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   private handleReload = () => {
-    window.location.reload();
+    globalThis.location.reload();
   };
 
   public render() {
@@ -98,10 +98,10 @@ export class ErrorBoundary extends Component<Props, State> {
 export function TranslatedErrorBoundary({
   children,
   fallback,
-}: {
+}: Readonly<{
   children: ReactNode;
   fallback?: ReactNode;
-}) {
+}>) {
   const { t } = useTranslation("common");
   return (
     <ErrorBoundary

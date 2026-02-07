@@ -34,7 +34,7 @@ export async function renderContentPage(
   }
 
   // Return 404 if content doesn't exist or isn't published
-  if (!content || content.status !== "published") {
+  if (content?.status !== "published") {
     return render404(options);
   }
 

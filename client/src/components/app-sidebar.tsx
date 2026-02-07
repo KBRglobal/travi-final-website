@@ -160,13 +160,13 @@ function CollapsibleNavGroup({
   hasPermission,
   openModules,
   toggleModule,
-}: {
+}: Readonly<{
   module: NavModule;
   isActive: (url: string) => boolean;
   hasPermission: (permission: PermissionKey) => boolean;
   openModules: Record<string, boolean>;
   toggleModule: (id: string) => void;
-}) {
+}>) {
   const visibleItems = module.items.filter(item => {
     if (item.hidden) return false;
     if (!item.requiredPermission) return true;
@@ -224,7 +224,7 @@ function CollapsibleNavGroup({
   );
 }
 
-export function AppSidebar({ user }: AppSidebarProps) {
+export function AppSidebar({ user }: Readonly<AppSidebarProps>) {
   const [location, setLocation] = useLocation();
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({
     dashboard: true,

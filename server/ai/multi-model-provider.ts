@@ -1141,7 +1141,7 @@ export class MultiModelProvider {
     const { maxTokens = 8192, temperature = 0.7, systemPrompt } = options;
 
     const provider = this.providers.find(p => p.name === providerName);
-    if (!provider || !provider.available) {
+    if (!provider?.available) {
       throw new Error(`Provider ${providerName} is not available`);
     }
 

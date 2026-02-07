@@ -145,13 +145,11 @@ function KPICard({
             {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
           </div>
           <div
-            className={`p-3 rounded-full ${
-              trend === "up"
-                ? "bg-green-100 text-green-600"
-                : trend === "down"
-                  ? "bg-red-100 text-red-600"
-                  : "bg-muted text-muted-foreground"
-            }`}
+            className={`p-3 rounded-full ${(() => {
+              if (trend === "up") return "bg-green-100 text-green-600";
+              if (trend === "down") return "bg-red-100 text-red-600";
+              return "bg-muted text-muted-foreground";
+            })()}`}
           >
             <Icon className="h-5 w-5" />
           </div>

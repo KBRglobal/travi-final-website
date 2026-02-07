@@ -7,12 +7,12 @@
  * ZERO IMPACT on public search performance.
  */
 
-import { searchAll, getPopularDestinations, type SearchResult } from "./search-index";
-import { queryExpander, expandQuery } from "./query-expander";
-import { queryProcessor, type ProcessedQuery } from "./query-processor";
-import { spellChecker, type SpellCheckResult } from "./spell-checker";
+import { searchAll } from "./search-index";
+import { expandQuery } from "./query-expander";
+import { queryProcessor } from "./query-processor";
+import { spellChecker } from "./spell-checker";
 import { synonymExpander } from "./synonyms";
-import { intentClassifier, type Intent, type IntentType } from "./intent-classifier";
+import { intentClassifier, type IntentType } from "./intent-classifier";
 
 /**
  * Debug information for a single search result

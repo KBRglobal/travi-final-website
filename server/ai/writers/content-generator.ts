@@ -35,11 +35,11 @@ export const aiWritersContentGenerator = {
       contentType: contentType as ContentType,
       topic,
       targetKeyword: keywords[0],
-      additionalContext: additionalContext
-        ? `${additionalContext}. Keywords: ${keywords.join(", ")}`
-        : keywords.length > 0
-          ? `Keywords: ${keywords.join(", ")}`
-          : undefined,
+      additionalContext: (() => {
+        if (additionalContext) return `${additionalContext}. Keywords: ${keywords.join(", ")}`;
+        if (keywords.length > 0) return `Keywords: ${keywords.join(", ")}`;
+        return undefined;
+      })(),
       minSections: min,
       maxSections: max,
     });

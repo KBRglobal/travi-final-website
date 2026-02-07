@@ -3,10 +3,10 @@
  * Teams, Workflows, Notifications, Webhooks, Activity, Comments, Locks
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { requirePermission, requireAuth } from "./security";
 import { enterprise } from "./enterprise";
-import { cache, cacheKeys } from "./cache";
+import { cache } from "./cache";
 import { exportService, importService, backupService, type ExportOptions } from "./import-export";
 
 export function registerEnterpriseRoutes(app: Express) {

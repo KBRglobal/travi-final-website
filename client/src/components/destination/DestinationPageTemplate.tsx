@@ -50,7 +50,7 @@ interface SeasonsApiResponse {
   updatedAt: string;
 }
 
-export function DestinationPageTemplate({ data }: DestinationPageTemplateProps) {
+export function DestinationPageTemplate({ data }: Readonly<DestinationPageTemplateProps>) {
   const currentYear = new Date().getFullYear();
 
   // Fetch featured attractions from API (CMS data from database)

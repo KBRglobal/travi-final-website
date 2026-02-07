@@ -85,7 +85,7 @@ interface KeyboardShortcutsProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function KeyboardShortcuts({ open, onOpenChange }: KeyboardShortcutsProps) {
+export function KeyboardShortcuts({ open, onOpenChange }: Readonly<KeyboardShortcutsProps>) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh]">
@@ -168,8 +168,8 @@ export function useKeyboardShortcuts() {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    globalThis.addEventListener("keydown", handleKeyDown);
+    return () => globalThis.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   return { open, setOpen };

@@ -5,7 +5,7 @@
 
 import { db } from "../../../db";
 import { rssFeeds, contents } from "@shared/schema";
-import { eq, and, isNull, desc } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { TaskConfig, TaskResult } from "../types";
 import { getOctypoOrchestrator } from "../../orchestration/orchestrator";
 import { getExplosionOrchestrator } from "../../exploder";

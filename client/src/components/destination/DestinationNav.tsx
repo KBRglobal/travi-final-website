@@ -27,7 +27,10 @@ const NAV_SECTIONS = [
   { id: "faq", label: "FAQ", icon: HelpCircle },
 ];
 
-export function DestinationNav({ destinationName, destinationSlug }: DestinationNavProps) {
+export function DestinationNav({
+  destinationName,
+  destinationSlug,
+}: Readonly<DestinationNavProps>) {
   const { localePath } = useLocale();
   const [activeSection, setActiveSection] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

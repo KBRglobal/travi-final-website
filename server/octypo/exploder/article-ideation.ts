@@ -5,7 +5,7 @@
 
 import { db } from "../../db";
 import { contentEntities, contents } from "@shared/schema";
-import { eq, and, sql, inArray } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { EngineRegistry, generateWithEngine } from "../../services/engine-registry";
 import {
   ArticleIdea,

@@ -7,23 +7,24 @@ interface AdminPageHeaderProps {
   className?: string;
 }
 
-export function AdminPageHeader({ title, description, actions, className }: AdminPageHeaderProps) {
+export function AdminPageHeader({
+  title,
+  description,
+  actions,
+  className,
+}: Readonly<AdminPageHeaderProps>) {
   return (
-    <div className={cn(
-      "h-16 min-h-16 px-6 flex items-center justify-between gap-4 border-b bg-background sticky top-0 z-10",
-      className
-    )}>
+    <div
+      className={cn(
+        "h-16 min-h-16 px-6 flex items-center justify-between gap-4 border-b bg-background sticky top-0 z-10",
+        className
+      )}
+    >
       <div className="flex flex-col gap-0.5">
         <h1 className="text-lg font-semibold text-foreground">{title}</h1>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
-      {actions && (
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {actions}
-        </div>
-      )}
+      {actions && <div className="flex items-center gap-2 flex-shrink-0">{actions}</div>}
     </div>
   );
 }
@@ -33,7 +34,7 @@ interface AdminPageLayoutProps {
   className?: string;
 }
 
-export function AdminPageLayout({ children, className }: AdminPageLayoutProps) {
+export function AdminPageLayout({ children, className }: Readonly<AdminPageLayoutProps>) {
   return (
     <div className={cn("flex flex-col h-full overflow-hidden bg-background", className)}>
       {children}
@@ -47,15 +48,13 @@ interface AdminPageContentProps {
   noPadding?: boolean;
 }
 
-export function AdminPageContent({ children, className, noPadding }: AdminPageContentProps) {
+export function AdminPageContent({
+  children,
+  className,
+  noPadding,
+}: Readonly<AdminPageContentProps>) {
   return (
-    <div className={cn(
-      "flex-1 overflow-auto",
-      !noPadding && "p-6",
-      className
-    )}>
-      {children}
-    </div>
+    <div className={cn("flex-1 overflow-auto", !noPadding && "p-6", className)}>{children}</div>
   );
 }
 
@@ -68,14 +67,14 @@ interface ListPageLayoutProps {
   pagination?: React.ReactNode;
 }
 
-export function ListPageLayout({ 
-  title, 
-  description, 
-  actions, 
-  filters, 
+export function ListPageLayout({
+  title,
+  description,
+  actions,
+  filters,
   children,
-  pagination 
-}: ListPageLayoutProps) {
+  pagination,
+}: Readonly<ListPageLayoutProps>) {
   return (
     <AdminPageLayout>
       <AdminPageHeader title={title} description={description} actions={actions} />
@@ -85,9 +84,7 @@ export function ListPageLayout({
         </div>
       )}
       <AdminPageContent noPadding>
-        <div className="min-h-0 flex-1">
-          {children}
-        </div>
+        <div className="min-h-0 flex-1">{children}</div>
       </AdminPageContent>
       {pagination && (
         <div className="px-6 py-3 border-t bg-background flex items-center justify-between gap-4">
@@ -107,17 +104,17 @@ interface EditorPageLayoutProps {
   backUrl?: string;
 }
 
-export function EditorPageLayout({ 
-  title, 
+export function EditorPageLayout({
+  title,
   status,
-  actions, 
-  children, 
+  actions,
+  children,
   sidebar,
-  backUrl 
-}: EditorPageLayoutProps) {
+  backUrl,
+}: Readonly<EditorPageLayoutProps>) {
   return (
     <AdminPageLayout>
-      <AdminPageHeader 
+      <AdminPageHeader
         title={title}
         actions={
           <div className="flex items-center gap-3">
@@ -127,9 +124,7 @@ export function EditorPageLayout({
         }
       />
       <div className="flex-1 overflow-hidden flex">
-        <div className="flex-1 overflow-auto p-6 basis-[70%]">
-          {children}
-        </div>
+        <div className="flex-1 overflow-auto p-6 basis-[70%]">{children}</div>
         <div className="w-80 border-l overflow-auto p-6 bg-muted basis-[30%] max-w-80">
           {sidebar}
         </div>
@@ -148,32 +143,22 @@ interface DashboardLayoutProps {
   footer?: React.ReactNode;
 }
 
-export function DashboardLayout({ 
-  title, 
+export function DashboardLayout({
+  title,
   description,
   actions,
   stats,
   children,
-  footer
-}: DashboardLayoutProps) {
+  footer,
+}: Readonly<DashboardLayoutProps>) {
   return (
     <AdminPageLayout>
       <AdminPageHeader title={title} description={description} actions={actions} />
       <AdminPageContent>
-        {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            {stats}
-          </div>
-        )}
-        <div className="space-y-6">
-          {children}
-        </div>
+        {stats && <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">{stats}</div>}
+        <div className="space-y-6">{children}</div>
       </AdminPageContent>
-      {footer && (
-        <div className="px-6 py-3 border-t bg-muted">
-          {footer}
-        </div>
-      )}
+      {footer && <div className="px-6 py-3 border-t bg-muted">{footer}</div>}
     </AdminPageLayout>
   );
 }
@@ -186,23 +171,19 @@ interface SettingsLayoutProps {
   actions?: React.ReactNode;
 }
 
-export function SettingsLayout({ 
-  title, 
+export function SettingsLayout({
+  title,
   description,
   navigation,
   children,
-  actions
-}: SettingsLayoutProps) {
+  actions,
+}: Readonly<SettingsLayoutProps>) {
   return (
     <AdminPageLayout>
       <AdminPageHeader title={title} description={description} actions={actions} />
       <div className="flex-1 overflow-hidden flex">
-        <div className="w-56 border-r overflow-auto py-4 px-2 bg-muted">
-          {navigation}
-        </div>
-        <div className="flex-1 overflow-auto p-6">
-          {children}
-        </div>
+        <div className="w-56 border-r overflow-auto py-4 px-2 bg-muted">{navigation}</div>
+        <div className="flex-1 overflow-auto p-6">{children}</div>
       </div>
     </AdminPageLayout>
   );
@@ -222,9 +203,18 @@ interface StatCardProps {
   className?: string;
 }
 
-export function StatCard({ label, title, value, icon, trend, description, loading, className }: StatCardProps) {
+export function StatCard({
+  label,
+  title,
+  value,
+  icon,
+  trend,
+  description,
+  loading,
+  className,
+}: Readonly<StatCardProps>) {
   const displayLabel = title || label || "";
-  
+
   if (loading) {
     return (
       <div className={cn("bg-card border rounded-md p-4 animate-pulse", className)}>
@@ -233,12 +223,9 @@ export function StatCard({ label, title, value, icon, trend, description, loadin
       </div>
     );
   }
-  
+
   return (
-    <div className={cn(
-      "bg-card border rounded-md p-4 flex flex-col gap-2",
-      className
-    )}>
+    <div className={cn("bg-card border rounded-md p-4 flex flex-col gap-2", className)}>
       <div className="flex items-center justify-between">
         <span className="text-sm text-muted-foreground">{displayLabel}</span>
         {icon && <span className="text-muted-foreground">{icon}</span>}
@@ -246,17 +233,18 @@ export function StatCard({ label, title, value, icon, trend, description, loadin
       <div className="flex items-baseline gap-2">
         <span className="text-2xl font-semibold">{value}</span>
         {trend && (
-          <span className={cn(
-            "text-xs font-medium",
-            trend.isPositive ? "text-green-600" : "text-red-600"
-          )}>
-            {trend.isPositive ? "+" : ""}{trend.value}%
+          <span
+            className={cn(
+              "text-xs font-medium",
+              trend.isPositive ? "text-green-600" : "text-red-600"
+            )}
+          >
+            {trend.isPositive ? "+" : ""}
+            {trend.value}%
           </span>
         )}
       </div>
-      {description && (
-        <span className="text-xs text-muted-foreground">{description}</span>
-      )}
+      {description && <span className="text-xs text-muted-foreground">{description}</span>}
     </div>
   );
 }
@@ -269,39 +257,31 @@ interface AdminEmptyStateProps {
   className?: string;
 }
 
-export function AdminEmptyState({ icon, title, description, action, className }: AdminEmptyStateProps) {
+export function AdminEmptyState({
+  icon,
+  title,
+  description,
+  action,
+  className,
+}: Readonly<AdminEmptyStateProps>) {
   return (
-    <div className={cn(
-      "flex flex-col items-center justify-center py-16 px-4 text-center",
-      className
-    )}>
-      {icon && (
-        <div className="mb-4 text-muted-foreground">
-          {icon}
-        </div>
-      )}
+    <div
+      className={cn("flex flex-col items-center justify-center py-16 px-4 text-center", className)}
+    >
+      {icon && <div className="mb-4 text-muted-foreground">{icon}</div>}
       <h3 className="text-lg font-medium mb-1">{title}</h3>
-      {description && (
-        <p className="text-sm text-muted-foreground mb-4 max-w-sm">
-          {description}
-        </p>
-      )}
-      {action && (
-        <div className="mt-2">
-          {action}
-        </div>
-      )}
+      {description && <p className="text-sm text-muted-foreground mb-4 max-w-sm">{description}</p>}
+      {action && <div className="mt-2">{action}</div>}
     </div>
   );
 }
 
 interface AdminSkeletonProps {
   rows?: number;
-  columns?: number;
   className?: string;
 }
 
-export function AdminTableSkeleton({ rows = 5, className }: AdminSkeletonProps) {
+export function AdminTableSkeleton({ rows = 5, className }: Readonly<AdminSkeletonProps>) {
   return (
     <div className={cn("space-y-2", className)}>
       <div className="h-10 bg-muted rounded animate-pulse" />
@@ -312,7 +292,7 @@ export function AdminTableSkeleton({ rows = 5, className }: AdminSkeletonProps) 
   );
 }
 
-export function AdminCardSkeleton({ className }: { className?: string }) {
+export function AdminCardSkeleton({ className }: Readonly<{ className?: string }>) {
   return (
     <div className={cn("bg-card border rounded-md p-4 animate-pulse", className)}>
       <div className="h-4 bg-muted rounded w-1/3 mb-3" />
@@ -329,7 +309,13 @@ interface AdminSectionProps {
   className?: string;
 }
 
-export function AdminSection({ title, description, children, actions, className }: AdminSectionProps) {
+export function AdminSection({
+  title,
+  description,
+  children,
+  actions,
+  className,
+}: Readonly<AdminSectionProps>) {
   return (
     <div className={cn("space-y-4", className)}>
       {(title || actions) && (

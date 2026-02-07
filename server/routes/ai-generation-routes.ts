@@ -3,15 +3,9 @@
  * AI-powered content generation, translation, and image creation endpoints
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { storage } from "../storage";
-import {
-  safeMode,
-  rateLimiters,
-  checkAiUsageLimit,
-  requirePermission,
-  checkReadOnlyMode,
-} from "../security";
+import { safeMode, rateLimiters, checkAiUsageLimit, requirePermission } from "../security";
 import {
   getAIClient,
   getAllAIClients,

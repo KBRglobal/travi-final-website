@@ -69,30 +69,30 @@ function PageLoader() {
 
 const destinationIds = new Set(DESTINATION_IDS);
 
-function HashRedirect({ city, hash }: { city: string; hash: string }) {
+function HashRedirect({ city, hash }: Readonly<{ city: string; hash: string }>) {
   useEffect(() => {
-    window.location.href = `/destinations/${city}#${hash}`;
+    globalThis.location.href = `/destinations/${city}#${hash}`;
   }, [city, hash]);
   return null;
 }
 
-function CityAttractionsRedirect({ params }: { params: { city: string } }) {
+function CityAttractionsRedirect({ params }: Readonly<{ params: { city: string } }>) {
   return <Redirect to={`/attractions/list/${params.city}`} />;
 }
 
-function DestinationNewsRedirect({ params }: { params: { city: string } }) {
+function DestinationNewsRedirect({ params }: Readonly<{ params: { city: string } }>) {
   return <HashRedirect city={params.city} hash="news" />;
 }
 
-function DestinationWhenToGoRedirect({ params }: { params: { city: string } }) {
+function DestinationWhenToGoRedirect({ params }: Readonly<{ params: { city: string } }>) {
   return <HashRedirect city={params.city} hash="best-time" />;
 }
 
-function DestinationGettingAroundRedirect({ params }: { params: { city: string } }) {
+function DestinationGettingAroundRedirect({ params }: Readonly<{ params: { city: string } }>) {
   return <HashRedirect city={params.city} hash="getting-around" />;
 }
 
-function DestinationFaqRedirect({ params }: { params: { city: string } }) {
+function DestinationFaqRedirect({ params }: Readonly<{ params: { city: string } }>) {
   return <HashRedirect city={params.city} hash="faq" />;
 }
 
@@ -266,7 +266,13 @@ function App() {
               </a>
               <Suspense fallback={<PageLoader />}>
                 <main id="main-content" tabIndex={-1}>
-                  {isAdminRoute ? <AdminLayout /> : <TranslatedErrorBoundary><PublicRouter /></TranslatedErrorBoundary>}
+                  {isAdminRoute ? (
+                    <AdminLayout />
+                  ) : (
+                    <TranslatedErrorBoundary>
+                      <PublicRouter />
+                    </TranslatedErrorBoundary>
+                  )}
                 </main>
               </Suspense>
               <Toaster />

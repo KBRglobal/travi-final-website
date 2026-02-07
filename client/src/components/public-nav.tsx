@@ -108,7 +108,7 @@ export function PublicNav({
   };
   const [scrolled, setScrolled] = useState(false);
   const [location] = useLocation();
-  const { localePath, isRTL, locale } = useLocale();
+  const { localePath, isRTL } = useLocale();
   const { t } = useTranslation();
 
   useEffect(() => {

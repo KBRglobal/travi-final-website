@@ -6,7 +6,7 @@
  */
 
 import { db } from "../db";
-import { sql, or, ilike, eq, desc, and, isNull } from "drizzle-orm";
+import { or, ilike, eq, desc, and, isNull } from "drizzle-orm";
 import {
   destinations,
   contents,

@@ -16,24 +16,24 @@ interface AnimatedSectionProps {
   "data-testid"?: string;
 }
 
-export function AnimatedSection({ 
-  children, 
-  className, 
+export function AnimatedSection({
+  children,
+  className,
   delay = 0,
-  "data-testid": testId 
-}: AnimatedSectionProps) {
+  "data-testid": testId,
+}: Readonly<AnimatedSectionProps>) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+
   return (
     <motion.section
       ref={ref}
       initial={{ opacity: 0, y: 60 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
-      transition={{ 
-        duration: ANIMATION_TIMING.duration, 
-        delay, 
-        ease: ANIMATION_TIMING.ease 
+      transition={{
+        duration: ANIMATION_TIMING.duration,
+        delay,
+        ease: ANIMATION_TIMING.ease,
       }}
       className={cn("bg-transparent", className)}
       data-testid={testId}

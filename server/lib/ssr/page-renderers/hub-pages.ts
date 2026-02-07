@@ -477,7 +477,7 @@ export async function renderRestaurantPage(
     return render404(options);
   }
 
-  if (!content || content.status !== "published") {
+  if (content?.status !== "published") {
     return render404(options);
   }
 
@@ -578,7 +578,7 @@ export async function renderEventPage(
     return render404(options);
   }
 
-  if (!content || content.status !== "published") {
+  if (content?.status !== "published") {
     return render404(options);
   }
 

@@ -10,8 +10,8 @@
 import { EngineRegistry, generateWithEngine } from "../../services/engine-registry";
 import { logger } from "../../lib/logger";
 import { db } from "../../db";
-import { tiqetsAttractions, tiqetsCities } from "@shared/schema";
-import { eq, ilike } from "drizzle-orm";
+import { tiqetsAttractions } from "@shared/schema";
+import { ilike } from "drizzle-orm";
 import { detectDestinationFromContent } from "../rss-reader";
 
 // ============================================================================

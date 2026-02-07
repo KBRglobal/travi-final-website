@@ -3,7 +3,7 @@
  * Content analytics endpoints for admin/editor users
  */
 
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { storage } from "../storage";
 import { requirePermission, rateLimiters, validateAnalyticsRequest } from "../security";
 

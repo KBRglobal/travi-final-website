@@ -14,7 +14,7 @@ export function PWAInstallPrompt() {
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) {
+    if (globalThis.matchMedia("(display-mode: standalone)").matches) {
       setIsInstalled(true);
       return;
     }
@@ -41,12 +41,12 @@ export function PWAInstallPrompt() {
       setDeferredPrompt(null);
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    window.addEventListener("appinstalled", handleAppInstalled);
+    globalThis.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    globalThis.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-      window.removeEventListener("appinstalled", handleAppInstalled);
+      globalThis.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      globalThis.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
 
@@ -137,8 +137,8 @@ export function usePWAInstall() {
       setCanInstall(true);
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    globalThis.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () => globalThis.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
   }, []);
 
   const install = async () => {

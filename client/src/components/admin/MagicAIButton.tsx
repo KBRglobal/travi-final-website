@@ -45,7 +45,7 @@ export function MagicAIButton({
   disabled = false,
   className,
   currentLocale = "en",
-}: MagicAIButtonProps) {
+}: Readonly<MagicAIButtonProps>) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState<GenerationResult | null>(null);
   const { toast } = useToast();
@@ -282,7 +282,7 @@ function MagicAIDropdownContent({
   onGenerateAll,
   onGenerateTier,
   onGenerateSingle,
-}: MagicAIDropdownContentProps) {
+}: Readonly<MagicAIDropdownContentProps>) {
   const currentLocaleInfo = getLocaleInfo(currentLocale);
 
   return (
@@ -373,7 +373,7 @@ interface LocaleBadgeProps {
   status: "completed" | "failed" | "pending";
 }
 
-function LocaleBadge({ locale, status }: LocaleBadgeProps) {
+function LocaleBadge({ locale, status }: Readonly<LocaleBadgeProps>) {
   const localeInfo = getLocaleInfo(locale);
 
   return (

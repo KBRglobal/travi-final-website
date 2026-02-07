@@ -30,7 +30,7 @@ import compression from "compression";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "node:http";
-import { securityHeaders, corsMiddleware, sanitizeInput, approvedBotMiddleware } from "./security";
+import { corsMiddleware, sanitizeInput, approvedBotMiddleware } from "./security";
 import { setupSecurityMiddleware } from "./security/index";
 import { consoleLogger } from "./console-logger";
 import { ssrMiddleware } from "./lib/ssr-middleware";
@@ -38,7 +38,6 @@ import { setupMonitoring } from "./monitoring";
 import { apiVersioningMiddleware } from "./middleware/api-versioning";
 import { cdnCacheHeaders } from "./middleware/cache-headers";
 // [REMOVED] Octopus imports - migrated to Octypo v2
-import { initializeContentSubscribers } from "./events";
 import { bootstrapFoundationMiddleware, initializeFoundationEvents } from "./foundation";
 import { validateRequiredEnvVars } from "./config/env-validator";
 import {

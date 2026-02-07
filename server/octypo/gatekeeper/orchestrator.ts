@@ -7,8 +7,8 @@
  */
 
 import { db } from "../../db";
-import { contents, articles } from "@shared/schema";
-import { eq, sql } from "drizzle-orm";
+import { contents } from "@shared/schema";
+import { eq } from "drizzle-orm";
 import { Gate1Selector, getGate1Selector } from "./gate1-selector";
 import { Gate2Approver, getGate2Approver } from "./gate2-approver";
 import { getAttractionDetector } from "./attraction-detector";

@@ -40,7 +40,7 @@ export async function renderTiqetsAttractionPage(
         .limit(1);
 
       // If found via legacy slug, redirect to seo_slug for SEO
-      if (results[0] && results[0].seoSlug) {
+      if (results[0]?.seoSlug) {
         const redirectUrl = `/attractions/${results[0].seoSlug}`;
         return {
           html: `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"><link rel="canonical" href="${BASE_URL}${redirectUrl}"></head><body>Redirecting...</body></html>`,
