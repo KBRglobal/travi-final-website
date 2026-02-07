@@ -231,7 +231,7 @@ router.post(
       }
 
       const destName = destinationId
-        .replace(/-/g, " ")
+        .replaceAll("-", " ")
         .replace(/\b\w/g, (c: string) => c.toUpperCase());
       const targetLocales = locales || getAvailableLocales();
 

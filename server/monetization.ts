@@ -821,7 +821,7 @@ export const leadGeneration = {
       l.name,
       l.email,
       l.phone || "",
-      (l.message || "").replace(/"/g, '""'),
+      (l.message || "").replaceAll('"', '""'),
       l.status,
     ]);
 

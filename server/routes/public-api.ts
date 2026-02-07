@@ -214,7 +214,7 @@ export function registerPublicApiRoutes(app: Express): void {
       const possibleFolders = [
         id,
         `${id}/${id}`,
-        id.replace(/-/g, ""),
+        id.replaceAll("-", ""),
         id.charAt(0).toUpperCase() + id.slice(1),
         `${id.charAt(0).toUpperCase() + id.slice(1)}/${id}`,
       ];
@@ -239,8 +239,8 @@ export function registerPublicApiRoutes(app: Express): void {
                 url: `/destinations-hero/${folder}/${filename}`,
                 alt: filename
                   .replace(/\.[^/.]+$/, "")
-                  .replace(/-/g, " ")
-                  .replace(/_/g, " "),
+                  .replaceAll("-", " ")
+                  .replaceAll("_", " "),
                 order: index,
               }));
               break;
@@ -412,7 +412,7 @@ export function registerPublicApiRoutes(app: Express): void {
       const destinationsResult = cityCounts
         .filter(c => c.cityName)
         .map(c => {
-          const slug = c.cityName!.toLowerCase().replace(/ /g, "-");
+          const slug = c.cityName!.toLowerCase().replaceAll(" ", "-");
           const meta = metaMap.get(slug);
           return {
             slug,

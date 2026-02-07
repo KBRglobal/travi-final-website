@@ -140,12 +140,12 @@ function stripHtmlContent(html: string): string {
     .replace(/<script[^>]*>.*?<\/script>/gis, "")
     .replace(/<style[^>]*>.*?<\/style>/gis, "")
     .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replaceAll("&nbsp;", " ")
+    .replaceAll("&amp;", "&")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#39;", "'")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -273,7 +273,7 @@ export class GuideRewriteService {
         return { success: false, error: `No original content for: ${slug}` };
       }
 
-      const destinationName = guide.title || slug.replace(/-/g, " ");
+      const destinationName = guide.title || slug.replaceAll("-", " ");
       const year = new Date().getFullYear();
 
       // Step 1: Parse and rewrite all sections
@@ -534,12 +534,12 @@ export class GuideRewriteService {
             .replace(/<script[^>]*>.*?<\/script>/gis, "")
             .replace(/<style[^>]*>.*?<\/style>/gis, "")
             .replace(/<[^>]+>/g, " ")
-            .replace(/&nbsp;/g, " ")
-            .replace(/&amp;/g, "&")
-            .replace(/&lt;/g, "<")
-            .replace(/&gt;/g, ">")
-            .replace(/&quot;/g, '"')
-            .replace(/&#39;/g, "'")
+            .replaceAll("&nbsp;", " ")
+            .replaceAll("&amp;", "&")
+            .replaceAll("&lt;", "<")
+            .replaceAll("&gt;", ">")
+            .replaceAll("&quot;", '"')
+            .replaceAll("&#39;", "'")
             .replace(/\s+/g, " ")
             .trim();
 
@@ -935,12 +935,12 @@ YOUR COMPREHENSIVE REWRITE:`;
         .replace(/<script[^>]*>.*?<\/script>/gis, "")
         .replace(/<style[^>]*>.*?<\/style>/gis, "")
         .replace(/<[^>]+>/g, " ")
-        .replace(/&nbsp;/g, " ")
-        .replace(/&amp;/g, "&")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">")
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
+        .replaceAll("&nbsp;", " ")
+        .replaceAll("&amp;", "&")
+        .replaceAll("&lt;", "<")
+        .replaceAll("&gt;", ">")
+        .replaceAll("&quot;", '"')
+        .replaceAll("&#39;", "'")
         .replace(/\s+/g, " ")
         .trim();
     };

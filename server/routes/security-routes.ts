@@ -609,7 +609,7 @@ export function registerSecurityRoutes(app: Express): void {
       }
 
       const recoveryCodes = (user as any).totpRecoveryCodes || [];
-      const normalizedCode = recoveryCode.toUpperCase().replace(/-/g, "");
+      const normalizedCode = recoveryCode.toUpperCase().replaceAll("-", "");
 
       // Compare against bcrypt-hashed recovery codes
       let codeIndex = -1;

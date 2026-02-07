@@ -2928,7 +2928,7 @@ function DestinationsEditor() {
       const data = await res.json();
       if (data.success && data.meta) {
         const meta = data.meta;
-        const suggestedId = meta.slug?.replace(/-/g, "-") || "";
+        const suggestedId = meta.slug?.replaceAll("-", "-") || "";
         setNewDestinationData(prev => ({
           ...prev,
           id: prev.id || suggestedId,

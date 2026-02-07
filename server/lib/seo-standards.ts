@@ -1,6 +1,6 @@
 /**
  * SEO Content Standards Module
- * 
+ *
  * Unified SEO requirements enforced across ALL content generation in Travi CMS.
  * These standards are non-negotiable and must be validated before any content is published.
  */
@@ -123,7 +123,7 @@ export const BANNED_PHRASES = [
   "awe-inspiring",
   "unforgettable experience",
   "trip of a lifetime",
-  
+
   // Clickbait phrases
   "secret tips revealed",
   "you won't believe",
@@ -142,7 +142,7 @@ export const BANNED_PHRASES = [
   "insider secrets",
   "game-changer",
   "game changer",
-  
+
   // Marketing superlatives
   "absolutely stunning",
   "truly magical",
@@ -160,12 +160,12 @@ export const PHRASE_ALTERNATIVES: Record<string, string[]> = {
   "must-visit": ["popular with first-time visitors", "frequently recommended", "commonly visited"],
   "world-class": ["internationally recognized", "award-winning", "highly rated"],
   "hidden gem": ["lesser-known", "quieter alternative", "local favorite"],
-  "breathtaking": ["impressive", "remarkable", "striking", "notable"],
+  breathtaking: ["impressive", "remarkable", "striking", "notable"],
   "bucket list": ["popular destination", "frequently visited", "well-known"],
   "mind-blowing": ["impressive", "noteworthy", "remarkable"],
   "epic adventure": ["outdoor activity", "adventure experience", "active excursion"],
   "ultimate guide": ["comprehensive overview", "detailed guide", "complete resource"],
-  "paradise": ["scenic destination", "tropical location", "beach destination"],
+  paradise: ["scenic destination", "tropical location", "beach destination"],
 };
 
 // ============================================================================
@@ -182,7 +182,7 @@ export const CONTENT_TYPE_REQUIREMENTS = {
     imagesMin: 5,
     requiredSections: ["introduction", "main_content", "faqs", "conclusion"],
   },
-  
+
   destination: {
     minWords: 2500,
     maxWords: 4500,
@@ -192,7 +192,7 @@ export const CONTENT_TYPE_REQUIREMENTS = {
     imagesMin: 8,
     requiredSections: ["hero", "overview", "attractions", "hotels", "dining", "transport", "tips"],
   },
-  
+
   hotel: {
     minWords: 800,
     maxWords: 1500,
@@ -202,7 +202,7 @@ export const CONTENT_TYPE_REQUIREMENTS = {
     imagesMin: 4,
     requiredSections: ["overview", "rooms", "amenities", "location", "booking_info"],
   },
-  
+
   attraction: {
     minWords: 600,
     maxWords: 1200,
@@ -212,7 +212,7 @@ export const CONTENT_TYPE_REQUIREMENTS = {
     imagesMin: 3,
     requiredSections: ["overview", "highlights", "practical_info", "tips"],
   },
-  
+
   restaurant: {
     minWords: 400,
     maxWords: 800,
@@ -222,7 +222,7 @@ export const CONTENT_TYPE_REQUIREMENTS = {
     imagesMin: 2,
     requiredSections: ["overview", "cuisine", "atmosphere", "booking_info"],
   },
-  
+
   landing_page: {
     minWords: 600,
     maxWords: 1500,
@@ -272,10 +272,16 @@ export interface SEOWarning {
 export function validateMetaTitle(title: string): { valid: boolean; error?: string } {
   const length = title.trim().length;
   if (length < SEO_REQUIREMENTS.metaTitle.minLength) {
-    return { valid: false, error: `Meta title too short (${length} chars). Minimum: ${SEO_REQUIREMENTS.metaTitle.minLength}` };
+    return {
+      valid: false,
+      error: `Meta title too short (${length} chars). Minimum: ${SEO_REQUIREMENTS.metaTitle.minLength}`,
+    };
   }
   if (length > SEO_REQUIREMENTS.metaTitle.maxLength) {
-    return { valid: false, error: `Meta title too long (${length} chars). Maximum: ${SEO_REQUIREMENTS.metaTitle.maxLength}` };
+    return {
+      valid: false,
+      error: `Meta title too long (${length} chars). Maximum: ${SEO_REQUIREMENTS.metaTitle.maxLength}`,
+    };
   }
   return { valid: true };
 }
@@ -286,10 +292,16 @@ export function validateMetaTitle(title: string): { valid: boolean; error?: stri
 export function validateMetaDescription(description: string): { valid: boolean; error?: string } {
   const length = description.trim().length;
   if (length < SEO_REQUIREMENTS.metaDescription.minLength) {
-    return { valid: false, error: `Meta description too short (${length} chars). Minimum: ${SEO_REQUIREMENTS.metaDescription.minLength}` };
+    return {
+      valid: false,
+      error: `Meta description too short (${length} chars). Minimum: ${SEO_REQUIREMENTS.metaDescription.minLength}`,
+    };
   }
   if (length > SEO_REQUIREMENTS.metaDescription.maxLength) {
-    return { valid: false, error: `Meta description too long (${length} chars). Maximum: ${SEO_REQUIREMENTS.metaDescription.maxLength}` };
+    return {
+      valid: false,
+      error: `Meta description too long (${length} chars). Maximum: ${SEO_REQUIREMENTS.metaDescription.maxLength}`,
+    };
   }
   return { valid: true };
 }
@@ -297,16 +309,27 @@ export function validateMetaDescription(description: string): { valid: boolean; 
 /**
  * Validate word count for content type
  */
-export function validateWordCount(content: string, contentType: ContentType): { valid: boolean; count: number; error?: string } {
+export function validateWordCount(
+  content: string,
+  contentType: ContentType
+): { valid: boolean; count: number; error?: string } {
   const words = content.split(/\s+/).filter(Boolean);
   const count = words.length;
   const requirements = CONTENT_TYPE_REQUIREMENTS[contentType];
-  
+
   if (count < requirements.minWords) {
-    return { valid: false, count, error: `Content too short (${count} words). Minimum for ${contentType}: ${requirements.minWords}` };
+    return {
+      valid: false,
+      count,
+      error: `Content too short (${count} words). Minimum for ${contentType}: ${requirements.minWords}`,
+    };
   }
   if (count > requirements.maxWords) {
-    return { valid: false, count, error: `Content too long (${count} words). Maximum for ${contentType}: ${requirements.maxWords}` };
+    return {
+      valid: false,
+      count,
+      error: `Content too long (${count} words). Maximum for ${contentType}: ${requirements.maxWords}`,
+    };
   }
   return { valid: true, count };
 }
@@ -314,25 +337,28 @@ export function validateWordCount(content: string, contentType: ContentType): { 
 /**
  * Check for banned phrases in content
  */
-export function detectBannedPhrases(content: string): { found: string[]; suggestions: Map<string, string[]> } {
+export function detectBannedPhrases(content: string): {
+  found: string[];
+  suggestions: Map<string, string[]>;
+} {
   const lowerContent = content.toLowerCase();
   const found: string[] = [];
   const suggestions = new Map<string, string[]>();
-  
+
   for (const phrase of BANNED_PHRASES) {
     if (lowerContent.includes(phrase.toLowerCase())) {
       found.push(phrase);
       // Find alternatives if available
-      const basePhrase = phrase.replace(/-/g, " ").toLowerCase();
+      const basePhrase = phrase.replaceAll("-", " ").toLowerCase();
       for (const [key, alternatives] of Object.entries(PHRASE_ALTERNATIVES)) {
-        if (basePhrase.includes(key.replace(/-/g, " ").toLowerCase())) {
+        if (basePhrase.includes(key.replaceAll("-", " ").toLowerCase())) {
           suggestions.set(phrase, alternatives);
           break;
         }
       }
     }
   }
-  
+
   return { found, suggestions };
 }
 
@@ -365,18 +391,18 @@ export function analyzeExternalLinks(htmlContent: string): {
   const externalPattern = /<a[^>]*href=["'](https?:\/\/(?!.*travi)[^"']+)["'][^>]*>/gi;
   const links: Array<{ url: string; isAuthoritative: boolean }> = [];
   let match;
-  
+
   while ((match = externalPattern.exec(htmlContent)) !== null) {
     const url = match[1];
-    const isAuthoritative = SEO_REQUIREMENTS.externalLinks.authoritative.some(
-      (domain) => url.includes(domain)
+    const isAuthoritative = SEO_REQUIREMENTS.externalLinks.authoritative.some(domain =>
+      url.includes(domain)
     );
     links.push({ url, isAuthoritative });
   }
-  
+
   return {
     count: links.length,
-    authoritative: links.filter((l) => l.isAuthoritative).length,
+    authoritative: links.filter(l => l.isAuthoritative).length,
     links,
   };
 }
@@ -388,28 +414,45 @@ export function validateAltText(altText: string): { valid: boolean; errors: stri
   const errors: string[] = [];
   const words = altText.split(/\s+/).filter(Boolean);
   const charCount = altText.length;
-  
+
   if (words.length < SEO_REQUIREMENTS.altText.minWords) {
-    errors.push(`Alt text too short (${words.length} words). Minimum: ${SEO_REQUIREMENTS.altText.minWords}`);
+    errors.push(
+      `Alt text too short (${words.length} words). Minimum: ${SEO_REQUIREMENTS.altText.minWords}`
+    );
   }
   if (words.length > SEO_REQUIREMENTS.altText.maxWords) {
-    errors.push(`Alt text too long (${words.length} words). Maximum: ${SEO_REQUIREMENTS.altText.maxWords}`);
+    errors.push(
+      `Alt text too long (${words.length} words). Maximum: ${SEO_REQUIREMENTS.altText.maxWords}`
+    );
   }
   if (charCount < SEO_REQUIREMENTS.altText.minChars) {
-    errors.push(`Alt text too short (${charCount} chars). Minimum: ${SEO_REQUIREMENTS.altText.minChars}`);
+    errors.push(
+      `Alt text too short (${charCount} chars). Minimum: ${SEO_REQUIREMENTS.altText.minChars}`
+    );
   }
   if (charCount > SEO_REQUIREMENTS.altText.maxChars) {
-    errors.push(`Alt text too long (${charCount} chars). Maximum: ${SEO_REQUIREMENTS.altText.maxChars}`);
+    errors.push(
+      `Alt text too long (${charCount} chars). Maximum: ${SEO_REQUIREMENTS.altText.maxChars}`
+    );
   }
-  
+
   // Check for banned marketing phrases in alt text
-  const bannedInAlt = ["stunning", "amazing", "beautiful", "breathtaking", "gorgeous", "spectacular"];
+  const bannedInAlt = [
+    "stunning",
+    "amazing",
+    "beautiful",
+    "breathtaking",
+    "gorgeous",
+    "spectacular",
+  ];
   for (const word of bannedInAlt) {
     if (altText.toLowerCase().includes(word)) {
-      errors.push(`Alt text contains marketing language: "${word}". Use factual descriptions only.`);
+      errors.push(
+        `Alt text contains marketing language: "${word}". Use factual descriptions only.`
+      );
     }
   }
-  
+
   return { valid: errors.length === 0, errors };
 }
 
@@ -420,7 +463,7 @@ export function calculateKeywordDensity(content: string, keyword: string): numbe
   const words = content.toLowerCase().split(/\s+/).filter(Boolean);
   const keywordLower = keyword.toLowerCase();
   const keywordWords = keywordLower.split(/\s+/);
-  
+
   let count = 0;
   for (let i = 0; i <= words.length - keywordWords.length; i++) {
     const slice = words.slice(i, i + keywordWords.length).join(" ");
@@ -428,7 +471,7 @@ export function calculateKeywordDensity(content: string, keyword: string): numbe
       count++;
     }
   }
-  
+
   return (count / words.length) * 100;
 }
 
@@ -462,38 +505,56 @@ export function validateContent(
   const warnings: SEOWarning[] = [];
   const suggestions: string[] = [];
   let score = 100;
-  
+
   const requirements = CONTENT_TYPE_REQUIREMENTS[contentType];
-  
+
   // Validate meta title
   const metaTitleResult = validateMetaTitle(content.metaTitle);
   if (!metaTitleResult.valid) {
-    errors.push({ code: "META_TITLE", field: "metaTitle", message: metaTitleResult.error!, severity: "critical" });
+    errors.push({
+      code: "META_TITLE",
+      field: "metaTitle",
+      message: metaTitleResult.error!,
+      severity: "critical",
+    });
     score -= 15;
   }
-  
+
   // Validate meta description
   const metaDescResult = validateMetaDescription(content.metaDescription);
   if (!metaDescResult.valid) {
-    errors.push({ code: "META_DESC", field: "metaDescription", message: metaDescResult.error!, severity: "critical" });
+    errors.push({
+      code: "META_DESC",
+      field: "metaDescription",
+      message: metaDescResult.error!,
+      severity: "critical",
+    });
     score -= 15;
   }
-  
+
   // Validate word count
-  const wordCountResult = validateWordCount(content.htmlContent.replace(/<[^>]+>/g, " "), contentType);
+  const wordCountResult = validateWordCount(
+    content.htmlContent.replace(/<[^>]+>/g, " "),
+    contentType
+  );
   if (!wordCountResult.valid) {
-    errors.push({ code: "WORD_COUNT", field: "content", message: wordCountResult.error!, severity: "error" });
+    errors.push({
+      code: "WORD_COUNT",
+      field: "content",
+      message: wordCountResult.error!,
+      severity: "error",
+    });
     score -= 10;
   }
-  
+
   // Check H2 headers
   const h2Count = countH2Headers(content.htmlContent);
   if (h2Count < requirements.h2Count.min) {
-    errors.push({ 
-      code: "H2_COUNT", 
-      field: "headers", 
-      message: `Not enough H2 headers (${h2Count}). Minimum: ${requirements.h2Count.min}`, 
-      severity: "error" 
+    errors.push({
+      code: "H2_COUNT",
+      field: "headers",
+      message: `Not enough H2 headers (${h2Count}). Minimum: ${requirements.h2Count.min}`,
+      severity: "error",
     });
     score -= 10;
   } else if (h2Count > requirements.h2Count.max) {
@@ -504,7 +565,7 @@ export function validateContent(
     });
     score -= 5;
   }
-  
+
   // Check internal links
   const internalLinkCount = countInternalLinks(content.htmlContent);
   if (internalLinkCount < requirements.internalLinks.min) {
@@ -515,9 +576,11 @@ export function validateContent(
       severity: "error",
     });
     score -= 10;
-    suggestions.push(`Add ${requirements.internalLinks.min - internalLinkCount} more internal links to related Travi pages`);
+    suggestions.push(
+      `Add ${requirements.internalLinks.min - internalLinkCount} more internal links to related Travi pages`
+    );
   }
-  
+
   // Check external links
   const externalLinks = analyzeExternalLinks(content.htmlContent);
   if (externalLinks.count < requirements.externalLinks.min) {
@@ -538,7 +601,7 @@ export function validateContent(
     });
     score -= 3;
   }
-  
+
   // Check for banned phrases
   const bannedPhrases = detectBannedPhrases(content.htmlContent);
   if (bannedPhrases.found.length > 0) {
@@ -556,7 +619,7 @@ export function validateContent(
     }
     score -= bannedPhrases.found.length * 3;
   }
-  
+
   // Validate alt texts
   if (content.altTexts) {
     for (let i = 0; i < content.altTexts.length; i++) {
@@ -571,10 +634,13 @@ export function validateContent(
       }
     }
   }
-  
+
   // Check keyword density if primary keyword provided
   if (content.primaryKeyword) {
-    const density = calculateKeywordDensity(content.htmlContent.replace(/<[^>]+>/g, " "), content.primaryKeyword);
+    const density = calculateKeywordDensity(
+      content.htmlContent.replace(/<[^>]+>/g, " "),
+      content.primaryKeyword
+    );
     if (density < SEO_REQUIREMENTS.keywordDensity.primary.min) {
       warnings.push({
         code: "KEYWORD_DENSITY",
@@ -591,12 +657,12 @@ export function validateContent(
       score -= 5;
     }
   }
-  
+
   // Ensure score doesn't go below 0
   score = Math.max(0, score);
-  
+
   return {
-    isValid: errors.filter((e) => e.severity === "critical").length === 0 && score >= 80,
+    isValid: errors.filter(e => e.severity === "critical").length === 0 && score >= 80,
     score,
     errors,
     warnings,
@@ -609,22 +675,22 @@ export function validateContent(
  */
 export function generateMetaTitle(title: string, destination?: string): string {
   let metaTitle = title;
-  
+
   // Add destination if provided and there's room
   if (destination && metaTitle.length < 45) {
     metaTitle = `${metaTitle} | ${destination}`;
   }
-  
+
   // Truncate if too long
   if (metaTitle.length > SEO_REQUIREMENTS.metaTitle.maxLength) {
     metaTitle = metaTitle.substring(0, SEO_REQUIREMENTS.metaTitle.maxLength - 3) + "...";
   }
-  
+
   // Pad if too short (rarely needed, usually indicates poor title)
   if (metaTitle.length < SEO_REQUIREMENTS.metaTitle.minLength) {
     metaTitle = `${metaTitle} | Travi Travel Guide`;
   }
-  
+
   return metaTitle.substring(0, SEO_REQUIREMENTS.metaTitle.maxLength);
 }
 
@@ -633,12 +699,12 @@ export function generateMetaTitle(title: string, destination?: string): string {
  */
 export function generateMetaDescription(description: string, includesCTA: boolean = true): string {
   let metaDesc = description.trim();
-  
+
   // Add CTA if there's room and requested
   if (includesCTA && metaDesc.length < 140) {
     metaDesc += " Plan your perfect trip today.";
   }
-  
+
   // Truncate if too long
   if (metaDesc.length > SEO_REQUIREMENTS.metaDescription.maxLength) {
     // Find last complete sentence within limit
@@ -650,6 +716,6 @@ export function generateMetaDescription(description: string, includesCTA: boolea
       metaDesc = shortened + "...";
     }
   }
-  
+
   return metaDesc;
 }

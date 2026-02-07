@@ -205,7 +205,7 @@ export function registerPublicContentRoutes(app: Express): void {
       const destinationsResult = cityCounts
         .filter(c => c.cityName) // Filter out null city names
         .map(c => {
-          const slug = c.cityName!.toLowerCase().replace(/ /g, "-");
+          const slug = c.cityName!.toLowerCase().replaceAll(" ", "-");
           const meta = metaMap.get(slug);
           return {
             slug,
@@ -384,8 +384,8 @@ export function registerPublicContentRoutes(app: Express): void {
                 url: `/destinations-hero/${folder}/${filename}`,
                 alt: filename
                   .replace(/\.[^/.]+$/, "")
-                  .replace(/-/g, " ")
-                  .replace(/_/g, " "),
+                  .replaceAll("-", " ")
+                  .replaceAll("_", " "),
                 order: index,
               }));
               break; // Found images, stop searching

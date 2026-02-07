@@ -154,7 +154,7 @@ export async function attractionSlugRedirectMiddleware(
 
   try {
     // Convert URL format (new-york) to DB format (New York) for city matching
-    const cityForDb = cityLower.replace(/-/g, " ");
+    const cityForDb = cityLower.replaceAll("-", " ");
 
     // Check if slug is an old slug that has a seoSlug
     const attraction = await db

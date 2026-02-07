@@ -349,7 +349,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
           csvRows.push(
             [
               c.id,
-              `"${(c.title || "").replace(/"/g, '""')}"`,
+              `"${(c.title || "").replaceAll('"', '""')}"`,
               c.slug,
               c.type,
               c.status,

@@ -241,7 +241,7 @@ export function MagicButton({
 
         toast({
           title: "Generated",
-          description: `${fieldType.replace(/_/g, " ")} generated successfully`,
+          description: `${fieldType.replaceAll("_", " ")} generated successfully`,
         });
       } else {
         throw new Error(data.error || "Failed to generate content");

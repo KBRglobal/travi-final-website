@@ -150,10 +150,10 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
   // Convert to simple HTML - escape content properly
   const html = sections
     .map(s => {
-      const escapedHeading = s.heading.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const escapedHeading = s.heading.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
       const escapedContent = s.content
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
         .replace(/\n\n+/g, "</p><p>")
         .replace(/\n/g, " "); // Single newlines become spaces, not <br>
       return `<h${s.level}>${escapedHeading}</h${s.level}><p>${escapedContent}</p>`;
@@ -334,12 +334,12 @@ function extractLists(
 function stripHtml(html: string): string {
   return html
     .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replaceAll("&nbsp;", " ")
+    .replaceAll("&amp;", "&")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#39;", "'")
     .trim();
 }
 

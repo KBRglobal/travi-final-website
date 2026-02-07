@@ -132,7 +132,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
             .map(f => ({
               filename: f,
               url: `/${folder}/${f}`,
-              name: f.replace(/\.[^.]+$/, "").replace(/-/g, " "),
+              name: f.replace(/\.[^.]+$/, "").replaceAll("-", " "),
             }));
           res.json(imageFiles);
         } catch {
@@ -161,7 +161,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
             .map(f => ({
               filename: f,
               url: `/hero/${f}`,
-              name: f.replace(/\.[^.]+$/, "").replace(/-/g, " "),
+              name: f.replace(/\.[^.]+$/, "").replaceAll("-", " "),
             }));
           res.json(imageFiles);
         } catch {

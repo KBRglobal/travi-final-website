@@ -655,7 +655,7 @@ function QuickFactsSection({
                 <div className="flex items-center gap-2 text-[#6443F4] mb-1">
                   {factIcons[key.toLowerCase()] || <Globe className="h-4 w-4" />}
                   <span className="text-xs font-medium uppercase tracking-wide">
-                    {key.replace(/_/g, " ")}
+                    {key.replaceAll("_", " ")}
                   </span>
                 </div>
                 <p className="text-slate-900 dark:text-white font-medium text-sm">{value}</p>

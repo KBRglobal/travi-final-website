@@ -476,7 +476,7 @@ export class ImageSEOService {
     // English ALT
     let enAlt = `${context.entityName} ${categoryDesc.en}`;
     if (context.uniqueFeature) {
-      enAlt += ` featuring ${context.uniqueFeature.replace(/-/g, " ")}`;
+      enAlt += ` featuring ${context.uniqueFeature.replaceAll("-", " ")}`;
     }
     if (timeDesc) {
       enAlt += ` ${timeDesc.en}`;
@@ -493,7 +493,7 @@ export class ImageSEOService {
     // Arabic ALT
     let arAlt = `${context.entityName} - ${categoryDesc.ar}`;
     if (context.uniqueFeature) {
-      arAlt += ` مع ${context.uniqueFeature.replace(/-/g, " ")}`;
+      arAlt += ` مع ${context.uniqueFeature.replaceAll("-", " ")}`;
     }
     if (timeDesc) {
       arAlt += ` ${timeDesc.ar}`;
@@ -595,7 +595,7 @@ export class ImageSEOService {
       enCaption += ` in Dubai.`;
     }
     if (context.uniqueFeature) {
-      enCaption += ` Features ${context.uniqueFeature.replace(/-/g, " ")}.`;
+      enCaption += ` Features ${context.uniqueFeature.replaceAll("-", " ")}.`;
     }
 
     // Hebrew caption
@@ -692,7 +692,7 @@ export class ImageSEOService {
 
     // Unique features
     if (context.uniqueFeature) {
-      promptParts.push(`showcasing ${context.uniqueFeature.replace(/-/g, " ")}`);
+      promptParts.push(`showcasing ${context.uniqueFeature.replaceAll("-", " ")}`);
     }
 
     // Time of day lighting

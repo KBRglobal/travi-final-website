@@ -110,11 +110,11 @@ function generateUrlXml(url: SitemapUrl): string {
 // Escape special XML characters
 function escapeXml(str: string): string {
   return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("\'", "&apos;");
 }
 
 // Generate sitemap XML
@@ -255,7 +255,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
 
       for (const dest of destinationCounts) {
         if (!dest.cityName) continue;
-        const slug = dest.cityName.toLowerCase().replace(/ /g, "-");
+        const slug = dest.cityName.toLowerCase().replaceAll(" ", "-");
         urls.push({
           loc: `${BASE_URL}/attractions/list/${slug}`,
           lastmod: now,
