@@ -203,12 +203,14 @@ export function setupSecurityMiddleware(app: Express): void {
       ];
 
   // Helmet - Security headers
-  // NOTE: HSTS is DISABLED here because Cloudflare already sets it with max-age=63072000
-  // Having both creates duplicate headers with different max-age values
   app.use(
     helmet({
-      // Disable HSTS - Cloudflare handles this with max-age=63072000; includeSubDomains
-      strictTransportSecurity: false,
+      // HSTS: Set proper headers (Cloudflare also sets these but having them server-side is best practice)
+      strictTransportSecurity: {
+        maxAge: 31536000, // 1 year
+        includeSubDomains: true,
+        preload: true,
+      },
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
@@ -230,7 +232,6 @@ export function setupSecurityMiddleware(app: Express): void {
             "data:", // Base64 images, SVG data URIs
             "blob:", // Canvas/generated images
             "https:", // All HTTPS images (required for user-uploaded content)
-            "http:", // Legacy image support (should migrate to HTTPS)
           ],
           connectSrc: [
             "'self'",
@@ -252,7 +253,7 @@ export function setupSecurityMiddleware(app: Express): void {
             "https://us-assets.i.posthog.com", // PostHog assets
             "wss:", // WebSocket connections
           ],
-          // Explicit frame-src - controls what can be loaded in iframes
+          objectSrc: ["'none'"], // Block plugins (Flash, Java, etc.)
           frameSrc: [
             "'self'",
             "https://www.googletagmanager.com", // GTM preview/debug mode
@@ -261,9 +262,10 @@ export function setupSecurityMiddleware(app: Express): void {
             "https://player.vimeo.com", // Vimeo video embeds
             "https://www.google.com", // Google Maps embeds
           ],
-          frameAncestors: ["'self'"], // Prevents clickjacking - only allow embedding from same origin
+          frameAncestors: ["'self'"], // Prevents clickjacking
           formAction: ["'self'"], // Forms can only submit to same origin
           baseUri: ["'self'"], // Prevents base tag injection attacks
+          upgradeInsecureRequests: [], // Auto-upgrade HTTP→HTTPS
         },
       },
       crossOriginEmbedderPolicy: false, // Required for third-party services (fonts, images)
@@ -275,9 +277,12 @@ export function setupSecurityMiddleware(app: Express): void {
   app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("X-Frame-Options", "SAMEORIGIN");
-    res.setHeader("X-XSS-Protection", "1; mode=block");
     res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    // Comprehensive Permissions-Policy
+    res.setHeader(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+    );
     next();
   });
 

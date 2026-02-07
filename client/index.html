@@ -3,44 +3,19 @@
   <head>
     <meta charset="UTF-8">
 
-    <!-- Emergency Service Worker cleanup - runs FIRST before any other JS -->
-    <script>
-      (function() {
-        try {
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-              registrations.forEach(function(registration) {
-                registration.unregister();
-              });
-            }).catch(function(err) {
-              console.error('[SW Cleanup] Failed to get registrations:', err);
-            });
-            if ('caches' in window) {
-              caches.keys().then(function(names) {
-                names.forEach(function(name) {
-                  caches.delete(name);
-                });
-              }).catch(function(err) {
-                console.error('[Cache Cleanup] Failed to clear caches:', err);
-              });
-            }
-          }
-        } catch (e) {}
-      })();
-    </script>
-
-    <!-- Google Tag Manager - Loaded conditionally via cookie consent -->
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Preconnect to critical origins (must be early in <head>) -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link rel="dns-prefetch" href="https://us.i.posthog.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
     <!-- Performance: Only preload primary font, others load via CSS with font-display:swap -->
     <link rel="preload" href="/fonts/Satoshi-Regular_1767041885349.woff2" as="font" type="font/woff2" crossorigin>
-    
-    <!-- Hero image preload removed - handled conditionally in React component for mobile optimization -->
-    
-    <!-- Preconnect to external image origins -->
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-    <link rel="dns-prefetch" href="https://images.unsplash.com">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -93,29 +68,33 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
-    <!-- Travelpayouts Affiliate Verification Script -->
-    <!-- Deferred for performance - loads after page interactive -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- Non-critical scripts - after main content -->
     <script>
-      if (typeof requestIdleCallback !== 'undefined') {
-        requestIdleCallback(function() {
+      window.addEventListener('load', function() {
+        // SW cleanup
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(r) {
+            r.forEach(function(reg) { reg.unregister(); });
+          });
+          if ('caches' in window) {
+            caches.keys().then(function(n) {
+              n.forEach(function(name) { caches.delete(name); });
+            });
+          }
+        }
+        // Travelpayouts affiliate - load after page ready
+        var idle = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : function(cb) { setTimeout(cb, 3000); };
+        idle(function() {
           var s = document.createElement("script");
           s.async = 1;
           s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
           document.head.appendChild(s);
         });
-      } else {
-        setTimeout(function() {
-          var s = document.createElement("script");
-          s.async = 1;
-          s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
-          document.head.appendChild(s);
-        }, 2000);
-      }
+      });
     </script>
-  </head>
-  <body>
-    <!-- Google Tag Manager noscript - Loaded conditionally via cookie consent -->
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
