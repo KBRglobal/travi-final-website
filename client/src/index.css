@@ -57,46 +57,7 @@
   text-decoration: none;
   transition: top 0.2s;
 }
-.skip-link:focus {
-  top: 0;
-}
-
-/* TRAVI Global Typography & Background */
-@layer base {
-  html,
-  body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  html {
-    font-family: "Satoshi";
-    background-color: #d4e6f0;
-  }
-
-  body {
-    font-family: "Satoshi";
-    background-color: transparent;
-    margin: 0;
-    padding: 0;
-  }
-
-  #root {
-    min-height: 100vh;
-    width: 100%;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: "Chillax";
-  }
-}
+/* TRAVI Global Typography & Background — merged into @layer base below :root */
 
 /* TRAVI Design System - Light Mode */
 :root {
@@ -199,7 +160,7 @@
   /* Typography - TRAVI Brand Fonts */
   --font-sans: "Satoshi";
   --font-heading: "Chillax";
-  --font-mono: JetBrains Mono, monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* TRAVI Spacing */
   --radius: 0.75rem;
@@ -351,9 +312,27 @@
     @apply border-border;
   }
 
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: "Satoshi";
+    background-color: #d4e6f0;
+  }
+
   body {
     @apply font-sans antialiased text-foreground;
     background-color: transparent;
+  }
+
+  #root {
+    min-height: 100vh;
+    width: 100%;
   }
 
   h1,
