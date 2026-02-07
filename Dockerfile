@@ -8,8 +8,12 @@ RUN apk add --no-cache python3 make g++ vips-dev
 
 COPY package.json package-lock.json ./
 
-# Remove husky prepare script (not needed in Docker), then install
-RUN npm pkg delete scripts.prepare && npm ci
+# --ignore-scripts skips husky prepare hook
+# Then install node-gyp locally so sharp can build from source
+RUN npm pkg delete scripts.prepare && \
+    npm ci --ignore-scripts && \
+    npm install --no-save node-gyp && \
+    npm rebuild bcrypt sharp
 
 COPY . .
 RUN npm run build
@@ -22,12 +26,14 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Runtime deps: vips for sharp, build tools for bcrypt
+# Runtime: vips for sharp, build tools for bcrypt compile
 RUN apk add --no-cache vips python3 make g++
 
 COPY package.json package-lock.json ./
 RUN npm pkg delete scripts.prepare && \
-    npm ci --omit=dev && \
+    npm ci --omit=dev --ignore-scripts && \
+    npm install --no-save node-gyp && \
+    npm rebuild bcrypt && \
     apk del python3 make g++
 
 COPY --from=builder /app/dist ./dist
