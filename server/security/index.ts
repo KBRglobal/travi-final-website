@@ -536,7 +536,9 @@ export async function initSecurityOS(config: SecurityOSConfig = {}): Promise<voi
     if (config.captureInitialBaseline) {
       try {
         await captureBaseline("Initial Baseline", "system");
-      } catch (error) {}
+      } catch (error) {
+        /* ignored */
+      }
     }
 
     startDriftMonitoring(config.driftIntervalMs || 300000);

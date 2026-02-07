@@ -12,7 +12,7 @@
  * - Automatic alerts when rotation is due
  */
 
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 /**
  * Key Rotation Configuration

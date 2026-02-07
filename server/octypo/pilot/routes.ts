@@ -77,7 +77,7 @@ router.post("/generate", async (req: Request, res: Response) => {
     }
 
     const attractionData = {
-      id: parseInt(attraction[0].id, 10),
+      id: Number.parseInt(attraction[0].id, 10),
       name: attraction[0].title,
       title: attraction[0].title,
       slug: attraction[0].slug || "",
@@ -86,11 +86,13 @@ router.post("/generate", async (req: Request, res: Response) => {
       venueName: attraction[0].venueName || undefined,
       duration: attraction[0].duration || undefined,
       primaryCategory: attraction[0].primaryCategory || "general",
-      rating: attraction[0].tiqetsRating ? parseFloat(attraction[0].tiqetsRating) : undefined,
+      rating: attraction[0].tiqetsRating
+        ? Number.parseFloat(attraction[0].tiqetsRating)
+        : undefined,
       reviewCount: attraction[0].tiqetsReviewCount || 0,
       tiqetsDescription: attraction[0].tiqetsDescription || undefined,
       tiqetsHighlights: (attraction[0].tiqetsHighlights as string[]) || [],
-      priceFrom: attraction[0].priceUsd ? parseFloat(attraction[0].priceUsd) : undefined,
+      priceFrom: attraction[0].priceUsd ? Number.parseFloat(attraction[0].priceUsd) : undefined,
     } as any;
 
     const request: PilotGenerationRequest = {

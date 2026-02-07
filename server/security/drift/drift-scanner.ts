@@ -10,7 +10,7 @@
  * - Bypass attempt patterns
  */
 
-import * as crypto from "crypto";
+import * as crypto from "node:crypto";
 import { AdminRole, Resource, Action } from "../../governance/types";
 import { logAdminEvent } from "../../governance/security-logger";
 
@@ -258,7 +258,9 @@ class DriftScanner {
             });
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        /* ignored */
+      }
     }, intervalMs);
   }
 
@@ -329,7 +331,7 @@ class DriftScanner {
       rbacEnabled: process.env.ENABLE_RBAC !== "false",
       auditEnabled: process.env.ENABLE_AUDIT !== "false",
       approvalRequired: process.env.REQUIRE_APPROVAL === "true",
-      sessionTimeout: parseInt(process.env.SESSION_TIMEOUT || "3600"),
+      sessionTimeout: Number.parseInt(process.env.SESSION_TIMEOUT || "3600"),
       mfaRequired: process.env.REQUIRE_MFA === "true",
       ipWhitelist: (process.env.IP_WHITELIST || "").split(",").filter(Boolean),
       encryptionEnabled: process.env.ENABLE_ENCRYPTION !== "false",

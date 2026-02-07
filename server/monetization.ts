@@ -21,7 +21,7 @@ import {
 } from "@shared/schema";
 import { eq, desc, and, gte, lte, sql, inArray } from "drizzle-orm";
 import { cache } from "./cache";
-import * as crypto from "crypto";
+import * as crypto from "node:crypto";
 
 // ============================================================================
 // TYPES
@@ -198,11 +198,13 @@ export const premiumContent = {
     const [purchase] = await db
       .select()
       .from(contentPurchases)
-      .where(and(
-        eq(contentPurchases.userId, userId),
-        eq(contentPurchases.contentId, contentId),
-        eq(contentPurchases.status, "completed")
-      ))
+      .where(
+        and(
+          eq(contentPurchases.userId, userId),
+          eq(contentPurchases.contentId, contentId),
+          eq(contentPurchases.status, "completed")
+        )
+      )
       .limit(1);
 
     if (purchase) {
@@ -229,9 +231,10 @@ export const premiumContent = {
     const premium = await this.isPremium(contentId);
     if (!premium) throw new Error("Content not found");
 
-    const expiresAt = premium.accessType === "subscription"
-      ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-      : null;
+    const expiresAt =
+      premium.accessType === "subscription"
+        ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        : null;
 
     const [purchase] = await db
       .insert(contentPurchases)
@@ -296,7 +299,8 @@ export const premiumContent = {
     currency: string;
   }> {
     const [content] = await db.select().from(contents).where(eq(contents.id, contentId));
-    if (!content) return { content: null, isPremium: false, previewPercentage: 100, price: 0, currency: "USD" };
+    if (!content)
+      return { content: null, isPremium: false, previewPercentage: 100, price: 0, currency: "USD" };
 
     const premium = await this.isPremium(contentId);
 
@@ -367,7 +371,8 @@ export const premiumContent = {
         .sort(([, a], [, b]) => b.revenue - a.revenue)
         .slice(0, 10)
         .map(async ([contentId, stats]) => {
-          const [content] = await db.select({ title: contents.title })
+          const [content] = await db
+            .select({ title: contents.title })
             .from(contents)
             .where(eq(contents.id, contentId));
           return {
@@ -395,11 +400,7 @@ const businessTiers = {
   basic: {
     name: "Basic",
     monthlyPrice: 4900, // $49
-    features: [
-      "Business profile page",
-      "Link to website",
-      "Basic analytics",
-    ],
+    features: ["Business profile page", "Link to website", "Basic analytics"],
   },
   premium: {
     name: "Premium",
@@ -431,7 +432,10 @@ export const businessListings = {
    * Create business listing (persisted to DB)
    */
   async create(
-    data: Omit<BusinessListing, "id" | "impressions" | "clicks" | "leads" | "conversions" | "createdAt">
+    data: Omit<
+      BusinessListing,
+      "id" | "impressions" | "clicks" | "leads" | "conversions" | "createdAt"
+    >
   ): Promise<BusinessListing> {
     const [listing] = await db
       .insert(businessListingsTable)
@@ -561,7 +565,8 @@ export const businessListings = {
     return {
       listing,
       ctr: listing.impressions > 0 ? Math.round((listing.clicks / listing.impressions) * 100) : 0,
-      leadConversionRate: listing.leads > 0 ? Math.round((listing.conversions / listing.leads) * 100) : 0,
+      leadConversionRate:
+        listing.leads > 0 ? Math.round((listing.conversions / listing.leads) * 100) : 0,
       leads,
       impressionsByDay: [], // Would aggregate from event tracking
     };
@@ -570,10 +575,7 @@ export const businessListings = {
   /**
    * Get all active listings
    */
-  async getActive(filters?: {
-    businessType?: string;
-    tier?: string;
-  }): Promise<BusinessListing[]> {
+  async getActive(filters?: { businessType?: string; tier?: string }): Promise<BusinessListing[]> {
     const conditions = [eq(businessListingsTable.status, "active")];
 
     if (filters?.businessType) {
@@ -656,9 +658,7 @@ export const leadGeneration = {
   /**
    * Submit lead (persisted to DB)
    */
-  async submit(
-    data: Omit<Lead, "id" | "status" | "createdAt">
-  ): Promise<Lead> {
+  async submit(data: Omit<Lead, "id" | "status" | "createdAt">): Promise<Lead> {
     const [lead] = await db
       .insert(leadsTable)
       .values({
@@ -726,16 +726,9 @@ export const leadGeneration = {
   /**
    * Update lead status (persisted to DB)
    */
-  async updateStatus(
-    leadId: string,
-    status: Lead["status"],
-    notes?: string
-  ): Promise<Lead | null> {
+  async updateStatus(leadId: string, status: Lead["status"], notes?: string): Promise<Lead | null> {
     // Get current lead to check previous status
-    const [currentLead] = await db
-      .select()
-      .from(leadsTable)
-      .where(eq(leadsTable.id, leadId));
+    const [currentLead] = await db.select().from(leadsTable).where(eq(leadsTable.id, leadId));
 
     if (!currentLead) return null;
 
@@ -800,9 +793,7 @@ export const leadGeneration = {
     }
 
     const total = leads.length;
-    const conversionRate = total > 0
-      ? Math.round((statusCounts.converted / total) * 100)
-      : 0;
+    const conversionRate = total > 0 ? Math.round((statusCounts.converted / total) * 100) : 0;
 
     return {
       summary: {
@@ -838,10 +829,7 @@ export const leadGeneration = {
       l.status,
     ]);
 
-    return [
-      headers.join(","),
-      ...rows.map(r => r.map(c => `"${c}"`).join(",")),
-    ].join("\n");
+    return [headers.join(","), ...rows.map(r => r.map(c => `"${c}"`).join(","))].join("\n");
   },
 };
 
@@ -887,9 +875,21 @@ export const revenueDashboard = {
       affiliateRevenue,
       byMonth: [], // Would aggregate by month
       topSources: [
-        { source: "Premium Content", revenue: premiumRevenue, percentage: totalRevenue > 0 ? Math.round((premiumRevenue / totalRevenue) * 100) : 0 },
-        { source: "Business Listings", revenue: listingRevenue, percentage: totalRevenue > 0 ? Math.round((listingRevenue / totalRevenue) * 100) : 0 },
-        { source: "Affiliates", revenue: affiliateRevenue, percentage: totalRevenue > 0 ? Math.round((affiliateRevenue / totalRevenue) * 100) : 0 },
+        {
+          source: "Premium Content",
+          revenue: premiumRevenue,
+          percentage: totalRevenue > 0 ? Math.round((premiumRevenue / totalRevenue) * 100) : 0,
+        },
+        {
+          source: "Business Listings",
+          revenue: listingRevenue,
+          percentage: totalRevenue > 0 ? Math.round((listingRevenue / totalRevenue) * 100) : 0,
+        },
+        {
+          source: "Affiliates",
+          revenue: affiliateRevenue,
+          percentage: totalRevenue > 0 ? Math.round((affiliateRevenue / totalRevenue) * 100) : 0,
+        },
       ],
     };
   },

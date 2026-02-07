@@ -5,14 +5,14 @@
  * Supports bounded processing with pagination and batch limits.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as crypto from 'crypto';
-import { db } from '../../db';
-import { mediaAssets, type InsertMediaAsset } from '@shared/schema';
-import { eq, sql } from 'drizzle-orm';
-import { getMediaLibraryConfig, getSupportedMimeTypes, isMediaLibraryEnabled } from './config';
-import { log } from '../../lib/logger';
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as crypto from "node:crypto";
+import { db } from "../../db";
+import { mediaAssets, type InsertMediaAsset } from "@shared/schema";
+import { eq, sql } from "drizzle-orm";
+import { getMediaLibraryConfig, getSupportedMimeTypes, isMediaLibraryEnabled } from "./config";
+import { log } from "../../lib/logger";
 
 /** Result of a scan operation */
 export interface ScanResult {
@@ -38,15 +38,15 @@ interface FileInfo {
 
 /** MIME type mapping by extension */
 const EXTENSION_MIME_MAP: Record<string, string> = {
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.png': 'image/png',
-  '.gif': 'image/gif',
-  '.webp': 'image/webp',
-  '.svg': 'image/svg+xml',
-  '.pdf': 'application/pdf',
-  '.doc': 'application/msword',
-  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+  ".svg": "image/svg+xml",
+  ".pdf": "application/pdf",
+  ".doc": "application/msword",
+  ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 };
 
 /**
@@ -54,7 +54,7 @@ const EXTENSION_MIME_MAP: Record<string, string> = {
  */
 function getMimeType(filename: string): string {
   const ext = path.extname(filename).toLowerCase();
-  return EXTENSION_MIME_MAP[ext] || 'application/octet-stream';
+  return EXTENSION_MIME_MAP[ext] || "application/octet-stream";
 }
 
 /**
@@ -62,26 +62,26 @@ function getMimeType(filename: string): string {
  */
 async function calculateChecksum(filePath: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const hash = crypto.createHash('sha256');
+    const hash = crypto.createHash("sha256");
     const stream = fs.createReadStream(filePath);
 
-    stream.on('data', (data) => hash.update(data));
-    stream.on('end', () => resolve(hash.digest('hex')));
-    stream.on('error', reject);
+    stream.on("data", data => hash.update(data));
+    stream.on("end", () => resolve(hash.digest("hex")));
+    stream.on("error", reject);
   });
 }
 
 /**
  * Get source type from path
  */
-function getSourceFromPath(filePath: string): 'upload' | 'ai_generated' | 'attached' | 'external' {
-  if (filePath.includes('ai-generated')) {
-    return 'ai_generated';
+function getSourceFromPath(filePath: string): "upload" | "ai_generated" | "attached" | "external" {
+  if (filePath.includes("ai-generated")) {
+    return "ai_generated";
   }
-  if (filePath.startsWith('attached_assets')) {
-    return 'attached';
+  if (filePath.startsWith("attached_assets")) {
+    return "attached";
   }
-  return 'upload';
+  return "upload";
 }
 
 /**
@@ -111,12 +111,12 @@ async function getFilesRecursive(
 
       if (entry.isDirectory()) {
         // Skip hidden directories
-        if (!entry.name.startsWith('.')) {
+        if (!entry.name.startsWith(".")) {
           await getFilesRecursive(fullPath, baseDir, files, maxFiles);
         }
       } else if (entry.isFile()) {
         // Skip hidden files
-        if (entry.name.startsWith('.')) {
+        if (entry.name.startsWith(".")) {
           continue;
         }
 
@@ -167,7 +167,7 @@ export async function scanUploadsAndIndex(options?: {
   };
 
   if (!isMediaLibraryEnabled()) {
-    result.errors.push({ path: '', error: 'Media library is not enabled' });
+    result.errors.push({ path: "", error: "Media library is not enabled" });
     result.duration = Date.now() - startTime;
     return result;
   }
@@ -250,14 +250,14 @@ export async function scanUploadsAndIndex(options?: {
           result.filesUpdated++;
         }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
         result.errors.push({ path: file.path, error: errorMessage });
         log.error(`[MediaLibrary] Error indexing file: ${file.path}`, error);
       }
     }
 
     // Remove assets that no longer exist on disk
-    const allPaths = allFiles.map((f) => f.path);
+    const allPaths = allFiles.map(f => f.path);
     if (allPaths.length > 0 && result.batchComplete) {
       try {
         // Find assets in DB that are not on disk
@@ -269,22 +269,20 @@ export async function scanUploadsAndIndex(options?: {
           const absolutePath = path.join(projectRoot, asset.path);
           if (!fs.existsSync(absolutePath)) {
             // File no longer exists - mark as orphan or remove
-            await db
-              .delete(mediaAssets)
-              .where(eq(mediaAssets.id, asset.id));
+            await db.delete(mediaAssets).where(eq(mediaAssets.id, asset.id));
             log.info(`[MediaLibrary] Removed missing asset: ${asset.path}`);
           }
         }
       } catch (error) {
-        log.warn('[MediaLibrary] Error cleaning up missing assets', error);
+        log.warn("[MediaLibrary] Error cleaning up missing assets", error);
       }
     }
 
     result.success = true;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    result.errors.push({ path: '', error: errorMessage });
-    log.error('[MediaLibrary] Scan failed', error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    result.errors.push({ path: "", error: errorMessage });
+    log.error("[MediaLibrary] Scan failed", error);
   }
 
   result.duration = Date.now() - startTime;
@@ -299,9 +297,7 @@ export async function getScanStats(): Promise<{
   lastScanTime: Date | null;
   bySource: Record<string, number>;
 }> {
-  const [countResult] = await db
-    .select({ count: sql<number>`count(*)::int` })
-    .from(mediaAssets);
+  const [countResult] = await db.select({ count: sql<number>`count(*)::int` }).from(mediaAssets);
 
   const sourceStats = await db
     .select({

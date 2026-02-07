@@ -460,7 +460,9 @@ class AutonomyController {
     for (const listener of this.listeners) {
       try {
         listener(system, state);
-      } catch (error) {}
+      } catch (error) {
+        /* ignored */
+      }
     }
   }
 

@@ -345,7 +345,9 @@ class ThreatPropagator {
     for (const [name, adapter] of adapters) {
       try {
         await adapter.onAnomalyDetected(anomaly);
-      } catch (error) {}
+      } catch (error) {
+        /* ignored */
+      }
     }
 
     // If anomaly is critical, check if we need to escalate
@@ -363,7 +365,9 @@ class ThreatPropagator {
     for (const [name, adapter] of adapters) {
       try {
         await adapter.onHighRiskUser(user);
-      } catch (error) {}
+      } catch (error) {
+        /* ignored */
+      }
     }
 
     logAdminEvent("system", "HIGH_RISK_USER_DETECTED", "user", user.userId, {

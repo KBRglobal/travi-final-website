@@ -43,7 +43,7 @@ import {
   type ScheduledTask,
   type InsertScheduledTask,
 } from "@shared/schema";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { validateUrlForSSRF } from "./security";
 
 // ============================================================================
@@ -86,9 +86,7 @@ export const teamsService = {
     await db.delete(teams).where(eq(teams.id, id));
   },
 
-  async getMembers(
-    teamId: string
-  ): Promise<
+  async getMembers(teamId: string): Promise<
     (TeamMember & {
       user: { id: string; firstName: string | null; lastName: string | null; email: string | null };
     })[]

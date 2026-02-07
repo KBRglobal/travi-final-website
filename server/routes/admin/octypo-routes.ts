@@ -96,7 +96,7 @@ router.get("/stats", async (_req: Request, res: Response) => {
         WHERE seo_score IS NOT NULL
       `
         )
-        .then(r => parseFloat(String((r.rows[0] as any)?.avg_score ?? 0))),
+        .then(r => Number.parseFloat(String((r.rows[0] as any)?.avg_score ?? 0))),
     ]);
 
     const writers = AgentRegistry.getAllWriters();
@@ -104,8 +104,8 @@ router.get("/stats", async (_req: Request, res: Response) => {
 
     const stats: OctypoStats = {
       totalAttractions: 0, // Not relevant for Octypo
-      pendingContent: parseInt(contentStats?.pending_content) || 0,
-      generatedContent: parseInt(contentStats?.total_content) || 0,
+      pendingContent: Number.parseInt(contentStats?.pending_content) || 0,
+      generatedContent: Number.parseInt(contentStats?.total_content) || 0,
       writerAgentCount: writers.length,
       validatorAgentCount: validators.length,
       avgQualityScore: avgScoreResult,
@@ -172,8 +172,8 @@ router.get("/agents/validators", async (_req: Request, res: Response) => {
  */
 router.get("/queue", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 100, 500);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 100, 500);
+    const offset = Number.parseInt(req.query.offset as string) || 0;
 
     const countResult = await db.execute(sql`
       SELECT count(*)::int as count 
@@ -237,7 +237,7 @@ router.post("/generate/:attractionId", async (req: Request, res: Response) => {
     }
 
     const attractionData = {
-      id: parseInt(String(attraction.id), 10) || Date.now(),
+      id: Number.parseInt(String(attraction.id), 10) || Date.now(),
       title: attraction.title || "",
       cityName: attraction.cityName || "",
       venueName: attraction.venueName || undefined,
@@ -248,15 +248,17 @@ router.post("/generate/:attractionId", async (req: Request, res: Response) => {
       wheelchairAccess: attraction.wheelchairAccess || undefined,
       tiqetsDescription: attraction.tiqetsDescription || undefined,
       tiqetsHighlights: attraction.tiqetsHighlights || undefined,
-      priceFrom: attraction.priceUsd ? parseFloat(String(attraction.priceUsd)) : undefined,
-      rating: attraction.tiqetsRating ? parseFloat(String(attraction.tiqetsRating)) : undefined,
+      priceFrom: attraction.priceUsd ? Number.parseFloat(String(attraction.priceUsd)) : undefined,
+      rating: attraction.tiqetsRating
+        ? Number.parseFloat(String(attraction.tiqetsRating))
+        : undefined,
       reviewCount: attraction.tiqetsReviewCount || undefined,
       address: attraction.venueAddress || undefined,
       coordinates:
         attraction.latitude && attraction.longitude
           ? {
-              lat: parseFloat(String(attraction.latitude)),
-              lng: parseFloat(String(attraction.longitude)),
+              lat: Number.parseFloat(String(attraction.latitude)),
+              lng: Number.parseFloat(String(attraction.longitude)),
             }
           : undefined,
     };
@@ -317,7 +319,7 @@ router.post("/generate/:attractionId", async (req: Request, res: Response) => {
  */
 router.get("/jobs/recent", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 100);
 
     const recentJobs = await db
       .select({
@@ -360,8 +362,8 @@ router.get("/jobs/recent", async (req: Request, res: Response) => {
  */
 router.get("/jobs/:jobId", async (req: Request, res: Response) => {
   try {
-    const jobId = parseInt(req.params.jobId, 10);
-    if (isNaN(jobId)) {
+    const jobId = Number.parseInt(req.params.jobId, 10);
+    if (Number.isNaN(jobId)) {
       return res.status(400).json({ error: "Invalid job ID" });
     }
 
@@ -498,11 +500,11 @@ router.get("/destinations", async (_req: Request, res: Response) => {
         status,
         coverage,
         budgetToday: 0,
-        budgetLimit: 50.0,
+        budgetLimit: 50,
         alerts: health < 50 ? Math.floor((100 - health) / 20) : 0,
         contentCount: withContent,
         totalAttractions: total,
-        avgQuality: parseFloat(row.avg_quality) || 0,
+        avgQuality: Number.parseFloat(row.avg_quality) || 0,
         lastUpdated: row.last_updated || null,
       };
     });
@@ -694,7 +696,7 @@ router.get("/autopilot/pipeline", async (_req: Request, res: Response) => {
         itemsProcessed: stats.processed || 0,
         itemsPending: stats.pending || 0,
         lastRun: octypoState.getLastActivity()?.toISOString() || null,
-        avgProcessingTime: 45.0,
+        avgProcessingTime: 45,
         errorRate: stats.processed > 0 ? (stats.failed / stats.processed) * 100 : 0,
       },
       {
@@ -759,8 +761,8 @@ router.get("/autopilot/tasks", async (_req: Request, res: Response) => {
  */
 router.get("/content", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 100);
+    const offset = Number.parseInt(req.query.offset as string) || 0;
     const statusFilter = req.query.status as string;
     const typeFilter = req.query.type as string;
 
@@ -1004,12 +1006,12 @@ router.get("/agents/writers/detailed", async (_req: Request, res: Response) => {
         quote: "",
         avatar: null,
         stats: {
-          generated: parseInt(stats.generated) || 0,
+          generated: Number.parseInt(stats.generated) || 0,
           successRate: Math.round(successRate * 10) / 10,
-          avgQuality: parseFloat(stats.avg_quality) || 0,
+          avgQuality: Number.parseFloat(stats.avg_quality) || 0,
           avgSEO: 0,
           avgWordCount: 0,
-          avgProcessingTimeMs: parseInt(stats.avg_time) || 0,
+          avgProcessingTimeMs: Number.parseInt(stats.avg_time) || 0,
         },
         expertise: persona.expertise || [],
         tone: persona.tone || "",
@@ -1081,19 +1083,19 @@ router.get("/agents/stats", async (_req: Request, res: Response) => {
     const writers = AgentRegistry.getAllWriters();
     const writerNameMap = new Map(writers.map(w => [w.id, w.name]));
 
-    const totalGenerated = parseInt(overallStats.total_generated) || 0;
+    const totalGenerated = Number.parseInt(overallStats.total_generated) || 0;
     const successRate =
-      totalGenerated > 0 ? (parseInt(overallStats.successful) / totalGenerated) * 100 : 0;
+      totalGenerated > 0 ? (Number.parseInt(overallStats.successful) / totalGenerated) * 100 : 0;
 
     const byWriter = writerStats.map(row => {
-      const generated = parseInt(row.generated) || 0;
-      const successful = parseInt(row.successful) || 0;
+      const generated = Number.parseInt(row.generated) || 0;
+      const successful = Number.parseInt(row.successful) || 0;
       return {
         id: row.writer_id,
         name: writerNameMap.get(row.writer_id) || row.writer_id,
         generated,
         successRate: generated > 0 ? Math.round((successful / generated) * 1000) / 10 : 0,
-        avgQuality: parseFloat(row.avg_quality) || 0,
+        avgQuality: Number.parseFloat(row.avg_quality) || 0,
         avgSEO: 0,
       };
     });
@@ -1111,9 +1113,9 @@ router.get("/agents/stats", async (_req: Request, res: Response) => {
       overall: {
         totalGenerated,
         avgSuccessRate: Math.round(successRate * 10) / 10,
-        avgQuality: parseFloat(overallStats.avg_quality) || 0,
+        avgQuality: Number.parseFloat(overallStats.avg_quality) || 0,
         avgSEO: 0,
-        avgProcessingTime: parseFloat(overallStats.avg_time) || 0,
+        avgProcessingTime: Number.parseFloat(overallStats.avg_time) || 0,
       },
       byWriter,
       topPerformers: {
@@ -1134,12 +1136,12 @@ router.get("/agents/stats", async (_req: Request, res: Response) => {
       },
       trends: {
         last7Days: {
-          generated: parseInt(recentStats.last_7_days) || 0,
-          avgQuality: parseFloat(recentStats.quality_7_days) || 0,
+          generated: Number.parseInt(recentStats.last_7_days) || 0,
+          avgQuality: Number.parseFloat(recentStats.quality_7_days) || 0,
         },
         last30Days: {
-          generated: parseInt(recentStats.last_30_days) || 0,
-          avgQuality: parseFloat(recentStats.quality_30_days) || 0,
+          generated: Number.parseInt(recentStats.last_30_days) || 0,
+          avgQuality: Number.parseFloat(recentStats.quality_30_days) || 0,
         },
       },
     };
@@ -1286,7 +1288,7 @@ router.get("/engines/stats", async (_req: Request, res: Response) => {
         totalRequests,
         successfulRequests: totalSuccess,
         failedRequests: totalRequests - totalSuccess,
-        successRate: parseFloat(successRate),
+        successRate: Number.parseFloat(successRate),
       },
       _meta: { apiVersion: "v1" },
     });
@@ -1826,7 +1828,7 @@ router.post("/rss/fetch-all", async (_req: Request, res: Response) => {
  */
 router.get("/rss/items/unprocessed", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 20, 100);
     const feedId = req.query.feedId as string | undefined;
 
     const items = await rssReader.getUnprocessedItems(limit, feedId);
@@ -1848,8 +1850,8 @@ router.get("/rss/items/unprocessed", async (req: Request, res: Response) => {
  */
 router.get("/rss/items/recent", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
-    const sinceHours = parseInt(req.query.sinceHours as string) || undefined;
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 20, 100);
+    const sinceHours = Number.parseInt(req.query.sinceHours as string) || undefined;
 
     let sinceDate: Date | undefined;
     if (sinceHours) {
@@ -2164,7 +2166,7 @@ router.get("/exploder/stats", async (_req: Request, res: Response) => {
         total: articleStats?.total_articles || 0,
         generated: articleStats?.generated || 0,
         published: articleStats?.published || 0,
-        avgQuality: parseFloat(articleStats?.avg_quality) || 0,
+        avgQuality: Number.parseFloat(articleStats?.avg_quality) || 0,
       },
       _meta: { apiVersion: "v1" },
     });
@@ -2180,8 +2182,8 @@ router.get("/exploder/stats", async (_req: Request, res: Response) => {
  */
 router.get("/exploder/entities", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 200);
+    const offset = Number.parseInt(req.query.offset as string) || 0;
     const entityType = req.query.type as string | undefined;
 
     let whereClause;
@@ -2285,8 +2287,8 @@ router.post("/real-autopilot/mode", async (req: Request, res: Response) => {
 router.get("/real-autopilot/tasks", async (req: Request, res: Response) => {
   try {
     const status = req.query.status as string | undefined;
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 200);
+    const offset = Number.parseInt(req.query.offset as string) || 0;
 
     const autopilot = getRealAutopilot();
     const tasks = await autopilot.getTasks(status as any, limit, offset);
@@ -2315,7 +2317,7 @@ router.get("/real-autopilot/tasks", async (req: Request, res: Response) => {
  */
 router.get("/real-autopilot/tasks/awaiting-approval", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 200);
     const tasks = await autopilotAPI.getAwaitingApproval(limit);
 
     res.json({

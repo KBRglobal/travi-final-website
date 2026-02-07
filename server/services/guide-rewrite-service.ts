@@ -22,8 +22,8 @@ const MODELS = {
 const MODEL_COSTS_PER_1M = {
   "deepseek/deepseek-chat": { input: 0.14, output: 0.28 },
   "google/gemini-flash-1.5": { input: 0.075, output: 0.3 },
-  "anthropic/claude-3.5-haiku": { input: 0.8, output: 4.0 },
-  "anthropic/claude-3.5-sonnet": { input: 3.0, output: 15.0 },
+  "anthropic/claude-3.5-haiku": { input: 0.8, output: 4 },
+  "anthropic/claude-3.5-sonnet": { input: 3, output: 15 },
 };
 
 // Target destinations (17 total - our official destination list)

@@ -228,7 +228,9 @@ class JobQueue {
 
       if (result.length > 0) {
       }
-    } catch (err) {}
+    } catch (err) {
+      /* ignored */
+    }
   }
 
   /**
@@ -322,7 +324,9 @@ class JobQueue {
         // 1% chance each run
         await this.cleanup();
       }
-    } catch (err) {}
+    } catch (err) {
+      /* ignored */
+    }
   }
 
   /**
@@ -345,7 +349,9 @@ class JobQueue {
 
       if (result.length > 0) {
       }
-    } catch (err) {}
+    } catch (err) {
+      /* ignored */
+    }
   }
 
   /**

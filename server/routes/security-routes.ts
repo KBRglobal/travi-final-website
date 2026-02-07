@@ -4,7 +4,7 @@
  */
 
 import type { Express, Request, Response } from "express";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import { authenticator } from "otplib";
 import QRCode from "qrcode";

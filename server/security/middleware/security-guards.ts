@@ -21,7 +21,7 @@ import { AdminRole, Action, Resource } from "../../governance/types";
 const SECURITY_GATE_ENABLED = process.env.SECURITY_GATE_ENABLED !== "false";
 const SECURITY_GATE_ENFORCE =
   process.env.SECURITY_GATE_ENFORCE === "true" || process.env.NODE_ENV === "production";
-const BULK_APPROVAL_THRESHOLD = parseInt(process.env.SECURITY_GATE_BULK_THRESHOLD || "10");
+const BULK_APPROVAL_THRESHOLD = Number.parseInt(process.env.SECURITY_GATE_BULK_THRESHOLD || "10");
 
 // ============================================================================
 // TYPES
@@ -180,7 +180,7 @@ export function bulkGuard(operation: "update" | "delete" | "export" | "import") 
     } else if (req.body?.contentIds) {
       recordCount = Array.isArray(req.body.contentIds) ? req.body.contentIds.length : 1;
     } else if (req.query?.limit) {
-      recordCount = parseInt(req.query.limit as string) || 100;
+      recordCount = Number.parseInt(req.query.limit as string) || 100;
     }
 
     try {
@@ -337,7 +337,7 @@ export async function exportGuard(
   else if (path.includes("compliance")) resource = "policies";
 
   // Estimate record count
-  let recordCount = parseInt(req.query.limit as string) || 1000;
+  let recordCount = Number.parseInt(req.query.limit as string) || 1000;
 
   try {
     const result = await assertAllowed({

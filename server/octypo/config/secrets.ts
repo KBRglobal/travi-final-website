@@ -8,10 +8,10 @@
  * 3. Keys are encrypted with AES-256-GCM and stored in .octypo-secrets.enc
  */
 
-import * as crypto from "crypto";
-import * as fs from "fs";
-import * as path from "path";
-import * as readline from "readline";
+import * as crypto from "node:crypto";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as readline from "node:readline";
 
 // Encryption settings
 const ALGORITHM = "aes-256-gcm";

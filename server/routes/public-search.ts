@@ -20,7 +20,7 @@ export function registerPublicSearchRoutes(app: Express): void {
   app.get("/api/public/search", async (req: Request, res: Response) => {
     try {
       const query = (req.query.q as string) || "";
-      const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
+      const limit = Math.min(Number.parseInt(req.query.limit as string) || 10, 50);
 
       // Parse types array from query params
       let types: ("destination" | "hotel" | "article" | "category")[] | undefined;
@@ -59,7 +59,7 @@ export function registerPublicSearchRoutes(app: Express): void {
   app.get("/api/public/search/suggestions", async (req: Request, res: Response) => {
     try {
       const query = (req.query.q as string) || "";
-      const limit = Math.min(parseInt(req.query.limit as string) || 5, 10);
+      const limit = Math.min(Number.parseInt(req.query.limit as string) || 5, 10);
 
       if (query.length < 2) {
         return res.json({ suggestions: [] });

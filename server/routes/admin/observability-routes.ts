@@ -87,8 +87,8 @@ export function registerObservabilityRoutes(app: Express) {
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
-        const offset = parseInt(req.query.offset as string) || 0;
+        const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 200);
+        const offset = Number.parseInt(req.query.offset as string) || 0;
 
         // Get published content with intelligence indicators
         const contentList = await db
@@ -159,7 +159,7 @@ export function registerObservabilityRoutes(app: Express) {
 
   app.get("/api/admin/jobs/recent", requireAuth, async (req: Request, res: Response) => {
     try {
-      const limit = Math.min(parseInt(req.query.limit as string) || 100, 500);
+      const limit = Math.min(Number.parseInt(req.query.limit as string) || 100, 500);
 
       // Get recent AI generation logs as job records
       const jobs = await db

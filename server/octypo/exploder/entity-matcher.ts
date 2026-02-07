@@ -39,7 +39,7 @@ export class EntityMatcher {
         entityId: match.id,
         name: match.name,
         normalizedName: match.normalizedName,
-        matchScore: 1.0,
+        matchScore: 1,
         matchType: "exact",
       });
     }

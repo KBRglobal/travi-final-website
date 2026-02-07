@@ -108,13 +108,13 @@ export function isFaqRequired(): boolean {
 
 export function getSEOGates(): SEOPublishingGates {
   return {
-    quality108Minimum: parseInt(process.env.SEO_QUALITY_108_MIN || "75", 10),
+    quality108Minimum: Number.parseInt(process.env.SEO_QUALITY_108_MIN || "75", 10),
     tier1Must100Percent: process.env.SEO_TIER1_REQUIRED !== "false",
-    aeoMinimum: parseInt(process.env.SEO_AEO_MIN || "60", 10),
+    aeoMinimum: Number.parseInt(process.env.SEO_AEO_MIN || "60", 10),
     mustHaveAnswerCapsule: process.env.SEO_CAPSULE_REQUIRED !== "false",
     mustHaveFAQ: process.env.SEO_FAQ_REQUIRED !== "false",
-    minFAQCount: parseInt(process.env.SEO_MIN_FAQ || "6", 10),
-    minInternalLinks: parseInt(process.env.SEO_MIN_LINKS || "3", 10),
+    minFAQCount: Number.parseInt(process.env.SEO_MIN_FAQ || "6", 10),
+    minInternalLinks: Number.parseInt(process.env.SEO_MIN_LINKS || "3", 10),
     noOrphanPages: process.env.SEO_NO_ORPHANS !== "false",
   };
 }

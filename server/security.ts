@@ -439,7 +439,9 @@ export async function initDevAutoAuth(getAdminUser: () => Promise<any>) {
   if (isDevEnvironment && process.env.DEV_AUTO_AUTH === "true") {
     try {
       devAutoAuthUser = await getAdminUser();
-    } catch (e) {}
+    } catch (e) {
+      /* ignored */
+    }
   }
 }
 
@@ -1267,7 +1269,7 @@ export function validateUrlForSSRF(urlString: string): SSRFValidationResult {
     }
 
     // Check for suspicious port usage (common internal service ports)
-    const port = url.port ? parseInt(url.port, 10) : url.protocol === "https:" ? 443 : 80;
+    const port = url.port ? Number.parseInt(url.port, 10) : url.protocol === "https:" ? 443 : 80;
     const suspiciousPorts = [22, 23, 25, 3306, 5432, 6379, 11211, 27017, 9200, 9300];
     if (suspiciousPorts.includes(port)) {
       return { valid: false, error: `Port ${port} is not allowed for security reasons` };

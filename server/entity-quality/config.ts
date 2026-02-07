@@ -4,21 +4,21 @@
  */
 
 export function isEntityQualityEnabled(): boolean {
-  return process.env.ENABLE_ENTITY_QUALITY === 'true';
+  return process.env.ENABLE_ENTITY_QUALITY === "true";
 }
 
 export const ENTITY_QUALITY_CONFIG = {
   // Batch size for scanning
-  batchSize: parseInt(process.env.ENTITY_DEDUP_BATCH_SIZE || '100', 10),
+  batchSize: Number.parseInt(process.env.ENTITY_DEDUP_BATCH_SIZE || "100", 10),
 
   // Minimum confidence score to create a suggestion
-  minConfidenceThreshold: parseInt(process.env.ENTITY_DEDUP_MIN_CONFIDENCE || '70', 10),
+  minConfidenceThreshold: Number.parseInt(process.env.ENTITY_DEDUP_MIN_CONFIDENCE || "70", 10),
 
   // Maximum suggestions to store
-  maxSuggestionsStored: parseInt(process.env.ENTITY_DEDUP_MAX_SUGGESTIONS || '1000', 10),
+  maxSuggestionsStored: Number.parseInt(process.env.ENTITY_DEDUP_MAX_SUGGESTIONS || "1000", 10),
 
   // Distance threshold for geo matching (in km)
-  geoProximityKm: parseFloat(process.env.ENTITY_GEO_PROXIMITY_KM || '0.5'),
+  geoProximityKm: Number.parseFloat(process.env.ENTITY_GEO_PROXIMITY_KM || "0.5"),
 
   // Weight for each match factor
   weights: {

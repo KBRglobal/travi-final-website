@@ -131,7 +131,9 @@ class CacheService {
           token: redisToken,
         });
         this.isRedisAvailable = true;
-      } catch (error) {}
+      } catch (error) {
+        /* ignored */
+      }
     } else {
     }
   }

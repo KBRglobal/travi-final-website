@@ -703,7 +703,7 @@ export class OctypoOrchestrator {
 
     try {
       // Generate content with locale-aware prompts
-      const numericId = attractionData?.id || parseInt(entityId, 10) || 0;
+      const numericId = attractionData?.id || Number.parseInt(entityId, 10) || 0;
       const content = await selectedWriter.executeWithLocale({
         attractionData:
           attractionData ||

@@ -151,7 +151,7 @@ router.post('/evaluate/:id', requireEnabled, async (req: Request, res: Response)
  * Long-running operation - responds immediately and runs in background.
  */
 router.post('/backfill', requireEnabled, async (req: Request, res: Response) => {
-  const batchSize = parseInt(req.query.batchSize as string) || 100;
+  const batchSize = Number.parseInt(req.query.batchSize as string) || 100;
 
   // Check if already running
   const state = getJobState();

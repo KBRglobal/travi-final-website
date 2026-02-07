@@ -493,8 +493,8 @@ router.get(
 router.get("/api/public/holidays/:countryCode", async (req: Request, res: Response) => {
   try {
     const { countryCode } = req.params;
-    const year = parseInt(req.query.year as string) || new Date().getFullYear();
-    const limit = parseInt(req.query.limit as string) || 50;
+    const year = Number.parseInt(req.query.year as string) || new Date().getFullYear();
+    const limit = Number.parseInt(req.query.limit as string) || 50;
     const upcoming = req.query.upcoming === "true";
 
     const upperCountryCode = countryCode.toUpperCase();

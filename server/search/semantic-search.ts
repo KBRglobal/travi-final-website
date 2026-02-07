@@ -1,6 +1,6 @@
 /**
  * Semantic Search Engine
- * 
+ *
  * Vector similarity search using pgvector
  */
 
@@ -33,19 +33,19 @@ export const semanticSearch = {
    */
   getContentUrl(type: string, contentId: string): string {
     const urlMap: Record<string, string> = {
-      'attraction': '/attractions/',
-      'hotel': '/hotels/',
-      'article': '/articles/',
-      'dining': '/dining/',
-      'district': '/districts/',
-      'transport': '/transport/',
-      'event': '/events/',
-      'itinerary': '/itineraries/',
-      'landing_page': '/landing-pages/',
-      'case_study': '/case-studies/',
-      'off_plan': '/off-plan/',
+      attraction: "/attractions/",
+      hotel: "/hotels/",
+      article: "/articles/",
+      dining: "/dining/",
+      district: "/districts/",
+      transport: "/transport/",
+      event: "/events/",
+      itinerary: "/itineraries/",
+      landing_page: "/landing-pages/",
+      case_study: "/case-studies/",
+      off_plan: "/off-plan/",
     };
-    
+
     return (urlMap[type] || `/${type}s/`) + contentId;
   },
 
@@ -103,7 +103,7 @@ export const semanticSearch = {
       contentId: r.content_id,
       title: r.title,
       type: r.content_type,
-      similarity: parseFloat(r.similarity),
+      similarity: Number.parseFloat(r.similarity),
       snippet: r.meta_description || "",
       url: this.getContentUrl(r.content_type, r.content_id),
       image: r.image,
@@ -146,7 +146,7 @@ export const semanticSearch = {
       contentId: r.content_id,
       title: r.title,
       type: r.content_type,
-      similarity: parseFloat(r.similarity),
+      similarity: Number.parseFloat(r.similarity),
       snippet: r.meta_description || "",
       url: this.getContentUrl(r.content_type, r.content_id),
       image: r.image,

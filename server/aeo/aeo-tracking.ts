@@ -609,7 +609,9 @@ export function aeoTrackingMiddleware() {
         requestPath: req.path,
         statusCode: res.statusCode,
         responseTime,
-        bytesServed: res.get("content-length") ? parseInt(res.get("content-length")) : undefined,
+        bytesServed: res.get("content-length")
+          ? Number.parseInt(res.get("content-length"))
+          : undefined,
         ipAddress: req.ip || req.connection?.remoteAddress,
         referer: req.headers["referer"],
       }).catch(() => {}); // Ignore errors

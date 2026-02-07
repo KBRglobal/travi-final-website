@@ -330,7 +330,7 @@ export const DEFAULT_SECURITY_AUTHORITY_CONFIG: SecurityAuthorityConfig = {
   defaultMode: (process.env.SECURITY_DEFAULT_MODE as SecurityMode) || "enforce",
   failClosed: process.env.SECURITY_FAIL_CLOSED !== "false", // Default true
   auditAllDecisions: process.env.SECURITY_AUDIT_ALL !== "false", // Default true
-  maxOverrideDurationHours: parseInt(process.env.SECURITY_MAX_OVERRIDE_HOURS || "24", 10),
+  maxOverrideDurationHours: Number.parseInt(process.env.SECURITY_MAX_OVERRIDE_HOURS || "24", 10),
   threatEscalationThresholds: {
     elevatedThreshold: 5,
     highThreshold: 15,

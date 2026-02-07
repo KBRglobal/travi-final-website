@@ -416,7 +416,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         const locale = (req.query.locale as string) || "en";
         const { title, subtitle, ...structuralUpdates } = req.body;
 
@@ -449,7 +449,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         await deleteEntityTranslations("homepage_card", id);
         await db.delete(homepageCards).where(eq(homepageCards.id, id));
         res.json({ success: true });
@@ -518,7 +518,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         const locale = (req.query.locale as string) || "en";
         const { name, description, ...structuralUpdates } = req.body;
 
@@ -554,7 +554,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         await deleteEntityTranslations("experience_category", id);
         await db.delete(experienceCategories).where(eq(experienceCategories.id, id));
         res.json({ success: true });
@@ -774,7 +774,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         const locale = (req.query.locale as string) || "en";
         const { name, ...structuralUpdates } = req.body;
 
@@ -806,7 +806,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         await deleteEntityTranslations("region_link", id);
         await db.delete(regionLinks).where(eq(regionLinks.id, id));
         res.json({ success: true });

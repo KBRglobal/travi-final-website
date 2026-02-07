@@ -451,7 +451,9 @@ class SecurityModeManager {
         const transition = await this.autoAdjustMode();
         if (transition) {
         }
-      } catch (error) {}
+      } catch (error) {
+        /* ignored */
+      }
     }, intervalMs);
   }
 

@@ -211,7 +211,7 @@ export function calculateLocalePurity(
   targetLocale: "en" | "ar" | "fr",
   exemptions: string[] = []
 ): number {
-  if (!text || text.trim().length === 0) return 1.0;
+  if (!text || text.trim().length === 0) return 1;
 
   // Remove universal technical terms (they're acceptable in any locale)
   let cleanText = text;
@@ -231,7 +231,7 @@ export function calculateLocalePurity(
   cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—]/g, " ");
   cleanText = cleanText.trim();
 
-  if (cleanText.length === 0) return 1.0;
+  if (cleanText.length === 0) return 1;
 
   if (targetLocale === "ar") {
     // Count Arabic characters
@@ -239,21 +239,21 @@ export function calculateLocalePurity(
     // Count total non-whitespace characters
     const totalChars = cleanText.replace(/\s/g, "").length;
 
-    if (totalChars === 0) return 1.0;
+    if (totalChars === 0) return 1;
     return arabicChars / totalChars;
   } else if (targetLocale === "fr") {
     // For French, count Latin characters including French accented characters
     const latinChars = (cleanText.match(FRENCH_LATIN_REGEX) || []).length;
     const totalChars = cleanText.replace(/\s/g, "").length;
 
-    if (totalChars === 0) return 1.0;
+    if (totalChars === 0) return 1;
     return latinChars / totalChars;
   } else {
     // For English, count Latin characters
     const latinChars = (cleanText.match(/[a-zA-Z]/g) || []).length;
     const totalChars = cleanText.replace(/\s/g, "").length;
 
-    if (totalChars === 0) return 1.0;
+    if (totalChars === 0) return 1;
     return latinChars / totalChars;
   }
 }
@@ -755,7 +755,7 @@ export function calculateLocalePurityExtended(
   targetLocale: NativeLocale,
   exemptions: string[] = []
 ): number {
-  if (!text || text.trim().length === 0) return 1.0;
+  if (!text || text.trim().length === 0) return 1;
 
   // Remove universal technical terms
   let cleanText = text;
@@ -775,7 +775,7 @@ export function calculateLocalePurityExtended(
   cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—]/g, " ");
   cleanText = cleanText.trim();
 
-  if (cleanText.length === 0) return 1.0;
+  if (cleanText.length === 0) return 1;
 
   // Get primary scripts for this locale
   const primaryScripts = getPrimaryScripts(targetLocale);
@@ -789,7 +789,7 @@ export function calculateLocalePurityExtended(
   // Count total non-whitespace characters
   const totalChars = cleanText.replace(/\s/g, "").length;
 
-  if (totalChars === 0) return 1.0;
+  if (totalChars === 0) return 1;
   return scriptCharCount / totalChars;
 }
 

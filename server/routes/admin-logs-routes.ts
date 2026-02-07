@@ -16,7 +16,7 @@ export function registerAdminLogsRoutes(app: Express): void {
       try {
         const { category, level, search, limit = "200" } = req.query;
 
-        let logs = consoleLogger.getLogs(parseInt(limit as string, 10) || 200);
+        let logs = consoleLogger.getLogs(Number.parseInt(limit as string, 10) || 200);
 
         if (category && category !== "all") {
           logs = logs.filter(log => log.category === category);

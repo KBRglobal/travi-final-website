@@ -31,7 +31,7 @@ export function registerEditorialSlaRoutes(app: Express): void {
       return res.json({ enabled: false, items: [] });
     }
 
-    const limit = parseInt(req.query.limit as string) || 50;
+    const limit = Number.parseInt(req.query.limit as string) || 50;
     const stale = await getStaleContent(limit);
     res.json({ enabled: true, items: stale, count: stale.length });
   });

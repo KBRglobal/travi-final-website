@@ -24,7 +24,7 @@ export interface MediaLibraryConfig {
  * Check if the media library feature is enabled
  */
 export function isMediaLibraryEnabled(): boolean {
-  return process.env.ENABLE_MEDIA_LIBRARY === 'true';
+  return process.env.ENABLE_MEDIA_LIBRARY === "true";
 }
 
 /**
@@ -33,20 +33,14 @@ export function isMediaLibraryEnabled(): boolean {
 export function getMediaLibraryConfig(): MediaLibraryConfig {
   return {
     enabled: isMediaLibraryEnabled(),
-    scanDirectories: ['uploads', 'attached_assets'],
-    batchSize: parseInt(process.env.MEDIA_LIBRARY_BATCH_SIZE || '100', 10),
-    orphanGracePeriodDays: parseInt(process.env.MEDIA_LIBRARY_ORPHAN_GRACE_DAYS || '7', 10),
-    supportedImageTypes: [
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'image/webp',
-      'image/svg+xml',
-    ],
+    scanDirectories: ["uploads", "attached_assets"],
+    batchSize: Number.parseInt(process.env.MEDIA_LIBRARY_BATCH_SIZE || "100", 10),
+    orphanGracePeriodDays: Number.parseInt(process.env.MEDIA_LIBRARY_ORPHAN_GRACE_DAYS || "7", 10),
+    supportedImageTypes: ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"],
     supportedDocumentTypes: [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ],
   };
 }

@@ -438,8 +438,8 @@ router.get("/feedback/stats", async (req: Request, res: Response) => {
     }
 
     if (days && typeof days === "string") {
-      const daysNum = parseInt(days, 10);
-      if (!isNaN(daysNum) && daysNum > 0) {
+      const daysNum = Number.parseInt(days, 10);
+      if (!Number.isNaN(daysNum) && daysNum > 0) {
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - daysNum);
         query.startDate = startDate;

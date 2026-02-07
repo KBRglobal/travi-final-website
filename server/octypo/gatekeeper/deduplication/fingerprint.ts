@@ -7,7 +7,7 @@
  * Based on: Broder, A. Z. (1997). "On the resemblance and containment of documents"
  */
 
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
 
 // Number of hash functions for MinHash signature
 const NUM_HASHES = 128;

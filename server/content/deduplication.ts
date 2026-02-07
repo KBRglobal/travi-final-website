@@ -1,7 +1,7 @@
 import { db } from "../db";
 import { contents, contentFingerprints } from "@shared/schema";
 import { eq, or, ilike } from "drizzle-orm";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 export interface DuplicateCheckResult {
   isDuplicate: boolean;
@@ -48,17 +48,17 @@ function generateUrlHash(url: string): string {
 function calculateTitleSimilarity(title1: string, title2: string): number {
   const norm1 = normalizeTitle(title1);
   const norm2 = normalizeTitle(title2);
-  
-  if (norm1 === norm2) return 1.0;
-  
+
+  if (norm1 === norm2) return 1;
+
   const words1 = new Set(norm1.split(" ").filter(w => w.length > 2));
   const words2 = new Set(norm2.split(" ").filter(w => w.length > 2));
-  
+
   if (words1.size === 0 || words2.size === 0) return 0;
-  
+
   const intersection = new Set([...words1].filter(x => words2.has(x)));
   const union = new Set([...words1, ...words2]);
-  
+
   return intersection.size / union.size;
 }
 
@@ -79,7 +79,7 @@ export async function checkDuplicate(
         isDuplicate: true,
         existingId: existingFingerprint[0].contentId,
         matchType: "exact_url",
-        confidence: 1.0,
+        confidence: 1,
       };
     }
 
@@ -95,7 +95,7 @@ export async function checkDuplicate(
         isDuplicate: true,
         existingId: existingBySourceUrl[0].contentId,
         matchType: "exact_url",
-        confidence: 1.0,
+        confidence: 1,
       };
     }
   }
@@ -112,7 +112,7 @@ export async function checkDuplicate(
       isDuplicate: true,
       existingId: existingByTitleHash[0].contentId,
       matchType: "title_hash",
-      confidence: 1.0,
+      confidence: 1,
     };
   }
 
@@ -145,7 +145,7 @@ export async function createFingerprint(
   rssFeedId?: string
 ): Promise<void> {
   const titleHash = generateTitleHash(title);
-  
+
   try {
     await db.insert(contentFingerprints).values({
       contentId,
@@ -180,4 +180,10 @@ export async function createFingerprint(
   }
 }
 
-export { generateTitleHash, generateUrlHash, normalizeTitle, normalizeUrl, calculateTitleSimilarity };
+export {
+  generateTitleHash,
+  generateUrlHash,
+  normalizeTitle,
+  normalizeUrl,
+  calculateTitleSimilarity,
+};

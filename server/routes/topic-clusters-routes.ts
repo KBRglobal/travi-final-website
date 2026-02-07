@@ -5,7 +5,7 @@
 
 import type { Express, Request, Response } from "express";
 import { z } from "zod";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { storage } from "../storage";
 import { requireAuth, requirePermission, checkReadOnlyMode } from "../security";
 import type { ContentBlock } from "@shared/schema";

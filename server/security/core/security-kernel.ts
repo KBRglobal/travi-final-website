@@ -7,7 +7,7 @@
  * All security decisions flow through this single enforcement point.
  */
 
-import { createHash, randomBytes } from "crypto";
+import { createHash, randomBytes } from "node:crypto";
 
 // ============================================================================
 // SECURITY MODE DEFINITIONS

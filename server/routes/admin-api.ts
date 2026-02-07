@@ -47,7 +47,7 @@ export function registerAdminApiRoutes(app: Express): void {
         const { consoleLogger } = await import("../console-logger");
         const { category, level, search, limit = "200" } = req.query;
 
-        let logs = consoleLogger.getLogs(parseInt(limit as string, 10) || 200);
+        let logs = consoleLogger.getLogs(Number.parseInt(limit as string, 10) || 200);
 
         if (category && category !== "all") {
           logs = logs.filter(log => log.category === category);
@@ -553,7 +553,7 @@ export function registerAdminApiRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         const locale = (req.query.locale as string) || "en";
         const { title, subtitle, ...structuralUpdates } = req.body;
 
@@ -586,7 +586,7 @@ export function registerAdminApiRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         await deleteEntityTranslations("homepage_card", id);
         await db.delete(homepageCards).where(eq(homepageCards.id, id));
         res.json({ success: true });
@@ -653,7 +653,7 @@ export function registerAdminApiRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         const locale = (req.query.locale as string) || "en";
         const { name, description, ...structuralUpdates } = req.body;
 
@@ -689,7 +689,7 @@ export function registerAdminApiRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         await deleteEntityTranslations("experience_category", id);
         await db.delete(experienceCategories).where(eq(experienceCategories.id, id));
         res.json({ success: true });
@@ -911,7 +911,7 @@ export function registerAdminApiRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         const locale = (req.query.locale as string) || "en";
         const { name, ...structuralUpdates } = req.body;
 
@@ -943,7 +943,7 @@ export function registerAdminApiRoutes(app: Express): void {
     checkReadOnlyMode,
     async (req, res) => {
       try {
-        const id = parseInt(req.params.id);
+        const id = Number.parseInt(req.params.id);
         await deleteEntityTranslations("region_link", id);
         await db.delete(regionLinks).where(eq(regionLinks.id, id));
         res.json({ success: true });
@@ -1373,7 +1373,7 @@ export function registerAdminApiRoutes(app: Express): void {
     requirePermission("canManageSettings"),
     async (req: Request, res: Response) => {
       try {
-        const limit = parseInt(req.query.limit as string, 10) || 50;
+        const limit = Number.parseInt(req.query.limit as string, 10) || 50;
 
         // Query real audit logs from the database
         const activities = await db

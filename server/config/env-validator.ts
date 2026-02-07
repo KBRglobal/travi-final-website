@@ -61,8 +61,8 @@ export function validateRequiredEnvVars(): void {
   }
 
   // Validate PORT is a valid number
-  const portNum = parseInt(port, 10);
-  if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+  const portNum = Number.parseInt(port, 10);
+  if (Number.isNaN(portNum) || portNum < 1 || portNum > 65535) {
     result.errors.push(`PORT must be a valid number between 1 and 65535, got: ${port}`);
     result.isValid = false;
   }
@@ -193,8 +193,8 @@ export function getEnvNumber(key: string, defaultValue?: number): number {
     }
     throw new Error(`Environment variable ${key} is not set`);
   }
-  const num = parseInt(value, 10);
-  if (isNaN(num)) {
+  const num = Number.parseInt(value, 10);
+  if (Number.isNaN(num)) {
     throw new Error(`Environment variable ${key} must be a number, got: ${value}`);
   }
   return num;

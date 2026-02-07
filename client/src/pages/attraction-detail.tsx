@@ -1328,14 +1328,14 @@ export default function AttractionDetail() {
       attraction.latitude && attraction.longitude
         ? {
             "@type": "GeoCoordinates",
-            latitude: parseFloat(attraction.latitude),
-            longitude: parseFloat(attraction.longitude),
+            latitude: Number.parseFloat(attraction.latitude),
+            longitude: Number.parseFloat(attraction.longitude),
           }
         : undefined,
     aggregateRating: attraction.tiqetsRating
       ? {
           "@type": "AggregateRating",
-          ratingValue: parseFloat(attraction.tiqetsRating),
+          ratingValue: Number.parseFloat(attraction.tiqetsRating),
           reviewCount: attraction.tiqetsReviewCount || 100,
         }
       : undefined,

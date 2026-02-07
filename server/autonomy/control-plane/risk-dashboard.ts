@@ -291,7 +291,9 @@ async function getRecentActivity(limit: number): Promise<
         timestamp: override.createdAt,
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   // Sort by timestamp and limit
   return activity.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, limit);

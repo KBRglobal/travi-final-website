@@ -56,7 +56,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
 
   app.get("/api/content/top-performers", requireAuth, async (req, res) => {
     try {
-      const limit = Math.min(parseInt(req.query.limit as string) || 10, 100);
+      const limit = Math.min(Number.parseInt(req.query.limit as string) || 10, 100);
       const topPerformers = getTopPerformers(limit);
 
       res.json({

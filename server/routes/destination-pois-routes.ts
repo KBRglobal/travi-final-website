@@ -61,8 +61,8 @@ router.get("/:slug/pois", async (req: Request, res: Response) => {
     }
 
     const whereClause = and(...conditions);
-    const limitNum = Math.min(parseInt(limit as string) || 20, 100);
-    const offsetNum = parseInt(offset as string) || 0;
+    const limitNum = Math.min(Number.parseInt(limit as string) || 20, 100);
+    const offsetNum = Number.parseInt(offset as string) || 0;
 
     const [pois, countResult] = await Promise.all([
       db

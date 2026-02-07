@@ -10,7 +10,7 @@ router.get("/", async (req: Request, res: Response) => {
   }
 
   try {
-    const limit = parseInt(req.query.limit as string) || 100;
+    const limit = Number.parseInt(req.query.limit as string) || 100;
     const alerts = await repository.getAllAlerts(limit);
     res.json({ enabled: true, alerts });
   } catch (error) {

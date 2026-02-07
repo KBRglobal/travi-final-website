@@ -21,7 +21,9 @@ async function ensureSessionTable(): Promise<void> {
       CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON sessions(expire);
     `;
     await pool.query(createTableSQL);
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 }
 
 // Initialize session table on module load
@@ -34,13 +36,13 @@ const getOidcConfig = memoize(
     try {
       return await client.discovery(
         new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
-        process.env.REPL_ID!,
+        process.env.REPL_ID!
       );
     } catch (error) {
       return null;
     }
   },
-  { maxAge: 3600 * 1000 },
+  { maxAge: 3600 * 1000 }
 );
 
 export function getSession() {
@@ -93,7 +95,7 @@ interface OIDCClaims {
 
 function updateUserSession(
   user: UserSession,
-  tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
+  tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers
 ) {
   user.claims = tokens.claims() as Record<string, unknown>;
   user.access_token = tokens.access_token;
@@ -174,7 +176,7 @@ export async function setupAuth(app: Express) {
   // =====================================================================
   const verify: VerifyFunction = async (
     tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
-    verified: passport.AuthenticateCallback,
+    verified: passport.AuthenticateCallback
   ) => {
     const claims = tokens.claims();
     if (!claims) {
@@ -202,7 +204,7 @@ export async function setupAuth(app: Express) {
     if (!emailAllowed && !usernameAllowed) {
       return verified(
         new Error(`Access denied. You are not authorized to access this application.`),
-        undefined,
+        undefined
       );
     }
 
@@ -212,7 +214,7 @@ export async function setupAuth(app: Express) {
       if (existingUser && !existingUser.isActive) {
         return verified(
           new Error("Your account has been deactivated. Please contact an administrator."),
-          undefined,
+          undefined
         );
       }
     }
@@ -235,7 +237,7 @@ export async function setupAuth(app: Express) {
           scope: "openid email profile offline_access",
           callbackURL: `https://${domain}/api/callback`,
         },
-        verify,
+        verify
       );
       passport.use(strategy);
       registeredStrategies.add(strategyName);
@@ -268,7 +270,7 @@ export async function setupAuth(app: Express) {
           }
           return res.redirect("/");
         });
-      },
+      }
     )(req, res, next);
   });
 
@@ -286,7 +288,7 @@ export async function setupAuth(app: Express) {
         client.buildEndSessionUrl(config, {
           client_id: process.env.REPL_ID!,
           post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
-        }).href,
+        }).href
       );
     });
   });

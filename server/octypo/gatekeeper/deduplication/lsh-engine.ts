@@ -110,7 +110,7 @@ export class DeduplicationEngine {
             contentId: urlMatch.contentId,
             sourceTitle: urlMatch.sourceTitle,
             sourceUrl: urlMatch.sourceUrl,
-            similarity: 1.0,
+            similarity: 1,
           },
           fingerprint: urlMatch.fingerprint,
           processingTimeMs: Date.now() - startTime,

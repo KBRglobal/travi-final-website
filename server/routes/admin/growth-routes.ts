@@ -323,7 +323,7 @@ export function registerGrowthRoutes(app: Express) {
 
   app.get("/api/admin/growth/activity-log", requireAuth, async (req: Request, res: Response) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 50;
+      const limit = Number.parseInt(req.query.limit as string) || 50;
 
       // Get recent AI generation logs
       const logs = await db

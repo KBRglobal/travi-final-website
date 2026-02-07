@@ -381,7 +381,7 @@ router.get("/rotation-history", async (req: Request, res: Response) => {
     const history = await storage.getRotationHistory({
       zone: zone as EditorialZone | undefined,
       placementId: placementId as string | undefined,
-      limit: limit ? parseInt(limit as string, 10) : 50,
+      limit: limit ? Number.parseInt(limit as string, 10) : 50,
     });
 
     res.json(history);
@@ -414,7 +414,7 @@ router.get("/top-performing/:zone", async (req: Request, res: Response) => {
     const { limit } = req.query;
     const placements = await storage.getTopPerformingContent(
       req.params.zone as EditorialZone,
-      limit ? parseInt(limit as string, 10) : 10
+      limit ? Number.parseInt(limit as string, 10) : 10
     );
 
     // Enrich with content data

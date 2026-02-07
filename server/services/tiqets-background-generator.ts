@@ -71,7 +71,7 @@ async function releaseStaleLocksWithCount(): Promise<number> {
       [lockExpiry]
     );
 
-    const staleCount = parseInt(countResult.rows[0].count) || 0;
+    const staleCount = Number.parseInt(countResult.rows[0].count) || 0;
 
     if (staleCount > 0) {
       // Release the stale locks
@@ -157,7 +157,7 @@ async function getStatusCounts(): Promise<Record<string, number>> {
     `);
     const counts: Record<string, number> = {};
     for (const row of result.rows) {
-      counts[row.content_generation_status] = parseInt(row.count);
+      counts[row.content_generation_status] = Number.parseInt(row.count);
     }
     return counts;
   } catch (error) {
@@ -199,8 +199,8 @@ async function isQueueActiveWithFreshLocks(): Promise<{
       [lockExpiry]
     );
 
-    const freshCount = parseInt(freshResult.rows[0].count) || 0;
-    const staleCount = parseInt(staleResult.rows[0].count) || 0;
+    const freshCount = Number.parseInt(freshResult.rows[0].count) || 0;
+    const staleCount = Number.parseInt(staleResult.rows[0].count) || 0;
 
     return {
       active: freshCount > 0,
@@ -241,7 +241,7 @@ async function getOctypoPendingCount(): Promise<number> {
       SELECT COUNT(*) as count FROM tiqets_attractions 
       WHERE quality_score IS NULL OR quality_score < 78
     `);
-    return parseInt(result.rows[0].count) || 0;
+    return Number.parseInt(result.rows[0].count) || 0;
   } catch (error) {
     return 0;
   }

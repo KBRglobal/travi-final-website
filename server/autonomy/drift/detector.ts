@@ -11,10 +11,10 @@ import {
   DriftDetectionResult,
   DriftDetectorConfig,
   DEFAULT_DRIFT_DETECTOR_CONFIG,
-} from './types';
-import { GuardedFeature } from '../enforcement/types';
-import { getOutcomes } from '../learning/engine';
-import { computeMetrics } from '../learning/engine';
+} from "./types";
+import { GuardedFeature } from "../enforcement/types";
+import { getOutcomes } from "../learning/engine";
+import { computeMetrics } from "../learning/engine";
 
 // Bounded storage
 const MAX_SIGNALS = 200;
@@ -26,7 +26,7 @@ const resultStore = new Map<string, DriftDetectionResult>();
 function getConfig(): DriftDetectorConfig {
   return {
     ...DEFAULT_DRIFT_DETECTOR_CONFIG,
-    enabled: process.env.ENABLE_AUTONOMY_DRIFT_DETECTOR === 'true',
+    enabled: process.env.ENABLE_AUTONOMY_DRIFT_DETECTOR === "true",
   };
 }
 
@@ -39,7 +39,9 @@ export function analyzeFeatureForDrift(
 ): FeatureDriftAnalysis {
   const now = new Date();
   const analysisStart = new Date(now.getTime() - config.analysisWindowHours * 60 * 60 * 1000);
-  const baselineStart = new Date(analysisStart.getTime() - config.baselineWindowHours * 60 * 60 * 1000);
+  const baselineStart = new Date(
+    analysisStart.getTime() - config.baselineWindowHours * 60 * 60 * 1000
+  );
 
   // Get current period outcomes
   const currentOutcomes = getOutcomes({
@@ -57,9 +59,10 @@ export function analyzeFeatureForDrift(
 
   // Compute current metrics
   const currentMetrics = computeCurrentMetrics(currentOutcomes);
-  const baselineMetrics = baselineOutcomes.length >= config.minDataPointsForAnalysis
-    ? computeCurrentMetrics(baselineOutcomes)
-    : undefined;
+  const baselineMetrics =
+    baselineOutcomes.length >= config.minDataPointsForAnalysis
+      ? computeCurrentMetrics(baselineOutcomes)
+      : undefined;
 
   // Detect drifts
   const drifts: DriftSignal[] = [];
@@ -67,129 +70,160 @@ export function analyzeFeatureForDrift(
   if (currentOutcomes.length >= config.minDataPointsForAnalysis) {
     // Budget exhaustion detection
     if (currentMetrics.exhaustionRate > config.thresholds.budgetExhaustionRate) {
-      drifts.push(createDriftSignal(
-        'budget_exhaustion',
-        feature,
-        {
-          metric: 'exhaustionRate',
-          currentValue: currentMetrics.exhaustionRate,
-          expectedValue: config.thresholds.budgetExhaustionRate,
-          deviation: (currentMetrics.exhaustionRate - config.thresholds.budgetExhaustionRate) /
-            config.thresholds.budgetExhaustionRate * 100,
-          trend: 'increasing',
-          windowHours: config.analysisWindowHours,
-        },
-        currentOutcomes.length
-      ));
+      drifts.push(
+        createDriftSignal(
+          "budget_exhaustion",
+          feature,
+          {
+            metric: "exhaustionRate",
+            currentValue: currentMetrics.exhaustionRate,
+            expectedValue: config.thresholds.budgetExhaustionRate,
+            deviation:
+              ((currentMetrics.exhaustionRate - config.thresholds.budgetExhaustionRate) /
+                config.thresholds.budgetExhaustionRate) *
+              100,
+            trend: "increasing",
+            windowHours: config.analysisWindowHours,
+          },
+          currentOutcomes.length
+        )
+      );
     }
 
     // Budget underutilization detection
-    if (currentMetrics.budgetUtilization < (1 - config.thresholds.budgetUnderutilizationRate)) {
-      drifts.push(createDriftSignal(
-        'budget_underutilization',
-        feature,
-        {
-          metric: 'budgetUtilization',
-          currentValue: currentMetrics.budgetUtilization,
-          expectedValue: 1 - config.thresholds.budgetUnderutilizationRate,
-          deviation: ((1 - config.thresholds.budgetUnderutilizationRate) - currentMetrics.budgetUtilization) /
-            (1 - config.thresholds.budgetUnderutilizationRate) * 100,
-          trend: 'decreasing',
-          windowHours: config.analysisWindowHours,
-        },
-        currentOutcomes.length
-      ));
+    if (currentMetrics.budgetUtilization < 1 - config.thresholds.budgetUnderutilizationRate) {
+      drifts.push(
+        createDriftSignal(
+          "budget_underutilization",
+          feature,
+          {
+            metric: "budgetUtilization",
+            currentValue: currentMetrics.budgetUtilization,
+            expectedValue: 1 - config.thresholds.budgetUnderutilizationRate,
+            deviation:
+              ((1 -
+                config.thresholds.budgetUnderutilizationRate -
+                currentMetrics.budgetUtilization) /
+                (1 - config.thresholds.budgetUnderutilizationRate)) *
+              100,
+            trend: "decreasing",
+            windowHours: config.analysisWindowHours,
+          },
+          currentOutcomes.length
+        )
+      );
     }
 
     // Override spike detection (compare to baseline)
     if (baselineMetrics) {
-      const overrideChange = baselineMetrics.overrideRate > 0
-        ? (currentMetrics.overrideRate - baselineMetrics.overrideRate) / baselineMetrics.overrideRate
-        : currentMetrics.overrideRate > 0 ? 1 : 0;
+      const overrideChange =
+        baselineMetrics.overrideRate > 0
+          ? (currentMetrics.overrideRate - baselineMetrics.overrideRate) /
+            baselineMetrics.overrideRate
+          : currentMetrics.overrideRate > 0
+            ? 1
+            : 0;
 
       if (overrideChange > config.thresholds.overrideSpikeThreshold) {
-        drifts.push(createDriftSignal(
-          'override_spike',
-          feature,
-          {
-            metric: 'overrideRate',
-            currentValue: currentMetrics.overrideRate,
-            expectedValue: baselineMetrics.overrideRate,
-            deviation: overrideChange * 100,
-            trend: 'increasing',
-            windowHours: config.analysisWindowHours,
-          },
-          currentOutcomes.length,
-          baselineMetrics.overrideRate
-        ));
+        drifts.push(
+          createDriftSignal(
+            "override_spike",
+            feature,
+            {
+              metric: "overrideRate",
+              currentValue: currentMetrics.overrideRate,
+              expectedValue: baselineMetrics.overrideRate,
+              deviation: overrideChange * 100,
+              trend: "increasing",
+              windowHours: config.analysisWindowHours,
+            },
+            currentOutcomes.length,
+            baselineMetrics.overrideRate
+          )
+        );
       }
 
       // Incident spike detection
-      const incidentChange = baselineMetrics.incidentRate > 0
-        ? (currentMetrics.incidentRate - baselineMetrics.incidentRate) / baselineMetrics.incidentRate
-        : currentMetrics.incidentRate > 0 ? 1 : 0;
+      const incidentChange =
+        baselineMetrics.incidentRate > 0
+          ? (currentMetrics.incidentRate - baselineMetrics.incidentRate) /
+            baselineMetrics.incidentRate
+          : currentMetrics.incidentRate > 0
+            ? 1
+            : 0;
 
       if (incidentChange > config.thresholds.incidentSpikeThreshold) {
-        drifts.push(createDriftSignal(
-          'incident_spike',
-          feature,
-          {
-            metric: 'incidentRate',
-            currentValue: currentMetrics.incidentRate,
-            expectedValue: baselineMetrics.incidentRate,
-            deviation: incidentChange * 100,
-            trend: 'increasing',
-            windowHours: config.analysisWindowHours,
-          },
-          currentOutcomes.length,
-          baselineMetrics.incidentRate
-        ));
+        drifts.push(
+          createDriftSignal(
+            "incident_spike",
+            feature,
+            {
+              metric: "incidentRate",
+              currentValue: currentMetrics.incidentRate,
+              expectedValue: baselineMetrics.incidentRate,
+              deviation: incidentChange * 100,
+              trend: "increasing",
+              windowHours: config.analysisWindowHours,
+            },
+            currentOutcomes.length,
+            baselineMetrics.incidentRate
+          )
+        );
       }
 
       // Cost drift detection
-      const costChange = baselineMetrics.avgCostPerAction > 0
-        ? Math.abs(currentMetrics.avgCostPerAction - baselineMetrics.avgCostPerAction) /
-          baselineMetrics.avgCostPerAction
-        : 0;
+      const costChange =
+        baselineMetrics.avgCostPerAction > 0
+          ? Math.abs(currentMetrics.avgCostPerAction - baselineMetrics.avgCostPerAction) /
+            baselineMetrics.avgCostPerAction
+          : 0;
 
       if (costChange > config.thresholds.costDriftThreshold) {
-        drifts.push(createDriftSignal(
-          'cost_drift',
-          feature,
-          {
-            metric: 'avgCostPerAction',
-            currentValue: currentMetrics.avgCostPerAction,
-            expectedValue: baselineMetrics.avgCostPerAction,
-            deviation: costChange * 100,
-            trend: currentMetrics.avgCostPerAction > baselineMetrics.avgCostPerAction
-              ? 'increasing' : 'decreasing',
-            windowHours: config.analysisWindowHours,
-          },
-          currentOutcomes.length,
-          baselineMetrics.avgCostPerAction
-        ));
+        drifts.push(
+          createDriftSignal(
+            "cost_drift",
+            feature,
+            {
+              metric: "avgCostPerAction",
+              currentValue: currentMetrics.avgCostPerAction,
+              expectedValue: baselineMetrics.avgCostPerAction,
+              deviation: costChange * 100,
+              trend:
+                currentMetrics.avgCostPerAction > baselineMetrics.avgCostPerAction
+                  ? "increasing"
+                  : "decreasing",
+              windowHours: config.analysisWindowHours,
+            },
+            currentOutcomes.length,
+            baselineMetrics.avgCostPerAction
+          )
+        );
       }
 
       // Latency degradation detection
-      const latencyChange = baselineMetrics.avgLatencyMs > 0
-        ? (currentMetrics.avgLatencyMs - baselineMetrics.avgLatencyMs) / baselineMetrics.avgLatencyMs
-        : 0;
+      const latencyChange =
+        baselineMetrics.avgLatencyMs > 0
+          ? (currentMetrics.avgLatencyMs - baselineMetrics.avgLatencyMs) /
+            baselineMetrics.avgLatencyMs
+          : 0;
 
       if (latencyChange > config.thresholds.latencyDegradationThreshold) {
-        drifts.push(createDriftSignal(
-          'latency_degradation',
-          feature,
-          {
-            metric: 'avgLatencyMs',
-            currentValue: currentMetrics.avgLatencyMs,
-            expectedValue: baselineMetrics.avgLatencyMs,
-            deviation: latencyChange * 100,
-            trend: 'increasing',
-            windowHours: config.analysisWindowHours,
-          },
-          currentOutcomes.length,
-          baselineMetrics.avgLatencyMs
-        ));
+        drifts.push(
+          createDriftSignal(
+            "latency_degradation",
+            feature,
+            {
+              metric: "avgLatencyMs",
+              currentValue: currentMetrics.avgLatencyMs,
+              expectedValue: baselineMetrics.avgLatencyMs,
+              deviation: latencyChange * 100,
+              trend: "increasing",
+              windowHours: config.analysisWindowHours,
+            },
+            currentOutcomes.length,
+            baselineMetrics.avgLatencyMs
+          )
+        );
       }
     }
   }
@@ -203,14 +237,16 @@ export function analyzeFeatureForDrift(
     windowHours: config.analysisWindowHours,
     dataPoints: currentOutcomes.length,
     metrics: currentMetrics,
-    baseline: baselineMetrics ? {
-      windowHours: config.baselineWindowHours,
-      budgetUtilization: baselineMetrics.budgetUtilization,
-      overrideRate: baselineMetrics.overrideRate,
-      incidentRate: baselineMetrics.incidentRate,
-      avgCostPerAction: baselineMetrics.avgCostPerAction,
-      avgLatencyMs: baselineMetrics.avgLatencyMs,
-    } : undefined,
+    baseline: baselineMetrics
+      ? {
+          windowHours: config.baselineWindowHours,
+          budgetUtilization: baselineMetrics.budgetUtilization,
+          overrideRate: baselineMetrics.overrideRate,
+          incidentRate: baselineMetrics.incidentRate,
+          avgCostPerAction: baselineMetrics.avgCostPerAction,
+          avgLatencyMs: baselineMetrics.avgLatencyMs,
+        }
+      : undefined,
     drifts,
     healthScore,
   };
@@ -219,9 +255,7 @@ export function analyzeFeatureForDrift(
 /**
  * Run drift detection across all features
  */
-export function runDriftDetection(
-  features: GuardedFeature[]
-): DriftDetectionResult {
+export function runDriftDetection(features: GuardedFeature[]): DriftDetectionResult {
   const config = getConfig();
   const startTime = Date.now();
 
@@ -247,8 +281,8 @@ export function runDriftDetection(
   const criticalFeatures: GuardedFeature[] = [];
 
   for (const analysis of featureAnalyses) {
-    const criticalDrifts = analysis.drifts.filter(d => d.severity === 'critical');
-    const highDrifts = analysis.drifts.filter(d => d.severity === 'high');
+    const criticalDrifts = analysis.drifts.filter(d => d.severity === "critical");
+    const highDrifts = analysis.drifts.filter(d => d.severity === "high");
 
     if (criticalDrifts.length > 0) {
       criticalFeatures.push(analysis.feature);
@@ -261,10 +295,11 @@ export function runDriftDetection(
     }
   }
 
-  const criticalDrifts = allSignals.filter(s => s.severity === 'critical').length;
-  const overallHealthScore = featureAnalyses.length > 0
-    ? featureAnalyses.reduce((sum, a) => sum + a.healthScore, 0) / featureAnalyses.length
-    : 1;
+  const criticalDrifts = allSignals.filter(s => s.severity === "critical").length;
+  const overallHealthScore =
+    featureAnalyses.length > 0
+      ? featureAnalyses.reduce((sum, a) => sum + a.healthScore, 0) / featureAnalyses.length
+      : 1;
 
   const result: DriftDetectionResult = {
     id: `drift-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -285,8 +320,9 @@ export function runDriftDetection(
 
   // Store result (bounded)
   if (resultStore.size >= MAX_RESULTS) {
-    const oldest = Array.from(resultStore.entries())
-      .sort(([, a], [, b]) => a.ranAt.getTime() - b.ranAt.getTime())[0];
+    const oldest = Array.from(resultStore.entries()).sort(
+      ([, a], [, b]) => a.ranAt.getTime() - b.ranAt.getTime()
+    )[0];
     if (oldest) resultStore.delete(oldest[0]);
   }
   resultStore.set(result.id, result);
@@ -297,12 +333,14 @@ export function runDriftDetection(
 /**
  * Compute metrics from outcomes
  */
-function computeCurrentMetrics(outcomes: Array<{
-  decision: string;
-  outcome: string;
-  latencyMs: number;
-  metadata?: Record<string, unknown>;
-}>): {
+function computeCurrentMetrics(
+  outcomes: Array<{
+    decision: string;
+    outcome: string;
+    latencyMs: number;
+    metadata?: Record<string, unknown>;
+  }>
+): {
   budgetUtilization: number;
   exhaustionRate: number;
   overrideRate: number;
@@ -323,10 +361,10 @@ function computeCurrentMetrics(outcomes: Array<{
     };
   }
 
-  const blocks = outcomes.filter(o => o.decision === 'BLOCK').length;
-  const overrides = outcomes.filter(o => o.outcome === 'override_applied').length;
-  const incidents = outcomes.filter(o =>
-    o.outcome === 'incident_after_allow' || o.outcome === 'recovery_failed'
+  const blocks = outcomes.filter(o => o.decision === "BLOCK").length;
+  const overrides = outcomes.filter(o => o.outcome === "override_applied").length;
+  const incidents = outcomes.filter(
+    o => o.outcome === "incident_after_allow" || o.outcome === "recovery_failed"
   ).length;
 
   const latencies = outcomes.map(o => o.latencyMs).sort((a, b) => a - b);
@@ -357,7 +395,7 @@ function computeCurrentMetrics(outcomes: Array<{
 function createDriftSignal(
   type: DriftType,
   feature: GuardedFeature,
-  observation: DriftSignal['observation'],
+  observation: DriftSignal["observation"],
   dataPoints: number,
   baselineValue?: number
 ): DriftSignal {
@@ -377,7 +415,7 @@ function createDriftSignal(
       confidence,
     },
     recommendation,
-    status: 'new',
+    status: "new",
   };
 }
 
@@ -421,10 +459,10 @@ function calculateSeverity(type: DriftType, deviation: number): DriftSeverity {
     accuracy_decline: 10,
   };
 
-  if (absDeviation >= criticalThresholds[type]) return 'critical';
-  if (absDeviation >= highThresholds[type]) return 'high';
-  if (absDeviation >= mediumThresholds[type]) return 'medium';
-  return 'low';
+  if (absDeviation >= criticalThresholds[type]) return "critical";
+  if (absDeviation >= highThresholds[type]) return "high";
+  if (absDeviation >= mediumThresholds[type]) return "medium";
+  return "low";
 }
 
 /**
@@ -433,79 +471,79 @@ function calculateSeverity(type: DriftType, deviation: number): DriftSeverity {
 function generateRecommendation(
   type: DriftType,
   severity: DriftSeverity,
-  observation: DriftSignal['observation']
-): DriftSignal['recommendation'] {
-  const urgencyMap: Record<DriftSeverity, 'immediate' | 'soon' | 'scheduled' | 'optional'> = {
-    critical: 'immediate',
-    high: 'soon',
-    medium: 'scheduled',
-    low: 'optional',
+  observation: DriftSignal["observation"]
+): DriftSignal["recommendation"] {
+  const urgencyMap: Record<DriftSeverity, "immediate" | "soon" | "scheduled" | "optional"> = {
+    critical: "immediate",
+    high: "soon",
+    medium: "scheduled",
+    low: "optional",
   };
 
   switch (type) {
-    case 'budget_exhaustion':
+    case "budget_exhaustion":
       return {
-        action: 'increase_budget',
+        action: "increase_budget",
         suggestedValue: Math.ceil(observation.currentValue * 1.5 * 100), // 50% increase
         urgency: urgencyMap[severity],
         reason: `Budget is exhausted in ${observation.currentValue * 100}% of periods. Consider increasing limits.`,
       };
 
-    case 'budget_underutilization':
+    case "budget_underutilization":
       return {
-        action: 'decrease_budget',
+        action: "decrease_budget",
         suggestedValue: Math.ceil(observation.currentValue * 1.2 * 100), // Reduce to 120% of actual usage
         urgency: urgencyMap[severity],
         reason: `Only ${(observation.currentValue * 100).toFixed(0)}% of budget is being used. Consider reducing limits to save costs.`,
       };
 
-    case 'override_spike':
+    case "override_spike":
       return {
-        action: 'review_policy',
+        action: "review_policy",
         urgency: urgencyMap[severity],
         reason: `Override rate increased by ${observation.deviation.toFixed(0)}%. Policies may be too restrictive.`,
       };
 
-    case 'incident_spike':
+    case "incident_spike":
       return {
-        action: 'investigate',
+        action: "investigate",
         urgency: urgencyMap[severity],
         reason: `Incident rate increased by ${observation.deviation.toFixed(0)}%. Investigate root cause.`,
       };
 
-    case 'cost_drift':
+    case "cost_drift":
       return {
-        action: observation.trend === 'increasing' ? 'review_policy' : 'no_action',
+        action: observation.trend === "increasing" ? "review_policy" : "no_action",
         urgency: urgencyMap[severity],
-        reason: `Costs have ${observation.trend === 'increasing' ? 'increased' : 'decreased'} by ${observation.deviation.toFixed(0)}% from baseline.`,
+        reason: `Costs have ${observation.trend === "increasing" ? "increased" : "decreased"} by ${observation.deviation.toFixed(0)}% from baseline.`,
       };
 
-    case 'latency_degradation':
+    case "latency_degradation":
       return {
-        action: 'investigate',
+        action: "investigate",
         urgency: urgencyMap[severity],
         reason: `Latency has increased by ${observation.deviation.toFixed(0)}%. May indicate system issues.`,
       };
 
-    case 'traffic_shift':
+    case "traffic_shift":
       return {
-        action: 'review_policy',
+        action: "review_policy",
         urgency: urgencyMap[severity],
         reason: `Traffic volume changed by ${observation.deviation.toFixed(0)}%. Budgets may need adjustment.`,
       };
 
-    case 'accuracy_decline':
+    case "accuracy_decline":
       return {
-        action: 'review_policy',
+        action: "review_policy",
         urgency: urgencyMap[severity],
         reason: `Decision accuracy declined by ${observation.deviation.toFixed(0)}%. Policies may need tuning.`,
       };
 
     default:
       return {
-        action: 'investigate',
-        urgency: 'scheduled',
-        reason: 'Unexpected drift detected. Manual investigation recommended.',
+        action: "investigate",
+        urgency: "scheduled",
+        reason: "Unexpected drift detected. Manual investigation recommended.",
       };
   }
 }
@@ -522,15 +560,23 @@ function calculateHealthScore(
   },
   drifts: DriftSignal[]
 ): number {
-  let score = 1.0;
+  let score = 1;
 
   // Penalize for drift signals
   for (const drift of drifts) {
     switch (drift.severity) {
-      case 'critical': score -= 0.3; break;
-      case 'high': score -= 0.2; break;
-      case 'medium': score -= 0.1; break;
-      case 'low': score -= 0.05; break;
+      case "critical":
+        score -= 0.3;
+        break;
+      case "high":
+        score -= 0.2;
+        break;
+      case "medium":
+        score -= 0.1;
+        break;
+      case "low":
+        score -= 0.05;
+        break;
     }
   }
 
@@ -546,7 +592,7 @@ function calculateHealthScore(
 
   // Penalize for budget exhaustion
   if (metrics.exhaustionRate > 0.2) {
-    score -= (metrics.exhaustionRate - 0.2);
+    score -= metrics.exhaustionRate - 0.2;
   }
 
   return Math.max(0, Math.min(1, score));
@@ -559,15 +605,16 @@ function storeSignal(signal: DriftSignal): void {
   if (signalStore.size >= MAX_SIGNALS) {
     // Remove oldest resolved or dismissed signals first
     const resolved = Array.from(signalStore.entries())
-      .filter(([, s]) => s.status === 'resolved' || s.status === 'dismissed')
+      .filter(([, s]) => s.status === "resolved" || s.status === "dismissed")
       .sort(([, a], [, b]) => a.detectedAt.getTime() - b.detectedAt.getTime());
 
     if (resolved.length > 0) {
       signalStore.delete(resolved[0][0]);
     } else {
       // Remove oldest signal
-      const oldest = Array.from(signalStore.entries())
-        .sort(([, a], [, b]) => a.detectedAt.getTime() - b.detectedAt.getTime())[0];
+      const oldest = Array.from(signalStore.entries()).sort(
+        ([, a], [, b]) => a.detectedAt.getTime() - b.detectedAt.getTime()
+      )[0];
       if (oldest) signalStore.delete(oldest[0]);
     }
   }
@@ -581,7 +628,7 @@ export function getSignals(filter?: {
   feature?: GuardedFeature;
   type?: DriftType;
   severity?: DriftSeverity;
-  status?: DriftSignal['status'];
+  status?: DriftSignal["status"];
 }): DriftSignal[] {
   let signals = Array.from(signalStore.values());
 
@@ -606,7 +653,7 @@ export function getSignals(filter?: {
  */
 export function updateSignalStatus(
   id: string,
-  status: DriftSignal['status'],
+  status: DriftSignal["status"],
   acknowledgedBy?: string
 ): DriftSignal | null {
   const signal = signalStore.get(id);
@@ -614,12 +661,12 @@ export function updateSignalStatus(
 
   signal.status = status;
 
-  if (status === 'acknowledged' || status === 'investigating') {
+  if (status === "acknowledged" || status === "investigating") {
     signal.acknowledgedBy = acknowledgedBy;
     signal.acknowledgedAt = new Date();
   }
 
-  if (status === 'resolved') {
+  if (status === "resolved") {
     signal.resolvedAt = new Date();
   }
 
@@ -631,8 +678,7 @@ export function updateSignalStatus(
  * Get drift detection results
  */
 export function getDetectionResults(): DriftDetectionResult[] {
-  return Array.from(resultStore.values())
-    .sort((a, b) => b.ranAt.getTime() - a.ranAt.getTime());
+  return Array.from(resultStore.values()).sort((a, b) => b.ranAt.getTime() - a.ranAt.getTime());
 }
 
 /**

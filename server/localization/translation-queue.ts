@@ -1,43 +1,43 @@
 /**
  * Phase 6: Translation Queue Manager
- * 
+ *
  * Persistent, resumable translation job queue with:
  * - Concurrency limits (configurable via env)
  * - Exponential backoff for rate limits
  * - Provider fallback chain
  * - Pause/resume capability
- * 
+ *
  * Following Octopus queue patterns for consistency.
  */
 
-import { db } from '../db';
-import { 
-  translationJobs, 
+import { db } from "../db";
+import {
+  translationJobs,
   contents,
   translations,
   type TranslationJob,
   type InsertTranslationJob,
   type TranslationJobField,
   SUPPORTED_LOCALES,
-} from '@shared/schema';
-import { eq, and, sql, lt, or, isNull, asc, desc, inArray, ne } from 'drizzle-orm';
-import { log } from '../lib/logger';
-import crypto from 'crypto';
+} from "@shared/schema";
+import { eq, and, sql, lt, or, isNull, asc, desc, inArray, ne } from "drizzle-orm";
+import { log } from "../lib/logger";
+import crypto from "node:crypto";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) => 
+  info: (msg: string, data?: Record<string, unknown>) =>
     log.info(`[TranslationQueue] ${msg}`, data),
-  error: (msg: string, data?: Record<string, unknown>) => 
+  error: (msg: string, data?: Record<string, unknown>) =>
     log.error(`[TranslationQueue] ${msg}`, undefined, data),
-  warn: (msg: string, data?: Record<string, unknown>) => 
+  warn: (msg: string, data?: Record<string, unknown>) =>
     log.info(`[TranslationQueue] WARN: ${msg}`, data),
 };
 
 // Configuration from environment
 const CONFIG = {
-  TRANSLATION_CONCURRENCY: parseInt(process.env.TRANSLATION_CONCURRENCY || '3', 10),
-  AEO_CONCURRENCY: parseInt(process.env.AEO_CONCURRENCY || '2', 10),
-  INDEX_CONCURRENCY: parseInt(process.env.INDEX_CONCURRENCY || '3', 10),
+  TRANSLATION_CONCURRENCY: Number.parseInt(process.env.TRANSLATION_CONCURRENCY || "3", 10),
+  AEO_CONCURRENCY: Number.parseInt(process.env.AEO_CONCURRENCY || "2", 10),
+  INDEX_CONCURRENCY: Number.parseInt(process.env.INDEX_CONCURRENCY || "3", 10),
   MAX_RETRIES: 3,
   BASE_BACKOFF_MS: 1000, // 1 second
   MAX_BACKOFF_MS: 60000, // 60 seconds
@@ -54,7 +54,7 @@ let activeJobs = 0;
  */
 export function computeSourceHash(content: Record<string, unknown>): string {
   const data = JSON.stringify(content);
-  return crypto.createHash('sha256').update(data).digest('hex').substring(0, 32);
+  return crypto.createHash("sha256").update(data).digest("hex").substring(0, 32);
 }
 
 /**
@@ -73,7 +73,7 @@ function calculateBackoff(retryCount: number): Date {
 // ============================================================================
 // Automatic translation queueing re-enabled for RSS integration.
 // Can be disabled via environment variable if needed.
-const TRANSLATION_QUEUE_ENABLED = process.env.ENABLE_TRANSLATION_QUEUE !== 'false';
+const TRANSLATION_QUEUE_ENABLED = process.env.ENABLE_TRANSLATION_QUEUE !== "false";
 
 /**
  * Enqueue translation jobs for all locales when content is approved/published
@@ -81,28 +81,23 @@ const TRANSLATION_QUEUE_ENABLED = process.env.ENABLE_TRANSLATION_QUEUE !== 'fals
  */
 export async function enqueueTranslationJobs(
   contentId: string,
-  sourceLocale: string = 'en',
+  sourceLocale: string = "en",
   priority: number = 0,
   fields?: TranslationJobField[]
 ): Promise<TranslationJob[]> {
   // GUARD: Translation queue is disabled
   if (!TRANSLATION_QUEUE_ENABLED) {
-    logger.info('Translation queue DISABLED - no jobs created', { contentId });
+    logger.info("Translation queue DISABLED - no jobs created", { contentId });
     return [];
   }
 
-  const targetLocales = SUPPORTED_LOCALES
-    .map(l => l.code)
-    .filter(code => code !== sourceLocale);
+  const targetLocales = SUPPORTED_LOCALES.map(l => l.code).filter(code => code !== sourceLocale);
 
   // Fetch source content to compute hash
-  const [sourceContent] = await db
-    .select()
-    .from(contents)
-    .where(eq(contents.id, contentId));
+  const [sourceContent] = await db.select().from(contents).where(eq(contents.id, contentId));
 
   if (!sourceContent) {
-    logger.error('Content not found for translation', { contentId });
+    logger.error("Content not found for translation", { contentId });
     return [];
   }
 
@@ -121,22 +116,24 @@ export async function enqueueTranslationJobs(
     const [existingJob] = await db
       .select()
       .from(translationJobs)
-      .where(and(
-        eq(translationJobs.contentId, contentId),
-        eq(translationJobs.targetLocale, targetLocale)
-      ));
+      .where(
+        and(
+          eq(translationJobs.contentId, contentId),
+          eq(translationJobs.targetLocale, targetLocale)
+        )
+      );
 
     if (existingJob) {
-      if (existingJob.sourceHash === sourceHash && existingJob.status === 'completed') {
-        logger.info('Skipping unchanged content', { contentId, targetLocale });
+      if (existingJob.sourceHash === sourceHash && existingJob.status === "completed") {
+        logger.info("Skipping unchanged content", { contentId, targetLocale });
         continue;
       }
-      
+
       // Update existing job if source changed
       const [updatedJob] = await db
         .update(translationJobs)
         .set({
-          status: 'pending',
+          status: "pending",
           sourceHash,
           priority,
           retryCount: 0,
@@ -147,7 +144,7 @@ export async function enqueueTranslationJobs(
         } as any)
         .where(eq(translationJobs.id, existingJob.id))
         .returning();
-      
+
       if (updatedJob) createdJobs.push(updatedJob);
     } else {
       // Create new job
@@ -159,17 +156,26 @@ export async function enqueueTranslationJobs(
           targetLocale,
           sourceHash,
           priority,
-          fields: fields || ['title', 'metaTitle', 'metaDescription', 'blocks', 'answerCapsule', 'faq', 'highlights', 'tags'],
+          fields: fields || [
+            "title",
+            "metaTitle",
+            "metaDescription",
+            "blocks",
+            "answerCapsule",
+            "faq",
+            "highlights",
+            "tags",
+          ],
         } as any)
         .returning();
-      
+
       if (newJob) createdJobs.push(newJob);
     }
   }
 
-  logger.info(`Enqueued ${createdJobs.length} translation jobs`, { 
-    contentId, 
-    locales: createdJobs.map(j => j.targetLocale) 
+  logger.info(`Enqueued ${createdJobs.length} translation jobs`, {
+    contentId,
+    locales: createdJobs.map(j => j.targetLocale),
   });
 
   return createdJobs;
@@ -188,13 +194,12 @@ export async function getNextPendingJob(): Promise<TranslationJob | null> {
   const [job] = await db
     .select()
     .from(translationJobs)
-    .where(and(
-      eq(translationJobs.status, 'pending'),
-      or(
-        isNull(translationJobs.nextRunAt),
-        lt(translationJobs.nextRunAt, now)
+    .where(
+      and(
+        eq(translationJobs.status, "pending"),
+        or(isNull(translationJobs.nextRunAt), lt(translationJobs.nextRunAt, now))
       )
-    ))
+    )
     .orderBy(desc(translationJobs.priority), asc(translationJobs.createdAt))
     .limit(1);
 
@@ -208,7 +213,7 @@ export async function markJobInProgress(jobId: string): Promise<TranslationJob |
   const [job] = await db
     .update(translationJobs)
     .set({
-      status: 'in_progress',
+      status: "in_progress",
       processingStartedAt: new Date(),
       updatedAt: new Date(),
     } as any)
@@ -217,7 +222,7 @@ export async function markJobInProgress(jobId: string): Promise<TranslationJob |
 
   if (job) {
     activeJobs++;
-    logger.info('Job started', { jobId, targetLocale: job.targetLocale });
+    logger.info("Job started", { jobId, targetLocale: job.targetLocale });
   }
 
   return job || null;
@@ -227,13 +232,13 @@ export async function markJobInProgress(jobId: string): Promise<TranslationJob |
  * Mark job as completed
  */
 export async function markJobCompleted(
-  jobId: string, 
+  jobId: string,
   provider?: string
 ): Promise<TranslationJob | null> {
   const [job] = await db
     .update(translationJobs)
     .set({
-      status: 'completed',
+      status: "completed",
       translationProvider: provider,
       completedAt: new Date(),
       updatedAt: new Date(),
@@ -244,7 +249,7 @@ export async function markJobCompleted(
 
   if (job) {
     activeJobs = Math.max(0, activeJobs - 1);
-    logger.info('Job completed', { jobId, targetLocale: job.targetLocale, provider });
+    logger.info("Job completed", { jobId, targetLocale: job.targetLocale, provider });
   }
 
   return job || null;
@@ -254,14 +259,11 @@ export async function markJobCompleted(
  * Mark job as failed with retry logic
  */
 export async function markJobFailed(
-  jobId: string, 
+  jobId: string,
   error: string,
   shouldRetry: boolean = true
 ): Promise<TranslationJob | null> {
-  const [currentJob] = await db
-    .select()
-    .from(translationJobs)
-    .where(eq(translationJobs.id, jobId));
+  const [currentJob] = await db.select().from(translationJobs).where(eq(translationJobs.id, jobId));
 
   if (!currentJob) return null;
 
@@ -271,7 +273,7 @@ export async function markJobFailed(
   const [job] = await db
     .update(translationJobs)
     .set({
-      status: shouldRetry && !maxRetriesReached ? 'pending' : 'failed',
+      status: shouldRetry && !maxRetriesReached ? "pending" : "failed",
       error,
       retryCount: newRetryCount,
       nextRunAt: shouldRetry && !maxRetriesReached ? calculateBackoff(newRetryCount) : null,
@@ -282,12 +284,12 @@ export async function markJobFailed(
 
   if (job) {
     activeJobs = Math.max(0, activeJobs - 1);
-    logger.error('Job failed', { 
-      jobId, 
-      targetLocale: job.targetLocale, 
-      error, 
+    logger.error("Job failed", {
+      jobId,
+      targetLocale: job.targetLocale,
+      error,
       retryCount: newRetryCount,
-      willRetry: shouldRetry && !maxRetriesReached 
+      willRetry: shouldRetry && !maxRetriesReached,
     });
   }
 
@@ -298,13 +300,13 @@ export async function markJobFailed(
  * Mark job as needs review
  */
 export async function markJobNeedsReview(
-  jobId: string, 
+  jobId: string,
   reason: string
 ): Promise<TranslationJob | null> {
   const [job] = await db
     .update(translationJobs)
     .set({
-      status: 'needs_review',
+      status: "needs_review",
       error: reason,
       updatedAt: new Date(),
     } as any)
@@ -313,7 +315,7 @@ export async function markJobNeedsReview(
 
   if (job) {
     activeJobs = Math.max(0, activeJobs - 1);
-    logger.warn('Job needs review', { jobId, targetLocale: job.targetLocale, reason });
+    logger.warn("Job needs review", { jobId, targetLocale: job.targetLocale, reason });
   }
 
   return job || null;
@@ -332,30 +334,30 @@ export function pauseQueue(reason: string): void {
   isPaused = true;
   pauseCount++;
   isManualPause = false;
-  
+
   // Clear any existing auto-resume timer
   if (autoResumeTimer) {
     clearTimeout(autoResumeTimer);
     autoResumeTimer = null;
   }
-  
+
   // Calculate backoff time (1s → 2s → 4s → ... → 60s max)
   const backoffMs = Math.min(
     CONFIG.BASE_BACKOFF_MS * Math.pow(2, pauseCount - 1),
     CONFIG.MAX_BACKOFF_MS
   );
-  
-  logger.warn('Queue paused (rate limit)', { 
-    reason, 
-    pauseCount, 
-    autoResumeInMs: backoffMs 
+
+  logger.warn("Queue paused (rate limit)", {
+    reason,
+    pauseCount,
+    autoResumeInMs: backoffMs,
   });
-  
+
   // Schedule automatic resume after backoff (only for rate limit pauses)
   autoResumeTimer = setTimeout(() => {
     if (!isManualPause) {
       isPaused = false;
-      logger.info('Queue auto-resumed after backoff', { backoffMs });
+      logger.info("Queue auto-resumed after backoff", { backoffMs });
     }
   }, backoffMs);
 }
@@ -366,14 +368,14 @@ export function pauseQueue(reason: string): void {
 export function manualPause(reason: string): void {
   isPaused = true;
   isManualPause = true;
-  
+
   // Clear any auto-resume timer - manual pauses persist
   if (autoResumeTimer) {
     clearTimeout(autoResumeTimer);
     autoResumeTimer = null;
   }
-  
-  logger.warn('Queue manually paused', { reason });
+
+  logger.warn("Queue manually paused", { reason });
 }
 
 /**
@@ -382,21 +384,24 @@ export function manualPause(reason: string): void {
 export function resumeQueue(): void {
   isPaused = false;
   isManualPause = false;
-  
+
   // Clear any pending auto-resume timer
   if (autoResumeTimer) {
     clearTimeout(autoResumeTimer);
     autoResumeTimer = null;
   }
-  
+
   // Reset pause count after 5 minutes of successful operation
-  setTimeout(() => {
-    if (!isPaused) {
-      pauseCount = 0;
-    }
-  }, 5 * 60 * 1000);
-  
-  logger.info('Queue resumed');
+  setTimeout(
+    () => {
+      if (!isPaused) {
+        pauseCount = 0;
+      }
+    },
+    5 * 60 * 1000
+  );
+
+  logger.info("Queue resumed");
 }
 
 /**
@@ -420,9 +425,7 @@ export async function getQueueStatus(): Promise<{
     .from(translationJobs)
     .groupBy(translationJobs.status);
 
-  const countByStatus = Object.fromEntries(
-    statusCounts.map(s => [s.status, s.count])
-  );
+  const countByStatus = Object.fromEntries(statusCounts.map(s => [s.status, s.count]));
 
   return {
     isRunning,
@@ -454,7 +457,7 @@ export async function retryJob(jobId: string): Promise<TranslationJob | null> {
   const [job] = await db
     .update(translationJobs)
     .set({
-      status: 'pending',
+      status: "pending",
       retryCount: 0,
       error: null,
       nextRunAt: null,
@@ -464,7 +467,7 @@ export async function retryJob(jobId: string): Promise<TranslationJob | null> {
     .returning();
 
   if (job) {
-    logger.info('Job queued for retry', { jobId, targetLocale: job.targetLocale });
+    logger.info("Job queued for retry", { jobId, targetLocale: job.targetLocale });
   }
 
   return job || null;
@@ -476,10 +479,7 @@ export async function retryJob(jobId: string): Promise<TranslationJob | null> {
 export async function cancelJob(jobId: string): Promise<boolean> {
   const result = await db
     .delete(translationJobs)
-    .where(and(
-      eq(translationJobs.id, jobId),
-      eq(translationJobs.status, 'pending')
-    ))
+    .where(and(eq(translationJobs.id, jobId), eq(translationJobs.status, "pending")))
     .returning();
 
   return result.length > 0;
@@ -489,7 +489,7 @@ export async function cancelJob(jobId: string): Promise<boolean> {
  * Get jobs by status
  */
 export async function getJobsByStatus(
-  status: 'pending' | 'in_progress' | 'completed' | 'failed' | 'needs_review',
+  status: "pending" | "in_progress" | "completed" | "failed" | "needs_review",
   limit: number = 50
 ): Promise<TranslationJob[]> {
   return db
@@ -505,14 +505,14 @@ export async function getJobsByStatus(
  */
 export function startQueue(): void {
   if (isRunning) {
-    logger.warn('Queue already running');
+    logger.warn("Queue already running");
     return;
   }
 
   isRunning = true;
-  logger.info('Translation queue started', { 
+  logger.info("Translation queue started", {
     concurrency: CONFIG.TRANSLATION_CONCURRENCY,
-    pollInterval: CONFIG.POLL_INTERVAL_MS 
+    pollInterval: CONFIG.POLL_INTERVAL_MS,
   });
 }
 
@@ -521,7 +521,7 @@ export function startQueue(): void {
  */
 export function stopQueue(): void {
   isRunning = false;
-  logger.info('Translation queue stopped');
+  logger.info("Translation queue stopped");
 }
 
 export { CONFIG as QUEUE_CONFIG };

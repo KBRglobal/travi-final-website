@@ -62,8 +62,8 @@ export function registerAttractionsRoutes(app: Express): void {
         );
       }
 
-      const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
-      const pageSizeNum = Math.min(50, Math.max(1, parseInt(String(pageSize), 10) || 20));
+      const pageNum = Math.max(1, Number.parseInt(String(page), 10) || 1);
+      const pageSizeNum = Math.min(50, Math.max(1, Number.parseInt(String(pageSize), 10) || 20));
       const total = attractions.length;
       const totalPages = Math.ceil(total / pageSizeNum);
       const startIdx = (pageNum - 1) * pageSizeNum;
@@ -557,8 +557,8 @@ export function registerAttractionsRoutes(app: Express): void {
       const { page = "1", pageSize = "20" } = req.query;
 
       // Parse and validate pagination params
-      const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
-      const pageSizeNum = Math.min(50, Math.max(1, parseInt(String(pageSize), 10) || 20));
+      const pageNum = Math.max(1, Number.parseInt(String(page), 10) || 1);
+      const pageSizeNum = Math.min(50, Math.max(1, Number.parseInt(String(pageSize), 10) || 20));
       const offset = (pageNum - 1) * pageSizeNum;
 
       // Get total count first (with case-insensitive city match)
@@ -604,8 +604,8 @@ export function registerAttractionsRoutes(app: Express): void {
       const { page = "1", pageSize = "24", city, q } = req.query;
 
       // Parse and validate pagination params
-      const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
-      const pageSizeNum = Math.min(100, Math.max(1, parseInt(String(pageSize), 10) || 24));
+      const pageNum = Math.max(1, Number.parseInt(String(page), 10) || 1);
+      const pageSizeNum = Math.min(100, Math.max(1, Number.parseInt(String(pageSize), 10) || 24));
       const offset = (pageNum - 1) * pageSizeNum;
 
       // Build conditions
@@ -705,7 +705,7 @@ export function registerAttractionsRoutes(app: Express): void {
           metaDescription: attr.metaDescription,
           heroImage: imageUrl,
           cardImage: imageUrl,
-          rating: attr.rating ? parseFloat(String(attr.rating)) : null,
+          rating: attr.rating ? Number.parseFloat(String(attr.rating)) : null,
           reviewCount: attr.reviewCount,
           priceUsd: attr.priceUsd,
           primaryCategory: attr.primaryCategory,

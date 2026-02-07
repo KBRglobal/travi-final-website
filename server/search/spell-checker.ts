@@ -1,6 +1,6 @@
 /**
  * Spell Checker for Dubai Travel Search
- * 
+ *
  * Features:
  * - Levenshtein distance fuzzy matching
  * - Dubai-specific terms dictionary
@@ -30,8 +30,8 @@ function levenshteinDistance(a: string, b: string): number {
       } else {
         matrix[i][j] = Math.min(
           matrix[i - 1][j - 1] + 1, // substitution
-          matrix[i][j - 1] + 1,     // insertion
-          matrix[i - 1][j] + 1      // deletion
+          matrix[i][j - 1] + 1, // insertion
+          matrix[i - 1][j] + 1 // deletion
         );
       }
     }
@@ -43,61 +43,130 @@ function levenshteinDistance(a: string, b: string): number {
 // Dubai-specific terms dictionary (50+ terms)
 const DUBAI_TERMS = [
   // Landmarks
-  'burj', 'khalifa', 'marina', 'jumeirah', 'atlantis', 'palm', 'creek',
-  'deira', 'bur', 'dubai', 'emirates', 'mall', 'souk', 'gold', 'spice',
-  'miracle', 'garden', 'global', 'village', 'safari', 'desert',
-  
+  "burj",
+  "khalifa",
+  "marina",
+  "jumeirah",
+  "atlantis",
+  "palm",
+  "creek",
+  "deira",
+  "bur",
+  "dubai",
+  "emirates",
+  "mall",
+  "souk",
+  "gold",
+  "spice",
+  "miracle",
+  "garden",
+  "global",
+  "village",
+  "safari",
+  "desert",
+
   // Hotels & Resorts
-  'hotel', 'resort', 'armani', 'raffles', 'shangri', 'la', 'fairmont',
-  'hilton', 'marriott', 'hyatt', 'ritz', 'carlton', 'kempinski',
-  
+  "hotel",
+  "resort",
+  "armani",
+  "raffles",
+  "shangri",
+  "la",
+  "fairmont",
+  "hilton",
+  "marriott",
+  "hyatt",
+  "ritz",
+  "carlton",
+  "kempinski",
+
   // Food & Dining
-  'restaurant', 'cafe', 'dining', 'buffet', 'brunch', 'cuisine',
-  'arabic', 'emirati', 'shawarma', 'falafel', 'hummus', 'mezze',
-  
+  "restaurant",
+  "cafe",
+  "dining",
+  "buffet",
+  "brunch",
+  "cuisine",
+  "arabic",
+  "emirati",
+  "shawarma",
+  "falafel",
+  "hummus",
+  "mezze",
+
   // Activities
-  'beach', 'waterpark', 'aquarium', 'ski', 'snow', 'skydive',
-  'yacht', 'cruise', 'dhow', 'dune', 'bashing', 'camel', 'ride',
-  
+  "beach",
+  "waterpark",
+  "aquarium",
+  "ski",
+  "snow",
+  "skydive",
+  "yacht",
+  "cruise",
+  "dhow",
+  "dune",
+  "bashing",
+  "camel",
+  "ride",
+
   // Shopping
-  'shopping', 'boutique', 'luxury', 'brands', 'outlet', 'market',
-  
+  "shopping",
+  "boutique",
+  "luxury",
+  "brands",
+  "outlet",
+  "market",
+
   // Transport
-  'metro', 'taxi', 'airport', 'terminal', 'monorail', 'tram',
-  
+  "metro",
+  "taxi",
+  "airport",
+  "terminal",
+  "monorail",
+  "tram",
+
   // Areas
-  'downtown', 'business', 'bay', 'festival', 'city', 'jbr',
-  'international', 'financial', 'centre', 'ifdc', 'difc'
+  "downtown",
+  "business",
+  "bay",
+  "festival",
+  "city",
+  "jbr",
+  "international",
+  "financial",
+  "centre",
+  "ifdc",
+  "difc",
 ];
 
 // Common typo mappings (15+ mappings)
 const TYPO_MAPPINGS: Record<string, string> = {
   // Common misspellings
-  'burk': 'burj',
-  'burj': 'burj',
-  'khalifa': 'khalifa',
-  'kalifa': 'khalifa',
-  'kaleepha': 'khalifa',
-  'khaleefa': 'khalifa',
-  'duabi': 'dubai',
-  'dubay': 'dubai',
-  'dubaii': 'dubai',
-  'hotell': 'hotel',
-  'resturant': 'restaurant',
-  'restraunt': 'restaurant',
-  'restaraunt': 'restaurant',
-  'aquaruim': 'aquarium',
-  'aqurium': 'aquarium',
-  'mirena': 'marina',
-  'merena': 'marina',
-  'jumirah': 'jumeirah',
-  'jumierah': 'jumeirah',
-  'jumera': 'jumeirah',
-  'atlentis': 'atlantis',
-  'atlantas': 'atlantis',
-  'dessert': 'desert',
-  'shoping': 'shopping',
-  'shoppping': 'shopping'
+  burk: "burj",
+  burj: "burj",
+  khalifa: "khalifa",
+  kalifa: "khalifa",
+  kaleepha: "khalifa",
+  khaleefa: "khalifa",
+  duabi: "dubai",
+  dubay: "dubai",
+  dubaii: "dubai",
+  hotell: "hotel",
+  resturant: "restaurant",
+  restraunt: "restaurant",
+  restaraunt: "restaurant",
+  aquaruim: "aquarium",
+  aqurium: "aquarium",
+  mirena: "marina",
+  merena: "marina",
+  jumirah: "jumeirah",
+  jumierah: "jumeirah",
+  jumera: "jumeirah",
+  atlentis: "atlantis",
+  atlantas: "atlantis",
+  dessert: "desert",
+  shoping: "shopping",
+  shoppping: "shopping",
 };
 
 export interface SpellCheckResult {
@@ -114,7 +183,7 @@ export const spellChecker = {
    */
   async check(query: string): Promise<SpellCheckResult> {
     const cacheKey = `spell:${query.toLowerCase()}`;
-    
+
     // Check cache first
     const cached = await cache.get(cacheKey);
     if (cached) {
@@ -147,7 +216,7 @@ export const spellChecker = {
       if (dictMatch.distance <= 2 && dictMatch.distance > 0) {
         correctedWords.push(dictMatch.word);
         hasChanges = true;
-        totalConfidence += Math.max(0.7, 1 - (dictMatch.distance * 0.15));
+        totalConfidence += Math.max(0.7, 1 - dictMatch.distance * 0.15);
       } else if (dictMatch.distance === 0) {
         correctedWords.push(word);
         totalConfidence += 1;
@@ -161,7 +230,7 @@ export const spellChecker = {
     const avgConfidence = words.length > 0 ? totalConfidence / words.length : 1;
     const result: SpellCheckResult = {
       original: query,
-      corrected: correctedWords.join(' '),
+      corrected: correctedWords.join(" "),
       wasChanged: hasChanges,
       confidence: Math.min(1, avgConfidence),
     };
@@ -221,7 +290,7 @@ export const spellChecker = {
    */
   getConfidence(word: string): number {
     const lower = word.toLowerCase();
-    
+
     // Direct typo mapping
     if (TYPO_MAPPINGS[lower]) {
       return 0.95;
@@ -229,15 +298,15 @@ export const spellChecker = {
 
     // Exact dictionary match
     if (DUBAI_TERMS.includes(lower)) {
-      return 1.0;
+      return 1;
     }
 
     // Find closest match
     const match = this.findBestMatch(lower, DUBAI_TERMS);
-    if (match.distance === 0) return 1.0;
+    if (match.distance === 0) return 1;
     if (match.distance === 1) return 0.85;
-    if (match.distance === 2) return 0.70;
-    
+    if (match.distance === 2) return 0.7;
+
     return 0.5;
   },
 

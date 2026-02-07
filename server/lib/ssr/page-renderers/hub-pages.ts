@@ -29,7 +29,9 @@ export async function renderNewsHub(options: SSRRenderOptions): Promise<SSRRende
           a.type === "article"
       )
       .slice(0, 20);
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   const metaTags = generateMetaTags({
     title: "Travel News & Updates | TRAVI",
@@ -111,7 +113,9 @@ export async function renderEventsHub(options: SSRRenderOptions): Promise<SSRRen
   try {
     const results = await storage.getContents({ type: "event", status: "published" });
     events = (results || []).slice(0, 20);
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   const metaTags = generateMetaTags({
     title: "Events & Festivals | TRAVI",
@@ -257,7 +261,9 @@ export async function renderDistrictsHub(options: SSRRenderOptions): Promise<SSR
   try {
     const results = await storage.getContents({ type: "district", status: "published" });
     districts = results || [];
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   // Fallback districts data
   const dubaiDistricts = [
@@ -377,7 +383,9 @@ export async function renderDistrictPage(
   let content: ContentWithRelations | undefined;
   try {
     content = await storage.getContentBySlug(slug);
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   // Generate district name from slug if no content found
   const districtName =

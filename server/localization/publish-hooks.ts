@@ -128,7 +128,7 @@ async function enqueueNativeContentForAllLocales(content: Content): Promise<void
   let queuedCount = 0;
 
   for (const [tierStr, locales] of Object.entries(LOCALE_TIERS)) {
-    const tier = parseInt(tierStr, 10);
+    const tier = Number.parseInt(tierStr, 10);
     // Higher tier = higher priority number = processed later
     const priority = tier <= 2 ? 2 : tier <= 3 ? 5 : 8;
 

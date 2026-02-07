@@ -10,8 +10,8 @@ import {
   regionLinks,
   tiqetsAttractions,
 } from "@shared/schema";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 /**
  * Helper to strip sensitive fields for public/anonymous access
@@ -46,7 +46,7 @@ export function registerPublicContentRoutes(app: Express): void {
 
       const contents = await storage.getContentsWithRelations(filters);
       // Limit and sanitize for public consumption
-      const maxLimit = Math.min(parseInt(limit as string) || 50, 100);
+      const maxLimit = Math.min(Number.parseInt(limit as string) || 50, 100);
       const sanitizedContents = contents.slice(0, maxLimit).map(sanitizeContentForPublic);
       res.json(sanitizedContents);
     } catch (error) {
@@ -233,8 +233,8 @@ export function registerPublicContentRoutes(app: Express): void {
   app.get("/api/public/tiqets/attractions", async (req, res) => {
     try {
       const { city, search, limit = "50", offset = "0" } = req.query;
-      const limitNum = parseInt(limit as string, 10) || 50;
-      const offsetNum = parseInt(offset as string, 10) || 0;
+      const limitNum = Number.parseInt(limit as string, 10) || 50;
+      const offsetNum = Number.parseInt(offset as string, 10) || 0;
 
       // Build conditions array - always include published status filter
       const conditions: any[] = [eq(tiqetsAttractions.status, "published")];

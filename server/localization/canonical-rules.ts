@@ -1,31 +1,30 @@
 /**
  * Phase 6: Canonical Rules
- * 
+ *
  * Defines English (en) as the ALWAYS canonical source of truth.
  * Translations are ALWAYS derived from English, never from other translations.
  * This prevents circular dependencies and ensures consistency.
- * 
+ *
  * HARD CONSTRAINTS:
  * - English (en) is ALWAYS the canonical locale
  * - No content can be translated from a non-English source
  * - All translation chains originate from English
  */
 
-import { db } from '../db';
-import { contents, type Content } from '@shared/schema';
-import { eq } from 'drizzle-orm';
-import { log } from '../lib/logger';
+import { db } from "../db";
+import { contents, type Content } from "@shared/schema";
+import { eq } from "drizzle-orm";
+import { log } from "../lib/logger";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) => 
-    log.info(`[CanonicalRules] ${msg}`, data),
-  error: (msg: string, data?: Record<string, unknown>) => 
+  info: (msg: string, data?: Record<string, unknown>) => log.info(`[CanonicalRules] ${msg}`, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
     log.error(`[CanonicalRules] ${msg}`, undefined, data),
-  warn: (msg: string, data?: Record<string, unknown>) => 
+  warn: (msg: string, data?: Record<string, unknown>) =>
     log.info(`[CanonicalRules] WARN: ${msg}`, data),
 };
 
-export const CANONICAL_LOCALE = 'en' as const;
+export const CANONICAL_LOCALE = "en" as const;
 
 export interface CanonicalContent {
   content: Content;
@@ -45,19 +44,16 @@ export interface CanonicalValidation {
 /**
  * Get the canonical (English) content for a given content ID.
  * The canonical content is ALWAYS the English source.
- * 
+ *
  * @param contentId - The ID of the content to retrieve
  * @returns The canonical content with metadata, or null if not found
  */
 export async function getCanonicalContent(contentId: string): Promise<CanonicalContent | null> {
   try {
-    const [content] = await db
-      .select()
-      .from(contents)
-      .where(eq(contents.id, contentId));
+    const [content] = await db.select().from(contents).where(eq(contents.id, contentId));
 
     if (!content) {
-      logger.warn('Content not found for canonical lookup', { contentId });
+      logger.warn("Content not found for canonical lookup", { contentId });
       return null;
     }
 
@@ -71,9 +67,9 @@ export async function getCanonicalContent(contentId: string): Promise<CanonicalC
       sourceHash,
     };
   } catch (error) {
-    logger.error('Failed to get canonical content', { 
-      contentId, 
-      error: error instanceof Error ? error.message : String(error) 
+    logger.error("Failed to get canonical content", {
+      contentId,
+      error: error instanceof Error ? error.message : String(error),
     });
     return null;
   }
@@ -84,8 +80,8 @@ export async function getCanonicalContent(contentId: string): Promise<CanonicalC
  * Used to determine if translations need to be regenerated.
  */
 export function computeCanonicalHash(content: Content): string {
-  const crypto = require('crypto');
-  
+  const crypto = require("node:crypto");
+
   const hashableData = {
     title: content.title,
     metaTitle: content.metaTitle,
@@ -97,15 +93,15 @@ export function computeCanonicalHash(content: Content): string {
   };
 
   return crypto
-    .createHash('sha256')
+    .createHash("sha256")
     .update(JSON.stringify(hashableData))
-    .digest('hex')
+    .digest("hex")
     .substring(0, 32);
 }
 
 /**
  * Validate that a translation request follows canonical rules.
- * 
+ *
  * RULES:
  * 1. Source locale MUST be English (en)
  * 2. Target locale MUST NOT be English
@@ -129,7 +125,7 @@ export function validateTranslationChain(
       isValid: false,
       sourceLocale,
       targetLocale,
-      error: 'Cannot translate into English (en). English is the canonical source.',
+      error: "Cannot translate into English (en). English is the canonical source.",
     };
   }
 
@@ -138,7 +134,7 @@ export function validateTranslationChain(
       isValid: false,
       sourceLocale,
       targetLocale,
-      error: 'Source and target locales cannot be the same.',
+      error: "Source and target locales cannot be the same.",
     };
   }
 
@@ -155,7 +151,7 @@ export function validateTranslationChain(
  */
 export function enforceCanonicalSource(requestedSourceLocale: string): string {
   if (requestedSourceLocale !== CANONICAL_LOCALE) {
-    logger.warn('Non-canonical source locale requested, forcing English', {
+    logger.warn("Non-canonical source locale requested, forcing English", {
       requested: requestedSourceLocale,
       enforced: CANONICAL_LOCALE,
     });

@@ -129,7 +129,7 @@ router.post("/queue/resume", (req, res) => {
 router.get("/jobs", async (req, res) => {
   try {
     const status = (req.query.status as string) || "pending";
-    const limit = parseInt(req.query.limit as string) || 50;
+    const limit = Number.parseInt(req.query.limit as string) || 50;
 
     const validStatuses = ["pending", "in_progress", "completed", "failed", "needs_review"];
     if (!validStatuses.includes(status)) {

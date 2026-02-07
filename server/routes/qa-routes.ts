@@ -311,7 +311,7 @@ export function registerQaRoutes(app: Express) {
           passedItems: passed,
           failedItems: failed,
           skippedItems: skipped,
-          score: isNaN(score) ? 0 : score,
+          score: Number.isNaN(score) ? 0 : score,
           updatedAt: new Date(),
         } as any)
         .where(eq(qaRuns.id, req.params.id))

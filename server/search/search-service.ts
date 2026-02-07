@@ -96,7 +96,7 @@ const ENTITY_TYPE_WEIGHTS: Record<SearchResult["type"], number> = {
   destination: 1.6,
   attraction: 1.4,
   hotel: 1.2,
-  article: 1.0,
+  article: 1,
   category: 0.9,
 };
 
@@ -114,7 +114,7 @@ const RECENCY_PRIME_DAYS = 7;
  * Returns a multiplier between 1.0 (old) and RECENCY_MAX_BOOST (recent)
  */
 function calculateRecencyBoost(publishedAt: Date | null | undefined): number {
-  if (!publishedAt) return 1.0;
+  if (!publishedAt) return 1;
 
   const now = Date.now();
   const publishedTime = new Date(publishedAt).getTime();
@@ -125,14 +125,14 @@ function calculateRecencyBoost(publishedAt: Date | null | undefined): number {
   }
 
   if (daysSincePublished >= RECENCY_DECAY_DAYS) {
-    return 1.0;
+    return 1;
   }
 
   const decayRange = RECENCY_DECAY_DAYS - RECENCY_PRIME_DAYS;
   const daysIntoDecay = daysSincePublished - RECENCY_PRIME_DAYS;
   const decayFactor = 1 - daysIntoDecay / decayRange;
 
-  return 1.0 + (RECENCY_MAX_BOOST - 1.0) * decayFactor;
+  return 1 + (RECENCY_MAX_BOOST - 1) * decayFactor;
 }
 
 /**
@@ -140,14 +140,14 @@ function calculateRecencyBoost(publishedAt: Date | null | undefined): number {
  * Results with higher views get boosted
  */
 function calculatePopularityBoost(viewCount: number | null | undefined): number {
-  if (!viewCount || viewCount <= 0) return 1.0;
+  if (!viewCount || viewCount <= 0) return 1;
 
   if (viewCount >= 10000) return 1.25;
   if (viewCount >= 5000) return 1.2;
   if (viewCount >= 1000) return 1.15;
   if (viewCount >= 500) return 1.1;
   if (viewCount >= 100) return 1.05;
-  return 1.0;
+  return 1;
 }
 
 /**
@@ -161,7 +161,7 @@ function calculateIntentMemoryBoost(
 ): number {
   const frequency = entityTypeFrequencies.get(resultType as IntentEntityType) || 0;
 
-  if (frequency === 0) return 1.0;
+  if (frequency === 0) return 1;
   if (frequency >= 5) return 1.2;
   if (frequency >= 3) return 1.15;
   if (frequency >= 2) return 1.1;
@@ -186,14 +186,14 @@ function calculateRankingScore(
   let score = result.score;
 
   // 1. Entity type weighting (destinations > attractions > hotels > articles)
-  const typeWeight = ENTITY_TYPE_WEIGHTS[result.type] || 1.0;
+  const typeWeight = ENTITY_TYPE_WEIGHTS[result.type] || 1;
   score *= typeWeight;
 
   // 2. Title match boost (exact or partial)
   const titleLower = result.title.toLowerCase();
   for (const term of queryTerms) {
     if (titleLower === term) {
-      score *= 2.0;
+      score *= 2;
       break;
     } else if (titleLower.includes(term)) {
       score *= 1.3;

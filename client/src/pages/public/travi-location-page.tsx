@@ -595,8 +595,8 @@ function generateSchemaOrg(location: TraviLocation) {
   if (location.details?.latitude && location.details?.longitude) {
     baseSchema.geo = {
       "@type": "GeoCoordinates",
-      latitude: parseFloat(location.details.latitude),
-      longitude: parseFloat(location.details.longitude),
+      latitude: Number.parseFloat(location.details.latitude),
+      longitude: Number.parseFloat(location.details.longitude),
     };
   }
 

@@ -3,10 +3,10 @@
  * Feature Flag: ENABLE_PLATFORM_GOVERNOR=false
  */
 
-import { Router, Request, Response, NextFunction } from 'express';
-import { createLogger } from '../lib/logger';
-import { isPlatformGovernorEnabled, GOVERNOR_CONFIG } from './config';
-import { getAllRules, getEnabledRules } from './rules';
+import { Router, Request, Response, NextFunction } from "express";
+import { createLogger } from "../lib/logger";
+import { isPlatformGovernorEnabled, GOVERNOR_CONFIG } from "./config";
+import { getAllRules, getEnabledRules } from "./rules";
 import {
   evaluateRules,
   getActiveRestrictions,
@@ -14,26 +14,22 @@ import {
   getAuditLog,
   overrideDecision,
   resetAllRestrictions,
-} from './decision-engine';
-import { collectContext } from './context-collector';
-import type { GovernorStatus, GovernorFeatureStatus } from './types';
+} from "./decision-engine";
+import { collectContext } from "./context-collector";
+import type { GovernorStatus, GovernorFeatureStatus } from "./types";
 
-const logger = createLogger('platform-governor-routes');
+const logger = createLogger("platform-governor-routes");
 const router = Router();
 
 // ============================================================================
 // Middleware
 // ============================================================================
 
-function requirePlatformGovernor(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+function requirePlatformGovernor(req: Request, res: Response, next: NextFunction): void {
   if (!isPlatformGovernorEnabled()) {
     res.status(404).json({
-      error: 'Platform governor is not enabled',
-      hint: 'Set ENABLE_PLATFORM_GOVERNOR=true to enable this feature',
+      error: "Platform governor is not enabled",
+      hint: "Set ENABLE_PLATFORM_GOVERNOR=true to enable this feature",
     });
     return;
   }
@@ -48,7 +44,7 @@ function requirePlatformGovernor(
  * GET /api/admin/governor/status
  * Get current governor status
  */
-router.get('/status', requirePlatformGovernor, async (req: Request, res: Response) => {
+router.get("/status", requirePlatformGovernor, async (req: Request, res: Response) => {
   try {
     const rules = getAllRules();
     const enabledRules = getEnabledRules();
@@ -66,8 +62,8 @@ router.get('/status', requirePlatformGovernor, async (req: Request, res: Respons
 
     res.json(status);
   } catch (error) {
-    logger.error({ error }, 'Failed to get governor status');
-    res.status(500).json({ error: 'Failed to get status' });
+    logger.error({ error }, "Failed to get governor status");
+    res.status(500).json({ error: "Failed to get status" });
   }
 });
 
@@ -75,14 +71,14 @@ router.get('/status', requirePlatformGovernor, async (req: Request, res: Respons
  * GET /api/admin/governor/decisions
  * Get recent decisions with optional limit
  */
-router.get('/decisions', requirePlatformGovernor, (req: Request, res: Response) => {
+router.get("/decisions", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
+    const limit = req.query.limit ? Number.parseInt(req.query.limit as string, 10) : 50;
     const decisions = getRecentDecisions(limit);
     res.json({ decisions, count: decisions.length });
   } catch (error) {
-    logger.error({ error }, 'Failed to get decisions');
-    res.status(500).json({ error: 'Failed to get decisions' });
+    logger.error({ error }, "Failed to get decisions");
+    res.status(500).json({ error: "Failed to get decisions" });
   }
 });
 
@@ -90,14 +86,14 @@ router.get('/decisions', requirePlatformGovernor, (req: Request, res: Response) 
  * GET /api/admin/governor/audit
  * Get audit log
  */
-router.get('/audit', requirePlatformGovernor, (req: Request, res: Response) => {
+router.get("/audit", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 100;
+    const limit = req.query.limit ? Number.parseInt(req.query.limit as string, 10) : 100;
     const entries = getAuditLog(limit);
     res.json({ entries, count: entries.length });
   } catch (error) {
-    logger.error({ error }, 'Failed to get audit log');
-    res.status(500).json({ error: 'Failed to get audit log' });
+    logger.error({ error }, "Failed to get audit log");
+    res.status(500).json({ error: "Failed to get audit log" });
   }
 });
 
@@ -105,13 +101,13 @@ router.get('/audit', requirePlatformGovernor, (req: Request, res: Response) => {
  * GET /api/admin/governor/restrictions
  * Get active restrictions
  */
-router.get('/restrictions', requirePlatformGovernor, (req: Request, res: Response) => {
+router.get("/restrictions", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
     const restrictions = getActiveRestrictions();
     res.json({ restrictions, count: restrictions.length });
   } catch (error) {
-    logger.error({ error }, 'Failed to get restrictions');
-    res.status(500).json({ error: 'Failed to get restrictions' });
+    logger.error({ error }, "Failed to get restrictions");
+    res.status(500).json({ error: "Failed to get restrictions" });
   }
 });
 
@@ -119,7 +115,7 @@ router.get('/restrictions', requirePlatformGovernor, (req: Request, res: Respons
  * GET /api/admin/governor/rules
  * Get all rules
  */
-router.get('/rules', requirePlatformGovernor, (req: Request, res: Response) => {
+router.get("/rules", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
     const rules = getAllRules();
     const enabled = getEnabledRules();
@@ -129,8 +125,8 @@ router.get('/rules', requirePlatformGovernor, (req: Request, res: Response) => {
       enabled: enabled.length,
     });
   } catch (error) {
-    logger.error({ error }, 'Failed to get rules');
-    res.status(500).json({ error: 'Failed to get rules' });
+    logger.error({ error }, "Failed to get rules");
+    res.status(500).json({ error: "Failed to get rules" });
   }
 });
 
@@ -138,13 +134,13 @@ router.get('/rules', requirePlatformGovernor, (req: Request, res: Response) => {
  * GET /api/admin/governor/context
  * Get current context (for debugging)
  */
-router.get('/context', requirePlatformGovernor, (req: Request, res: Response) => {
+router.get("/context", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
     const context = collectContext();
     res.json(context);
   } catch (error) {
-    logger.error({ error }, 'Failed to get context');
-    res.status(500).json({ error: 'Failed to get context' });
+    logger.error({ error }, "Failed to get context");
+    res.status(500).json({ error: "Failed to get context" });
   }
 });
 
@@ -152,7 +148,7 @@ router.get('/context', requirePlatformGovernor, (req: Request, res: Response) =>
  * POST /api/admin/governor/evaluate
  * Manually trigger rule evaluation
  */
-router.post('/evaluate', requirePlatformGovernor, (req: Request, res: Response) => {
+router.post("/evaluate", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
     const context = collectContext();
     const decisions = evaluateRules(context);
@@ -162,8 +158,8 @@ router.post('/evaluate', requirePlatformGovernor, (req: Request, res: Response) 
       count: decisions.length,
     });
   } catch (error) {
-    logger.error({ error }, 'Failed to evaluate rules');
-    res.status(500).json({ error: 'Failed to evaluate' });
+    logger.error({ error }, "Failed to evaluate rules");
+    res.status(500).json({ error: "Failed to evaluate" });
   }
 });
 
@@ -171,26 +167,26 @@ router.post('/evaluate', requirePlatformGovernor, (req: Request, res: Response) 
  * POST /api/admin/governor/override
  * Override a specific decision
  */
-router.post('/override', requirePlatformGovernor, (req: Request, res: Response) => {
+router.post("/override", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
-    const { decisionId, actorId = 'admin' } = req.body;
+    const { decisionId, actorId = "admin" } = req.body;
 
     if (!decisionId) {
-      res.status(400).json({ error: 'decisionId is required' });
+      res.status(400).json({ error: "decisionId is required" });
       return;
     }
 
     const success = overrideDecision(decisionId, actorId);
 
     if (!success) {
-      res.status(404).json({ error: 'Decision not found' });
+      res.status(404).json({ error: "Decision not found" });
       return;
     }
 
-    res.json({ success: true, message: 'Decision overridden' });
+    res.json({ success: true, message: "Decision overridden" });
   } catch (error) {
-    logger.error({ error }, 'Failed to override decision');
-    res.status(500).json({ error: 'Failed to override' });
+    logger.error({ error }, "Failed to override decision");
+    res.status(500).json({ error: "Failed to override" });
   }
 });
 
@@ -198,14 +194,14 @@ router.post('/override', requirePlatformGovernor, (req: Request, res: Response) 
  * POST /api/admin/governor/reset
  * Reset all restrictions
  */
-router.post('/reset', requirePlatformGovernor, (req: Request, res: Response) => {
+router.post("/reset", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
-    const { actorId = 'admin' } = req.body;
+    const { actorId = "admin" } = req.body;
     resetAllRestrictions(actorId);
-    res.json({ success: true, message: 'All restrictions reset' });
+    res.json({ success: true, message: "All restrictions reset" });
   } catch (error) {
-    logger.error({ error }, 'Failed to reset restrictions');
-    res.status(500).json({ error: 'Failed to reset' });
+    logger.error({ error }, "Failed to reset restrictions");
+    res.status(500).json({ error: "Failed to reset" });
   }
 });
 
@@ -213,7 +209,7 @@ router.post('/reset', requirePlatformGovernor, (req: Request, res: Response) => 
  * GET /api/admin/governor/feature-status
  * Get feature configuration
  */
-router.get('/feature-status', requirePlatformGovernor, (req: Request, res: Response) => {
+router.get("/feature-status", requirePlatformGovernor, (req: Request, res: Response) => {
   try {
     const status: GovernorFeatureStatus = {
       enabled: isPlatformGovernorEnabled(),
@@ -225,8 +221,8 @@ router.get('/feature-status', requirePlatformGovernor, (req: Request, res: Respo
     };
     res.json(status);
   } catch (error) {
-    logger.error({ error }, 'Failed to get feature status');
-    res.status(500).json({ error: 'Failed to get feature status' });
+    logger.error({ error }, "Failed to get feature status");
+    res.status(500).json({ error: "Failed to get feature status" });
   }
 });
 

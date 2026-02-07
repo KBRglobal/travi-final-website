@@ -1,6 +1,6 @@
 /**
  * Link Management API Routes
- * 
+ *
  * Endpoints for managing internal links:
  * - GET /api/links/health - Overall link health metrics
  * - GET /api/links/orphans - Pages with no inbound links
@@ -11,13 +11,13 @@
  */
 
 import { Router, Request, Response } from "express";
-import { 
-  processContentLinks, 
-  getContentLinkStats, 
+import {
+  processContentLinks,
+  getContentLinkStats,
   batchProcessLinks,
   findOrphanPages,
   getLinkHealthMetrics,
-  type ContentForLinking 
+  type ContentForLinking,
 } from "../octypo/post-processors/link-processor";
 import { getLinkOpportunities } from "../link-opportunities";
 import { db } from "../db";
@@ -79,8 +79,8 @@ export function registerLinkManagementRoutes(app: Router) {
   router.get("/opportunities/:contentId", async (req: Request, res: Response) => {
     try {
       const { contentId } = req.params;
-      const limit = parseInt(req.query.limit as string) || 20;
-      
+      const limit = Number.parseInt(req.query.limit as string) || 20;
+
       const opportunities = await getLinkOpportunities(contentId, limit);
       res.json({
         success: true,
@@ -96,7 +96,7 @@ export function registerLinkManagementRoutes(app: Router) {
   router.post("/process/:contentId", async (req: Request, res: Response) => {
     try {
       const { contentId } = req.params;
-      
+
       const content = await db
         .select({
           id: contents.id,
@@ -107,14 +107,14 @@ export function registerLinkManagementRoutes(app: Router) {
         .from(contents)
         .where(eq(contents.id, contentId))
         .limit(1);
-      
+
       if (content.length === 0) {
         return res.status(404).json({ success: false, error: "Content not found" });
       }
-      
+
       const record = content[0];
       const blocks = (record.contentBlocks as any) || {};
-      
+
       const contentForLinking: ContentForLinking = {
         id: record.id,
         type: record.type as any,
@@ -125,9 +125,9 @@ export function registerLinkManagementRoutes(app: Router) {
           howToGetThere: blocks.howToGetThere || blocks.directions,
         },
       };
-      
+
       const result = await processContentLinks(contentForLinking);
-      
+
       res.json({
         success: true,
         data: result,
@@ -142,17 +142,19 @@ export function registerLinkManagementRoutes(app: Router) {
   router.post("/batch-process", async (req: Request, res: Response) => {
     try {
       const { contentIds, concurrency = 5 } = req.body;
-      
+
       if (!Array.isArray(contentIds) || contentIds.length === 0) {
-        return res.status(400).json({ success: false, error: "contentIds must be a non-empty array" });
+        return res
+          .status(400)
+          .json({ success: false, error: "contentIds must be a non-empty array" });
       }
-      
+
       if (contentIds.length > 100) {
         return res.status(400).json({ success: false, error: "Maximum 100 contents per batch" });
       }
-      
+
       const results = await batchProcessLinks(contentIds, Math.min(concurrency, 10));
-      
+
       const summary = {
         total: contentIds.length,
         processed: results.size,
@@ -160,8 +162,8 @@ export function registerLinkManagementRoutes(app: Router) {
         successful: 0,
         failed: 0,
       };
-      
-      results.forEach((result) => {
+
+      results.forEach(result => {
         if (result.success) {
           summary.successful++;
           summary.totalLinksAdded += result.linksAdded;
@@ -169,7 +171,7 @@ export function registerLinkManagementRoutes(app: Router) {
           summary.failed++;
         }
       });
-      
+
       res.json({
         success: true,
         data: {
@@ -186,8 +188,8 @@ export function registerLinkManagementRoutes(app: Router) {
 
   router.get("/recent", async (req: Request, res: Response) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 50;
-      
+      const limit = Number.parseInt(req.query.limit as string) || 50;
+
       const recentLinks = await db
         .select({
           id: internalLinks.id,
@@ -200,7 +202,7 @@ export function registerLinkManagementRoutes(app: Router) {
         .from(internalLinks)
         .orderBy(desc(internalLinks.createdAt))
         .limit(limit);
-      
+
       res.json({
         success: true,
         data: recentLinks,
@@ -214,8 +216,8 @@ export function registerLinkManagementRoutes(app: Router) {
 
   router.get("/top-linked", async (req: Request, res: Response) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 20;
-      
+      const limit = Number.parseInt(req.query.limit as string) || 20;
+
       const topLinked = await db
         .select({
           targetContentId: internalLinks.targetContentId,
@@ -225,15 +227,15 @@ export function registerLinkManagementRoutes(app: Router) {
         .groupBy(internalLinks.targetContentId)
         .orderBy(desc(sql`count(*)`))
         .limit(limit);
-      
+
       const enriched = await Promise.all(
-        topLinked.map(async (item) => {
+        topLinked.map(async item => {
           const content = await db
             .select({ title: contents.title, type: contents.type, slug: contents.slug })
             .from(contents)
             .where(eq(contents.id, item.targetContentId!))
             .limit(1);
-          
+
           return {
             contentId: item.targetContentId,
             inboundCount: item.inboundCount,
@@ -243,7 +245,7 @@ export function registerLinkManagementRoutes(app: Router) {
           };
         })
       );
-      
+
       res.json({
         success: true,
         data: enriched,

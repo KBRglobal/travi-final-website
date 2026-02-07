@@ -18,7 +18,7 @@ import {
 } from "@shared/schema";
 import { eq, desc, and, gte, sql, like, inArray, count } from "drizzle-orm";
 import { cache } from "./cache";
-import * as crypto from "crypto";
+import * as crypto from "node:crypto";
 
 // ============================================================================
 // TYPES

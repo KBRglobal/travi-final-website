@@ -10,8 +10,8 @@
  */
 
 import FileType from "file-type";
-import crypto from "crypto";
-import path from "path";
+import crypto from "node:crypto";
+import path from "node:path";
 
 /**
  * File type configuration
@@ -180,7 +180,9 @@ export async function validateUploadedFile(
   let fileTypeResult;
   try {
     fileTypeResult = await FileType.fromBuffer(buffer);
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   // Verify MIME type matches detected type
   if (fileTypeResult && fileTypeResult.mime !== magicBytesResult.mime) {

@@ -163,7 +163,7 @@ export const searchEngine = {
       snippet: r.meta_description || "",
       url: r.url,
       image: r.image,
-      score: parseFloat(r.rank),
+      score: Number.parseFloat(r.rank),
     }));
   },
 

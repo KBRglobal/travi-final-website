@@ -888,8 +888,8 @@ export function registerAdminTiqetsRoutes(app: Express): void {
   // STRICT: Generates 90+ quality score articles with full BLUEPRINT compliance - NO EXCEPTIONS
   app.post("/api/admin/tiqets/generate-octypo", requireAuth, async (req, res) => {
     // Maximum parallelism - use all available engines
-    const concurrency = Math.min(parseInt((req.query.concurrency as string) || "20"), 50);
-    const batchSize = Math.min(parseInt((req.query.batch as string) || "100"), 200);
+    const concurrency = Math.min(Number.parseInt((req.query.concurrency as string) || "20"), 50);
+    const batchSize = Math.min(Number.parseInt((req.query.batch as string) || "100"), 200);
 
     res.json({
       status: "started",
@@ -954,8 +954,8 @@ export function registerAdminTiqetsRoutes(app: Express): void {
             wheelchairAccess: attr.wheelchair_access || false,
             tiqetsDescription: attr.tiqets_description || undefined,
             tiqetsHighlights: attr.tiqets_highlights || undefined,
-            priceFrom: attr.price_usd ? parseFloat(attr.price_usd) : undefined,
-            rating: attr.tiqets_rating ? parseFloat(attr.tiqets_rating) : undefined,
+            priceFrom: attr.price_usd ? Number.parseFloat(attr.price_usd) : undefined,
+            rating: attr.tiqets_rating ? Number.parseFloat(attr.tiqets_rating) : undefined,
             reviewCount: attr.tiqets_review_count || undefined,
           };
 
@@ -1088,10 +1088,10 @@ export function registerAdminTiqetsRoutes(app: Express): void {
             SELECT COUNT(*) as remaining FROM tiqets_attractions 
             WHERE quality_score IS NULL OR quality_score < 90
           `);
-          const remaining = parseInt(remainingRows[0]?.remaining) || 0;
+          const remaining = Number.parseInt(remainingRows[0]?.remaining) || 0;
           const etaHours =
-            parseFloat(articlesPerMin) > 0
-              ? (remaining / (parseFloat(articlesPerMin) * 60)).toFixed(1)
+            Number.parseFloat(articlesPerMin) > 0
+              ? (remaining / (Number.parseFloat(articlesPerMin) * 60)).toFixed(1)
               : "?";
 
           const stateStats = octypoState.getStats();
@@ -1125,15 +1125,17 @@ export function registerAdminTiqetsRoutes(app: Express): void {
 
       const stat = stats[0];
       res.json({
-        highQuality: parseInt(stat.high_quality) || 0,
-        lowQuality: parseInt(stat.low_quality) || 0,
-        pending: parseInt(stat.pending) || 0,
-        total: parseInt(stat.total) || 0,
-        avgScore: parseFloat(stat.avg_score) || 0,
+        highQuality: Number.parseInt(stat.high_quality) || 0,
+        lowQuality: Number.parseInt(stat.low_quality) || 0,
+        pending: Number.parseInt(stat.pending) || 0,
+        total: Number.parseInt(stat.total) || 0,
+        avgScore: Number.parseFloat(stat.avg_score) || 0,
         lastUpdate: stat.last_update,
         percentComplete:
           stat.total > 0
-            ? ((parseInt(stat.high_quality) / parseInt(stat.total)) * 100).toFixed(1) + "%"
+            ? ((Number.parseInt(stat.high_quality) / Number.parseInt(stat.total)) * 100).toFixed(
+                1
+              ) + "%"
             : "0%",
       });
     } catch (err: any) {
@@ -1161,18 +1163,19 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       `);
 
       const stat = stats[0];
-      const lastHour = parseInt(stat.last_hour) || 0;
-      const last24h = parseInt(stat.last_24h) || 0;
-      const completed = parseInt(stat.completed) || 0;
-      const pending = parseInt(stat.pending) || 0;
-      const total = parseInt(stat.total) || 0;
+      const lastHour = Number.parseInt(stat.last_hour) || 0;
+      const last24h = Number.parseInt(stat.last_24h) || 0;
+      const completed = Number.parseInt(stat.completed) || 0;
+      const pending = Number.parseInt(stat.pending) || 0;
+      const total = Number.parseInt(stat.total) || 0;
 
       // Calculate hourly rate based on last 24h average
       const hourlyRate = last24h > 0 ? (last24h / 24).toFixed(1) : "0";
       const currentHourlyRate = lastHour;
 
       // Estimate time to complete remaining
-      const effectiveRate = currentHourlyRate > 0 ? currentHourlyRate : parseFloat(hourlyRate);
+      const effectiveRate =
+        currentHourlyRate > 0 ? currentHourlyRate : Number.parseFloat(hourlyRate);
       const hoursRemaining = effectiveRate > 0 ? pending / effectiveRate : null;
       const etaText =
         hoursRemaining !== null
@@ -1184,12 +1187,12 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       res.json({
         lastHour,
         last24Hours: last24h,
-        averageHourlyRate: parseFloat(hourlyRate),
+        averageHourlyRate: Number.parseFloat(hourlyRate),
         currentHourlyRate,
         completed,
         pending,
         total,
-        avgScore: parseFloat(stat.avg_score) || 0,
+        avgScore: Number.parseFloat(stat.avg_score) || 0,
         lastUpdate: stat.last_update,
         batchStatus: {
           isRunning: octypoState.isRunning(),
@@ -1197,7 +1200,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
           lastActivity: octypoState.getLastActivity(),
         },
         eta: {
-          hoursRemaining: hoursRemaining ? parseFloat(hoursRemaining.toFixed(2)) : null,
+          hoursRemaining: hoursRemaining ? Number.parseFloat(hoursRemaining.toFixed(2)) : null,
           text: etaText,
         },
         percentComplete: total > 0 ? ((completed / total) * 100).toFixed(1) + "%" : "0%",
@@ -1262,7 +1265,7 @@ Create:
 8. 3-5 FAQs
 
 Use natural, varied writing. No double dashes (--). No "you will" repetition.
-${parseFloat(attr.tiqetsRating || "0") >= 4.5 ? "Mention it's highly rated." : ""}
+${Number.parseFloat(attr.tiqetsRating || "0") >= 4.5 ? "Mention it's highly rated." : ""}
 
 Return as valid JSON.`,
           {
@@ -1403,7 +1406,7 @@ Return as valid JSON.`,
   app.get("/api/admin/tiqets/seo-slugs/preview", requireAuth, async (req, res) => {
     try {
       const { previewSeoSlugs } = await import("../../services/seo-slug-generator");
-      const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
+      const limit = Math.min(Number.parseInt(req.query.limit as string) || 20, 100);
       const preview = await previewSeoSlugs(limit);
       res.json({
         count: preview.length,

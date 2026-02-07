@@ -1,6 +1,6 @@
-import { execSync } from "child_process";
-import fs from "fs";
-import path from "path";
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 
 export interface BackupResult {
   success: boolean;
@@ -9,7 +9,7 @@ export interface BackupResult {
 }
 
 const BACKUPS_DIR = path.resolve(process.cwd(), "backups");
-const MAX_BACKUPS = parseInt(process.env.BACKUP_MAX_COUNT || "7", 10);
+const MAX_BACKUPS = Number.parseInt(process.env.BACKUP_MAX_COUNT || "7", 10);
 
 function ensureBackupsDir(): void {
   if (!fs.existsSync(BACKUPS_DIR)) {

@@ -33,7 +33,7 @@ import {
   type ClusterMember,
 } from "@shared/schema";
 import { desc } from "drizzle-orm";
-import { Readable } from "stream";
+import { Readable } from "node:stream";
 
 // Export format version for compatibility
 const EXPORT_VERSION = "1.0.0";

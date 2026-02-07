@@ -247,7 +247,7 @@ class RSSReader {
         if (item.pubDate || item.isoDate) {
           try {
             publishedDate = new Date(item.pubDate || item.isoDate!);
-            if (isNaN(publishedDate.getTime())) {
+            if (Number.isNaN(publishedDate.getTime())) {
               publishedDate = null;
             }
           } catch {

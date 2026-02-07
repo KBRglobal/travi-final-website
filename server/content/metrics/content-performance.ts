@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 export interface ContentPerformance {
   entityId: string;
@@ -72,7 +72,9 @@ function loadFromDisk(): void {
         perf.score = calculateScore(perf);
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 }
 
 function saveToDisk(): void {
@@ -92,7 +94,9 @@ function saveToDisk(): void {
     }
 
     fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 }
 
 loadFromDisk();

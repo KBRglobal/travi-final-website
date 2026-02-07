@@ -6,7 +6,7 @@
 import { db } from "../db";
 import { rssFeeds, destinations } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "node:url";
 
 interface RssFeedSeed {
   name: string;

@@ -30,7 +30,7 @@ export default function NotFound() {
 
     let gameState: "start" | "playing" | "gameover" = "start";
     let score = 0;
-    let highScore = parseInt(localStorage.getItem("travi404HighScore") || "0", 10);
+    let highScore = Number.parseInt(localStorage.getItem("travi404HighScore") || "0", 10);
     let duckY = 195,
       duckVelocity = 0;
     interface Obstacle {
@@ -357,8 +357,8 @@ export default function NotFound() {
           p.element.remove();
           return false;
         }
-        p.element.style.left = parseFloat(p.element.style.left) + p.vx + "px";
-        p.element.style.top = parseFloat(p.element.style.top) + p.vy + "px";
+        p.element.style.left = Number.parseFloat(p.element.style.left) + p.vx + "px";
+        p.element.style.top = Number.parseFloat(p.element.style.top) + p.vy + "px";
         p.element.style.opacity = (life / 25).toString();
         p.life = life;
         p.vy = p.vy + 0.15;

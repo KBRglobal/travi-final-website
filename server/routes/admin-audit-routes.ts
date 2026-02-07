@@ -19,7 +19,7 @@ export function registerAdminAuditRoutes(app: Express): void {
           action: action as string,
           resourceType: resourceType as string,
           userId: userId as string,
-          limit: parseInt(limit as string) || 100,
+          limit: Number.parseInt(limit as string) || 100,
         });
         res.json({ logs, total: logs.length });
       } catch (error) {

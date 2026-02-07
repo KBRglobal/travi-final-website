@@ -27,7 +27,9 @@ export async function renderGuidesHub(options: SSRRenderOptions): Promise<SSRRen
       .where(eq(update9987Guides.status, "published"))
       .orderBy(desc(update9987Guides.publishedAt))
       .limit(50);
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   const metaTags = generateMetaTags({
     title: "Travel Guides - Expert Tips & Destination Guides | TRAVI",
@@ -143,7 +145,9 @@ export async function renderGuidePage(
       .where(eq(update9987Guides.slug, slug))
       .limit(1);
     guide = results[0];
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   if (!guide) {
     // Try to find a destination match for the guide

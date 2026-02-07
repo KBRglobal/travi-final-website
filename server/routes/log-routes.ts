@@ -55,10 +55,10 @@ export function registerLogRoutes(app: Express) {
 
         // Parse pagination
         if (req.query.limit) {
-          filter.limit = parseInt(String(req.query.limit), 10);
+          filter.limit = Number.parseInt(String(req.query.limit), 10);
         }
         if (req.query.offset) {
-          filter.offset = parseInt(String(req.query.offset), 10);
+          filter.offset = Number.parseInt(String(req.query.offset), 10);
         }
 
         const logs = getLogs(filter);

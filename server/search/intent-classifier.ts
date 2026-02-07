@@ -243,19 +243,19 @@ export const intentClassifier = {
       /(?:under|below|less than|up to|أقل من|حتى)\s*(?:AED|aed|₪|\$|درهم)?\s*(\d+)/i
     );
     if (priceMatch) {
-      entities.priceRange = { max: parseInt(priceMatch[1]), currency: "AED" };
+      entities.priceRange = { max: Number.parseInt(priceMatch[1]), currency: "AED" };
     }
     const priceFromMatch = query.match(
       /(?:from|starting|minimum|من)\s*(?:AED|aed|₪|\$|درهم)?\s*(\d+)/i
     );
     if (priceFromMatch) {
-      entities.priceRange = { ...entities.priceRange, min: parseInt(priceFromMatch[1]) };
+      entities.priceRange = { ...entities.priceRange, min: Number.parseInt(priceFromMatch[1]) };
     }
 
     // Extract rating
     const ratingMatch = query.match(/(\d+(?:\.\d+)?)\s*(?:star|stars|نجوم|\+)/i);
     if (ratingMatch) {
-      entities.rating = parseFloat(ratingMatch[1]);
+      entities.rating = Number.parseFloat(ratingMatch[1]);
     }
 
     // Extract occasion
@@ -269,7 +269,7 @@ export const intentClassifier = {
     // Extract group size
     const groupMatch = query.match(/(?:for|لـ)\s*(\d+)\s*(?:people|persons|guests|أشخاص)/i);
     if (groupMatch) {
-      entities.groupSize = parseInt(groupMatch[1]);
+      entities.groupSize = Number.parseInt(groupMatch[1]);
     }
 
     return entities;

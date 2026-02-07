@@ -161,8 +161,8 @@ router.get("/languages", (req: Request, res: Response) => {
  * Estimate cost for translation
  */
 router.get("/cost-estimate", (req: Request, res: Response) => {
-  const charCount = parseInt(req.query.chars as string) || 100000;
-  const languages = parseInt(req.query.languages as string) || 17;
+  const charCount = Number.parseInt(req.query.chars as string) || 100000;
+  const languages = Number.parseInt(req.query.languages as string) || 17;
 
   const totalChars = charCount * languages;
   const claudeCost = (totalChars / 1000000) * 1.5; // ~$1.5/M chars average

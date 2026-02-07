@@ -91,7 +91,8 @@ export default function TiqetsAttractionsList() {
   });
 
   const attractions = data?.attractions ?? [];
-  const total = typeof data?.total === "string" ? parseInt(data.total, 10) : (data?.total ?? 0);
+  const total =
+    typeof data?.total === "string" ? Number.parseInt(data.total, 10) : (data?.total ?? 0);
 
   const cities = useMemo(() => {
     const uniqueCities = [...new Set(attractions.map(a => a.cityName))].sort();

@@ -487,9 +487,7 @@ async function syncFavorites() {
         body: JSON.stringify(favorite),
       });
       await db.delete('pending-favorites', favorite.id);
-    } catch (error) {
-      
-    }
+    } catch (error) { /* ignored */ }
   }
 }
 

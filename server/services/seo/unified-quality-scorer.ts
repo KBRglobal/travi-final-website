@@ -60,7 +60,7 @@ const INTERNAL_LINKING_THRESHOLDS = {
   minInbound: 1, // At least 1 inbound link (not orphan)
   idealInbound: 5, // Ideal inbound links for authority
   minLinkDensity: 0.5, // Min links per 500 words
-  maxLinkDensity: 3.0, // Max links per 500 words
+  maxLinkDensity: 3, // Max links per 500 words
 };
 
 /**

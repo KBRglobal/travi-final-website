@@ -10,9 +10,9 @@ import {
   destinationEvents,
 } from "@shared/schema.js";
 import { count } from "drizzle-orm";
-import { readFileSync, existsSync } from "fs";
-import { join } from "path";
-import { gunzipSync } from "zlib";
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+import { gunzipSync } from "node:zlib";
 
 const SEED_DATA_DIR = join(process.cwd(), "server", "data", "seed");
 
@@ -46,7 +46,9 @@ async function seedTable(
       inserted += batch.length;
       if (i % 1000 === 0 && i > 0) {
       }
-    } catch (e: any) {}
+    } catch (e: any) {
+      /* ignored */
+    }
   }
 
   return inserted;
@@ -92,5 +94,7 @@ export async function runProductionSeed(): Promise<void> {
 
     const pois = await loadTable("update_9987_tourpedia_pois");
     await seedTable("update_9987_tourpedia_pois", update9987TourpediaPois, pois, 500);
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 }

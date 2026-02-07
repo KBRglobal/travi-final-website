@@ -76,7 +76,7 @@ async function getTodaysCountsPerDestination(): Promise<DestinationCounts> {
   const counts: DestinationCounts = {};
   for (const row of result.rows as any[]) {
     if (row.destination_id) {
-      counts[row.destination_id] = parseInt(row.count, 10);
+      counts[row.destination_id] = Number.parseInt(row.count, 10);
     }
   }
 

@@ -5,7 +5,7 @@
 
 import type { Express, Request, Response } from "express";
 import { eq } from "drizzle-orm";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { Resend } from "resend";
 import { db } from "../db";
 import { newsletterCampaigns, campaignEvents } from "@shared/schema";
@@ -424,7 +424,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         res.json({
           totalBounced,
           totalSubscribers,
-          bounceRate: parseFloat(bounceRate),
+          bounceRate: Number.parseFloat(bounceRate),
           bouncedSubscribers: bouncedSubscribers.slice(0, 50),
         });
       } catch (error) {

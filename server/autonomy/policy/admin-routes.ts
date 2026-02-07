@@ -253,7 +253,7 @@ router.post("/budgets/reset", async (req: Request, res: Response) => {
  */
 router.get("/decisions/recent", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 100, 1000);
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 100, 1000);
     const targetKey = req.query.targetKey as string | undefined;
     const actionType = req.query.actionType as string | undefined;
     const decision = req.query.decision as PolicyDecision | undefined;

@@ -121,7 +121,7 @@ const ENTITY_TYPE_WEIGHTS: Record<string, number> = {
   destination: 1.6,
   attraction: 1.4,
   hotel: 1.2,
-  article: 1.0,
+  article: 1,
   category: 0.9,
 };
 
@@ -129,32 +129,32 @@ const ENTITY_TYPE_WEIGHTS: Record<string, number> = {
  * Calculate recency boost (same as search-service.ts)
  */
 function calculateRecencyBoost(publishedAt: Date | string | null | undefined): number {
-  if (!publishedAt) return 1.0;
+  if (!publishedAt) return 1;
 
   const now = Date.now();
   const publishedTime = new Date(publishedAt).getTime();
   const daysSincePublished = (now - publishedTime) / (1000 * 60 * 60 * 24);
 
   if (daysSincePublished <= 7) return 1.3;
-  if (daysSincePublished >= 90) return 1.0;
+  if (daysSincePublished >= 90) return 1;
 
   const decayRange = 90 - 7;
   const daysIntoDecay = daysSincePublished - 7;
-  return 1.0 + 0.3 * (1 - daysIntoDecay / decayRange);
+  return 1 + 0.3 * (1 - daysIntoDecay / decayRange);
 }
 
 /**
  * Calculate popularity boost (same as search-service.ts)
  */
 function calculatePopularityBoost(viewCount: number | null | undefined): number {
-  if (!viewCount || viewCount <= 0) return 1.0;
+  if (!viewCount || viewCount <= 0) return 1;
 
   if (viewCount >= 10000) return 1.25;
   if (viewCount >= 5000) return 1.2;
   if (viewCount >= 1000) return 1.15;
   if (viewCount >= 500) return 1.1;
   if (viewCount >= 100) return 1.05;
-  return 1.0;
+  return 1;
 }
 
 /**
@@ -281,14 +281,14 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
   // Build result debug info
   const queryTerms = normalized.split(/\s+/).filter(Boolean);
   const debugResults: DebugResultInfo[] = allResults.map(result => {
-    const typeWeight = ENTITY_TYPE_WEIGHTS[result.type] || 1.0;
+    const typeWeight = ENTITY_TYPE_WEIGHTS[result.type] || 1;
     const recencyBoost = calculateRecencyBoost(result.publishedAt);
     const popularityBoost = calculatePopularityBoost(result.viewCount);
 
     const titleLower = result.title.toLowerCase();
     const titleMatch = queryTerms.some(term => titleLower === term);
     const titleContains = queryTerms.some(term => titleLower.includes(term));
-    const titleMatchBoost = titleMatch ? 2.0 : titleContains ? 1.3 : 1.0;
+    const titleMatchBoost = titleMatch ? 2 : titleContains ? 1.3 : 1;
 
     const matchedTerms = queryTerms.filter(
       term =>
@@ -296,7 +296,7 @@ export async function debugSearch(query: string): Promise<SearchDebugResponse> {
         ((result as any).description?.toLowerCase().includes(term) ?? false)
     );
 
-    const intentBoost = 1.0; // Simplified for debug
+    const intentBoost = 1; // Simplified for debug
     const totalMultiplier =
       typeWeight * titleMatchBoost * recencyBoost * popularityBoost * intentBoost;
 

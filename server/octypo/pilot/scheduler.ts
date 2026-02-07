@@ -25,8 +25,8 @@ function parseCronExpression(expression: string): {
 
   const parse = (part: string): number | "*" => {
     if (part === "*") return "*";
-    const num = parseInt(part, 10);
-    if (isNaN(num)) return "*";
+    const num = Number.parseInt(part, 10);
+    if (Number.isNaN(num)) return "*";
     return num;
   };
 

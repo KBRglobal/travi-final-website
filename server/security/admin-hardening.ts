@@ -87,9 +87,9 @@ function ipMatchesCidr(ip: string, cidr: string): boolean {
   // CIDR range check
   if (cidr.includes("/")) {
     const [rangeIp, prefixStr] = cidr.split("/");
-    const prefix = parseInt(prefixStr, 10);
+    const prefix = Number.parseInt(prefixStr, 10);
 
-    if (isNaN(prefix) || prefix < 0 || prefix > 32) {
+    if (Number.isNaN(prefix) || prefix < 0 || prefix > 32) {
       return false;
     }
 

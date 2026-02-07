@@ -44,7 +44,9 @@ export async function runDetection(): Promise<void> {
           }
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      /* ignored */
+    }
   }
 }
 

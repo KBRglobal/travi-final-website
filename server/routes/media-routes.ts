@@ -243,8 +243,8 @@ export function registerMediaRoutes(app: Express): void {
           size: image.size,
           url: image.url,
           altText: req.body.altText || null,
-          width: image.width || (req.body.width ? parseInt(req.body.width) : null),
-          height: image.height || (req.body.height ? parseInt(req.body.height) : null),
+          width: image.width || (req.body.width ? Number.parseInt(req.body.width) : null),
+          height: image.height || (req.body.height ? Number.parseInt(req.body.height) : null),
         });
 
         await logAuditEvent(

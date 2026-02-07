@@ -59,7 +59,7 @@ export function registerPublishingRoutes(app: Express): void {
    * Get all blocked content
    */
   app.get("/api/admin/publishing/blocked", requireAuth, async (req: Request, res: Response) => {
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 100);
 
     try {
       const blocked = await getBlockedContent(limit);
@@ -79,7 +79,7 @@ export function registerPublishingRoutes(app: Express): void {
    * Get published content with quality issues
    */
   app.get("/api/admin/publishing/issues", requireAuth, async (req: Request, res: Response) => {
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 100);
 
     try {
       const issues = await getPublishedWithIssues(limit);

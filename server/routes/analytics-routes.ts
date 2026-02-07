@@ -23,7 +23,7 @@ export function registerAnalyticsRoutes(app: Express): void {
     requirePermission("canViewAnalytics"),
     async (req, res) => {
       try {
-        const days = parseInt(req.query.days as string) || 30;
+        const days = Number.parseInt(req.query.days as string) || 30;
         const views = await storage.getViewsOverTime(Math.min(days, 90));
         res.json(views);
       } catch (error) {
@@ -34,7 +34,7 @@ export function registerAnalyticsRoutes(app: Express): void {
 
   app.get("/api/analytics/top-content", requirePermission("canViewAnalytics"), async (req, res) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
+      const limit = Number.parseInt(req.query.limit as string) || 10;
       const topContent = await storage.getTopContent(Math.min(limit, 50));
       res.json(topContent);
     } catch (error) {

@@ -10,7 +10,7 @@ import { requireAuth, requirePermission, checkReadOnlyMode } from "../security";
 import { insertRssFeedSchema } from "@shared/schema";
 import { logAuditEvent } from "../utils/audit-logger";
 import { parseRssFeed } from "../services/rss-parser";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 // Fingerprint generator for content deduplication
 function generateFingerprint(title: string, url?: string): string {

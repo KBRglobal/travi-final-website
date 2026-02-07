@@ -11,7 +11,7 @@ import type { Request, Response, NextFunction } from "express";
 import { db } from "./db";
 import { auditLogs, twoFactorSecrets } from "@shared/schema";
 import { eq, desc, and, gte, lte, sql, like } from "drizzle-orm";
-import * as crypto from "crypto";
+import * as crypto from "node:crypto";
 import { authenticator } from "otplib";
 
 // ============================================================================

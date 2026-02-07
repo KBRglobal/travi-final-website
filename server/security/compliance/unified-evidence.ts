@@ -15,7 +15,7 @@
  * Compliance report requires ZERO manual work.
  */
 
-import * as crypto from "crypto";
+import * as crypto from "node:crypto";
 import {
   evidenceGenerator,
   ComplianceFramework,

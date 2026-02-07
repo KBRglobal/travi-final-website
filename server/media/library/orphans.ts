@@ -4,18 +4,18 @@
  * Detects assets not referenced by any content and manages cleanup.
  */
 
-import { db } from '../../db';
-import { mediaAssets, contents, type MediaAsset } from '@shared/schema';
-import { eq, sql, and, lt, isNull, desc } from 'drizzle-orm';
-import { getMediaLibraryConfig, isMediaLibraryEnabled } from './config';
+import { db } from "../../db";
+import { mediaAssets, contents, type MediaAsset } from "@shared/schema";
+import { eq, sql, and, lt, isNull, desc } from "drizzle-orm";
+import { getMediaLibraryConfig, isMediaLibraryEnabled } from "./config";
 import {
   extractMediaReferencesFromContent,
   normalizeMediaPath,
   deduplicateReferences,
-} from './references';
-import { log } from '../../lib/logger';
-import * as fs from 'fs';
-import * as path from 'path';
+} from "./references";
+import { log } from "../../lib/logger";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 /** Orphan asset with details */
 export interface OrphanAsset extends MediaAsset {
@@ -79,7 +79,7 @@ export async function detectOrphans(options?: {
   };
 
   if (!isMediaLibraryEnabled()) {
-    result.errors.push('Media library is not enabled');
+    result.errors.push("Media library is not enabled");
     result.duration = Date.now() - startTime;
     return result;
   }
@@ -90,11 +90,7 @@ export async function detectOrphans(options?: {
     const offset = options?.offset ?? 0;
 
     // Get all assets from database
-    const allAssets = await db
-      .select()
-      .from(mediaAssets)
-      .limit(limit)
-      .offset(offset);
+    const allAssets = await db.select().from(mediaAssets).limit(limit).offset(offset);
 
     result.totalAssets = allAssets.length;
 
@@ -159,9 +155,9 @@ export async function detectOrphans(options?: {
 
     result.success = true;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     result.errors.push(errorMessage);
-    log.error('[MediaLibrary] Orphan detection failed', error);
+    log.error("[MediaLibrary] Orphan detection failed", error);
   }
 
   result.duration = Date.now() - startTime;
@@ -189,7 +185,7 @@ export async function getOrphans(options?: {
 
   const now = new Date();
 
-  return orphans.map((asset) => {
+  return orphans.map(asset => {
     const orphanedDays = asset.orphanedAt
       ? Math.floor((now.getTime() - asset.orphanedAt.getTime()) / (1000 * 60 * 60 * 24))
       : 0;
@@ -234,7 +230,7 @@ export async function dryRunDelete(): Promise<DryRunResult> {
   let deletableBytes = 0;
   let deletableCount = 0;
 
-  const assets = allOrphans.map((asset) => {
+  const assets = allOrphans.map(asset => {
     const orphanedDays = asset.orphanedAt
       ? Math.floor((now.getTime() - asset.orphanedAt.getTime()) / (1000 * 60 * 60 * 24))
       : 0;
@@ -272,7 +268,7 @@ export async function dryRunDelete(): Promise<DryRunResult> {
 export function generateDeleteToken(): string {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 15);
-  return Buffer.from(`${timestamp}:${random}`).toString('base64');
+  return Buffer.from(`${timestamp}:${random}`).toString("base64");
 }
 
 /**
@@ -280,9 +276,9 @@ export function generateDeleteToken(): string {
  */
 export function validateDeleteToken(token: string): boolean {
   try {
-    const decoded = Buffer.from(token, 'base64').toString('utf-8');
-    const [timestampStr] = decoded.split(':');
-    const timestamp = parseInt(timestampStr, 10);
+    const decoded = Buffer.from(token, "base64").toString("utf-8");
+    const [timestampStr] = decoded.split(":");
+    const timestamp = Number.parseInt(timestampStr, 10);
     const age = Date.now() - timestamp;
     // Token valid for 5 minutes
     return age < 5 * 60 * 1000;
@@ -305,13 +301,13 @@ export async function deleteOrphans(confirmToken: string): Promise<DeleteResult>
   };
 
   if (!isMediaLibraryEnabled()) {
-    result.errors.push({ path: '', error: 'Media library is not enabled' });
+    result.errors.push({ path: "", error: "Media library is not enabled" });
     result.duration = Date.now() - startTime;
     return result;
   }
 
   if (!validateDeleteToken(confirmToken)) {
-    result.errors.push({ path: '', error: 'Invalid or expired confirmation token' });
+    result.errors.push({ path: "", error: "Invalid or expired confirmation token" });
     result.duration = Date.now() - startTime;
     return result;
   }
@@ -325,12 +321,7 @@ export async function deleteOrphans(confirmToken: string): Promise<DeleteResult>
     const toDelete = await db
       .select()
       .from(mediaAssets)
-      .where(
-        and(
-          eq(mediaAssets.isOrphan, true),
-          lt(mediaAssets.orphanedAt, gracePeriodDate)
-        )
-      );
+      .where(and(eq(mediaAssets.isOrphan, true), lt(mediaAssets.orphanedAt, gracePeriodDate)));
 
     const projectRoot = process.cwd();
 
@@ -344,14 +335,12 @@ export async function deleteOrphans(confirmToken: string): Promise<DeleteResult>
         }
 
         // Delete from database
-        await db
-          .delete(mediaAssets)
-          .where(eq(mediaAssets.id, asset.id));
+        await db.delete(mediaAssets).where(eq(mediaAssets.id, asset.id));
 
         result.deletedCount++;
         result.deletedBytes += asset.size;
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
         result.errors.push({ path: asset.path, error: errorMessage });
         log.error(`[MediaLibrary] Failed to delete asset: ${asset.path}`, error);
       }
@@ -359,9 +348,9 @@ export async function deleteOrphans(confirmToken: string): Promise<DeleteResult>
 
     result.success = result.errors.length === 0;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    result.errors.push({ path: '', error: errorMessage });
-    log.error('[MediaLibrary] Delete operation failed', error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    result.errors.push({ path: "", error: errorMessage });
+    log.error("[MediaLibrary] Delete operation failed", error);
   }
 
   result.duration = Date.now() - startTime;
@@ -396,12 +385,7 @@ export async function getOrphanStats(): Promise<{
       totalBytes: sql<number>`COALESCE(sum(size), 0)::bigint`,
     })
     .from(mediaAssets)
-    .where(
-      and(
-        eq(mediaAssets.isOrphan, true),
-        lt(mediaAssets.orphanedAt, gracePeriodDate)
-      )
-    );
+    .where(and(eq(mediaAssets.isOrphan, true), lt(mediaAssets.orphanedAt, gracePeriodDate)));
 
   const [oldest] = await db
     .select({ orphanedAt: mediaAssets.orphanedAt })

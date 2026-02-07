@@ -14,7 +14,7 @@ const SYNONYM_GROUPS = [
     en: ["hotel", "resort", "accommodation", "lodging", "inn", "motel"],
     ar: ["فندق", "منتجع"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
   {
     en: ["cheap", "budget", "affordable", "economical", "low-cost", "inexpensive"],
@@ -26,7 +26,7 @@ const SYNONYM_GROUPS = [
     en: ["luxury", "premium", "upscale", "high-end", "deluxe", "exclusive"],
     ar: ["فاخر", "راقي"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
 
   // Dining
@@ -34,7 +34,7 @@ const SYNONYM_GROUPS = [
     en: ["restaurant", "dining", "eatery", "cafe", "bistro", "diner"],
     ar: ["مطعم", "مقهى"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
   {
     en: ["food", "cuisine", "dish", "meal", "fare"],
@@ -54,25 +54,25 @@ const SYNONYM_GROUPS = [
     en: ["activity", "attraction", "entertainment", "experience", "thing to do"],
     ar: ["نشاط", "معلم"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
   {
     en: ["beach", "shore", "coast", "seaside", "waterfront"],
     ar: ["شاطئ", "ساحل"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
   {
     en: ["desert", "dunes", "sand", "safari"],
     ar: ["صحراء", "رمال"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
   {
     en: ["shopping", "mall", "store", "boutique", "market", "souk"],
     ar: ["تسوق", "سوق", "مول"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
 
   // Transport
@@ -86,7 +86,7 @@ const SYNONYM_GROUPS = [
     en: ["airport", "terminal", "international airport"],
     ar: ["مطار"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
   {
     en: ["metro", "subway", "train", "rail"],
@@ -114,7 +114,7 @@ const SYNONYM_GROUPS = [
     en: ["tour", "trip", "excursion", "journey", "visit"],
     ar: ["جولة", "رحلة"],
     he: [],
-    weight: 1.0,
+    weight: 1,
   },
   {
     en: ["night", "evening", "nighttime"],
@@ -190,7 +190,7 @@ export const synonymExpander = {
     termArray.forEach(term => {
       const lower = term.toLowerCase().trim();
       expandedSet.add(lower);
-      weights[lower] = 1.0;
+      weights[lower] = 1;
     });
 
     // Find and add synonyms
@@ -239,7 +239,7 @@ export const synonymExpander = {
     // Build query with weights (higher weight = more important)
     const weightedTerms = expansion.expanded.map(term => {
       const weight = expansion.weights[term] || 0.5;
-      const boostChar = weight >= 1.0 ? ":A" : weight >= 0.9 ? ":B" : ":C";
+      const boostChar = weight >= 1 ? ":A" : weight >= 0.9 ? ":B" : ":C";
       return `${term}${boostChar}`;
     });
 

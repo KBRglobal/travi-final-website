@@ -1,6 +1,6 @@
 /**
  * Hybrid Ranker
- * 
+ *
  * Combines multiple ranking signals:
  * - BM25 (full-text relevance)
  * - Semantic similarity (vector)
@@ -13,12 +13,12 @@
 import type { Intent } from "./intent-classifier";
 
 export interface RankingSignals {
-  bm25Score: number;       // Full-text relevance (0-1)
-  semanticScore: number;   // Vector similarity (0-1)
+  bm25Score: number; // Full-text relevance (0-1)
+  semanticScore: number; // Vector similarity (0-1)
   popularityScore: number; // Normalized views (0-1)
-  freshnessScore: number;  // How recent (0-1)
-  qualityScore: number;    // Content quality (0-1)
-  intentMatch: number;     // Intent alignment (0-1)
+  freshnessScore: number; // How recent (0-1)
+  qualityScore: number; // Content quality (0-1)
+  intentMatch: number; // Intent alignment (0-1)
 }
 
 export interface SearchResultItem {
@@ -55,12 +55,12 @@ const DEFAULT_CONFIG: RankerConfig = {
     bm25: 0.25,
     semantic: 0.35,
     popularity: 0.15,
-    freshness: 0.10,
-    quality: 0.10,
+    freshness: 0.1,
+    quality: 0.1,
     intent: 0.05,
   },
   boosts: {
-    exactTitleMatch: 2.0,
+    exactTitleMatch: 2,
     partialTitleMatch: 1.3,
     featuredContent: 1.5,
     recentContent: 1.2,
@@ -73,7 +73,7 @@ export const hybridRanker = {
    */
   calculateScore(signals: RankingSignals, config: RankerConfig = DEFAULT_CONFIG): number {
     const { weights } = config;
-    
+
     return (
       (signals.bm25Score || 0) * weights.bm25 +
       (signals.semanticScore || 0) * weights.semantic +
@@ -89,16 +89,27 @@ export const hybridRanker = {
    */
   fuseResults(
     textResults: SearchResultItem[],
-    semanticResults: Array<{ contentId: string; title: string; type: string; similarity: number; snippet: string; url: string; image?: string }>,
+    semanticResults: Array<{
+      contentId: string;
+      title: string;
+      type: string;
+      similarity: number;
+      snippet: string;
+      url: string;
+      image?: string;
+    }>,
     query: string,
     intent: Intent,
     config: RankerConfig = DEFAULT_CONFIG
   ): SearchResultItem[] {
     // Build combined result map
-    const resultMap = new Map<string, {
-      item: SearchResultItem;
-      signals: Partial<RankingSignals>;
-    }>();
+    const resultMap = new Map<
+      string,
+      {
+        item: SearchResultItem;
+        signals: Partial<RankingSignals>;
+      }
+    >();
 
     // Add text search results
     for (const result of textResults) {
@@ -142,16 +153,13 @@ export const hybridRanker = {
 
     // Calculate final scores with boosts
     const normalizedQuery = query.toLowerCase().trim();
-    
+
     const rankedResults = [...resultMap.values()].map(({ item, signals }) => {
       // Calculate intent match
       const intentMatch = this.calculateIntentMatch(item, intent);
-      
+
       // Calculate base score
-      let score = this.calculateScore(
-        { ...signals, intentMatch } as RankingSignals,
-        config
-      );
+      let score = this.calculateScore({ ...signals, intentMatch } as RankingSignals, config);
 
       // Apply boosts
       const titleLower = item.title.toLowerCase();
@@ -185,7 +193,7 @@ export const hybridRanker = {
     // Location in title/snippet matches extracted locations
     if (intent.entities.locations?.length) {
       const combined = (result.title + " " + result.snippet).toLowerCase();
-      const locationMatch = intent.entities.locations.some(loc => 
+      const locationMatch = intent.entities.locations.some(loc =>
         combined.includes(loc.toLowerCase())
       );
       if (locationMatch) {
@@ -193,7 +201,7 @@ export const hybridRanker = {
       }
     }
 
-    return Math.min(score, 1.0);
+    return Math.min(score, 1);
   },
 
   /**

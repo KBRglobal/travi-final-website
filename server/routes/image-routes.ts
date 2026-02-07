@@ -99,7 +99,7 @@ export function registerImageRoutes(app: Express) {
           {
             source: "upload",
             altText,
-            contentId: contentId ? parseInt(contentId) : undefined,
+            contentId: contentId ? Number.parseInt(contentId) : undefined,
             seoContext: parsedSeoContext,
           }
         );
@@ -146,7 +146,7 @@ export function registerImageRoutes(app: Express) {
           {
             source: "upload",
             altText,
-            contentId: contentId ? parseInt(contentId) : undefined,
+            contentId: contentId ? Number.parseInt(contentId) : undefined,
           }
         );
 
@@ -184,7 +184,7 @@ export function registerImageRoutes(app: Express) {
         const result = await uploadImageFromUrl(url, filename || `external-${Date.now()}.jpg`, {
           source: "external",
           altText,
-          contentId: contentId ? parseInt(contentId) : undefined,
+          contentId: contentId ? Number.parseInt(contentId) : undefined,
         });
 
         if (!result.success) {
@@ -236,7 +236,7 @@ export function registerImageRoutes(app: Express) {
           style: style || "natural",
           provider: provider || "auto",
           altText,
-          contentId: contentId ? parseInt(contentId) : undefined,
+          contentId: contentId ? Number.parseInt(contentId) : undefined,
         };
 
         const result = await externalImageService.generateAndStoreAIImage(
@@ -301,7 +301,7 @@ export function registerImageRoutes(app: Express) {
 
           const result = await externalImageService.generateAndStoreAIImage(prompt, filename, {
             ...options,
-            contentId: contentId ? parseInt(contentId) : undefined,
+            contentId: contentId ? Number.parseInt(contentId) : undefined,
           });
 
           if (result.success) {
@@ -393,7 +393,7 @@ export function registerImageRoutes(app: Express) {
           filename || `freepik-${Date.now()}.jpg`,
           {
             altText,
-            contentId: contentId ? parseInt(contentId) : undefined,
+            contentId: contentId ? Number.parseInt(contentId) : undefined,
           }
         );
 
@@ -476,7 +476,9 @@ export function registerImageRoutes(app: Express) {
         const metadata = seoService.generateSEOMetadata(
           context as ImageSEOContext,
           imageUrl || "",
-          width && height ? { width: parseInt(width), height: parseInt(height) } : undefined
+          width && height
+            ? { width: Number.parseInt(width), height: Number.parseInt(height) }
+            : undefined
         );
 
         res.json({
@@ -733,7 +735,9 @@ export function registerImageRoutes(app: Express) {
 
         const seoService = getImageSEOService();
         const dimensions =
-          width && height ? { width: parseInt(width), height: parseInt(height) } : undefined;
+          width && height
+            ? { width: Number.parseInt(width), height: Number.parseInt(height) }
+            : undefined;
 
         let html: string;
         if (format === "picture") {

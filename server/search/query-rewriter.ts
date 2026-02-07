@@ -1,13 +1,13 @@
 /**
  * Query Rewriter
- * 
+ *
  * Combines spell checking, synonym expansion, and pattern handling
  * into a unified query rewriting pipeline
  */
 
-import { spellChecker } from './spell-checker';
-import { synonymExpander } from './synonyms';
-import { queryProcessor } from './query-processor';
+import { spellChecker } from "./spell-checker";
+import { synonymExpander } from "./synonyms";
+import { queryProcessor } from "./query-processor";
 
 export interface QueryRewriteResult {
   original: string;
@@ -20,7 +20,7 @@ export interface QueryRewriteResult {
 }
 
 export interface Transformation {
-  type: 'spell' | 'pattern' | 'synonym' | 'stopword';
+  type: "spell" | "pattern" | "synonym" | "stopword";
   from: string;
   to: string;
   confidence: number;
@@ -33,58 +33,58 @@ const QUERY_PATTERNS = [
   {
     pattern: /^best\s+(\S(?:.*\S)?)\s+in\s+dubai$/i,
     transform: (match: RegExpMatchArray) => match[1],
-    type: 'pattern' as const,
-    description: 'Remove "best X in dubai" wrapper'
+    type: "pattern" as const,
+    description: 'Remove "best X in dubai" wrapper',
   },
   {
     pattern: /^top\s+(\S(?:.*\S)?)\s+in\s+dubai$/i,
     transform: (match: RegExpMatchArray) => match[1],
-    type: 'pattern' as const,
-    description: 'Remove "top X in dubai" wrapper'
+    type: "pattern" as const,
+    description: 'Remove "top X in dubai" wrapper',
   },
   {
     pattern: /^(\S(?:.*\S)?)\s+near\s+(\S(?:.*\S)?)$/i,
     transform: (match: RegExpMatchArray) => `${match[1]} ${match[2]}`,
-    type: 'pattern' as const,
-    description: 'Simplify "X near Y" to "X Y"'
+    type: "pattern" as const,
+    description: 'Simplify "X near Y" to "X Y"',
   },
   {
     pattern: /^find\s+(\S(?:.*\S)?)$/i,
     transform: (match: RegExpMatchArray) => match[1],
-    type: 'pattern' as const,
-    description: 'Remove "find" prefix'
+    type: "pattern" as const,
+    description: 'Remove "find" prefix',
   },
   {
     pattern: /^search\s+for\s+(\S(?:.*\S)?)$/i,
     transform: (match: RegExpMatchArray) => match[1],
-    type: 'pattern' as const,
-    description: 'Remove "search for" prefix'
+    type: "pattern" as const,
+    description: 'Remove "search for" prefix',
   },
   {
     pattern: /^where\s+(?:can\s+i\s+find|is|are)\s+(\S(?:.*\S)?)$/i,
     transform: (match: RegExpMatchArray) => match[1],
-    type: 'pattern' as const,
-    description: 'Remove question words'
+    type: "pattern" as const,
+    description: "Remove question words",
   },
   {
     pattern: /^what\s+is\s+the\s+(\S(?:.*\S)?)$/i,
     transform: (match: RegExpMatchArray) => match[1],
-    type: 'pattern' as const,
-    description: 'Remove "what is the" prefix'
+    type: "pattern" as const,
+    description: 'Remove "what is the" prefix',
   },
   {
     pattern: /^how\s+to\s+(?:find|get\s+to)\s+(\S(?:.*\S)?)$/i,
     transform: (match: RegExpMatchArray) => match[1],
-    type: 'pattern' as const,
-    description: 'Remove "how to" prefix'
-  }
+    type: "pattern" as const,
+    description: 'Remove "how to" prefix',
+  },
 ];
 
 export const queryRewriter = {
   /**
    * Rewrite query using all available techniques
    */
-  async rewrite(query: string, locale: string = 'en'): Promise<QueryRewriteResult> {
+  async rewrite(query: string, locale: string = "en"): Promise<QueryRewriteResult> {
     const transformations: Transformation[] = [];
     let currentQuery = query.trim();
 
@@ -92,10 +92,10 @@ export const queryRewriter = {
     const patternResult = this.applyPatterns(currentQuery);
     if (patternResult.transformed) {
       transformations.push({
-        type: 'pattern',
+        type: "pattern",
         from: currentQuery,
         to: patternResult.query,
-        confidence: 1.0
+        confidence: 1,
       });
       currentQuery = patternResult.query;
     }
@@ -104,34 +104,35 @@ export const queryRewriter = {
     const spellResult = await spellChecker.check(currentQuery);
     if (spellResult.wasChanged) {
       transformations.push({
-        type: 'spell',
+        type: "spell",
         from: currentQuery,
         to: spellResult.corrected,
-        confidence: spellResult.confidence
+        confidence: spellResult.confidence,
       });
       currentQuery = spellResult.corrected;
     }
 
     // 3. Process query (language detection, normalization, stop word removal)
     const processed = queryProcessor.process(currentQuery, locale);
-    
+
     // 4. Expand with synonyms
     const expansion = synonymExpander.expand(processed.tokens, processed.language);
-    
+
     // Track stop word removal if cleaned differs from normalized
     if (processed.cleaned !== processed.normalized) {
       transformations.push({
-        type: 'stopword',
+        type: "stopword",
         from: processed.normalized,
         to: processed.cleaned,
-        confidence: 0.9
+        confidence: 0.9,
       });
     }
 
     // 5. Calculate overall confidence
-    const avgConfidence = transformations.length > 0
-      ? transformations.reduce((sum, t) => sum + t.confidence, 0) / transformations.length
-      : 1.0;
+    const avgConfidence =
+      transformations.length > 0
+        ? transformations.reduce((sum, t) => sum + t.confidence, 0) / transformations.length
+        : 1;
 
     // 6. Generate suggestions
     const suggestions = await this.generateSuggestions(query, locale, spellResult);
@@ -143,7 +144,7 @@ export const queryRewriter = {
       transformations,
       suggestions,
       confidence: avgConfidence,
-      locale: processed.language
+      locale: processed.language,
     };
   },
 
@@ -169,11 +170,7 @@ export const queryRewriter = {
   /**
    * Generate query suggestions
    */
-  async generateSuggestions(
-    query: string,
-    locale: string,
-    spellResult: any
-  ): Promise<string[]> {
+  async generateSuggestions(query: string, locale: string, spellResult: any): Promise<string[]> {
     const suggestions = new Set<string>();
 
     // Add spell check suggestions
@@ -194,13 +191,11 @@ export const queryRewriter = {
 
     // Add synonym suggestions (different term combinations)
     const processed = queryProcessor.process(query, locale);
-    for (const token of processed.tokens.slice(0, 2)) { // Limit to first 2 tokens
+    for (const token of processed.tokens.slice(0, 2)) {
+      // Limit to first 2 tokens
       const synonyms = synonymExpander.getSynonyms(token, locale);
       if (synonyms.length > 0) {
-        const suggestion = query.replace(
-          new RegExp(`\\b${token}\\b`, 'gi'),
-          synonyms[0]
-        );
+        const suggestion = query.replace(new RegExp(`\\b${token}\\b`, "gi"), synonyms[0]);
         if (suggestion !== query) {
           suggestions.add(suggestion);
         }
@@ -213,9 +208,9 @@ export const queryRewriter = {
   /**
    * Get "Did you mean?" suggestion
    */
-  async getDidYouMean(query: string, locale: string = 'en'): Promise<string | null> {
+  async getDidYouMean(query: string, locale: string = "en"): Promise<string | null> {
     const result = await this.rewrite(query, locale);
-    
+
     // Only suggest if we have high confidence and the query changed
     if (result.confidence >= 0.8 && result.rewritten !== query.toLowerCase().trim()) {
       return result.rewritten;
@@ -233,7 +228,7 @@ export const queryRewriter = {
   /**
    * Batch rewrite multiple queries
    */
-  async rewriteBatch(queries: string[], locale: string = 'en'): Promise<QueryRewriteResult[]> {
+  async rewriteBatch(queries: string[], locale: string = "en"): Promise<QueryRewriteResult[]> {
     return Promise.all(queries.map(q => this.rewrite(q, locale)));
   },
 
@@ -242,5 +237,5 @@ export const queryRewriter = {
    */
   getPatterns(): typeof QUERY_PATTERNS {
     return QUERY_PATTERNS;
-  }
+  },
 };

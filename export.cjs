@@ -2,7 +2,7 @@
 // Run: node export.js
 // Output: secrets-export.txt
 
-const fs = require("fs");
+const fs = require("node:fs");
 const env = process.env;
 const keys = Object.keys(env).sort();
 const lines = [];

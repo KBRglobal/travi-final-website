@@ -5,7 +5,7 @@
 
 import type { Express, Request, Response } from "express";
 import { eq } from "drizzle-orm";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { Resend } from "resend";
 import { db } from "../db";
 import { newsletterSubscribers } from "@shared/schema";

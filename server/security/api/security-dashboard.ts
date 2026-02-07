@@ -560,7 +560,7 @@ securityDashboardRouter.get("/drift", async (req, res) => {
  * Get high-risk users
  */
 securityDashboardRouter.get("/high-risk-users", (req, res) => {
-  const threshold = parseInt(req.query.threshold as string) || 50;
+  const threshold = Number.parseInt(req.query.threshold as string) || 50;
   const users = getHighRiskUsers(threshold);
   res.json(users);
 });
@@ -569,7 +569,7 @@ securityDashboardRouter.get("/high-risk-users", (req, res) => {
  * Get recent anomalies
  */
 securityDashboardRouter.get("/anomalies", (req, res) => {
-  const hours = parseInt(req.query.hours as string) || 24;
+  const hours = Number.parseInt(req.query.hours as string) || 24;
   const anomalies = getRecentAnomalies(hours);
   res.json(anomalies);
 });

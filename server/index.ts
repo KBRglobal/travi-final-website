@@ -29,7 +29,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import compression from "compression";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
-import { createServer } from "http";
+import { createServer } from "node:http";
 import { securityHeaders, corsMiddleware, sanitizeInput, approvedBotMiddleware } from "./security";
 import { setupSecurityMiddleware } from "./security/index";
 import { consoleLogger } from "./console-logger";
@@ -455,7 +455,7 @@ app.get("/sitemap", async (_req, res) => {
 
 // ALWAYS serve the app on the port specified in the environment variable PORT
 // Other ports are firewalled. Default to 5000 if not specified.
-const port = parseInt(process.env.PORT || "5000", 10);
+const port = Number.parseInt(process.env.PORT || "5000", 10);
 
 // Security: Set server timeouts to prevent slow loris attacks
 httpServer.timeout = 120000; // 2 minutes for complete request

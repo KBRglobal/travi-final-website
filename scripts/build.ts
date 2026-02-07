@@ -30,7 +30,7 @@ import { build } from "vite";
 import { build as esbuild } from "esbuild";
 import react from "@vitejs/plugin-react";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
-import path from "path";
+import path from "node:path";
 
 /**
  * Fixed manualChunks function that prevents circular dependencies.

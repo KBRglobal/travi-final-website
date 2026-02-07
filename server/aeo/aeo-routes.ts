@@ -98,7 +98,7 @@ router.get("/llms-full.txt", (req: Request, res: Response) => {
 router.get("/api/aeo/capsules", async (req: Request, res: Response) => {
   try {
     const { locale, status, page = "1", limit = "50" } = req.query;
-    const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
+    const offset = (Number.parseInt(page as string) - 1) * Number.parseInt(limit as string);
 
     let query = db.select().from(aeoAnswerCapsules);
 
@@ -114,7 +114,7 @@ router.get("/api/aeo/capsules", async (req: Request, res: Response) => {
 
     const capsules = await query
       .orderBy(desc(aeoAnswerCapsules.generatedAt))
-      .limit(parseInt(limit as string))
+      .limit(Number.parseInt(limit as string))
       .offset(offset);
 
     // Get total count
@@ -124,10 +124,10 @@ router.get("/api/aeo/capsules", async (req: Request, res: Response) => {
     res.json({
       capsules,
       pagination: {
-        page: parseInt(page as string),
-        limit: parseInt(limit as string),
+        page: Number.parseInt(page as string),
+        limit: Number.parseInt(limit as string),
         total,
-        pages: Math.ceil(total / parseInt(limit as string)),
+        pages: Math.ceil(total / Number.parseInt(limit as string)),
       },
     });
   } catch (error) {
@@ -366,10 +366,10 @@ router.post("/api/aeo/citations", async (req: Request, res: Response) => {
 router.get("/api/aeo/citations", async (req: Request, res: Response) => {
   try {
     const { platform, contentId, days = "30", page = "1", limit = "50" } = req.query;
-    const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
+    const offset = (Number.parseInt(page as string) - 1) * Number.parseInt(limit as string);
 
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - parseInt(days as string));
+    startDate.setDate(startDate.getDate() - Number.parseInt(days as string));
 
     let conditions = [gte(aeoCitations.detectedAt, startDate)];
 
@@ -385,7 +385,7 @@ router.get("/api/aeo/citations", async (req: Request, res: Response) => {
       .from(aeoCitations)
       .where(and(...conditions))
       .orderBy(desc(aeoCitations.detectedAt))
-      .limit(parseInt(limit as string))
+      .limit(Number.parseInt(limit as string))
       .offset(offset);
 
     res.json({ citations });
@@ -401,7 +401,7 @@ router.get("/api/aeo/citations", async (req: Request, res: Response) => {
 router.get("/api/aeo/citations/insights", async (req: Request, res: Response) => {
   try {
     const { days = "30" } = req.query;
-    const insights = await getCitationInsights(parseInt(days as string));
+    const insights = await getCitationInsights(Number.parseInt(days as string));
     res.json(insights);
   } catch (error) {
     aeoLogger.error("Failed to get citation insights", { error });
@@ -422,7 +422,7 @@ router.get("/api/aeo/dashboard", async (req: Request, res: Response) => {
 
     const endDate = new Date();
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - parseInt(days as string));
+    startDate.setDate(startDate.getDate() - Number.parseInt(days as string));
 
     const dashboard = await getAEODashboard(startDate, endDate);
     res.json(dashboard);
@@ -438,7 +438,7 @@ router.get("/api/aeo/dashboard", async (req: Request, res: Response) => {
 router.get("/api/aeo/crawlers", async (req: Request, res: Response) => {
   try {
     const { days = "30" } = req.query;
-    const stats = await getCrawlerStats(parseInt(days as string));
+    const stats = await getCrawlerStats(Number.parseInt(days as string));
     res.json(stats);
   } catch (error) {
     aeoLogger.error("Failed to get crawler stats", { error });
@@ -454,7 +454,7 @@ router.get("/api/aeo/performance", async (req: Request, res: Response) => {
     const { days = "30", platform } = req.query;
 
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - parseInt(days as string));
+    startDate.setDate(startDate.getDate() - Number.parseInt(days as string));
 
     let conditions = [gte(aeoPerformanceMetrics.date, startDate)];
 
@@ -683,7 +683,7 @@ router.get("/api/aeo/content/missing-capsules", async (req: Request, res: Respon
       .from(contents)
       .where(whereCondition)
       .orderBy(desc(contents.viewCount))
-      .limit(parseInt(limit as string));
+      .limit(Number.parseInt(limit as string));
 
     // Filter out content with capsules
     const contentWithoutCapsules = allContent.filter(c => !idsWithCapsules.has(c.id));
@@ -956,7 +956,7 @@ router.get("/api/aeo/analytics/content-gaps", async (req: Request, res: Response
 router.get("/api/aeo/analytics/query-mapping", async (req: Request, res: Response) => {
   try {
     const { days = "30" } = req.query;
-    const mappings = await mapQueriesToContent(parseInt(days as string));
+    const mappings = await mapQueriesToContent(Number.parseInt(days as string));
     res.json({ mappings });
   } catch (error) {
     aeoLogger.error("Failed to get query mapping", { error });
@@ -970,7 +970,7 @@ router.get("/api/aeo/analytics/query-mapping", async (req: Request, res: Respons
 router.get("/api/aeo/analytics/platform-performance", async (req: Request, res: Response) => {
   try {
     const { days = "30" } = req.query;
-    const performance = await analyzePlatformPerformance(parseInt(days as string));
+    const performance = await analyzePlatformPerformance(Number.parseInt(days as string));
     res.json({ performance });
   } catch (error) {
     aeoLogger.error("Failed to get platform performance", { error });

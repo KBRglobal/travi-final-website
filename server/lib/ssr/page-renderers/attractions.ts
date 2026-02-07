@@ -50,7 +50,9 @@ export async function renderTiqetsAttractionPage(
       }
     }
     attraction = results[0];
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   if (!attraction) {
     return render404(options);

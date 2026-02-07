@@ -141,7 +141,7 @@ router.post("/gate1/preview", async (req, res) => {
  */
 router.get("/gate1/queue", async (req, res) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 20, 100);
 
     // Use rssReader to get unprocessed items
     const items = await rssReader.getUnprocessedItems(limit);
@@ -223,7 +223,7 @@ router.post("/gate2/preview", async (req, res) => {
  */
 router.get("/gate2/queue", async (req, res) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 20, 100);
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 20, 100);
 
     const drafts = await db.query.contents.findMany({
       where: and(eq(contents.status, "draft"), eq(contents.generatedByAI, true)),
@@ -333,7 +333,7 @@ router.post("/gate2/force-reject", async (req, res) => {
  */
 router.get("/stats", async (req, res) => {
   try {
-    const days = parseInt(req.query.days as string) || 7;
+    const days = Number.parseInt(req.query.days as string) || 7;
 
     // Get counts by status
     const statusCounts = await db

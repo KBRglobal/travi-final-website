@@ -43,7 +43,7 @@ export interface NativeContentJobData {
 // Concurrency control
 // ---------------------------------------------------------------------------
 
-const MAX_CONCURRENT = parseInt(process.env.NATIVE_CONTENT_CONCURRENCY || "3", 10);
+const MAX_CONCURRENT = Number.parseInt(process.env.NATIVE_CONTENT_CONCURRENCY || "3", 10);
 let activeGenerations = 0;
 
 // ---------------------------------------------------------------------------
@@ -52,7 +52,7 @@ let activeGenerations = 0;
 
 let dailyCostUsd = 0;
 let lastCostResetDate = new Date().toDateString();
-const DAILY_BUDGET_USD = parseFloat(process.env.DAILY_LLM_BUDGET_USD || "50");
+const DAILY_BUDGET_USD = Number.parseFloat(process.env.DAILY_LLM_BUDGET_USD || "50");
 
 function resetDailyCostIfNeeded(): void {
   const today = new Date().toDateString();
@@ -197,7 +197,7 @@ async function handleNativeContentJob(
     const generated = result.content as GeneratedAttractionContent;
 
     // 4. Locale purity validation
-    let localePurityScore = 1.0;
+    let localePurityScore = 1;
     try {
       const { validateLocalePurity } = await import("./validators/locale-purity");
       const purityResult = validateLocalePurity(

@@ -226,7 +226,7 @@ router.get("/decisions", async (req: Request, res: Response) => {
       targetKey: scope as string,
       feature: feature as string,
       decision: decision as "ALLOW" | "WARN" | "BLOCK",
-      limit: limit ? parseInt(limit as string, 10) : 100,
+      limit: limit ? Number.parseInt(limit as string, 10) : 100,
     } as any);
 
     res.json({ decisions });
@@ -251,7 +251,7 @@ router.get("/overrides", async (req: Request, res: Response) => {
       activeOnly: activeOnly === "true",
       feature: feature as GuardedFeature,
       targetKey: targetKey as string,
-      limit: limit ? parseInt(limit as string, 10) : 50,
+      limit: limit ? Number.parseInt(limit as string, 10) : 50,
     });
 
     res.json({ overrides });

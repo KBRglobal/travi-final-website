@@ -5,7 +5,7 @@
  * Usage: DATABASE_URL="..." node server/scripts/seed-destinations-content.js
  */
 const { Pool } = require('pg');
-const { randomUUID } = require('crypto');
+const { randomUUID } = require('node:crypto');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,

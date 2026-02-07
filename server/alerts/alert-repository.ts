@@ -23,7 +23,9 @@ async function ensureTable(): Promise<void> {
       )
     `);
     tableExists = true;
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 }
 
 export async function createAlert(

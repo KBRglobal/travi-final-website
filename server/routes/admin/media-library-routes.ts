@@ -7,12 +7,12 @@
  * FEATURE FLAG: Requires ENABLE_MEDIA_LIBRARY=true
  */
 
-import { Router, type Request, type Response } from 'express';
-import { db } from '../../db';
-import { mediaAssets } from '@shared/schema';
-import { eq, desc, sql, ilike, or } from 'drizzle-orm';
-import { requireAuth, requirePermission } from '../../security';
-import { log } from '../../lib/logger';
+import { Router, type Request, type Response } from "express";
+import { db } from "../../db";
+import { mediaAssets } from "@shared/schema";
+import { eq, desc, sql, ilike, or } from "drizzle-orm";
+import { requireAuth, requirePermission } from "../../security";
+import { log } from "../../lib/logger";
 import {
   isMediaLibraryEnabled,
   getMediaLibraryConfig,
@@ -25,7 +25,7 @@ import {
   dryRunDelete,
   deleteOrphans,
   generateDeleteToken,
-} from '../../media/library';
+} from "../../media/library";
 
 const router = Router();
 
@@ -35,8 +35,8 @@ const router = Router();
 function requireMediaLibraryEnabled(req: Request, res: Response, next: () => void) {
   if (!isMediaLibraryEnabled()) {
     return res.status(503).json({
-      error: 'Media library is not enabled',
-      message: 'Set ENABLE_MEDIA_LIBRARY=true to enable this feature',
+      error: "Media library is not enabled",
+      message: "Set ENABLE_MEDIA_LIBRARY=true to enable this feature",
     });
   }
   next();
@@ -44,7 +44,7 @@ function requireMediaLibraryEnabled(req: Request, res: Response, next: () => voi
 
 // Apply common middleware to all routes
 router.use(requireAuth);
-router.use(requirePermission('canAccessMediaLibrary'));
+router.use(requirePermission("canAccessMediaLibrary"));
 router.use(requireMediaLibraryEnabled);
 
 /**
@@ -52,7 +52,7 @@ router.use(requireMediaLibraryEnabled);
  *
  * Get overall media library status and configuration
  */
-router.get('/status', async (req: Request, res: Response) => {
+router.get("/status", async (req: Request, res: Response) => {
   try {
     const config = getMediaLibraryConfig();
     const stats = await getScanStats();
@@ -80,8 +80,8 @@ router.get('/status', async (req: Request, res: Response) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    log.error('[MediaLibrary] Error getting status', error);
-    res.status(500).json({ error: 'Failed to get media library status' });
+    log.error("[MediaLibrary] Error getting status", error);
+    res.status(500).json({ error: "Failed to get media library status" });
   }
 });
 
@@ -95,17 +95,17 @@ router.get('/status', async (req: Request, res: Response) => {
  * - q: Search query (matches filename or path)
  * - source: Filter by source (upload, ai_generated, attached, external)
  */
-router.get('/assets', async (req: Request, res: Response) => {
+router.get("/assets", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 100);
+    const offset = Number.parseInt(req.query.offset as string) || 0;
     const query = req.query.q as string | undefined;
     const source = req.query.source as string | undefined;
 
     let whereClause = undefined;
 
     if (query && source) {
-      whereClause = sql`(${mediaAssets.filename} ILIKE ${'%' + query + '%'} OR ${mediaAssets.path} ILIKE ${'%' + query + '%'}) AND ${mediaAssets.source} = ${source}`;
+      whereClause = sql`(${mediaAssets.filename} ILIKE ${"%" + query + "%"} OR ${mediaAssets.path} ILIKE ${"%" + query + "%"}) AND ${mediaAssets.source} = ${source}`;
     } else if (query) {
       whereClause = or(
         ilike(mediaAssets.filename, `%${query}%`),
@@ -132,7 +132,7 @@ router.get('/assets', async (req: Request, res: Response) => {
     const total = countResult[0]?.count ?? 0;
 
     res.json({
-      assets: assets.map((asset) => ({
+      assets: assets.map(asset => ({
         id: asset.id,
         path: asset.path,
         url: asset.url,
@@ -153,8 +153,8 @@ router.get('/assets', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    log.error('[MediaLibrary] Error listing assets', error);
-    res.status(500).json({ error: 'Failed to list assets' });
+    log.error("[MediaLibrary] Error listing assets", error);
+    res.status(500).json({ error: "Failed to list assets" });
   }
 });
 
@@ -166,20 +166,17 @@ router.get('/assets', async (req: Request, res: Response) => {
  * - limit: Number of orphans per page (default 50, max 100)
  * - offset: Pagination offset
  */
-router.get('/orphans', async (req: Request, res: Response) => {
+router.get("/orphans", async (req: Request, res: Response) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
-    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 100);
+    const offset = Number.parseInt(req.query.offset as string) || 0;
 
-    const [orphans, total] = await Promise.all([
-      getOrphans({ limit, offset }),
-      getOrphanCount(),
-    ]);
+    const [orphans, total] = await Promise.all([getOrphans({ limit, offset }), getOrphanCount()]);
 
     const orphanStats = await getOrphanStats();
 
     res.json({
-      orphans: orphans.map((orphan) => ({
+      orphans: orphans.map(orphan => ({
         id: orphan.id,
         path: orphan.path,
         url: orphan.url,
@@ -205,8 +202,8 @@ router.get('/orphans', async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    log.error('[MediaLibrary] Error listing orphans', error);
-    res.status(500).json({ error: 'Failed to list orphans' });
+    log.error("[MediaLibrary] Error listing orphans", error);
+    res.status(500).json({ error: "Failed to list orphans" });
   }
 });
 
@@ -218,36 +215,40 @@ router.get('/orphans', async (req: Request, res: Response) => {
  * - limit: Max files to scan (optional)
  * - calculateChecksums: Whether to calculate file checksums (optional, slower)
  */
-router.post('/scan', requirePermission('canManageSettings'), async (req: Request, res: Response) => {
-  try {
-    const { limit, calculateChecksums } = req.body;
+router.post(
+  "/scan",
+  requirePermission("canManageSettings"),
+  async (req: Request, res: Response) => {
+    try {
+      const { limit, calculateChecksums } = req.body;
 
-    log.info('[MediaLibrary] Starting asset scan');
-    const result = await scanUploadsAndIndex({
-      limit: limit ? parseInt(limit, 10) : undefined,
-      calculateChecksums: calculateChecksums === true,
-    });
+      log.info("[MediaLibrary] Starting asset scan");
+      const result = await scanUploadsAndIndex({
+        limit: limit ? Number.parseInt(limit, 10) : undefined,
+        calculateChecksums: calculateChecksums === true,
+      });
 
-    res.json({
-      success: result.success,
-      message: result.success ? 'Scan completed successfully' : 'Scan completed with errors',
-      result: {
-        filesScanned: result.filesScanned,
-        filesIndexed: result.filesIndexed,
-        filesUpdated: result.filesUpdated,
-        filesSkipped: result.filesSkipped,
-        duration: result.duration,
-        batchComplete: result.batchComplete,
-        errorCount: result.errors.length,
-      },
-      errors: result.errors.slice(0, 10), // Limit errors in response
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    log.error('[MediaLibrary] Scan failed', error);
-    res.status(500).json({ error: 'Failed to scan assets' });
+      res.json({
+        success: result.success,
+        message: result.success ? "Scan completed successfully" : "Scan completed with errors",
+        result: {
+          filesScanned: result.filesScanned,
+          filesIndexed: result.filesIndexed,
+          filesUpdated: result.filesUpdated,
+          filesSkipped: result.filesSkipped,
+          duration: result.duration,
+          batchComplete: result.batchComplete,
+          errorCount: result.errors.length,
+        },
+        errors: result.errors.slice(0, 10), // Limit errors in response
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      log.error("[MediaLibrary] Scan failed", error);
+      res.status(500).json({ error: "Failed to scan assets" });
+    }
   }
-});
+);
 
 /**
  * POST /api/admin/media/detect-orphans
@@ -257,34 +258,38 @@ router.post('/scan', requirePermission('canManageSettings'), async (req: Request
  * - limit: Max assets to check (optional)
  * - offset: Pagination offset (optional)
  */
-router.post('/detect-orphans', requirePermission('canManageSettings'), async (req: Request, res: Response) => {
-  try {
-    const { limit, offset } = req.body;
+router.post(
+  "/detect-orphans",
+  requirePermission("canManageSettings"),
+  async (req: Request, res: Response) => {
+    try {
+      const { limit, offset } = req.body;
 
-    log.info('[MediaLibrary] Starting orphan detection');
-    const result = await detectOrphans({
-      limit: limit ? parseInt(limit, 10) : undefined,
-      offset: offset ? parseInt(offset, 10) : undefined,
-    });
+      log.info("[MediaLibrary] Starting orphan detection");
+      const result = await detectOrphans({
+        limit: limit ? Number.parseInt(limit, 10) : undefined,
+        offset: offset ? Number.parseInt(offset, 10) : undefined,
+      });
 
-    res.json({
-      success: result.success,
-      message: result.success ? 'Orphan detection completed' : 'Detection completed with errors',
-      result: {
-        totalAssets: result.totalAssets,
-        orphanCount: result.orphanCount,
-        newOrphans: result.newOrphans,
-        recoveredAssets: result.recoveredAssets,
-        duration: result.duration,
-      },
-      errors: result.errors,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    log.error('[MediaLibrary] Orphan detection failed', error);
-    res.status(500).json({ error: 'Failed to detect orphans' });
+      res.json({
+        success: result.success,
+        message: result.success ? "Orphan detection completed" : "Detection completed with errors",
+        result: {
+          totalAssets: result.totalAssets,
+          orphanCount: result.orphanCount,
+          newOrphans: result.newOrphans,
+          recoveredAssets: result.recoveredAssets,
+          duration: result.duration,
+        },
+        errors: result.errors,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      log.error("[MediaLibrary] Orphan detection failed", error);
+      res.status(500).json({ error: "Failed to detect orphans" });
+    }
   }
-});
+);
 
 /**
  * POST /api/admin/media/orphans/dry-run-delete
@@ -292,43 +297,47 @@ router.post('/detect-orphans', requirePermission('canManageSettings'), async (re
  * Preview what would be deleted without actually deleting
  * Returns list of deletable orphans with total bytes
  */
-router.post('/orphans/dry-run-delete', requirePermission('canDelete'), async (req: Request, res: Response) => {
-  try {
-    log.info('[MediaLibrary] Running dry-run delete');
-    const result = await dryRunDelete();
+router.post(
+  "/orphans/dry-run-delete",
+  requirePermission("canDelete"),
+  async (req: Request, res: Response) => {
+    try {
+      log.info("[MediaLibrary] Running dry-run delete");
+      const result = await dryRunDelete();
 
-    // Generate confirmation token for actual delete
-    const confirmToken = generateDeleteToken();
+      // Generate confirmation token for actual delete
+      const confirmToken = generateDeleteToken();
 
-    res.json({
-      message: 'Dry run complete - no files were deleted',
-      summary: {
-        totalOrphans: result.totalCount,
-        totalBytes: result.totalBytes,
-        totalBytesFormatted: formatBytes(result.totalBytes),
-        deletableOrphans: result.deletableCount,
-        deletableBytes: result.deletableBytes,
-        deletableBytesFormatted: formatBytes(result.deletableBytes),
-      },
-      assets: result.assets.map((asset) => ({
-        id: asset.id,
-        path: asset.path,
-        filename: asset.filename,
-        size: asset.size,
-        sizeFormatted: formatBytes(asset.size),
-        orphanedAt: asset.orphanedAt?.toISOString() ?? null,
-        orphanedDays: asset.orphanedDays,
-        canDelete: asset.canDelete,
-      })),
-      confirmToken,
-      confirmTokenExpiresIn: '5 minutes',
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    log.error('[MediaLibrary] Dry run delete failed', error);
-    res.status(500).json({ error: 'Failed to run dry-run delete' });
+      res.json({
+        message: "Dry run complete - no files were deleted",
+        summary: {
+          totalOrphans: result.totalCount,
+          totalBytes: result.totalBytes,
+          totalBytesFormatted: formatBytes(result.totalBytes),
+          deletableOrphans: result.deletableCount,
+          deletableBytes: result.deletableBytes,
+          deletableBytesFormatted: formatBytes(result.deletableBytes),
+        },
+        assets: result.assets.map(asset => ({
+          id: asset.id,
+          path: asset.path,
+          filename: asset.filename,
+          size: asset.size,
+          sizeFormatted: formatBytes(asset.size),
+          orphanedAt: asset.orphanedAt?.toISOString() ?? null,
+          orphanedDays: asset.orphanedDays,
+          canDelete: asset.canDelete,
+        })),
+        confirmToken,
+        confirmTokenExpiresIn: "5 minutes",
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      log.error("[MediaLibrary] Dry run delete failed", error);
+      res.status(500).json({ error: "Failed to run dry-run delete" });
+    }
   }
-});
+);
 
 /**
  * POST /api/admin/media/orphans/delete
@@ -338,59 +347,63 @@ router.post('/orphans/dry-run-delete', requirePermission('canDelete'), async (re
  * Body params:
  * - confirmToken: Token from dry-run-delete (required)
  */
-router.post('/orphans/delete', requirePermission('canDelete'), async (req: Request, res: Response) => {
-  try {
-    const { confirmToken } = req.body;
+router.post(
+  "/orphans/delete",
+  requirePermission("canDelete"),
+  async (req: Request, res: Response) => {
+    try {
+      const { confirmToken } = req.body;
 
-    if (!confirmToken) {
-      return res.status(400).json({
-        error: 'Confirmation token required',
-        message: 'Run dry-run-delete first to get a confirmation token',
-      });
-    }
-
-    log.info('[MediaLibrary] Starting orphan deletion');
-    const result = await deleteOrphans(confirmToken);
-
-    if (!result.success && result.errors.length > 0) {
-      const firstError = result.errors[0];
-      if (firstError.error.includes('Invalid or expired')) {
+      if (!confirmToken) {
         return res.status(400).json({
-          error: 'Invalid or expired confirmation token',
-          message: 'Run dry-run-delete again to get a new token',
+          error: "Confirmation token required",
+          message: "Run dry-run-delete first to get a confirmation token",
         });
       }
-    }
 
-    res.json({
-      success: result.success,
-      message: result.success
-        ? `Successfully deleted ${result.deletedCount} orphaned assets`
-        : 'Delete completed with errors',
-      result: {
-        deletedCount: result.deletedCount,
-        deletedBytes: result.deletedBytes,
-        deletedBytesFormatted: formatBytes(result.deletedBytes),
-        duration: result.duration,
-      },
-      errors: result.errors.slice(0, 10),
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    log.error('[MediaLibrary] Delete failed', error);
-    res.status(500).json({ error: 'Failed to delete orphans' });
+      log.info("[MediaLibrary] Starting orphan deletion");
+      const result = await deleteOrphans(confirmToken);
+
+      if (!result.success && result.errors.length > 0) {
+        const firstError = result.errors[0];
+        if (firstError.error.includes("Invalid or expired")) {
+          return res.status(400).json({
+            error: "Invalid or expired confirmation token",
+            message: "Run dry-run-delete again to get a new token",
+          });
+        }
+      }
+
+      res.json({
+        success: result.success,
+        message: result.success
+          ? `Successfully deleted ${result.deletedCount} orphaned assets`
+          : "Delete completed with errors",
+        result: {
+          deletedCount: result.deletedCount,
+          deletedBytes: result.deletedBytes,
+          deletedBytesFormatted: formatBytes(result.deletedBytes),
+          duration: result.duration,
+        },
+        errors: result.errors.slice(0, 10),
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      log.error("[MediaLibrary] Delete failed", error);
+      res.status(500).json({ error: "Failed to delete orphans" });
+    }
   }
-});
+);
 
 /**
  * Format bytes to human-readable string
  */
 function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return "0 B";
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  return `${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
 export default router;

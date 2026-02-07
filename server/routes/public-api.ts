@@ -23,8 +23,8 @@ import {
 import { makeRenderSafeHomepageConfig } from "../lib/homepage-fallbacks";
 import { getTranslations, getBulkTranslations } from "../cms-translations";
 import { parsePagination, paginationMeta, createPaginatedResponse } from "../lib/pagination";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 const TIQETS_AFFILIATE_LINK = "https://tiqets.tpo.lu/k16k6RXU";
 
@@ -90,7 +90,7 @@ export function registerPublicApiRoutes(app: Express): void {
           search: search as string | undefined,
         };
         const results = await storage.getContentsWithRelations(filters);
-        const maxLimit = Math.min(parseInt(limit as string) || 50, 100);
+        const maxLimit = Math.min(Number.parseInt(limit as string) || 50, 100);
         const sanitized = results.slice(0, maxLimit).map(sanitizeContentForPublic);
         res.json(sanitized);
       }
@@ -164,7 +164,7 @@ export function registerPublicApiRoutes(app: Express): void {
   router.get("/destinations", async (req, res) => {
     try {
       const { limit, level } = req.query;
-      const maxLimit = Math.min(parseInt(limit as string) || 50, 50);
+      const maxLimit = Math.min(Number.parseInt(limit as string) || 50, 50);
 
       const allDestinations = await db
         .select({
@@ -440,8 +440,8 @@ export function registerPublicApiRoutes(app: Express): void {
   router.get("/tiqets/attractions", async (req, res) => {
     try {
       const { city, search, limit = "50", offset = "0" } = req.query;
-      const limitNum = parseInt(limit as string, 10) || 50;
-      const offsetNum = parseInt(offset as string, 10) || 0;
+      const limitNum = Number.parseInt(limit as string, 10) || 50;
+      const offsetNum = Number.parseInt(offset as string, 10) || 0;
 
       const conditions: any[] = [eq(tiqetsAttractions.status, "published")];
 
@@ -1200,7 +1200,7 @@ export function registerPublicApiRoutes(app: Express): void {
           metaDescription: attr.metaDescription,
           heroImage: imageUrl,
           cardImage: imageUrl,
-          rating: attr.rating ? parseFloat(String(attr.rating)) : null,
+          rating: attr.rating ? Number.parseFloat(String(attr.rating)) : null,
           reviewCount: attr.reviewCount,
           priceUsd: attr.priceUsd,
           primaryCategory: attr.primaryCategory,

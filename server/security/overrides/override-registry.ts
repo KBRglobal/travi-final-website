@@ -11,7 +11,7 @@
  * NO SILENT OVERRIDE EXISTS ANYWHERE.
  */
 
-import * as crypto from "crypto";
+import * as crypto from "node:crypto";
 import { Router } from "express";
 import { AdminRole, ROLE_HIERARCHY } from "../../governance/types";
 import { logAdminEvent } from "../../governance/security-logger";
@@ -576,7 +576,9 @@ class OverrideRegistry {
     for (const callback of this.alertCallbacks) {
       try {
         callback(override, event);
-      } catch (error) {}
+      } catch (error) {
+        /* ignored */
+      }
     }
 
     // Always log to console

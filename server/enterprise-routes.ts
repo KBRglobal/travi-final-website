@@ -250,7 +250,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const { limit, teamId } = req.query;
       const activities = await enterprise.activity.getRecent({
-        limit: limit ? parseInt(limit as string) : 50,
+        limit: limit ? Number.parseInt(limit as string) : 50,
         teamId: teamId as string,
       });
       res.json(activities);
@@ -355,7 +355,7 @@ export function registerEnterpriseRoutes(app: Express) {
       const { unreadOnly, limit } = req.query;
       const notifications = await enterprise.notifications.getForUser(user?.claims?.sub, {
         unreadOnly: unreadOnly === "true",
-        limit: limit ? parseInt(limit as string) : 50,
+        limit: limit ? Number.parseInt(limit as string) : 50,
       });
       const unreadCount = await enterprise.notifications.getUnreadCount(user?.claims?.sub);
       res.json({ notifications, unreadCount });

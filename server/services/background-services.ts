@@ -73,16 +73,19 @@ function getConfig(): BackgroundServicesConfig {
 
     // RSS scheduler settings (per-destination limits)
     rssSchedulerConfig: {
-      dailyLimitPerDestination: parseInt(process.env.RSS_DAILY_LIMIT_PER_DESTINATION || "5", 10),
-      globalDailyLimit: parseInt(process.env.RSS_GLOBAL_DAILY_LIMIT || "50", 10),
-      intervalMinutes: parseInt(process.env.RSS_INTERVAL_MINUTES || "30", 10),
-      minQualityScore: parseInt(process.env.RSS_MIN_QUALITY_SCORE || "85", 10),
+      dailyLimitPerDestination: Number.parseInt(
+        process.env.RSS_DAILY_LIMIT_PER_DESTINATION || "5",
+        10
+      ),
+      globalDailyLimit: Number.parseInt(process.env.RSS_GLOBAL_DAILY_LIMIT || "50", 10),
+      intervalMinutes: Number.parseInt(process.env.RSS_INTERVAL_MINUTES || "30", 10),
+      minQualityScore: Number.parseInt(process.env.RSS_MIN_QUALITY_SCORE || "85", 10),
     },
 
     // SEO Autopilot settings
     seoAutopilotConfig: {
       mode: (process.env.SEO_AUTOPILOT_MODE as "off" | "supervised" | "full") || "supervised",
-      intervalMinutes: parseInt(process.env.SEO_AUTOPILOT_INTERVAL || "15", 10),
+      intervalMinutes: Number.parseInt(process.env.SEO_AUTOPILOT_INTERVAL || "15", 10),
     },
 
     // Data Decisions settings
@@ -90,12 +93,12 @@ function getConfig(): BackgroundServicesConfig {
       mode:
         (process.env.DATA_DECISIONS_AUTOPILOT_MODE as "off" | "supervised" | "full") ||
         "supervised",
-      intervalMinutes: parseInt(process.env.DATA_DECISIONS_INTERVAL || "5", 10),
+      intervalMinutes: Number.parseInt(process.env.DATA_DECISIONS_INTERVAL || "5", 10),
     },
 
     // Content Health settings
     contentHealthConfig: {
-      intervalMinutes: parseInt(process.env.CONTENT_HEALTH_INTERVAL || "30", 10),
+      intervalMinutes: Number.parseInt(process.env.CONTENT_HEALTH_INTERVAL || "30", 10),
     },
   };
 }

@@ -223,7 +223,9 @@ export async function seedDefaultPolicies(): Promise<number> {
     try {
       await db.insert(autonomyPolicies).values(policyToDb(policy));
       seeded++;
-    } catch (error) {}
+    } catch (error) {
+      /* ignored */
+    }
   }
 
   // Invalidate cache

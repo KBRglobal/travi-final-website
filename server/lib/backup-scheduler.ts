@@ -7,7 +7,7 @@ import { createBackup, rotateBackups, BackupResult } from "../scripts/backup-db"
 
 // Configuration
 const BACKUP_ENABLED = process.env.BACKUP_ENABLED !== "false";
-const BACKUP_INTERVAL_HOURS = parseInt(process.env.BACKUP_INTERVAL_HOURS || "24", 10);
+const BACKUP_INTERVAL_HOURS = Number.parseInt(process.env.BACKUP_INTERVAL_HOURS || "24", 10);
 const BACKUP_TIME = process.env.BACKUP_TIME || "00:00"; // HH:MM format
 
 interface SchedulerState {

@@ -603,7 +603,7 @@ export function exfiltrationMiddleware(resourceType: string) {
 
     // Estimate records and bytes from query
     const limitParam = req.query.limit;
-    const limit = parseInt(typeof limitParam === "string" ? limitParam : "100") || 100;
+    const limit = Number.parseInt(typeof limitParam === "string" ? limitParam : "100") || 100;
     const estimatedBytes = limit * 1024; // Rough estimate
 
     const check = await checkDataAccess(

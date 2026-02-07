@@ -486,7 +486,7 @@ export function securityGateMiddleware(action: Action | string, resource: Resour
       resource,
       resourceId: req.params.id,
       context: {
-        recordCount: parseInt(req.query.limit as string) || undefined,
+        recordCount: Number.parseInt(req.query.limit as string) || undefined,
         metadata: req.body,
       },
     });

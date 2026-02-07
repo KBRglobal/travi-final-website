@@ -46,7 +46,9 @@ export async function renderHomepage(options: SSRRenderOptions): Promise<SSRRend
         item.tiqetsSummary ||
         `Attraction in ${item.cityName || "various destinations"}`,
     }));
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   // Fetch hotels and articles from contents table
   try {
@@ -56,7 +58,9 @@ export async function renderHomepage(options: SSRRenderOptions): Promise<SSRRend
     ]);
     hotels = results[0] || [];
     articles = results[1] || [];
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   const featuredHotels = hotels.slice(0, 6);
   const featuredArticles = articles.slice(0, 6);

@@ -22,7 +22,7 @@ import {
   type VamsAssetStatus,
   type VamsVariantType,
 } from "@shared/schema";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 export class VamsStorage {
   // ============================================================================

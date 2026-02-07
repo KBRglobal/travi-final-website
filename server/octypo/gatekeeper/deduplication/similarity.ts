@@ -74,13 +74,13 @@ export async function isDuplicate(
 
     return {
       isDuplicate: true,
-      similarity: 1.0,
+      similarity: 1,
       matchedContent: {
         contentId: exactMatch.contentId,
         fingerprint: exactMatch.fingerprint,
         sourceUrl: exactMatch.sourceUrl,
         sourceTitle: exactMatch.sourceTitle,
-        similarity: 1.0,
+        similarity: 1,
       },
     };
   }

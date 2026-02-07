@@ -5,7 +5,7 @@
 
 import { db } from "../../db";
 import { sql } from "drizzle-orm";
-import * as crypto from "crypto";
+import * as crypto from "node:crypto";
 
 // Encryption key from environment (or generate one)
 const ENCRYPTION_KEY =

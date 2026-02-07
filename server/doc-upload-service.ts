@@ -232,7 +232,7 @@ function extractSections(html: string): Array<{ heading: string; content: string
 
   for (let i = 0; i < matches.length; i++) {
     const match = matches[i];
-    const level = parseInt(match[1]);
+    const level = Number.parseInt(match[1]);
     const heading = stripHtml(match[2]);
 
     // Get content between this heading and the next

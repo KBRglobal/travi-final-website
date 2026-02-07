@@ -15,7 +15,7 @@ import type { Request, Response, NextFunction } from "express";
 import { db } from "./db";
 import { users, sessions } from "@shared/schema";
 import { eq, and, gte, desc, sql } from "drizzle-orm";
-import * as crypto from "crypto";
+import * as crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import { auditLogger } from "./advanced-security";
 import { isApprovedBot } from "./security";
@@ -143,9 +143,9 @@ export const deviceFingerprint = {
       timezone: getHeader("x-timezone") || req.body?.timezone,
       screenResolution: getHeader("x-screen-resolution") || req.body?.screenResolution,
       platform: getHeader("x-platform") || req.body?.platform,
-      colorDepth: parseInt(getHeader("x-color-depth")) || undefined,
-      hardwareConcurrency: parseInt(getHeader("x-hardware-concurrency")) || undefined,
-      deviceMemory: parseFloat(getHeader("x-device-memory")) || undefined,
+      colorDepth: Number.parseInt(getHeader("x-color-depth")) || undefined,
+      hardwareConcurrency: Number.parseInt(getHeader("x-hardware-concurrency")) || undefined,
+      deviceMemory: Number.parseFloat(getHeader("x-device-memory")) || undefined,
       touchSupport: getHeader("x-touch-support") === "true",
     };
   },
@@ -354,7 +354,9 @@ export const contextualAuth = {
           timezone: data.timezone,
         };
       }
-    } catch (error) {}
+    } catch (error) {
+      /* ignored */
+    }
 
     return null;
   },

@@ -60,7 +60,7 @@ export function calculateLocalePurity(
   targetLocale: string,
   exemptions: string[] = []
 ): number {
-  if (!text || text.trim().length === 0) return 1.0;
+  if (!text || text.trim().length === 0) return 1;
 
   let cleanText = text;
 
@@ -81,7 +81,7 @@ export function calculateLocalePurity(
   cleanText = cleanText.replace(/[0-9.,!?;:'"()\[\]{}<>@#$%^&*+=_~`\\|\/\-–—\n\r\t]/g, " ");
   cleanText = cleanText.trim();
 
-  if (cleanText.length === 0) return 1.0;
+  if (cleanText.length === 0) return 1;
 
   // Get the primary script regex for this locale
   const primaryScripts = getPrimaryScripts(targetLocale);
@@ -95,7 +95,7 @@ export function calculateLocalePurity(
   // Count total non-whitespace characters
   const totalChars = cleanText.replace(/\s/g, "").length;
 
-  if (totalChars === 0) return 1.0;
+  if (totalChars === 0) return 1;
 
   return scriptCharCount / totalChars;
 }
@@ -116,7 +116,7 @@ export function calculateLocalePurityDetailed(
 } {
   if (!text || text.trim().length === 0) {
     return {
-      score: 1.0,
+      score: 1,
       breakdown: {},
       totalChars: 0,
       targetScriptChars: 0,
@@ -159,7 +159,7 @@ export function calculateLocalePurityDetailed(
     }
   }
 
-  const score = totalChars > 0 ? targetScriptChars / totalChars : 1.0;
+  const score = totalChars > 0 ? targetScriptChars / totalChars : 1;
 
   return {
     score,

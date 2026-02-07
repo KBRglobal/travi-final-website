@@ -13,7 +13,7 @@
  * This prevents the security gap where session exists before MFA completion.
  */
 
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { db, pool } from "../db";
 import { preAuthTokens } from "@shared/schema";
 import { eq, lt } from "drizzle-orm";
@@ -136,7 +136,9 @@ function startCleanupTimer(): void {
     try {
       const now = new Date();
       await db.delete(preAuthTokens).where(lt(preAuthTokens.expiresAt, now));
-    } catch (error) {}
+    } catch (error) {
+      /* ignored */
+    }
   }, 60 * 1000); // Every minute
 
   cleanupTimerId.unref();

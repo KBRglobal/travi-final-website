@@ -116,11 +116,11 @@ export function registerHotelsRoutes(app: Express): void {
         return res.status(400).json({ error: "cityId is required" });
       }
 
-      const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
-      const pageSizeNum = Math.min(50, Math.max(1, parseInt(String(pageSize), 10) || 20));
-      const minPriceNum = minPrice ? parseFloat(String(minPrice)) : null;
-      const maxPriceNum = maxPrice ? parseFloat(String(maxPrice)) : null;
-      const minRatingNum = minRating ? parseFloat(String(minRating)) : null;
+      const pageNum = Math.max(1, Number.parseInt(String(page), 10) || 1);
+      const pageSizeNum = Math.min(50, Math.max(1, Number.parseInt(String(pageSize), 10) || 20));
+      const minPriceNum = minPrice ? Number.parseFloat(String(minPrice)) : null;
+      const maxPriceNum = maxPrice ? Number.parseFloat(String(maxPrice)) : null;
+      const minRatingNum = minRating ? Number.parseFloat(String(minRating)) : null;
       const starsFilter = stars ? String(stars) : null;
       const amenitiesFilter = amenities
         ? String(amenities)
@@ -235,7 +235,7 @@ export function registerHotelsRoutes(app: Express): void {
       }
       if (minRatingNum !== null) {
         hotels = hotels.filter(
-          (h: any) => h.rating !== null && parseFloat(h.rating) >= minRatingNum
+          (h: any) => h.rating !== null && Number.parseFloat(h.rating) >= minRatingNum
         );
       }
       if (amenitiesFilter.length > 0) {
@@ -311,7 +311,7 @@ export function registerHotelsRoutes(app: Express): void {
               stars: sampleHotel.stars,
               location: sampleHotel.location,
               amenities: sampleHotel.amenities,
-              rating: parseFloat(sampleHotel.rating),
+              rating: Number.parseFloat(sampleHotel.rating),
               reviews: sampleHotel.reviews,
             },
             String(lang)
@@ -379,7 +379,7 @@ export function registerHotelsRoutes(app: Express): void {
               stars: sampleHotel.stars,
               location: sampleHotel.location,
               amenities: sampleHotel.amenities,
-              rating: parseFloat(sampleHotel.rating),
+              rating: Number.parseFloat(sampleHotel.rating),
               reviews: sampleHotel.reviews,
             },
             String(lang)
@@ -475,7 +475,7 @@ export function registerHotelsRoutes(app: Express): void {
             location: hotel.location,
             amenities: hotel.amenities,
             facilities: hotel.facilities,
-            rating: hotel.rating ? parseFloat(hotel.rating) : null,
+            rating: hotel.rating ? Number.parseFloat(hotel.rating) : null,
             reviews: hotel.reviews,
           },
           String(lang)

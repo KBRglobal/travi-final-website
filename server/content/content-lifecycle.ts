@@ -107,7 +107,9 @@ export async function transitionState(
       ipAddress: "system",
       userAgent: "content-lifecycle",
     } as any);
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   // Phase 15C: Emit content lifecycle events for downstream subscribers
   // This ensures search indexing, AEO generation, and other subscribers are triggered

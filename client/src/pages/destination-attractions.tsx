@@ -287,7 +287,7 @@ function transformApiResponse(
       image,
       category,
       duration: parseDuration(a.duration),
-      rating: a.tiqetsRating ? parseFloat(a.tiqetsRating) : 4.5,
+      rating: a.tiqetsRating ? Number.parseFloat(a.tiqetsRating) : 4.5,
       reviewCount: a.tiqetsReviewCount || 100,
       description: a.venueName || `Experience ${a.title} in ${a.cityName}`,
       audience: ["families", "couples", "solo"],

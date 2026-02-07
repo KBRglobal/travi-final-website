@@ -44,7 +44,7 @@ router.get("/search", async (req, res) => {
     const vams = getVamsService();
     const results = await vams.searchImages(q, {
       providers: providers ? ((providers as string).split(",") as any) : undefined,
-      limit: limit ? parseInt(limit as string, 10) : 10,
+      limit: limit ? Number.parseInt(limit as string, 10) : 10,
       orientation: orientation as any,
     });
 
@@ -108,8 +108,8 @@ router.get("/assets", async (req, res) => {
     const assets = await vamsStorage.getAssets({
       provider: provider as any,
       status: status as any,
-      limit: limit ? parseInt(limit as string, 10) : 50,
-      offset: offset ? parseInt(offset as string, 10) : 0,
+      limit: limit ? Number.parseInt(limit as string, 10) : 50,
+      offset: offset ? Number.parseInt(offset as string, 10) : 0,
     });
 
     res.json({

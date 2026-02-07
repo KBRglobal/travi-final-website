@@ -81,8 +81,8 @@ router.get("/pois", async (req: Request, res: Response) => {
         .from(update9987TourpediaPois)
         .where(whereClause)
         .orderBy(asc(update9987TourpediaPois.name))
-        .limit(parseInt(limit as string))
-        .offset(parseInt(offset as string)),
+        .limit(Number.parseInt(limit as string))
+        .offset(Number.parseInt(offset as string)),
       db
         .select({ count: sql<number>`count(*)::int` })
         .from(update9987TourpediaPois)
@@ -93,8 +93,8 @@ router.get("/pois", async (req: Request, res: Response) => {
       success: true,
       data: pois,
       total: countResult[0]?.count || 0,
-      limit: parseInt(limit as string),
-      offset: parseInt(offset as string),
+      limit: Number.parseInt(limit as string),
+      offset: Number.parseInt(offset as string),
     });
   } catch (error) {
     res.status(500).json({ success: false, error: "Failed to fetch POIs" });
@@ -108,7 +108,7 @@ router.get("/pois/:id", async (req: Request, res: Response) => {
     const poi = await db
       .select()
       .from(update9987TourpediaPois)
-      .where(eq(update9987TourpediaPois.id, parseInt(id)))
+      .where(eq(update9987TourpediaPois.id, Number.parseInt(id)))
       .limit(1);
 
     if (poi.length === 0) {
@@ -216,8 +216,8 @@ router.get("/destinations/countries", async (req: Request, res: Response) => {
         .from(update9987Countries)
         .where(whereClause)
         .orderBy(asc(update9987Countries.name))
-        .limit(parseInt(limit as string))
-        .offset(parseInt(offset as string)),
+        .limit(Number.parseInt(limit as string))
+        .offset(Number.parseInt(offset as string)),
       db
         .select({ count: sql<number>`count(*)::int` })
         .from(update9987Countries)
@@ -308,8 +308,8 @@ router.get("/destinations/states", async (req: Request, res: Response) => {
       .from(update9987States)
       .where(whereClause)
       .orderBy(asc(update9987States.name))
-      .limit(parseInt(limit as string))
-      .offset(parseInt(offset as string));
+      .limit(Number.parseInt(limit as string))
+      .offset(Number.parseInt(offset as string));
 
     res.json({ success: true, data: states });
   } catch (error) {

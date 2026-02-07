@@ -1,5 +1,5 @@
 import type { Express, Request, Response, NextFunction } from "express";
-import { createServer, type Server } from "http";
+import { createServer, type Server } from "node:http";
 import { storage } from "./storage";
 import { db } from "./db";
 import multer from "multer";
@@ -102,8 +102,8 @@ import {
   setTranslations,
   deleteEntityTranslations,
 } from "./cms-translations";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import sharp from "sharp";
 import { findFolderByName, listFilesInFolder, downloadFile } from "./google-drive";
 import { sanitizeContentBlocks } from "./lib/sanitize-ai-output";
@@ -624,7 +624,9 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       }
       if (contentToPublish.length > 0) {
       }
-    } catch (error) {}
+    } catch (error) {
+      /* ignored */
+    }
   };
 
   // DISABLED: Scheduled publishing automation disabled for UI-only mode
@@ -1097,7 +1099,9 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     await initAutonomyPolicy();
     initEnforcement();
     initControlPlane();
-  } catch (error) {}
+  } catch (error) {
+    /* ignored */
+  }
 
   // ============================================================================
   // WEEKLY DIGEST SCHEDULER (DISABLED - UI-only mode)

@@ -5,8 +5,8 @@
  */
 
 import type { Express, Request, Response } from "express";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { eq, desc } from "drizzle-orm";
 import { Resend } from "resend";
 import { db } from "../db";
@@ -367,8 +367,8 @@ export function registerMiscRoutes(app: Express): void {
         entityType: entityType as string | undefined,
         entityId: entityId as string | undefined,
         actionType: actionType as string | undefined,
-        limit: limit ? parseInt(limit as string) : 50,
-        offset: offset ? parseInt(offset as string) : 0,
+        limit: limit ? Number.parseInt(limit as string) : 50,
+        offset: offset ? Number.parseInt(offset as string) : 0,
       };
       const [logs, total] = await Promise.all([
         storage.getAuditLogs(filters),

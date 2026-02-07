@@ -54,8 +54,8 @@ export function registerSearchRoutes(app: Express) {
         return res.status(400).json({ error: "Query parameter 'q' is required" });
       }
 
-      const limit = parseInt(req.query.limit as string) || 50;
-      const page = parseInt(req.query.page as string) || 1;
+      const limit = Number.parseInt(req.query.limit as string) || 50;
+      const page = Number.parseInt(req.query.page as string) || 1;
       const type = Array.isArray(req.query.type)
         ? (req.query.type as string[])
         : req.query.type
@@ -166,7 +166,7 @@ export function registerSearchRoutes(app: Express) {
   app.get("/api/search/similar/:contentId", async (req, res) => {
     try {
       const { contentId } = req.params;
-      const limit = parseInt(req.query.limit as string) || 5;
+      const limit = Number.parseInt(req.query.limit as string) || 5;
 
       const similar = await semanticSearch.findSimilar(contentId, limit);
 
@@ -310,7 +310,7 @@ export function registerSearchRoutes(app: Express) {
    */
   app.get("/api/search/metrics/events", requireAdmin, async (req, res) => {
     try {
-      const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+      const limit = Math.min(Number.parseInt(req.query.limit as string) || 50, 200);
       const events = searchTelemetry.getRecentEvents(limit);
       res.json({ events, count: events.length });
     } catch (error) {

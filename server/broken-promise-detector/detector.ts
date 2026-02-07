@@ -122,7 +122,7 @@ function detectPromise(
   // Check for numbered list promises
   const numberMatch = match[1];
   if (numberMatch && /^\d+$/.test(numberMatch)) {
-    const promisedCount = parseInt(numberMatch);
+    const promisedCount = Number.parseInt(numberMatch);
     const actualCount = countListItems(body);
     const headingCount = countHeadings(body);
 
@@ -337,7 +337,9 @@ export async function bulkAnalyze(contentIds: string[]): Promise<PromiseAnalysis
     try {
       const analysis = await analyzeContent(id);
       results.push(analysis);
-    } catch (error) {}
+    } catch (error) {
+      /* ignored */
+    }
   }
   return results;
 }

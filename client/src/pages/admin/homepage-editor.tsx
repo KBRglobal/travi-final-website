@@ -869,7 +869,7 @@ function HeroSlideItem({
                   type="number"
                   value={formData.sortOrder}
                   onChange={e =>
-                    setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                    setFormData({ ...formData, sortOrder: Number.parseInt(e.target.value) || 0 })
                   }
                 />
               </div>
@@ -1066,7 +1066,10 @@ function HeroSlidesEditor() {
                     type="number"
                     value={newSlideData.sortOrder ?? 0}
                     onChange={e =>
-                      setNewSlideData({ ...newSlideData, sortOrder: parseInt(e.target.value) || 0 })
+                      setNewSlideData({
+                        ...newSlideData,
+                        sortOrder: Number.parseInt(e.target.value) || 0,
+                      })
                     }
                   />
                 </div>
@@ -1229,7 +1232,7 @@ function SectionItem({
                     className="w-20"
                     value={formData.sortOrder}
                     onChange={e =>
-                      setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                      setFormData({ ...formData, sortOrder: Number.parseInt(e.target.value) || 0 })
                     }
                     data-testid={`input-section-order-${section.id}`}
                   />
@@ -1422,7 +1425,7 @@ function QuickCategoryItem({
                   type="number"
                   value={formData.sortOrder}
                   onChange={e =>
-                    setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                    setFormData({ ...formData, sortOrder: Number.parseInt(e.target.value) || 0 })
                   }
                 />
               </div>
@@ -1590,7 +1593,10 @@ function QuickCategoriesEditor() {
                     type="number"
                     value={newCardData.sortOrder ?? 0}
                     onChange={e =>
-                      setNewCardData({ ...newCardData, sortOrder: parseInt(e.target.value) || 0 })
+                      setNewCardData({
+                        ...newCardData,
+                        sortOrder: Number.parseInt(e.target.value) || 0,
+                      })
                     }
                   />
                 </div>
@@ -1819,7 +1825,7 @@ function ExperienceCategoryItem({
                 className="w-24"
                 value={formData.sortOrder}
                 onChange={e =>
-                  setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                  setFormData({ ...formData, sortOrder: Number.parseInt(e.target.value) || 0 })
                 }
               />
             </div>
@@ -2040,7 +2046,7 @@ function ExperienceCategoriesEditor() {
                   onChange={e =>
                     setNewCategoryData({
                       ...newCategoryData,
-                      sortOrder: parseInt(e.target.value) || 0,
+                      sortOrder: Number.parseInt(e.target.value) || 0,
                     })
                   }
                 />
@@ -2233,7 +2239,7 @@ function RegionLinkItem({
                   type="number"
                   value={formData.sortOrder}
                   onChange={e =>
-                    setFormData({ ...formData, sortOrder: parseInt(e.target.value) || 0 })
+                    setFormData({ ...formData, sortOrder: Number.parseInt(e.target.value) || 0 })
                   }
                 />
               </div>
@@ -2425,7 +2431,10 @@ function RegionLinksEditor() {
                     type="number"
                     value={newLinkData.sortOrder ?? 0}
                     onChange={e =>
-                      setNewLinkData({ ...newLinkData, sortOrder: parseInt(e.target.value) || 0 })
+                      setNewLinkData({
+                        ...newLinkData,
+                        sortOrder: Number.parseInt(e.target.value) || 0,
+                      })
                     }
                   />
                 </div>

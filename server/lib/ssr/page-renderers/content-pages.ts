@@ -139,8 +139,8 @@ export async function renderCategoryPage(
   if (contentType === "attraction" && searchParams) {
     const pageParam = searchParams.get("page");
     if (pageParam) {
-      const parsed = parseInt(pageParam, 10);
-      if (!isNaN(parsed) && parsed >= 1) {
+      const parsed = Number.parseInt(pageParam, 10);
+      if (!Number.isNaN(parsed) && parsed >= 1) {
         currentPage = parsed;
       }
     }
@@ -189,7 +189,9 @@ export async function renderCategoryPage(
           item.tiqetsSummary ||
           `Attraction in ${item.cityName || "various destinations"}`,
       }));
-    } catch (error) {}
+    } catch (error) {
+      /* ignored */
+    }
   } else {
     // For other content types, directly query contents table (no pagination for now)
     try {
@@ -215,7 +217,9 @@ export async function renderCategoryPage(
         slug: item.slug,
         description: item.metaDescription || undefined,
       }));
-    } catch (error) {}
+    } catch (error) {
+      /* ignored */
+    }
   }
 
   const baseUrlPath = `/${contentType}s`;

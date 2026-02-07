@@ -246,7 +246,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
   // -------------------------------------------------------------------------
   app.get("/api/analytics/dashboard", analyticsRateLimiter, async (req: Request, res: Response) => {
     try {
-      const hours = parseInt(req.query.hours as string) || 24;
+      const hours = Number.parseInt(req.query.hours as string) || 24;
       const summary = await customerJourney.getDashboardSummary(hours);
       res.json(summary);
     } catch (error) {
@@ -260,7 +260,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
   // -------------------------------------------------------------------------
   app.get("/api/analytics/realtime", analyticsRateLimiter, async (req: Request, res: Response) => {
     try {
-      const minutes = parseInt(req.query.minutes as string) || 5;
+      const minutes = Number.parseInt(req.query.minutes as string) || 5;
       const activeUsers = customerJourney.getActiveUsers(minutes);
       res.json({ activeUsers, minutes });
     } catch (error) {
@@ -274,7 +274,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
   // -------------------------------------------------------------------------
   app.get("/api/analytics/pages", analyticsRateLimiter, async (req: Request, res: Response) => {
     try {
-      const limit = parseInt(req.query.limit as string) || 50;
+      const limit = Number.parseInt(req.query.limit as string) || 50;
       const pagePath = req.query.pagePath as string;
 
       const analytics = await customerJourney.getPageAnalytics({

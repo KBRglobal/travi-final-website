@@ -429,7 +429,7 @@ router.post(
   isAuthenticated,
   async (req: Request, res: Response) => {
     try {
-      const versionNumber = parseInt(req.params.versionNumber, 10);
+      const versionNumber = Number.parseInt(req.params.versionNumber, 10);
 
       const [version] = await db
         .select()

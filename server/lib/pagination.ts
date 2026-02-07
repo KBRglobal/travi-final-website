@@ -72,12 +72,15 @@ export function parsePagination(
 
   if (rawPage !== undefined) {
     // Page-based: ?page=2&pageSize=20
-    page = Math.max(1, parseInt(rawPage, 10) || DEFAULT_PAGE);
-    pageSize = Math.min(maxSize, Math.max(1, parseInt(rawPageSize || "", 10) || defaultSize));
+    page = Math.max(1, Number.parseInt(rawPage, 10) || DEFAULT_PAGE);
+    pageSize = Math.min(
+      maxSize,
+      Math.max(1, Number.parseInt(rawPageSize || "", 10) || defaultSize)
+    );
   } else if (rawOffset !== undefined || rawLimit !== undefined) {
     // Legacy offset-based: ?offset=40&limit=20
-    const offset = Math.max(0, parseInt(rawOffset || "0", 10) || 0);
-    pageSize = Math.min(maxSize, Math.max(1, parseInt(rawLimit || "", 10) || defaultSize));
+    const offset = Math.max(0, Number.parseInt(rawOffset || "0", 10) || 0);
+    pageSize = Math.min(maxSize, Math.max(1, Number.parseInt(rawLimit || "", 10) || defaultSize));
     page = Math.floor(offset / pageSize) + 1;
   } else {
     page = DEFAULT_PAGE;

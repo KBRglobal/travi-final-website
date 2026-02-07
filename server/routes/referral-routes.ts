@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { db } from "../db";
 import { eq, desc, sql } from "drizzle-orm";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import {
   referralCodes,
   referralClicks,
