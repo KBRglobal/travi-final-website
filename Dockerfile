@@ -3,14 +3,13 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Disable husky git hooks in CI/Docker
-ENV HUSKY=0
-
-# Install build dependencies for native modules (bcrypt)
-RUN apk add --no-cache python3 make g++
+# Install build dependencies for native modules (bcrypt, sharp)
+RUN apk add --no-cache python3 make g++ vips-dev
 
 COPY package.json package-lock.json ./
-RUN npm ci
+
+# Remove husky prepare script (not needed in Docker), then install
+RUN npm pkg delete scripts.prepare && npm ci
 
 COPY . .
 RUN npm run build
@@ -22,13 +21,13 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=5000
-ENV HUSKY=0
 
-# Runtime dependencies for bcrypt
-RUN apk add --no-cache python3 make g++
+# Runtime deps: vips for sharp, build tools for bcrypt
+RUN apk add --no-cache vips python3 make g++
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev && \
+RUN npm pkg delete scripts.prepare && \
+    npm ci --omit=dev && \
     apk del python3 make g++
 
 COPY --from=builder /app/dist ./dist
