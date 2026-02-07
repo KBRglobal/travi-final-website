@@ -11,7 +11,8 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { assertAllowed, SecurityGateResult, SecurityGateError } from "../gate/security-gate";
+import { assertAllowed, SecurityGateResult } from "../gate/security-gate";
+
 import { AdminRole, Action, Resource } from "../../governance/types";
 
 // ============================================================================

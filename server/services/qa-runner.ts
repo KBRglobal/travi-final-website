@@ -1,5 +1,6 @@
 import { db } from "../db";
-import { qaRuns, qaCheckResults, qaChecklistItems } from "@shared/schema";
+import { qaRuns, qaCheckResults } from "@shared/schema";
+
 import { eq } from "drizzle-orm";
 
 interface CheckResult {

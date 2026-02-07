@@ -237,7 +237,7 @@ const CONTENT_TYPE_FIELDS: Record<ContentType, FieldType[]> = {
 // ============================================================================
 
 export class MagicEngine {
-  private defaultLocale: string = "en";
+  private readonly defaultLocale: string = "en";
 
   constructor(options?: { defaultLocale?: string }) {
     if (options?.defaultLocale) {

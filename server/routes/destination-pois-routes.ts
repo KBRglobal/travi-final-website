@@ -5,7 +5,7 @@
 import { Router, Request, Response } from "express";
 import { db } from "../db";
 import { update9987TourpediaPois, update9987PublicHolidays } from "@shared/schema";
-import { eq, and, sql, asc, gte, lte } from "drizzle-orm";
+import { eq, and, sql, asc } from "drizzle-orm";
 
 const router = Router();
 

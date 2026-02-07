@@ -131,6 +131,7 @@ export function ipAllowlistMiddleware(req: Request, res: Response, next: NextFun
   if (allowedIps.length === 0) {
     // Log warning in production
     if (process.env.NODE_ENV === "production") {
+      // empty
     }
     next();
     return;
@@ -321,8 +322,10 @@ export function logAdminSecurityConfig(): void {
   const magicLinkDisabled = process.env.DISABLE_MAGIC_LINK !== "false";
 
   if (killSwitchEnabled) {
+    // empty
   }
 
   if (allowedIps.length === 0 && process.env.NODE_ENV === "production") {
+    // empty
   }
 }

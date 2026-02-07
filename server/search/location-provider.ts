@@ -13,7 +13,8 @@
 
 import { db } from "../db";
 import { destinations, contents, attractions, hotels, districts } from "@shared/schema";
-import { eq, sql, or, isNotNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+
 import { log } from "../lib/logger";
 
 const providerLogger = {

@@ -2,7 +2,7 @@ import { R2StorageAdapter } from "./services/storage-adapter";
 
 export class StorageManager {
   private static instance: StorageManager | null = null;
-  private adapter: R2StorageAdapter;
+  private readonly adapter: R2StorageAdapter;
 
   private constructor() {
     this.adapter = new R2StorageAdapter();

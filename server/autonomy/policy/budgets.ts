@@ -3,17 +3,11 @@
  * Tracks and enforces resource budgets with concurrency safety
  */
 
-import { db } from '../../db';
-import { autonomyBudgets } from '@shared/schema';
-import { eq, and, sql } from 'drizzle-orm';
-import {
-  BudgetCounter,
-  BudgetStatus,
-  BudgetPeriod,
-  BudgetLimit,
-  PolicyTarget,
-} from './types';
-import { generateTargetKey, getPeriodBoundaries } from './config';
+import { db } from "../../db";
+import { autonomyBudgets } from "@shared/schema";
+import { eq, and, sql } from "drizzle-orm";
+import { BudgetCounter, BudgetStatus, BudgetPeriod, BudgetLimit } from "./types";
+import { getPeriodBoundaries } from "./config";
 
 const BUDGET_OPERATION_TIMEOUT_MS = 5000;
 
@@ -27,14 +21,14 @@ function getCacheKey(targetKey: string, period: BudgetPeriod): string {
 }
 
 function isEnabled(): boolean {
-  return process.env.ENABLE_AUTONOMY_POLICY === 'true';
+  return process.env.ENABLE_AUTONOMY_POLICY === "true";
 }
 
 async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return Promise.race([
     promise,
     new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error('Budget operation timeout')), ms)
+      setTimeout(() => reject(new Error("Budget operation timeout")), ms)
     ),
   ]);
 }
@@ -272,18 +266,12 @@ export async function isBudgetExhausted(
   return { exhausted: false };
 }
 
-export async function resetBudget(
-  targetKey: string,
-  period?: BudgetPeriod
-): Promise<number> {
+export async function resetBudget(targetKey: string, period?: BudgetPeriod): Promise<number> {
   const conditions = [eq(autonomyBudgets.targetKey, targetKey)];
 
   if (period) {
     const { start } = getPeriodBoundaries(period);
-    conditions.push(
-      eq(autonomyBudgets.period, period),
-      eq(autonomyBudgets.periodStart, start)
-    );
+    conditions.push(eq(autonomyBudgets.period, period), eq(autonomyBudgets.periodStart, start));
   }
 
   const result = await db
@@ -306,7 +294,7 @@ export async function resetBudget(
   if (period) {
     budgetCache.delete(getCacheKey(targetKey, period));
   } else {
-    for (const p of ['hourly', 'daily', 'weekly', 'monthly'] as BudgetPeriod[]) {
+    for (const p of ["hourly", "daily", "weekly", "monthly"] as BudgetPeriod[]) {
       budgetCache.delete(getCacheKey(targetKey, p));
     }
   }

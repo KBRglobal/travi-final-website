@@ -16,7 +16,8 @@ import { SecurityGate, requireSecurityGate } from "./security-gate";
 import { SecurityModeManager, getAutonomyImpact } from "./security-modes";
 import { OverrideRegistry } from "./override-registry";
 import { EvidenceGenerator } from "./evidence-generator";
-import { emergencyLockdown, emergencyStop } from "./index";
+import { emergencyStop } from "./index";
+
 import { SecurityMode, ThreatLevel, DEFAULT_SECURITY_AUTHORITY_CONFIG } from "./types";
 
 const router = Router();

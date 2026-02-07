@@ -184,8 +184,8 @@ const DUBAI_LOCATIONS = [
 // ============================================================================
 
 export class SEOValidationAgent {
-  private minSeoScore = 70;
-  private requireTier1_100Percent = true;
+  private readonly minSeoScore = 70;
+  private readonly requireTier1_100Percent = true;
 
   constructor() {
     logger.seo.debug("SEO Validation Agent initialized");
@@ -868,8 +868,8 @@ export class SEOValidationAgent {
     ];
 
     for (const pattern of patterns) {
-      const match = title.match(pattern);
-      if (match && match[1]) {
+      const match = pattern.exec(title);
+      if (match?.[1]) {
         const keyword = match[1].trim();
         if (keyword.length > 3) {
           return keyword.charAt(0).toUpperCase() + keyword.slice(1);

@@ -11,7 +11,7 @@ import {
   countCharsByScript,
   isRtlScript,
 } from "./script-validators";
-import { getCulturalContext, getQualityThresholds } from "../cultural-contexts";
+import { getQualityThresholds } from "../cultural-contexts";
 
 /**
  * Universal technical terms that are acceptable in any locale

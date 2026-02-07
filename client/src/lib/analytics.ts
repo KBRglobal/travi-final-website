@@ -49,21 +49,21 @@ export const initGA = () => {
 
 // Track page views - useful for single-page applications
 export const trackPageView = (url: string) => {
-  if (typeof window === "undefined" || !window.gtag) return;
+  if (typeof globalThis.window === "undefined" || !globalThis.gtag) return;
 
   const measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
   if (!measurementId) return;
 
-  window.gtag("config", measurementId, {
+  globalThis.gtag("config", measurementId, {
     page_path: url,
   });
 };
 
 // Track events
 export const trackEvent = (action: string, category?: string, label?: string, value?: number) => {
-  if (typeof window === "undefined" || !window.gtag) return;
+  if (typeof globalThis.window === "undefined" || !globalThis.gtag) return;
 
-  window.gtag("event", action, {
+  globalThis.gtag("event", action, {
     event_category: category,
     event_label: label,
     value: value,

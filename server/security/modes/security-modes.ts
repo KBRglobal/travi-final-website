@@ -15,7 +15,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { logAdminEvent } from "../../governance/security-logger";
 import { getIntelligenceSummary } from "../intelligence/security-intelligence";
-import { scanForDrift, DriftScanResult } from "../drift/drift-scanner";
+import { scanForDrift } from "../drift/drift-scanner";
 
 // ============================================================================
 // TYPES

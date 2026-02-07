@@ -6,9 +6,10 @@
 
 import { db } from "../db";
 import { tiqetsAttractions } from "@shared/schema";
-import { eq, and, isNotNull, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+
 import { generateWithRetry } from "./attraction-content-generator-v2";
-import { validateContent, QualityScore, QUALITY_THRESHOLD } from "./content-quality-validator";
+import { QualityScore, QUALITY_THRESHOLD } from "./content-quality-validator";
 
 interface RegenerationStats {
   total: number;

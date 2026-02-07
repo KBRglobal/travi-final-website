@@ -7,12 +7,7 @@ import type { Express, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import { storage } from "../storage";
-import {
-  requireAuth,
-  requirePermission,
-  checkReadOnlyMode,
-  invalidateRoleCache,
-} from "../security";
+import { requirePermission, checkReadOnlyMode, invalidateRoleCache } from "../security";
 import { requireSelfOrAdmin, requireAdmin } from "../middleware/idor-protection";
 import {
   validatePasswordStrength,

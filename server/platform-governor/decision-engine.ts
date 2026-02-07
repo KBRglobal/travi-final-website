@@ -3,9 +3,10 @@
  * Deterministic, explainable decision making
  */
 
-import { createLogger } from '../lib/logger';
-import { GOVERNOR_CONFIG } from './config';
-import { getEnabledRules, getRuleById } from './rules';
+import { createLogger } from "../lib/logger";
+import { GOVERNOR_CONFIG } from "./config";
+import { getEnabledRules } from "./rules";
+
 import type {
   GovernorRule,
   RuleCondition,
@@ -14,9 +15,9 @@ import type {
   Decision,
   AuditEntry,
   SystemRestriction,
-} from './types';
+} from "./types";
 
-const logger = createLogger('governor-decision-engine');
+const logger = createLogger("governor-decision-engine");
 
 // Storage
 const decisions: GovernorDecision[] = [];
@@ -30,47 +31,42 @@ const maxDecisions = GOVERNOR_CONFIG.maxDecisionsStored;
 // ============================================================================
 
 function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-  return path.split('.').reduce((acc: unknown, key) => {
-    if (acc && typeof acc === 'object' && key in acc) {
+  return path.split(".").reduce((acc: unknown, key) => {
+    if (acc && typeof acc === "object" && key in acc) {
       return (acc as Record<string, unknown>)[key];
     }
     return undefined;
   }, obj);
 }
 
-function evaluateCondition(
-  condition: RuleCondition,
-  context: GovernorContext
-): boolean {
+function evaluateCondition(condition: RuleCondition, context: GovernorContext): boolean {
   let actual: unknown;
 
   // Get actual value based on condition type
   switch (condition.type) {
-    case 'ai_cost_exceeded':
-      actual = context.aiCostBudget > 0
-        ? context.aiCostToday / context.aiCostBudget
-        : 0;
+    case "ai_cost_exceeded":
+      actual = context.aiCostBudget > 0 ? context.aiCostToday / context.aiCostBudget : 0;
       break;
-    case 'error_rate_spike':
+    case "error_rate_spike":
       actual = context.errorRate;
       break;
-    case 'incident_severity_high':
+    case "incident_severity_high":
       actual = context.incidentSeverity;
       break;
-    case 'queue_backlog_large':
+    case "queue_backlog_large":
       actual = context.queueBacklog;
       break;
-    case 'memory_pressure':
+    case "memory_pressure":
       actual = context.memoryUsagePercent;
       break;
-    case 'external_api_unstable':
+    case "external_api_unstable":
       if (condition.field) {
         actual = getNestedValue(context as unknown as Record<string, unknown>, condition.field);
       } else {
-        actual = Object.values(context.externalApiStatus).some(s => s !== 'healthy');
+        actual = Object.values(context.externalApiStatus).some(s => s !== "healthy");
       }
       break;
-    case 'custom':
+    case "custom":
       if (condition.field && context.customMetrics) {
         actual = context.customMetrics[condition.field];
       }
@@ -83,20 +79,20 @@ function evaluateCondition(
   const expected = condition.value;
 
   switch (condition.operator) {
-    case 'gt':
-      return typeof actual === 'number' && actual > (expected as number);
-    case 'gte':
-      return typeof actual === 'number' && actual >= (expected as number);
-    case 'lt':
-      return typeof actual === 'number' && actual < (expected as number);
-    case 'lte':
-      return typeof actual === 'number' && actual <= (expected as number);
-    case 'eq':
+    case "gt":
+      return typeof actual === "number" && actual > (expected as number);
+    case "gte":
+      return typeof actual === "number" && actual >= (expected as number);
+    case "lt":
+      return typeof actual === "number" && actual < (expected as number);
+    case "lte":
+      return typeof actual === "number" && actual <= (expected as number);
+    case "eq":
       return actual === expected;
-    case 'neq':
+    case "neq":
       return actual !== expected;
-    case 'contains':
-      return typeof actual === 'string' && actual.includes(expected as string);
+    case "contains":
+      return typeof actual === "string" && actual.includes(expected as string);
     default:
       return false;
   }
@@ -113,7 +109,7 @@ function evaluateRule(rule: GovernorRule, context: GovernorContext): boolean {
 
   const results = rule.conditions.map(c => evaluateCondition(c, context));
 
-  if (rule.conditionLogic === 'all') {
+  if (rule.conditionLogic === "all") {
     return results.every(Boolean);
   } else {
     return results.some(Boolean);
@@ -125,15 +121,20 @@ function evaluateRule(rule: GovernorRule, context: GovernorContext): boolean {
 // ============================================================================
 
 function determineDecision(rule: GovernorRule): Decision {
-  const blockingActions = ['force_read_only', 'require_admin_override'];
-  const throttleActions = ['throttle_ai', 'reduce_concurrency', 'disable_octopus', 'disable_regeneration'];
+  const blockingActions = ["force_read_only", "require_admin_override"];
+  const throttleActions = [
+    "throttle_ai",
+    "reduce_concurrency",
+    "disable_octopus",
+    "disable_regeneration",
+  ];
 
   const hasBlocking = rule.actions.some(a => blockingActions.includes(a.type));
   const hasThrottle = rule.actions.some(a => throttleActions.includes(a.type));
 
-  if (hasBlocking) return 'BLOCK';
-  if (hasThrottle) return 'THROTTLE';
-  return 'ALLOW';
+  if (hasBlocking) return "BLOCK";
+  if (hasThrottle) return "THROTTLE";
+  return "ALLOW";
 }
 
 function getAffectedSystems(rule: GovernorRule): string[] {
@@ -141,26 +142,26 @@ function getAffectedSystems(rule: GovernorRule): string[] {
 
   for (const action of rule.actions) {
     switch (action.type) {
-      case 'disable_octopus':
-        systems.add('octopus');
+      case "disable_octopus":
+        systems.add("octopus");
         break;
-      case 'disable_regeneration':
-        systems.add('regeneration');
+      case "disable_regeneration":
+        systems.add("regeneration");
         break;
-      case 'disable_experiments':
-        systems.add('experiments');
+      case "disable_experiments":
+        systems.add("experiments");
         break;
-      case 'throttle_ai':
-        systems.add('ai');
+      case "throttle_ai":
+        systems.add("ai");
         break;
-      case 'force_read_only':
-        systems.add('writes');
+      case "force_read_only":
+        systems.add("writes");
         break;
-      case 'disable_webhooks':
-        systems.add('webhooks');
+      case "disable_webhooks":
+        systems.add("webhooks");
         break;
-      case 'reduce_concurrency':
-        systems.add('concurrency');
+      case "reduce_concurrency":
+        systems.add("concurrency");
         break;
     }
   }
@@ -214,9 +215,9 @@ export function evaluateRules(context: GovernorContext): GovernorDecision[] {
 
       // Apply restrictions
       for (const action of rule.actions) {
-        if (action.type !== 'alert_only') {
+        if (action.type !== "alert_only") {
           activeRestrictions.push({
-            system: getAffectedSystems({ ...rule, actions: [action] })[0] || 'unknown',
+            system: getAffectedSystems({ ...rule, actions: [action] })[0] || "unknown",
             restriction: action.type,
             reason: rule.description,
             appliedAt: new Date(),
@@ -298,7 +299,7 @@ export function overrideDecision(decisionId: string, actorId: string): boolean {
     audit.overridden = true;
   }
 
-  logger.info({ decisionId, actorId }, 'Governor decision overridden');
+  logger.info({ decisionId, actorId }, "Governor decision overridden");
   return true;
 }
 
@@ -307,7 +308,7 @@ export function resetAllRestrictions(actorId: string): void {
   activeRestrictions.length = 0;
   ruleCooldowns.clear();
 
-  logger.info({ actorId, restrictionsCleared: count }, 'All governor restrictions reset');
+  logger.info({ actorId, restrictionsCleared: count }, "All governor restrictions reset");
 }
 
 // ============================================================================

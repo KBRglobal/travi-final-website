@@ -93,10 +93,10 @@ export interface TiqetsCitiesResult {
 // ============================================================================
 
 export class TiqetsClient {
-  private baseUrl = "https://api.tiqets.com/v2";
-  private apiToken: string | null;
-  private partnerId: string | null;
-  private rateLimitDelay = 200; // ms between requests
+  private readonly baseUrl = "https://api.tiqets.com/v2";
+  private readonly apiToken: string | null;
+  private readonly partnerId: string | null;
+  private readonly rateLimitDelay = 200; // ms between requests
 
   constructor() {
     this.apiToken = process.env.TIQETS_API_TOKEN || null;

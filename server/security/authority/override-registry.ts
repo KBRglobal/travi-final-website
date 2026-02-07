@@ -19,9 +19,6 @@ import {
   SecurityOverride,
   OverrideRequest,
   OverrideType,
-  OverrideTarget,
-  GatedAction,
-  ResourceType,
   DEFAULT_SECURITY_AUTHORITY_CONFIG,
 } from "./types";
 import { SecurityGate } from "./security-gate";

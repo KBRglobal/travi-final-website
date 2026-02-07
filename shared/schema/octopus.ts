@@ -19,9 +19,8 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // Import enums from ./enums
-import { octopusJobStatusEnum, octopusArtifactActionEnum, publishStatusEnum } from "./enums";
+import { octopusJobStatusEnum, octopusArtifactActionEnum } from "./enums";
 
-import { destinations } from "./destinations";
 import { users } from "./auth";
 import { contents } from "./content-base";
 import { attractions, hotels, districts } from "./content-types";

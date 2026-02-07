@@ -13,7 +13,8 @@
  */
 
 import { Router } from "express";
-import { getSecurityMode, getModeConfiguration, SecurityMode } from "../modes/security-modes";
+import { getSecurityMode, SecurityMode } from "../modes/security-modes";
+
 import { getThreatLevel, ThreatLevel } from "../core/security-kernel";
 import { assertAllowed, SecurityGateResult } from "../gate/security-gate";
 import { logAdminEvent } from "../../governance/security-logger";

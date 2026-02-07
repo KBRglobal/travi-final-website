@@ -17,8 +17,8 @@ import { AdminRole, Action, Resource } from "../../governance/types";
 import { checkUserPermission } from "../rbac/enforcer";
 import { isOperationAllowed, getSecurityMode, getModeConfiguration } from "../modes/security-modes";
 import { checkDataAccess } from "../exfiltration/exfiltration-guard";
-import { checkApprovalSafety, ApprovalRequest } from "../approvals/approval-safety";
-import { processSecurityEvent, SecurityAnomaly } from "../intelligence/security-intelligence";
+import { processSecurityEvent } from "../intelligence/security-intelligence";
+
 import { shouldAllow, getThreatLevel } from "../core/security-kernel";
 import { logAdminEvent } from "../../governance/security-logger";
 import { generateEvidence } from "../compliance/evidence-generator";

@@ -275,7 +275,7 @@ function suggestContentForQuery(
 
   // Check for comparison patterns
   if (/vs|versus|compare|between/i.test(query)) {
-    const match = query.match(/(.+?)\s+(?:vs|versus|compare|between)\s+(.+)/i);
+    const match = /(.+?)\s+(?:vs|versus|compare|between)\s+(.+)/i.exec(query);
     if (match) {
       suggestions.push({
         type: "article",
@@ -287,7 +287,7 @@ function suggestContentForQuery(
 
   // Check for "best" patterns
   if (/best\s+/i.test(query)) {
-    const match = query.match(/best\s+(.+?)(?:\s+in\s+|\s+for\s+)?(.+)?/i);
+    const match = /best\s+(.+?)(?:\s+in\s+|\s+for\s+)?(.+)?/i.exec(query);
     if (match) {
       suggestions.push({
         type: "article",

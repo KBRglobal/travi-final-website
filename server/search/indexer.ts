@@ -6,7 +6,8 @@
 
 import { db } from "../db";
 import { sql, eq } from "drizzle-orm";
-import { contents, searchIndex } from "@shared/schema";
+import { contents } from "@shared/schema";
+
 import { embeddings } from "./embeddings";
 
 export const searchIndexer = {

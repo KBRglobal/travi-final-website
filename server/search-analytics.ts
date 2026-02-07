@@ -10,7 +10,8 @@
  */
 
 import { db } from "./db";
-import { sql, eq, gte, desc, count } from "drizzle-orm";
+import { sql, eq, gte, count } from "drizzle-orm";
+
 import { cache } from "./cache";
 import { searchQueries } from "@shared/schema";
 

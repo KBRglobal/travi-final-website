@@ -7,7 +7,8 @@ import { db } from "../../db";
 import { autopilotSchedules } from "@shared/schema";
 import { eq, and, sql, lte } from "drizzle-orm";
 import { getRealAutopilot } from "./real-autopilot";
-import { AutopilotTaskType, ScheduleConfig, DEFAULT_SCHEDULES, TaskConfig } from "./types";
+import { AutopilotTaskType, DEFAULT_SCHEDULES, TaskConfig } from "./types";
+
 import { log } from "../../lib/logger";
 
 // Simple cron parser for basic expressions

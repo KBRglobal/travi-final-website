@@ -12,7 +12,6 @@ import {
   CONTENT_TYPE_REQUIREMENTS,
   BANNED_PHRASES,
   validateContent,
-  detectBannedPhrases,
   generateMetaTitle,
   generateMetaDescription,
   type ContentType,
@@ -21,10 +20,8 @@ import {
 import { DUBAI_KEYWORDS, searchTopics, type TopicKeyword } from "@shared/dubai-keywords";
 import {
   type ArticleTemplate,
-  SEO_AEO_TOURISM_TEMPLATE,
   getTemplateById,
   generateTemplatePrompt,
-  substituteVariables,
 } from "@shared/article-templates";
 
 const logger = createLogger("content-generator");

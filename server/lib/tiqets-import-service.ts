@@ -60,7 +60,7 @@ const TARGET_CITIES = [
 // ============================================================================
 
 export class TiqetsImportService {
-  private client: TiqetsClient;
+  private readonly client: TiqetsClient;
 
   constructor() {
     this.client = getTiqetsClient();

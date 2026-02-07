@@ -8,10 +8,8 @@ import {
   qaCheckResults,
   qaTemplates,
   qaIssues,
-  users,
 } from "@shared/schema";
 import { requireAuth, requirePermission } from "../security";
-import { z } from "zod";
 import { QaRunner } from "../services/qa-runner";
 
 type AuthRequest = Request & {

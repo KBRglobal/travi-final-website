@@ -29,13 +29,9 @@ import { eq, and } from "drizzle-orm";
 import { OctypoOrchestrator } from "../orchestration/orchestrator";
 import type { AttractionData, GeneratedAttractionContent } from "../types";
 import { EngineRegistry } from "../../services/engine-registry";
-import {
-  getCulturalContext,
-  getLocaleTier,
-  getAllSupportedLocales,
-} from "../../localization/cultural-contexts";
+import { getCulturalContext, getAllSupportedLocales } from "../../localization/cultural-contexts";
 import { validateLocalePurity as validateLocalePurityExternal } from "../../localization/validators/locale-purity";
-import { runQualityGates } from "../../localization/validators/quality-gates";
+
 import { getPrimaryScripts, SCRIPT_REGEX } from "../../localization/validators/script-validators";
 
 // ============================================================================

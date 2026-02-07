@@ -355,8 +355,10 @@ export async function generateContentImages(
           type: "hero",
         });
       } else {
+        // empty
       }
     } else {
+      // empty
     }
   }
 

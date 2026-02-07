@@ -577,7 +577,7 @@ function generateSchemaOrg(location: TraviLocation) {
       addressCountry: location.country || "",
       streetAddress: location.details?.address || "",
     },
-    url: typeof window !== "undefined" ? window.location.href : "",
+    url: typeof globalThis.window !== "undefined" ? globalThis.location.href : "",
   };
 
   if (location.details?.phone) {
@@ -635,7 +635,7 @@ export default function TraviLocationPage() {
           <p className="text-muted-foreground mb-6">
             The location you're looking for doesn't exist or isn't available yet.
           </p>
-          <Button onClick={() => window.history.back()} variant="outline">
+          <Button onClick={() => globalThis.history.back()} variant="outline">
             Go Back
           </Button>
         </div>
@@ -666,7 +666,10 @@ export default function TraviLocationPage() {
         <meta property="og:description" content={metaDescription} />
         <meta property="og:image" content={heroImage} />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href={typeof window !== "undefined" ? window.location.href : ""} />
+        <link
+          rel="canonical"
+          href={typeof globalThis.window !== "undefined" ? globalThis.location.href : ""}
+        />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 
@@ -684,7 +687,7 @@ export default function TraviLocationPage() {
                   : location.category === "hotel"
                     ? "/hotels"
                     : "/dining";
-              window.location.href = categoryPath;
+              globalThis.location.href = categoryPath;
             }}
             data-testid="button-back-to-category"
           >

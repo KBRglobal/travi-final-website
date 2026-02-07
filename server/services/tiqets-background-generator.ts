@@ -301,6 +301,7 @@ async function runWatchdog(): Promise<void> {
     const released = await releaseStaleLocksWithCount();
 
     if (released > 0) {
+      // empty
     }
   } catch (error) {
     console.error(error);
@@ -335,6 +336,7 @@ async function runBackgroundTask(): Promise<void> {
     if (ready > 0) {
       const approved = await approveReadyContent();
       if (approved > 0) {
+        // empty
       }
     }
 
@@ -343,6 +345,7 @@ async function runBackgroundTask(): Promise<void> {
 
     // Log stale locks if any
     if (queueStatus.staleCount > 0) {
+      // empty
     }
 
     // If there are pending items and queue is NOT actively processing fresh jobs
@@ -356,6 +359,7 @@ async function runBackgroundTask(): Promise<void> {
       }
     } else if (pending > 0 && queueStatus.active) {
     } else if (pending === 0 && failed === 0 && inProgress === 0) {
+      // empty
     }
 
     // Reset failed items periodically (every 5th run or when many failed)
@@ -363,6 +367,7 @@ async function runBackgroundTask(): Promise<void> {
       const toReset = Math.min(failed, 30);
       const reset = await resetFailedContent(toReset);
       if (reset > 0) {
+        // empty
       }
     }
 
@@ -373,11 +378,13 @@ async function runBackgroundTask(): Promise<void> {
     // Check and reset stale running state (>10 min no activity)
     const wasStale = octypoState.checkAndResetStale();
     if (wasStale) {
+      // empty
     }
 
     if (octypoPending > 0 && !octypoState.isRunning()) {
       await triggerOctypoGeneration();
     } else if (octypoPending > 0 && octypoState.isRunning()) {
+      // empty
     }
 
     health.consecutiveErrors = 0;
@@ -388,6 +395,7 @@ async function runBackgroundTask(): Promise<void> {
     isRunning = false;
     const duration = Date.now() - startTime;
     if (duration > 5000) {
+      // empty
     }
   }
 }

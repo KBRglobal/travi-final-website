@@ -20,8 +20,6 @@ import {
   ThreatState,
   MODE_RESTRICTIONS,
   DEFAULT_SECURITY_AUTHORITY_CONFIG,
-  ActorIdentity,
-  GateContext,
   ResourceType,
 } from "./types";
 import { SecuritySeverity, logSecurityEvent, SecurityEventType } from "../audit-logger";

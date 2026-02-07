@@ -241,7 +241,7 @@ Return ${maxIdeas} article ideas as a JSON array.`;
     if (jsonString.endsWith("```")) jsonString = jsonString.slice(0, -3);
 
     // Extract JSON array
-    const jsonMatch = jsonString.match(/\[[\s\S]*\]/);
+    const jsonMatch = /\[[\s\S]*\]/.exec(jsonString);
     if (jsonMatch) {
       jsonString = jsonMatch[0];
     }

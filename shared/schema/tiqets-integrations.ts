@@ -30,7 +30,6 @@ import {
   destinationEventTypeEnum,
   destinationEventStatusEnum,
 } from "./enums";
-import { destinations } from "./destinations";
 
 // ============================================================================
 // TRAVI LOCATION CATEGORY ENUM (imported from ./enums)

@@ -54,4 +54,6 @@ export function getChatMetrics(): ChatMetrics {
   };
 }
 
-export function resetChatMetrics(): void {}
+export function resetChatMetrics(): void {
+  /* empty */
+}

@@ -278,7 +278,7 @@ export async function getSecurityEvents(filters?: {
     // Filter by security event criteria
     let filtered = logs.filter(log => {
       const afterState = log.afterState as any;
-      return afterState && afterState.eventType;
+      return afterState?.eventType;
     });
 
     if (filters?.severity) {

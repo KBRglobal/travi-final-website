@@ -13,8 +13,9 @@
 
 import Parser from "rss-parser";
 import { db } from "../db";
-import { rssFeeds, contents, backgroundJobs } from "@shared/schema";
-import { eq, and, gte, sql, desc, inArray, isNull } from "drizzle-orm";
+import { rssFeeds } from "@shared/schema";
+
+import { eq, sql } from "drizzle-orm";
 
 // ============================================================================
 // TYPES

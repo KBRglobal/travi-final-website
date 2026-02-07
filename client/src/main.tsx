@@ -36,7 +36,7 @@ if ("serviceWorker" in navigator && import.meta.env.PROD) {
             await caches.delete(cacheName);
           }
           sessionStorage.setItem(swCleanupKey, "done");
-          window.location.reload();
+          globalThis.location.reload();
           return;
         }
       } catch (e) {

@@ -15,7 +15,7 @@ export function LocaleProvider({ children }: LocaleProviderProps) {
   const [location] = useLocation();
   const [locale, setLocaleState] = useState<Locale>(() => {
     // Try to get locale from URL first
-    const pathParts = window.location.pathname.split("/").filter(Boolean);
+    const pathParts = globalThis.location.pathname.split("/").filter(Boolean);
     const urlLocale = pathParts[0] as Locale;
     if (SUPPORTED_LOCALES.some(l => l.code === urlLocale)) {
       return urlLocale;
@@ -109,7 +109,7 @@ export function useLocalizedUrl() {
   };
 
   const getCurrentPathWithLocale = (targetLocale: Locale) => {
-    const currentPath = window.location.pathname;
+    const currentPath = globalThis.location.pathname;
     const pathParts = currentPath.split("/").filter(Boolean);
 
     // Check if current path has a locale prefix

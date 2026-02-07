@@ -10,7 +10,8 @@
  */
 
 import type { Request, Response, NextFunction } from "express";
-import { AdminRole, ROLE_HIERARCHY } from "../../governance/types";
+import { AdminRole } from "../../governance/types";
+
 import { logDataAccessEvent } from "../../governance/security-logger";
 
 // ============================================================================

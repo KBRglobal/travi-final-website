@@ -12,7 +12,8 @@ import {
   GuardedFeature,
 } from "./types";
 import { PolicyTarget, PolicyDecision, ActionType } from "../policy/types";
-import { evaluatePolicy, recordActionExecution } from "../policy/policy-engine";
+import { evaluatePolicy } from "../policy/policy-engine";
+
 import { generateTargetKey } from "../policy/config";
 import { db } from "../../db";
 import { autonomyDecisionLogs } from "@shared/schema";

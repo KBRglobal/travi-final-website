@@ -239,8 +239,8 @@ export interface RewriteResult {
 }
 
 export class GuideRewriteService {
-  private openrouterKey: string;
-  private unsplashKey: string;
+  private readonly openrouterKey: string;
+  private readonly unsplashKey: string;
   private totalCost = 0;
 
   constructor() {
@@ -579,7 +579,7 @@ export class GuideRewriteService {
     let foundHeadings = false;
 
     for (const line of lines) {
-      const headingMatch = line.match(plaintextHeadingRegex);
+      const headingMatch = plaintextHeadingRegex.exec(line);
 
       if (headingMatch) {
         foundHeadings = true;
@@ -662,7 +662,7 @@ Extract EVERY proper noun, price, time, address, phone number, and specific deta
       const response = await this.callModel(MODELS.primary, prompt);
       if (response) {
         this.totalCost += this.calculateCost(MODELS.primary, prompt, response);
-        const jsonMatch = response.match(/\{[\s\S]*\}/);
+        const jsonMatch = /\{[\s\S]*\}/.exec(response);
         if (jsonMatch) {
           return JSON.parse(jsonMatch[0]) as FactExtractionResult;
         }
@@ -1206,7 +1206,7 @@ Requirements:
       const response = await this.callModel(MODELS.primary, prompt);
       if (response) {
         this.totalCost += this.calculateCost(MODELS.primary, prompt, response);
-        const jsonMatch = response.match(/\{[\s\S]*\}/);
+        const jsonMatch = /\{[\s\S]*\}/.exec(response);
         if (jsonMatch) {
           return JSON.parse(jsonMatch[0]);
         }
@@ -1258,7 +1258,7 @@ Requirements:
       const response = await this.callModel(MODELS.primary, prompt);
       if (response) {
         this.totalCost += this.calculateCost(MODELS.primary, prompt, response);
-        const jsonMatch = response.match(/\[[\s\S]*\]/);
+        const jsonMatch = /\[[\s\S]*\]/.exec(response);
         if (jsonMatch) {
           return JSON.parse(jsonMatch[0]);
         }
@@ -1385,7 +1385,7 @@ Include all 12 months. Rate each as good, fair, or poor for tourism.`;
       const response = await this.callModel(MODELS.primary, prompt);
       if (response) {
         this.totalCost += this.calculateCost(MODELS.primary, prompt, response);
-        const jsonMatch = response.match(/\{[\s\S]*\}/);
+        const jsonMatch = /\{[\s\S]*\}/.exec(response);
         if (jsonMatch) {
           return JSON.parse(jsonMatch[0]);
         }
@@ -1440,7 +1440,7 @@ Include 4-8 main areas that travelers should know about.`;
       const response = await this.callModel(MODELS.primary, prompt);
       if (response) {
         this.totalCost += this.calculateCost(MODELS.primary, prompt, response);
-        const jsonMatch = response.match(/\[[\s\S]*\]/);
+        const jsonMatch = /\[[\s\S]*\]/.exec(response);
         if (jsonMatch) {
           return JSON.parse(jsonMatch[0]);
         }
@@ -1482,7 +1482,7 @@ Return ONLY valid JSON object with these keys:
       const response = await this.callModel(MODELS.primary, prompt);
       if (response) {
         this.totalCost += this.calculateCost(MODELS.primary, prompt, response);
-        const jsonMatch = response.match(/\{[\s\S]*\}/);
+        const jsonMatch = /\{[\s\S]*\}/.exec(response);
         if (jsonMatch) {
           return JSON.parse(jsonMatch[0]);
         }

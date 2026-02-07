@@ -443,13 +443,13 @@ export class AttractionDetector {
     let jsonStr = response;
 
     // Extract JSON from markdown code blocks if present
-    const jsonMatch = response.match(/```(?:json)?\s*([\s\S]*?)```/);
+    const jsonMatch = /```(?:json)?\s*([\s\S]*?)```/.exec(response);
     if (jsonMatch) {
       jsonStr = jsonMatch[1].trim();
     }
 
     // Try to find JSON object directly
-    const objectMatch = jsonStr.match(/\{[\s\S]*\}/);
+    const objectMatch = /\{[\s\S]*\}/.exec(jsonStr);
     if (objectMatch) {
       jsonStr = objectMatch[0];
     }

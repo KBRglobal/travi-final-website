@@ -7,7 +7,7 @@ import { Redis } from "@upstash/redis";
 import type { Store, IncrementResponse, Options } from "express-rate-limit";
 
 export class RedisRateLimitStore implements Store {
-  private redis: Redis | null = null;
+  private readonly redis: Redis | null = null;
   readonly prefix: string;
   private windowMs = 60_000;
 

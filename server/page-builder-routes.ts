@@ -6,9 +6,9 @@ import {
   sectionVersions,
   insertEditablePageSchema,
   insertPageSectionSchema,
-  insertSectionVersionSchema,
 } from "@shared/schema";
-import { eq, asc, desc, and, max } from "drizzle-orm";
+import { eq, asc, desc, and } from "drizzle-orm";
+
 import { isAuthenticated } from "./replitAuth";
 import { z } from "zod";
 

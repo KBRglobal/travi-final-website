@@ -31,13 +31,13 @@ declare global {
 }
 
 function loadGTM() {
-  if (typeof window === "undefined") return;
-  if (window.__gtm_loaded) return;
+  if (typeof globalThis.window === "undefined") return;
+  if (globalThis.__gtm_loaded) return;
 
-  window.__gtm_loaded = true;
+  globalThis.__gtm_loaded = true;
 
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+  globalThis.dataLayer = globalThis.dataLayer || [];
+  globalThis.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
 
   const f = document.getElementsByTagName("script")[0];
   const j = document.createElement("script");

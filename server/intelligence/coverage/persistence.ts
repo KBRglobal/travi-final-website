@@ -7,7 +7,12 @@
 
 import { db } from '../../db';
 import { contents } from '@shared/schema';
-import { eq, sql, count, and, isNull, isNotNull, gte, lt, desc } from 'drizzle-orm';
+import { eq, sql, count, isNotNull } from 'drizzle-orm';
+
+
+
+
+
 import { log } from '../../lib/logger';
 import type { ContentCoverage, CoverageSummary } from './types';
 import { isIntelligenceCoverageEnabled } from './evaluator';

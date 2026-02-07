@@ -340,7 +340,7 @@ export default function TravelGuidesPage() {
   });
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(globalThis.location.search);
     const localeParam = urlParams.get("locale");
     if (localeParam && SUPPORTED_LANGUAGES.some(l => l.code === localeParam)) {
       setSelectedLocale(localeParam);
@@ -350,7 +350,7 @@ export default function TravelGuidesPage() {
   const handleLocaleChange = (locale: string) => {
     setSelectedLocale(locale);
     const newUrl = `${location.split("?")[0]}?locale=${locale}`;
-    window.history.replaceState({}, "", newUrl);
+    globalThis.history.replaceState({}, "", newUrl);
   };
 
   // Filter guides by search query
@@ -754,7 +754,7 @@ export default function TravelGuidesPage() {
                   We encountered an issue loading the travel guides. Please try again.
                 </p>
                 <Button
-                  onClick={() => window.location.reload()}
+                  onClick={() => globalThis.location.reload()}
                   className="bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white"
                 >
                   Refresh Page

@@ -6,7 +6,8 @@
 import type { Express, Request, Response } from "express";
 import { z } from "zod";
 import { storage } from "../storage";
-import { requireAuth, requirePermission, checkReadOnlyMode } from "../security";
+import { requirePermission, checkReadOnlyMode } from "../security";
+
 import { insertHomepagePromotionSchema, type HomepageSection } from "@shared/schema";
 
 export function registerWriterPromotionRoutes(app: Express): void {

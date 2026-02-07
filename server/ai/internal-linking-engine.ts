@@ -11,11 +11,7 @@
  */
 
 import { createLogger } from "../lib/logger";
-import {
-  SEO_REQUIREMENTS,
-  CONTENT_TYPE_REQUIREMENTS,
-  type ContentType,
-} from "../lib/seo-standards";
+import { CONTENT_TYPE_REQUIREMENTS, type ContentType } from "../lib/seo-standards";
 // Dubai keywords import removed - using database-driven links instead
 import { db } from "../db";
 import { destinations, contents, categoryPages } from "@shared/schema";
@@ -383,7 +379,7 @@ function findBestAnchorText(content: string, keyword: string, position: number):
 
   // Check if part of a longer phrase
   const beforeWord = before.match(/\b(\w+)\s*$/)?.[1] || "";
-  const afterWord = after.match(/^\s*(\w+)\b/)?.[1] || "";
+  const afterWord = /^\s*(\w+)\b/.exec(after)?.[1] || "";
 
   // Common travel phrase patterns
   if (beforeWord.match(/^(the|visit|explore|discover)$/i)) {

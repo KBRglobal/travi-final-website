@@ -29,7 +29,6 @@ import {
   FALLBACK_EXPERIENCE_CATEGORIES,
   FALLBACK_REGION_LINKS,
   getIconComponent,
-  heroAnimationStyles,
   type HomepageConfig,
   type ExperienceCategory,
   type RegionLink,

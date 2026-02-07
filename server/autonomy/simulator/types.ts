@@ -3,9 +3,9 @@
  * Replay historical traffic against hypothetical policies
  */
 
-import { GuardedFeature } from '../enforcement/types';
+import { GuardedFeature } from "../enforcement/types";
 type PolicyDecision = any;
-import { BudgetPeriod, BudgetLimit } from '../policy/types';
+import { BudgetLimit } from "../policy/types";
 
 /**
  * A historical decision record to replay
@@ -48,11 +48,16 @@ export interface HypotheticalPolicy {
     maxOverrideRate?: number;
     maxCostPerHour?: number;
   };
-  featureOverrides?: Partial<Record<GuardedFeature, {
-    enabled: boolean;
-    maxActions?: number;
-    maxAiSpend?: number;
-  }>>;
+  featureOverrides?: Partial<
+    Record<
+      GuardedFeature,
+      {
+        enabled: boolean;
+        maxActions?: number;
+        maxAiSpend?: number;
+      }
+    >
+  >;
 }
 
 /**
@@ -145,8 +150,8 @@ export interface HourlyImpact {
 }
 
 export interface SimulationFinding {
-  type: 'risk' | 'opportunity' | 'neutral';
-  severity: 'low' | 'medium' | 'high';
+  type: "risk" | "opportunity" | "neutral";
+  severity: "low" | "medium" | "high";
   feature?: GuardedFeature;
   message: string;
   metric?: string;
@@ -180,7 +185,7 @@ export interface SimulatorConfig {
 }
 
 export const DEFAULT_SIMULATOR_CONFIG: SimulatorConfig = {
-  enabled: process.env.ENABLE_AUTONOMY_SIMULATOR === 'true',
+  enabled: process.env.ENABLE_AUTONOMY_SIMULATOR === "true",
   maxRecordsPerRun: 10000,
   maxConcurrentSimulations: 3,
   simulationTimeoutMs: 30000,

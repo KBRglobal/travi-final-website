@@ -84,7 +84,7 @@ function parseUserAgent(ua: string): {
     osVersion = ua.match(/Windows NT (\d+(?:\.\d+)?)/)?.[1] || "";
   } else if (ua.includes("Mac OS X")) {
     os = "macOS";
-    osVersion = ua.match(/Mac OS X (\d+[._]\d+)/)?.[1]?.replace("_", ".") || "";
+    osVersion = /Mac OS X (\d+[._]\d+)/.exec(ua)?.[1]?.replace("_", ".") || "";
   } else if (ua.includes("Linux")) {
     os = "Linux";
   } else if (ua.includes("Android")) {
@@ -92,7 +92,7 @@ function parseUserAgent(ua: string): {
     osVersion = ua.match(/Android (\d+(?:\.\d+)?)/)?.[1] || "";
   } else if (ua.includes("iOS") || ua.includes("iPhone") || ua.includes("iPad")) {
     os = "iOS";
-    osVersion = ua.match(/OS (\d+[._]\d+)/)?.[1]?.replace("_", ".") || "";
+    osVersion = /OS (\d+[._]\d+)/.exec(ua)?.[1]?.replace("_", ".") || "";
   }
 
   // Detect device type

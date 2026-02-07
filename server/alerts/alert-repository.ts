@@ -1,5 +1,6 @@
 import { db } from "../db";
-import { sql, eq, and, isNull, desc } from "drizzle-orm";
+import { sql } from "drizzle-orm";
+
 import type { Alert, AlertType, AlertSeverity, AlertStats } from "./types";
 
 const ALERTS_TABLE = "system_alerts";

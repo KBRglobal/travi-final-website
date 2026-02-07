@@ -41,8 +41,8 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
   const { toast } = useToast();
 
   const prefersReducedMotion = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (typeof globalThis.window === "undefined") return false;
+    return globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

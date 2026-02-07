@@ -18,7 +18,8 @@ import {
   type Destination,
   type DestinationImage,
 } from "@shared/schema";
-import { eq, and, or, isNull, sql, asc, desc, lt } from "drizzle-orm";
+import { eq, and, or, isNull, sql, asc, desc } from "drizzle-orm";
+
 import { generateImage, generateImagePrompt } from "./image-generation";
 import { ObjectStorageAdapter } from "../services/storage-adapter";
 import { createLogger } from "../lib/logger";

@@ -3,7 +3,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { storage } from "../storage";
 import { requirePermission, checkReadOnlyMode } from "../security";
-import { insertTranslationSchema, SUPPORTED_LOCALES } from "@shared/schema";
+import { SUPPORTED_LOCALES } from "@shared/schema";
 
 const updateTranslationSchema = z.object({
   status: z.enum(["pending", "in_progress", "completed", "needs_review"]).optional(),

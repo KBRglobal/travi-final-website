@@ -22,7 +22,8 @@ import {
 import { getLinkOpportunities } from "../link-opportunities";
 import { db } from "../db";
 import { internalLinks, contents } from "@shared/schema";
-import { eq, desc, sql, and } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
+
 import { createLogger } from "../lib/logger";
 
 const logger = createLogger("link-management-routes");

@@ -12,7 +12,6 @@
 import {
   SecurityMode,
   SecurityModeConfig,
-  MODE_RESTRICTIONS,
   SecurityRestrictions,
   DEFAULT_SECURITY_AUTHORITY_CONFIG,
 } from "./types";

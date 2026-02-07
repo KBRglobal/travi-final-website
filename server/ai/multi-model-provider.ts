@@ -148,9 +148,9 @@ export class MultiModelProvider {
   private openaiClient: OpenAI | null = null;
   private geminiClient: GoogleGenerativeAI | null = null;
   private openrouterClient: OpenAI | null = null;
-  private deepseekClient: OpenAI | null = null;
+  private readonly deepseekClient: OpenAI | null = null;
   private perplexityClient: OpenAI | null = null;
-  private groqClient: OpenAI | null = null;
+  private readonly groqClient: OpenAI | null = null;
   private mistralClient: OpenAI | null = null;
   private edenClient: { apiKey: string } | null = null;
   private providers: AIProviderConfig[] = [];

@@ -13,7 +13,6 @@ import { Request, Response, NextFunction } from "express";
 import {
   getSecurityMode,
   shouldAllow,
-  recordViolation,
   recordBlock,
   detectBypassAttempt,
 } from "../core/security-kernel";

@@ -6,7 +6,6 @@
 import { Router } from "express";
 import { db } from "../../db";
 import { sql } from "drizzle-orm";
-import { rssReader } from "../../octypo/rss-reader";
 import { getDeduplicationEngine } from "../../octypo/gatekeeper/deduplication";
 import { EngineRegistry } from "../../services/engine-registry";
 

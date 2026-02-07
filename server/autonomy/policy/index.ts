@@ -74,6 +74,7 @@ export async function initAutonomyPolicy(): Promise<void> {
     try {
       const seeded = await seedDefaultPolicies();
       if (seeded > 0) {
+        // empty
       }
     } catch (error) {
       /* ignored */

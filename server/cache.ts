@@ -17,8 +17,8 @@ type CacheTTL = keyof typeof CACHE_TTL;
 
 // In-memory fallback cache
 class MemoryCache {
-  private cache = new Map<string, { value: unknown; expiresAt: number }>();
-  private cleanupInterval: NodeJS.Timeout;
+  private readonly cache = new Map<string, { value: unknown; expiresAt: number }>();
+  private readonly cleanupInterval: NodeJS.Timeout;
   private readonly maxSize = 100000; // Phase 16: Bound cache size
 
   constructor() {
@@ -112,7 +112,7 @@ class MemoryCache {
 // Unified cache interface
 class CacheService {
   private redis: Redis | null = null;
-  private memory: MemoryCache;
+  private readonly memory: MemoryCache;
   private isRedisAvailable: boolean = false;
 
   constructor() {

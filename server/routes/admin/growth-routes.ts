@@ -8,13 +8,13 @@ import { requireAuth, requirePermission } from "../../security";
 import { db } from "../../db";
 import {
   destinations,
-  destinationContent,
   translations,
   contents,
   aiGenerationLogs,
   SUPPORTED_LOCALES,
 } from "@shared/schema";
-import { eq, desc, and, sql, count, isNull, isNotNull, gte, lte } from "drizzle-orm";
+import { eq, desc, and, sql, count, isNotNull, gte } from "drizzle-orm";
+
 import {
   checkContentFreshness,
   refreshStaleContent,

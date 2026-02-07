@@ -135,7 +135,7 @@ function parseJSON(content: string): ParsedJSON {
     return JSON.parse(content);
   } catch {
     // Try to extract JSON from the response
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    const jsonMatch = /\{[\s\S]*\}/.exec(content);
     if (jsonMatch) {
       try {
         return JSON.parse(jsonMatch[0]);

@@ -55,6 +55,7 @@ export function forceRewrite(entityId: string): RewriteDecision {
   const score = performance ? getPerformanceScore(entityId) : 0;
 
   if (performance && (score > SCORE_THRESHOLD || performance.ctr > CTR_THRESHOLD)) {
+    // empty
   }
 
   return {

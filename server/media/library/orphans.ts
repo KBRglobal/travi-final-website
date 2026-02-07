@@ -6,13 +6,10 @@
 
 import { db } from "../../db";
 import { mediaAssets, contents, type MediaAsset } from "@shared/schema";
-import { eq, sql, and, lt, isNull, desc } from "drizzle-orm";
+import { eq, sql, and, lt, desc } from "drizzle-orm";
+
 import { getMediaLibraryConfig, isMediaLibraryEnabled } from "./config";
-import {
-  extractMediaReferencesFromContent,
-  normalizeMediaPath,
-  deduplicateReferences,
-} from "./references";
+import { extractMediaReferencesFromContent } from "./references";
 import { log } from "../../lib/logger";
 import * as fs from "node:fs";
 import * as path from "node:path";

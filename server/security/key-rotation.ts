@@ -260,14 +260,17 @@ export function logRotationStatus(): void {
   const status = getRotationStatus();
 
   if (status.keysNeedingRotation > 0) {
+    // empty
   }
 
   if (status.keysWithAlerts > 0) {
+    // empty
   }
 
   status.details.forEach(detail => {
     if (detail.status === "expired") {
     } else if (detail.status === "alert") {
+      // empty
     }
   });
 }

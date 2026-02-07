@@ -37,6 +37,7 @@ export const AdapterManager = {
    */
   register(adapter: SystemAdapter): void {
     if (registeredAdapters.has(adapter.name)) {
+      // empty
     }
 
     registeredAdapters.set(adapter.name, adapter);
@@ -55,6 +56,7 @@ export const AdapterManager = {
     adapterHealth.delete(name);
 
     if (removed) {
+      // empty
     }
 
     return removed;

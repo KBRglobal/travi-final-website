@@ -14,13 +14,13 @@ import { db } from "../db";
 import {
   translationJobs,
   contents,
-  translations,
   type TranslationJob,
   type InsertTranslationJob,
   type TranslationJobField,
   SUPPORTED_LOCALES,
 } from "@shared/schema";
-import { eq, and, sql, lt, or, isNull, asc, desc, inArray, ne } from "drizzle-orm";
+import { eq, and, sql, lt, or, isNull, asc, desc } from "drizzle-orm";
+
 import { log } from "../lib/logger";
 import crypto from "node:crypto";
 

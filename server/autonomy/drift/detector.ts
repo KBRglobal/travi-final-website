@@ -14,7 +14,6 @@ import {
 } from "./types";
 import { GuardedFeature } from "../enforcement/types";
 import { getOutcomes } from "../learning/engine";
-import { computeMetrics } from "../learning/engine";
 
 // Bounded storage
 const MAX_SIGNALS = 200;

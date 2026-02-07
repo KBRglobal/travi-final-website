@@ -9,6 +9,7 @@
 import { log } from "../lib/logger";
 import { vamsStorage } from "../storage/vams.storage";
 import { getImageService, type ImageUploadResponse } from "./image-service";
+
 import type { VamsAsset, VamsProvider, VamsVariantType } from "@shared/schema";
 
 // Provider configurations

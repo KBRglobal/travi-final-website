@@ -148,8 +148,8 @@ const MAX_DURATIONS: Record<OverrideType, number> = {
 // ============================================================================
 
 class OverrideRegistry {
-  private overrides: Map<string, Override> = new Map();
-  private alertCallbacks: Set<(override: Override, event: string) => void> = new Set();
+  private readonly overrides: Map<string, Override> = new Map();
+  private readonly alertCallbacks: Set<(override: Override, event: string) => void> = new Set();
 
   /**
    * Request an override

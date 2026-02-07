@@ -1,4 +1,4 @@
-import { eq, db, inArray, contents } from "./base";
+import { db, inArray, contents } from "./base";
 
 export class BulkStorage {
   async bulkUpdateContentStatus(ids: string[], status: string): Promise<number> {

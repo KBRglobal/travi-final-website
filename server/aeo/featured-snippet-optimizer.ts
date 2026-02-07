@@ -210,7 +210,7 @@ export class FeaturedSnippetOptimizer {
 
     // Check if starts with a definition pattern
     const startsWithDefinition =
-      capsuleText.match(/^[A-Z][^.]+\s+is\s+/) || capsuleText.match(/^[A-Z][^.]+\s+are\s+/);
+      /^[A-Z][^.]+\s+is\s+/.exec(capsuleText) || /^[A-Z][^.]+\s+are\s+/.exec(capsuleText);
 
     if (!startsWithDefinition) {
       changes.push("Start with a clear definition (e.g., 'X is...')");
@@ -357,12 +357,12 @@ export class FeaturedSnippetOptimizer {
     }
 
     // Definition pattern
-    if (lower.match(/\b(is|are|means|refers to|defined as)\b/)) {
+    if (/\b(is|are|means|refers to|defined as)\b/.exec(lower)) {
       score += 20;
     }
 
     // Specific numbers or data
-    if (lower.match(/\d+/)) {
+    if (/\d+/.exec(lower)) {
       score += 15;
     }
 

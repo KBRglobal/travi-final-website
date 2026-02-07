@@ -2,15 +2,8 @@ import type { Express, Request, Response } from "express";
 import { db } from "../db";
 import { eq, desc, sql } from "drizzle-orm";
 import crypto from "node:crypto";
-import {
-  referralCodes,
-  referralClicks,
-  referrals,
-  referralCommissions,
-  insertReferralCodeSchema,
-} from "@shared/schema";
-import { requireAuth, requirePermission } from "../security";
-import { z } from "zod";
+import { referralCodes, referralClicks, referrals, referralCommissions } from "@shared/schema";
+import { requirePermission } from "../security";
 
 type AuthRequest = Request & {
   user?: { claims?: { sub: string; email?: string; name?: string } };

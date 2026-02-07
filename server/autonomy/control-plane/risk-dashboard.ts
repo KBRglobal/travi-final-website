@@ -4,7 +4,8 @@
  */
 
 import { db } from "../../db";
-import { autonomyBudgets, autonomyDecisionLogs, autonomyPolicies } from "@shared/schema";
+import { autonomyDecisionLogs } from "@shared/schema";
+
 import { eq, and, gt, desc, sql, count } from "drizzle-orm";
 import { getBudgetSummary, checkBudgetStatus } from "../policy/budgets";
 import { getPolicies } from "../policy/repository";

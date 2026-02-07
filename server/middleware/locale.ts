@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
 
-const LOCALE_CODES = SUPPORTED_LOCALES.map((l) => l.code);
+const LOCALE_CODES = SUPPORTED_LOCALES.map(l => l.code);
 
 declare global {
   namespace Express {
@@ -54,11 +54,11 @@ export function requireValidLocale(req: Request, res: Response, next: NextFuncti
   const segments = req.path.split("/").filter(Boolean);
   const firstSegment = segments[0]?.toLowerCase();
 
-  if (firstSegment && firstSegment.length === 2 && !isValidLocale(firstSegment)) {
-    return res.status(404).json({ 
-      error: "Invalid locale", 
+  if (firstSegment?.length === 2 && !isValidLocale(firstSegment)) {
+    return res.status(404).json({
+      error: "Invalid locale",
       message: `Locale '${firstSegment}' is not supported`,
-      supportedLocales: LOCALE_CODES 
+      supportedLocales: LOCALE_CODES,
     });
   }
 

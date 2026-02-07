@@ -1,5 +1,6 @@
 import type { Express, Request, Response } from "express";
-import { eq, and, sql, desc } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
+
 import { db } from "../../db";
 import { tiqetsAttractions } from "@shared/schema";
 import { requireAuth } from "../../security";
@@ -67,7 +68,8 @@ export function registerAdminContentQualityRoutes(app: Express): void {
   app.post("/api/admin/content-quality/regenerate/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
-      const { regenerateSingleAttraction } = await import("../../services/content-regeneration-job");
+      const { regenerateSingleAttraction } =
+        await import("../../services/content-regeneration-job");
       const result = await regenerateSingleAttraction(id);
       res.json(result);
     } catch (error: any) {

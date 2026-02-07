@@ -78,13 +78,13 @@ class EngineRegistryClass {
   private currentIndex = 0;
   private initialized = false;
   // Per-provider round-robin counters for true queue behavior
-  private providerCounters: Map<string, number> = new Map();
+  private readonly providerCounters: Map<string, number> = new Map();
   // Global counter for all engines (true round-robin across ALL engines)
   private globalQueueIndex = 0;
   // Provider-level suspension tracking (when quota exhausted, suspend entire provider)
-  private suspendedProviders: Map<ProviderType, number> = new Map();
+  private readonly suspendedProviders: Map<ProviderType, number> = new Map();
   // Provider priority order - prefer providers with available quota
-  private providerPriority: ProviderType[] = [
+  private readonly providerPriority: ProviderType[] = [
     "anthropic",
     "openrouter",
     "gemini",

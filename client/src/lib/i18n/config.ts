@@ -79,6 +79,7 @@ const missingKeyHandler = (
 ) => {
   // Only log in development to avoid console spam in production
   if (process.env.NODE_ENV === "development") {
+    // empty
   }
 };
 

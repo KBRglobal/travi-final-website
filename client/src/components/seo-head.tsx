@@ -321,7 +321,7 @@ export function generateImageObjectStructuredData(image: ImageSeoStructuredData,
   }
 
   // Detect format from URL
-  const formatMatch = image.contentUrl.match(/\.(webp|jpg|jpeg|png|gif)(\?|$)/i);
+  const formatMatch = /\.(webp|jpg|jpeg|png|gif)(\?|$)/i.exec(image.contentUrl);
   if (formatMatch) {
     const format = formatMatch[1].toLowerCase();
     schema.encodingFormat = `image/${format === "jpg" ? "jpeg" : format}`;

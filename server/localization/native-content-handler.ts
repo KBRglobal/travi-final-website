@@ -131,7 +131,7 @@ async function handleNativeContentJob(
         )
       );
 
-    if (existing && existing.status === "published" && existing.sourceHash === sourceHash) {
+    if (existing?.status === "published" && existing.sourceHash === sourceHash) {
       // Source unchanged and already published – skip regeneration
       logger.info("Native content unchanged (hash match), skipping", {
         contentId: data.contentId,
@@ -141,7 +141,7 @@ async function handleNativeContentJob(
       return { success: true, result: { skipped: true, reason: "Source unchanged" } };
     }
 
-    if (existing && existing.status === "published" && existing.sourceHash !== sourceHash) {
+    if (existing?.status === "published" && existing.sourceHash !== sourceHash) {
       logger.info("Source content changed, regenerating native content", {
         contentId: data.contentId,
         locale: data.locale,

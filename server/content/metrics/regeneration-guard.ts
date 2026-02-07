@@ -50,6 +50,7 @@ export function forceAllowRegeneration(contentId: string): RegenerationDecision 
   const isHighPerformer = metrics ? metrics.clicks >= HIGH_ENGAGEMENT_THRESHOLD : false;
 
   if (isHighPerformer) {
+    // empty
   }
 
   return {

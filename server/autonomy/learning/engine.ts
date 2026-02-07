@@ -9,8 +9,6 @@ import {
   FeatureLearning,
   LearningPattern,
   LearningRecommendation,
-  PatternType,
-  RecommendationType,
   DecisionOutcome,
   DEFAULT_LEARNING_CONFIG,
   LearningConfig,

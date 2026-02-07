@@ -1,25 +1,26 @@
 /**
  * Phase 6: Freshness Checker
- * 
+ *
  * Detects stale translations by comparing translation.lastUpdated vs source.lastUpdated.
  * Flags translations that need to be regenerated when the source has been updated.
- * 
+ *
  * HARD CONSTRAINTS:
  * - English (en) is ALWAYS the source of truth
  * - Translations are stale if source updated after translation
  * - Source hash changes also indicate staleness
  */
 
-import { db } from '../db';
-import { contents, translations, type Content, type Translation } from '@shared/schema';
-import { eq, and } from 'drizzle-orm';
-import { log } from '../lib/logger';
-import { CANONICAL_LOCALE, computeCanonicalHash } from './canonical-rules';
+import { db } from "../db";
+import { contents, translations, type Content, type Translation } from "@shared/schema";
+
+import { eq, and } from "drizzle-orm";
+import { log } from "../lib/logger";
+import { CANONICAL_LOCALE, computeCanonicalHash } from "./canonical-rules";
 
 const logger = {
-  info: (msg: string, data?: Record<string, unknown>) => 
+  info: (msg: string, data?: Record<string, unknown>) =>
     log.info(`[FreshnessChecker] ${msg}`, data),
-  warn: (msg: string, data?: Record<string, unknown>) => 
+  warn: (msg: string, data?: Record<string, unknown>) =>
     log.info(`[FreshnessChecker] WARN: ${msg}`, data),
 };
 
@@ -44,7 +45,7 @@ export interface BatchFreshnessResult {
 
 /**
  * Check the freshness of a translation compared to its English source.
- * 
+ *
  * @param contentId - The ID of the content
  * @param locale - The locale of the translation to check
  * @returns FreshnessResult with staleness information
@@ -65,14 +66,11 @@ export async function checkTranslationFreshness(
       sourceLastUpdated: now,
       translationLastUpdated: now,
       sourceHashMatch: true,
-      reason: 'English is the canonical source, always fresh',
+      reason: "English is the canonical source, always fresh",
     };
   }
 
-  const [sourceContent] = await db
-    .select()
-    .from(contents)
-    .where(eq(contents.id, contentId));
+  const [sourceContent] = await db.select().from(contents).where(eq(contents.id, contentId));
 
   if (!sourceContent) {
     const now = new Date();
@@ -86,17 +84,14 @@ export async function checkTranslationFreshness(
       sourceLastUpdated: now,
       translationLastUpdated: null,
       sourceHashMatch: false,
-      reason: 'Source content not found',
+      reason: "Source content not found",
     };
   }
 
   const [translation] = await db
     .select()
     .from(translations)
-    .where(and(
-      eq(translations.contentId, contentId),
-      eq(translations.locale, locale as any)
-    ));
+    .where(and(eq(translations.contentId, contentId), eq(translations.locale, locale as any)));
 
   const sourceLastUpdated = sourceContent.updatedAt || sourceContent.createdAt || new Date();
   const currentSourceHash = computeCanonicalHash(sourceContent);
@@ -112,7 +107,7 @@ export async function checkTranslationFreshness(
       sourceLastUpdated,
       translationLastUpdated: null,
       sourceHashMatch: false,
-      reason: 'Translation does not exist',
+      reason: "Translation does not exist",
     };
   }
 
@@ -125,11 +120,11 @@ export async function checkTranslationFreshness(
 
   let reason: string | undefined;
   if (isTimestampStale && isHashStale) {
-    reason = 'Source updated after translation and content hash changed';
+    reason = "Source updated after translation and content hash changed";
   } else if (isTimestampStale) {
-    reason = 'Source updated after translation';
+    reason = "Source updated after translation";
   } else if (isHashStale) {
-    reason = 'Source content hash changed';
+    reason = "Source content hash changed";
   }
 
   const staleDays = isStale ? calculateStaleDays(sourceLastUpdated, translationLastUpdated) : 0;
@@ -169,7 +164,7 @@ function calculateStaleDays(sourceDate: Date, translationDate: Date | null): num
 
 /**
  * Check freshness for all translations of a content item.
- * 
+ *
  * @param contentId - The ID of the content
  * @returns Array of freshness results for all locales
  */
@@ -197,13 +192,11 @@ export async function checkAllTranslationsFreshness(
 
 /**
  * Find all stale translations across the system.
- * 
+ *
  * @param limit - Maximum number of stale translations to return
  * @returns Array of stale translations with their freshness results
  */
-export async function findStaleTranslations(
-  limit: number = 100
-): Promise<BatchFreshnessResult[]> {
+export async function findStaleTranslations(limit: number = 100): Promise<BatchFreshnessResult[]> {
   const allTranslations = await db
     .select({
       translation: translations,
@@ -239,11 +232,12 @@ export async function findStaleTranslations(
           sourceLastUpdated,
           translationLastUpdated,
           sourceHashMatch,
-          reason: isTimestampStale && isHashStale 
-            ? 'Source updated and hash changed'
-            : isTimestampStale 
-              ? 'Source updated after translation'
-              : 'Source hash changed',
+          reason:
+            isTimestampStale && isHashStale
+              ? "Source updated and hash changed"
+              : isTimestampStale
+                ? "Source updated after translation"
+                : "Source hash changed",
         } as any,
       });
 
@@ -253,9 +247,9 @@ export async function findStaleTranslations(
     }
   }
 
-  logger.info('Stale translations scan completed', { 
-    scanned: allTranslations.length, 
-    staleFound: staleResults.length 
+  logger.info("Stale translations scan completed", {
+    scanned: allTranslations.length,
+    staleFound: staleResults.length,
   });
 
   return staleResults;
@@ -288,13 +282,14 @@ export async function getFreshnessSummary(): Promise<{
     const sourceLastUpdated = content.updatedAt || content.createdAt || new Date();
     const translationLastUpdated = translation.updatedAt || translation.createdAt || new Date();
     const currentSourceHash = computeCanonicalHash(content);
-    const isStale = sourceLastUpdated > translationLastUpdated || translation.sourceHash !== currentSourceHash;
+    const isStale =
+      sourceLastUpdated > translationLastUpdated || translation.sourceHash !== currentSourceHash;
 
     if (isStale) {
       staleCount++;
       const staleDays = calculateStaleDays(sourceLastUpdated, translationLastUpdated);
       totalStaleDays += staleDays;
-      
+
       if (!oldestStaleDate || translationLastUpdated < oldestStaleDate) {
         oldestStaleDate = translationLastUpdated;
       }

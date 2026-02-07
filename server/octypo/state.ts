@@ -17,7 +17,7 @@ class OctypoRunState {
   private lastActivity: Date | null = null;
   private completionCallbacks: Array<() => void> = [];
   // Persistent failed queue - these will be retried
-  private failedQueue: Map<number, FailedAttraction> = new Map();
+  private readonly failedQueue: Map<number, FailedAttraction> = new Map();
   // Track success/failure rate for adaptive concurrency
   private recentSuccesses = 0;
   private recentFailures = 0;
@@ -94,6 +94,7 @@ class OctypoRunState {
         lastError: error.substring(0, 200),
       });
     } else {
+      // empty
     }
     this.recentFailures++;
   }

@@ -3,7 +3,8 @@
  * Manages image assets, variants, and content relationships
  */
 
-import { eq, and, desc, sql, ilike, inArray } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
+
 import { db } from "../db";
 import {
   vamsAssets,

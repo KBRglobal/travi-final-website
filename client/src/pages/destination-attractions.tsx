@@ -628,13 +628,13 @@ function DestinationAttractionsPage() {
                   <div className="flex flex-wrap justify-center gap-4">
                     <Button
                       variant="outline"
-                      onClick={() => (window.location.href = localePath("/attractions"))}
+                      onClick={() => (globalThis.location.href = localePath("/attractions"))}
                       data-testid="button-browse-destinations"
                     >
                       Browse All Destinations
                     </Button>
                     <Button
-                      onClick={() => (window.location.href = localePath("/"))}
+                      onClick={() => (globalThis.location.href = localePath("/"))}
                       className="bg-[#6443F4] hover:bg-[#5539d4]"
                       data-testid="button-return-home"
                     >
@@ -1314,7 +1314,9 @@ function DestinationAttractionsPage() {
                   size="lg"
                   variant="outline"
                   className="border-white text-white hover:bg-white/10"
-                  onClick={() => (window.location.href = localePath(`/destinations/${data.slug}`))}
+                  onClick={() =>
+                    (globalThis.location.href = localePath(`/destinations/${data.slug}`))
+                  }
                   data-testid="button-explore-destination"
                 >
                   Explore {data.name}

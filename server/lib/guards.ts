@@ -145,6 +145,7 @@ export function guardSupportedLocale(locale: string): asserts locale is Supporte
  */
 export function devWarn(message: string, data?: Record<string, unknown>): void {
   if (isDev) {
+    // empty
   }
 }
 

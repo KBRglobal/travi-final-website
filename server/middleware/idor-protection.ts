@@ -12,8 +12,9 @@
 import type { Request, Response, NextFunction } from "express";
 import { storage } from "../storage";
 import { ROLE_PERMISSIONS, type UserRole, type User } from "@shared/schema";
-import { getUserId, isAuthenticatedUser } from "../security";
-import { log, logSecurityEvent } from "../lib/logger";
+import { getUserId } from "../security";
+
+import { log } from "../lib/logger";
 
 type PermissionKey = keyof typeof ROLE_PERMISSIONS.admin;
 

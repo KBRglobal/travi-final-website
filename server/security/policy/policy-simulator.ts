@@ -8,14 +8,7 @@
  */
 
 import { policyEngine } from "../../governance/policy-engine";
-import {
-  PolicyRule,
-  PolicyCondition,
-  PolicyEffect,
-  Action,
-  Resource,
-  AdminRole,
-} from "../../governance/types";
+import { PolicyRule, PolicyEffect, Action, Resource, AdminRole } from "../../governance/types";
 
 type EvaluationContext = any;
 import { lintPolicies, LintResult } from "./policy-linter";

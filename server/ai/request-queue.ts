@@ -202,7 +202,7 @@ function categorizeError(
 // ============================================================================
 
 class TokenBucketRateLimiter {
-  private buckets: Map<string, TokenBucket> = new Map();
+  private readonly buckets: Map<string, TokenBucket> = new Map();
 
   private getConfig(providerName: string) {
     return PROVIDER_CONFIG[providerName as keyof typeof PROVIDER_CONFIG] || PROVIDER_CONFIG.default;
@@ -438,7 +438,7 @@ class TokenBucketRateLimiter {
 // ============================================================================
 
 class PriorityQueueManager {
-  private queue: QueuedRequest[] = [];
+  private readonly queue: QueuedRequest[] = [];
   private completedCount = 0;
   private failedCount = 0;
 
@@ -558,8 +558,8 @@ class PriorityQueueManager {
 // ============================================================================
 
 class AIRequestQueue {
-  private priorityQueue = new PriorityQueueManager();
-  private rateLimiter = new TokenBucketRateLimiter();
+  private readonly priorityQueue = new PriorityQueueManager();
+  private readonly rateLimiter = new TokenBucketRateLimiter();
   private activeRequests = 0;
   private processTimer: NodeJS.Timeout | null = null;
   private requestCounter = 0;

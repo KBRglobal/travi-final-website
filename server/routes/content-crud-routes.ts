@@ -53,7 +53,7 @@ import {
 import { parsePagination, createPaginatedResponse } from "../lib/pagination";
 import { validate, idParamSchema } from "../lib/validate";
 import { db } from "../db";
-import { eq, and, ilike, desc, sql, isNull } from "drizzle-orm";
+import { eq, and, ilike, sql, isNull } from "drizzle-orm";
 
 const crudLog = createLogger("content-crud");
 

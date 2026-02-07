@@ -180,7 +180,7 @@ export class EntityExtractor {
     if (jsonString.endsWith("```")) jsonString = jsonString.slice(0, -3);
 
     // Try to extract JSON array
-    const jsonMatch = jsonString.match(/\[[\s\S]*\]/);
+    const jsonMatch = /\[[\s\S]*\]/.exec(jsonString);
     if (jsonMatch) {
       jsonString = jsonMatch[0];
     }

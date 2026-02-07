@@ -14,14 +14,7 @@
  */
 
 import { db } from "../db";
-import {
-  contents,
-  hotels,
-  attractions,
-  destinations,
-  districts,
-  type Content,
-} from "@shared/schema";
+import { contents, hotels, attractions, destinations, type Content } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { log } from "../lib/logger";
 import { z } from "zod";

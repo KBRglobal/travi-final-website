@@ -5,7 +5,8 @@
 
 import { Router, Request, Response } from "express";
 import { z } from "zod";
-import { policyDefinitionSchema, policyUpdateSchema, PolicyDecision } from "./types";
+import { policyDefinitionSchema, PolicyDecision } from "./types";
+
 import {
   getPolicies,
   getPolicy,

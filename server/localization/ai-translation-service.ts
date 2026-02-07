@@ -347,10 +347,10 @@ function buildTranslationPrompt(
 // ============================================================================
 
 export class AITranslationService {
-  private multiModelProvider: MultiModelProvider;
-  private translationCache = new Map<string, TranslationResult>();
-  private cacheEnabled: boolean;
-  private cacheMaxSize: number;
+  private readonly multiModelProvider: MultiModelProvider;
+  private readonly translationCache = new Map<string, TranslationResult>();
+  private readonly cacheEnabled: boolean;
+  private readonly cacheMaxSize: number;
 
   constructor(options: { cacheEnabled?: boolean; cacheMaxSize?: number } = {}) {
     this.multiModelProvider = new MultiModelProvider();

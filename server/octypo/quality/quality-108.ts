@@ -6,7 +6,6 @@
 
 import {
   GeneratedAttractionContent,
-  BLUEPRINT_REQUIREMENTS,
   QUALITY_CATEGORIES,
   GRADE_THRESHOLDS,
   QualityCategoryResult,

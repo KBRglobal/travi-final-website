@@ -65,7 +65,9 @@ function detectXss(input: string): boolean {
 /**
  * Log security event (simplified - just console log)
  */
-function logSecurityEvent(type: string, details: Record<string, unknown>) {}
+function logSecurityEvent(type: string, details: Record<string, unknown>) {
+  /* empty */
+}
 
 /**
  * Attack detection middleware
@@ -494,7 +496,6 @@ import { initSecurityKernel, isSecurityInitialized } from "./core/security-kerne
 import { detectRBACBypass } from "./rbac/enforcer";
 import { startAutoModeMonitoring, getSecurityMode } from "./modes/security-modes";
 import { startDriftMonitoring, captureBaseline } from "./drift/drift-scanner";
-import { threatPropagator } from "./adapters/threat-propagator";
 import { logAdminEvent } from "../governance/security-logger";
 
 // Note: autonomyRouter and overrideRouter already exported above

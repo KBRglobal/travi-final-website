@@ -75,7 +75,7 @@ export interface BatchUploadResult {
  * Main Image Service Class
  */
 export class ImageService {
-  private storageManager: StorageManager;
+  private readonly storageManager: StorageManager;
 
   constructor() {
     this.storageManager = getStorageManager();

@@ -36,9 +36,9 @@ interface PipelineStats {
 }
 
 export class GatekeeperOrchestrator {
-  private config: GatekeeperConfig;
-  private gate1: Gate1Selector;
-  private gate2: Gate2Approver;
+  private readonly config: GatekeeperConfig;
+  private readonly gate1: Gate1Selector;
+  private readonly gate2: Gate2Approver;
   private stats: PipelineStats;
   private isRunning: boolean = false;
 

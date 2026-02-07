@@ -6,7 +6,8 @@ import {
   update9987Countries,
   destinationContent,
 } from "@shared/schema";
-import { eq, desc, and, gte, sql } from "drizzle-orm";
+import { eq, and, gte } from "drizzle-orm";
+
 import { requireAuth } from "../security";
 
 const router = Router();

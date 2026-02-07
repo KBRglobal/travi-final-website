@@ -5,7 +5,8 @@
 
 import { Router } from "express";
 import { db } from "../../db";
-import { contents, articles } from "@shared/schema";
+import { contents } from "@shared/schema";
+
 import { eq, desc, and, sql, count } from "drizzle-orm";
 import {
   getGatekeeperOrchestrator,

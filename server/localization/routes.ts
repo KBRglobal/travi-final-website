@@ -6,7 +6,6 @@
  */
 
 import { Router } from "express";
-import { z } from "zod";
 import { log } from "../lib/logger";
 import { requireAuth, requirePermission } from "../security";
 import {

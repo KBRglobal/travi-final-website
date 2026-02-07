@@ -3,8 +3,6 @@
  * Temporary policy overrides with TTL and audit trail
  */
 
-import { db } from "../../db";
-import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { GuardedFeature, EnforcementOverride } from "../enforcement/types";
 

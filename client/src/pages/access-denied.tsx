@@ -29,10 +29,10 @@ export default function AccessDenied() {
               Contact the administrator for access
             </span>
           </div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="w-full"
-            onClick={() => window.location.href = "/"}
+            onClick={() => (globalThis.location.href = "/")}
             data-testid="button-go-home"
           >
             Go to Homepage

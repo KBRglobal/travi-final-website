@@ -3,17 +3,18 @@
  * Learn from past decisions and track outcomes
  */
 
-import { PolicyDecision, BudgetPeriod } from '../policy/types';
-import { GuardedFeature } from '../enforcement/types';
+import { PolicyDecision } from "../policy/types";
+
+import { GuardedFeature } from "../enforcement/types";
 
 // Outcome tracking
 export type DecisionOutcome =
-  | 'confirmed_correct'    // Decision was appropriate
-  | 'override_applied'     // Block was manually overridden
-  | 'incident_after_allow' // Allowed but caused incident
-  | 'recovery_success'     // Degraded mode recovered
-  | 'recovery_failed'      // Degraded mode failed
-  | 'unknown';             // No outcome data
+  | "confirmed_correct" // Decision was appropriate
+  | "override_applied" // Block was manually overridden
+  | "incident_after_allow" // Allowed but caused incident
+  | "recovery_success" // Degraded mode recovered
+  | "recovery_failed" // Degraded mode failed
+  | "unknown"; // No outcome data
 
 export interface OutcomeRecord {
   decisionId: string;
@@ -33,10 +34,10 @@ export interface LearningMetrics {
   totalDecisions: number;
 
   // Accuracy metrics
-  truePositives: number;   // Correctly blocked
-  trueNegatives: number;   // Correctly allowed
-  falsePositives: number;  // Blocked but overridden (over-blocking)
-  falseNegatives: number;  // Allowed but caused incident
+  truePositives: number; // Correctly blocked
+  trueNegatives: number; // Correctly allowed
+  falsePositives: number; // Blocked but overridden (over-blocking)
+  falseNegatives: number; // Allowed but caused incident
 
   // Rates
   accuracy: number;
@@ -64,8 +65,8 @@ export interface LearningPattern {
   id: string;
   type: PatternType;
   description: string;
-  confidence: number;        // 0-1
-  significance: number;      // 0-1
+  confidence: number; // 0-1
+  significance: number; // 0-1
   firstDetected: Date;
   lastSeen: Date;
   occurrences: number;
@@ -73,14 +74,14 @@ export interface LearningPattern {
 }
 
 export type PatternType =
-  | 'time_cluster'         // Blocks cluster at certain times
-  | 'entity_cluster'       // Same entity repeatedly blocked
-  | 'budget_exhaustion'    // Budget runs out predictably
-  | 'override_pattern'     // Same rule overridden frequently
-  | 'degraded_frequency'   // Too many degraded responses
-  | 'cost_spike'           // Unusual cost patterns
-  | 'success_streak'       // Long period without issues
-  | 'failure_cascade';     // Failures trigger more failures
+  | "time_cluster" // Blocks cluster at certain times
+  | "entity_cluster" // Same entity repeatedly blocked
+  | "budget_exhaustion" // Budget runs out predictably
+  | "override_pattern" // Same rule overridden frequently
+  | "degraded_frequency" // Too many degraded responses
+  | "cost_spike" // Unusual cost patterns
+  | "success_streak" // Long period without issues
+  | "failure_cascade"; // Failures trigger more failures
 
 export interface PatternEvidence {
   timestamp: Date;
@@ -92,7 +93,7 @@ export interface PatternEvidence {
 export interface LearningRecommendation {
   id: string;
   type: RecommendationType;
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  priority: "low" | "medium" | "high" | "critical";
   confidence: number;
   description: string;
   rationale: string;
@@ -100,19 +101,19 @@ export interface LearningRecommendation {
   estimatedImpact: ImpactEstimate;
   createdAt: Date;
   expiresAt: Date;
-  status: 'pending' | 'applied' | 'rejected' | 'expired';
+  status: "pending" | "applied" | "rejected" | "expired";
 }
 
 export type RecommendationType =
-  | 'loosen_budget'
-  | 'tighten_budget'
-  | 'shorten_window'
-  | 'extend_window'
-  | 'widen_scope'
-  | 'narrow_scope'
-  | 'add_exception'
-  | 'remove_exception'
-  | 'change_approval_level';
+  | "loosen_budget"
+  | "tighten_budget"
+  | "shorten_window"
+  | "extend_window"
+  | "widen_scope"
+  | "narrow_scope"
+  | "add_exception"
+  | "remove_exception"
+  | "change_approval_level";
 
 export interface SuggestedChange {
   targetPolicy?: string;
@@ -124,10 +125,10 @@ export interface SuggestedChange {
 }
 
 export interface ImpactEstimate {
-  blocksChange: number;       // % change in blocks
-  incidentsChange: number;    // % change in incidents
-  costChange: number;         // % change in AI spend
-  overridesChange: number;    // % change in overrides
+  blocksChange: number; // % change in blocks
+  incidentsChange: number; // % change in incidents
+  costChange: number; // % change in AI spend
+  overridesChange: number; // % change in overrides
   confidence: number;
 }
 
@@ -135,7 +136,7 @@ export interface ImpactEstimate {
 export interface AggregationWindow {
   start: Date;
   end: Date;
-  granularity: 'hour' | 'day' | 'week';
+  granularity: "hour" | "day" | "week";
 }
 
 // Configuration
@@ -151,7 +152,7 @@ export interface LearningConfig {
 }
 
 export const DEFAULT_LEARNING_CONFIG: LearningConfig = {
-  enabled: process.env.ENABLE_AUTONOMY_LEARNING === 'true',
+  enabled: process.env.ENABLE_AUTONOMY_LEARNING === "true",
   aggregationIntervalMs: 60 * 60 * 1000, // 1 hour
   minDataPoints: 50,
   patternConfidenceThreshold: 0.7,

@@ -45,15 +45,8 @@ import {
   PolicyReason,
   ActionType,
   PolicyTarget,
-  BudgetStatus,
 } from "./types";
-import {
-  generateTargetKey,
-  isWithinTimeWindow,
-  DEFAULT_GLOBAL_POLICY,
-  FEATURE_POLICIES,
-  DEFAULT_AUTONOMY_CONFIG,
-} from "./config";
+import { generateTargetKey, isWithinTimeWindow, DEFAULT_GLOBAL_POLICY } from "./config";
 import { checkBudgetStatus, isBudgetExhausted, incrementBudgetCounter } from "./budgets";
 import { getPolicies, logDecision } from "./repository";
 

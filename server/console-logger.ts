@@ -11,10 +11,10 @@ export interface ConsoleLogEntry {
 
 class ConsoleLogger extends EventEmitter {
   private logs: ConsoleLogEntry[] = [];
-  private maxLogs = 1000;
-  private originalConsoleLog: typeof console.log;
-  private originalConsoleWarn: typeof console.warn;
-  private originalConsoleError: typeof console.error;
+  private readonly maxLogs = 1000;
+  private readonly originalConsoleLog: typeof console.log;
+  private readonly originalConsoleWarn: typeof console.warn;
+  private readonly originalConsoleError: typeof console.error;
 
   constructor() {
     super();

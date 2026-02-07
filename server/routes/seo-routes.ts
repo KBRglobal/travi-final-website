@@ -3,7 +3,8 @@
  */
 
 import { Express, Request, Response } from "express";
-import { validateSEO, PageType, SEOValidationResult } from "../services/seo-validation-agent";
+import { validateSEO, PageType } from "../services/seo-validation-agent";
+
 import { autoFixSEO, AutoFixResult } from "../services/seo-auto-fixer";
 import { requirePermission } from "../security";
 import { logger } from "../services/log-service";

@@ -26,7 +26,7 @@ export default function Login() {
   }
 
   const handleSignIn = () => {
-    window.location.href = "/api/login";
+    globalThis.location.href = "/api/login";
   };
 
   return (

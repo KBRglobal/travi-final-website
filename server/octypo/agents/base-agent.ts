@@ -110,7 +110,9 @@ export abstract class BaseAgent {
     return this.memory.get(key);
   }
 
-  protected log(message: string): void {}
+  protected log(message: string): void {
+    /* empty */
+  }
 
   abstract execute(task: any): Promise<any>;
 }

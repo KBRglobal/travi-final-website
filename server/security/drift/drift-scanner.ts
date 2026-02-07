@@ -115,9 +115,9 @@ interface EnvSnapshot {
 // ============================================================================
 
 class DriftScanner {
-  private baselines: Map<string, SecurityBaseline> = new Map();
+  private readonly baselines: Map<string, SecurityBaseline> = new Map();
   private currentBaseline: SecurityBaseline | null = null;
-  private driftHistory: DriftReport[] = [];
+  private readonly driftHistory: DriftReport[] = [];
 
   /**
    * Capture a new security baseline

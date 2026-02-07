@@ -42,9 +42,9 @@ export interface AutoFixResult {
 // ============================================================================
 
 export class SEOAutoFixer {
-  private brandName = "Travi";
+  private readonly brandName = "Travi";
 
-  private ctas = [
+  private readonly ctas = [
     "Plan your visit today!",
     "Book now and save!",
     "Discover more inside!",
@@ -53,7 +53,7 @@ export class SEOAutoFixer {
   ];
 
   // Location recognition patterns for various destinations (destination-agnostic)
-  private locationPatterns: Record<string, string[]> = {
+  private readonly locationPatterns: Record<string, string[]> = {
     dubai: [
       "downtown dubai",
       "dubai marina",
@@ -481,8 +481,8 @@ export class SEOAutoFixer {
       ];
 
       for (const pattern of patterns) {
-        const match = title.match(pattern);
-        if (match && match[1]) {
+        const match = pattern.exec(title);
+        if (match?.[1]) {
           let keyword = match[1].trim().replace(/\s+(in|at|for|the)\s*$/i, "");
           if (keyword.length > 3) {
             return {

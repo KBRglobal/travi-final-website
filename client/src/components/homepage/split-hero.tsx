@@ -32,7 +32,7 @@ export function SplitHero({
 
   useEffect(() => {
     setPrefersReducedMotion(
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
+      globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
     );
   }, []);
   const dest = HERO_DESTINATIONS[currentIndex];

@@ -17,7 +17,6 @@ import { relations } from "drizzle-orm";
 
 // Import enums from ./enums
 import {
-  destinationStatusEnum,
   destinationLevelEnum,
   researchStatusEnum,
   suggestionStatusEnum,

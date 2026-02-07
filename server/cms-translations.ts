@@ -1,9 +1,10 @@
 import { db } from "./db";
 import { cmsTranslations, type CmsTranslation, type InsertCmsTranslation } from "@shared/schema";
+
 import { eq, and, inArray } from "drizzle-orm";
 
 // Valid entity types matching the enum
-type CmsEntityType = 
+type CmsEntityType =
   | "homepage_section"
   | "homepage_card"
   | "experience_category"
@@ -27,18 +28,24 @@ export async function getTranslations(
   entityId: string | number,
   locale: string = DEFAULT_LOCALE
 ): Promise<Record<string, string | null>> {
-  const translations = await db.select()
+  const translations = await db
+    .select()
     .from(cmsTranslations)
-    .where(and(
-      eq(cmsTranslations.entityType, entityType),
-      eq(cmsTranslations.entityId, String(entityId)),
-      eq(cmsTranslations.locale, locale)
-    ));
+    .where(
+      and(
+        eq(cmsTranslations.entityType, entityType),
+        eq(cmsTranslations.entityId, String(entityId)),
+        eq(cmsTranslations.locale, locale)
+      )
+    );
 
-  return translations.reduce((acc, t) => {
-    acc[t.field] = t.value;
-    return acc;
-  }, {} as Record<string, string | null>);
+  return translations.reduce(
+    (acc, t) => {
+      acc[t.field] = t.value;
+      return acc;
+    },
+    {} as Record<string, string | null>
+  );
 }
 
 /**
@@ -56,19 +63,22 @@ export async function getBulkTranslations(
   if (entityIds.length === 0) return new Map();
 
   const stringIds = entityIds.map(String);
-  const translations = await db.select()
+  const translations = await db
+    .select()
     .from(cmsTranslations)
-    .where(and(
-      eq(cmsTranslations.entityType, entityType),
-      inArray(cmsTranslations.entityId, stringIds),
-      eq(cmsTranslations.locale, locale)
-    ));
+    .where(
+      and(
+        eq(cmsTranslations.entityType, entityType),
+        inArray(cmsTranslations.entityId, stringIds),
+        eq(cmsTranslations.locale, locale)
+      )
+    );
 
   const result = new Map<string, Record<string, string | null>>();
-  
+
   // Initialize all IDs with empty objects
   stringIds.forEach(id => result.set(id, {}));
-  
+
   // Fill in translations
   translations.forEach(t => {
     const existing = result.get(t.entityId) || {};
@@ -95,9 +105,10 @@ export async function setTranslation(
   value: string | null
 ): Promise<void> {
   const stringId = String(entityId);
-  
+
   // Use upsert pattern - insert or update on conflict
-  await db.insert(cmsTranslations)
+  await db
+    .insert(cmsTranslations)
     .values({
       entityType,
       entityId: stringId,
@@ -106,11 +117,16 @@ export async function setTranslation(
       value,
     } as any)
     .onConflictDoUpdate({
-      target: [cmsTranslations.entityType, cmsTranslations.entityId, cmsTranslations.locale, cmsTranslations.field],
+      target: [
+        cmsTranslations.entityType,
+        cmsTranslations.entityId,
+        cmsTranslations.locale,
+        cmsTranslations.field,
+      ],
       set: {
         value,
         updatedAt: new Date(),
-      } as any
+      } as any,
     });
 }
 
@@ -129,7 +145,7 @@ export async function setTranslations(
 ): Promise<void> {
   const stringId = String(entityId);
   const entries = Object.entries(translations).filter(([_, v]) => v !== undefined);
-  
+
   if (entries.length === 0) return;
 
   for (const [field, value] of entries) {
@@ -146,11 +162,14 @@ export async function deleteEntityTranslations(
   entityType: CmsEntityType,
   entityId: string | number
 ): Promise<void> {
-  await db.delete(cmsTranslations)
-    .where(and(
-      eq(cmsTranslations.entityType, entityType),
-      eq(cmsTranslations.entityId, String(entityId))
-    ));
+  await db
+    .delete(cmsTranslations)
+    .where(
+      and(
+        eq(cmsTranslations.entityType, entityType),
+        eq(cmsTranslations.entityId, String(entityId))
+      )
+    );
 }
 
 /**
@@ -169,7 +188,7 @@ export async function getTranslatedEntity<T extends { id: string | number }>(
   locale: string = DEFAULT_LOCALE
 ): Promise<T> {
   const translations = await getTranslations(entityType, entity.id, locale);
-  
+
   const result = { ...entity };
   for (const field of translatableFields) {
     const fieldName = field as string;
@@ -177,7 +196,7 @@ export async function getTranslatedEntity<T extends { id: string | number }>(
       (result as any)[field] = translations[fieldName];
     }
   }
-  
+
   return result;
 }
 
@@ -206,14 +225,14 @@ export async function getTranslatedEntities<T extends { id: string | number }>(
   return entities.map(entity => {
     const translations = translationsMap.get(String(entity.id)) || {};
     const result = { ...entity };
-    
+
     for (const field of translatableFields) {
       const fieldName = field as string;
       if (fieldName in translations && translations[fieldName] !== null) {
         (result as any)[field] = translations[fieldName];
       }
     }
-    
+
     return result;
   });
 }
@@ -222,10 +241,11 @@ export async function getTranslatedEntities<T extends { id: string | number }>(
  * Get all available locales that have translations for an entity type
  */
 export async function getAvailableLocales(entityType: CmsEntityType): Promise<string[]> {
-  const result = await db.selectDistinct({ locale: cmsTranslations.locale })
+  const result = await db
+    .selectDistinct({ locale: cmsTranslations.locale })
     .from(cmsTranslations)
     .where(eq(cmsTranslations.entityType, entityType));
-  
+
   return result.map(r => r.locale);
 }
 
@@ -238,12 +258,12 @@ export async function copyLocaleTranslations(
   sourceLocale: string,
   targetLocale: string
 ): Promise<number> {
-  const sourceTranslations = await db.select()
+  const sourceTranslations = await db
+    .select()
     .from(cmsTranslations)
-    .where(and(
-      eq(cmsTranslations.entityType, entityType),
-      eq(cmsTranslations.locale, sourceLocale)
-    ));
+    .where(
+      and(eq(cmsTranslations.entityType, entityType), eq(cmsTranslations.locale, sourceLocale))
+    );
 
   let count = 0;
   for (const t of sourceTranslations) {

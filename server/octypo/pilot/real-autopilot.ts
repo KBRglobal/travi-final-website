@@ -4,8 +4,10 @@
  */
 
 import { db } from "../../db";
-import { autopilotState, autopilotTasks, autopilotSchedules, contents } from "@shared/schema";
-import { eq, and, desc, sql, gte, inArray } from "drizzle-orm";
+import { autopilotState, autopilotTasks } from "@shared/schema";
+
+import { eq, and, desc, sql, inArray } from "drizzle-orm";
+
 import {
   AutopilotMode,
   AutopilotTaskType,

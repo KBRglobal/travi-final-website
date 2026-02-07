@@ -19,11 +19,11 @@ export interface StorageAdapter {
  * Uses the Cloudflare API directly — no S3 credentials needed.
  */
 export class R2StorageAdapter implements StorageAdapter {
-  private accountId: string;
-  private bucket: string;
-  private publicUrl: string;
-  private apiKey: string;
-  private apiEmail: string;
+  private readonly accountId: string;
+  private readonly bucket: string;
+  private readonly publicUrl: string;
+  private readonly apiKey: string;
+  private readonly apiEmail: string;
   private initialized: boolean = false;
   private initPromise: Promise<void> | null = null;
 
@@ -173,8 +173,8 @@ function sanitizePath(key: string): string {
  * Local Filesystem Storage Adapter
  */
 export class LocalStorageAdapter implements StorageAdapter {
-  private baseDir: string;
-  private urlPrefix: string;
+  private readonly baseDir: string;
+  private readonly urlPrefix: string;
 
   constructor(baseDir?: string, urlPrefix?: string) {
     this.baseDir = baseDir || path.join(process.cwd(), "uploads");
@@ -264,9 +264,9 @@ export class LocalStorageAdapter implements StorageAdapter {
  */
 export class StorageManager {
   private primaryAdapter: StorageAdapter | null = null;
-  private fallbackAdapter: StorageAdapter;
+  private readonly fallbackAdapter: StorageAdapter;
   private initError: Error | null = null;
-  private objectStorageEnabled: boolean;
+  private readonly objectStorageEnabled: boolean;
   private primaryInitialized: boolean = false;
 
   constructor() {
@@ -282,6 +282,7 @@ export class StorageManager {
 
     if (this.objectStorageEnabled) {
     } else {
+      // empty
     }
   }
 

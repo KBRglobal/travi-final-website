@@ -105,10 +105,10 @@ export function SafeBackgroundImage({
 
   // Preload image to detect errors (browser-only, SSR-safe)
   useEffect(() => {
-    if (typeof window === "undefined") return; // SSR guard
+    if (typeof globalThis.window === "undefined") return; // SSR guard
     if (!safeSrc || safeSrc === fallbackSrc) return;
 
-    const img = new window.Image();
+    const img = new globalThis.Image();
     img.onerror = () => setHasError(true);
     img.src = safeSrc;
   }, [safeSrc, fallbackSrc]);

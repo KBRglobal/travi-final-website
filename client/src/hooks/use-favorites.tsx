@@ -24,7 +24,7 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(undefin
 const STORAGE_KEY = "travi_favorites";
 
 function loadFavorites(): FavoriteItem[] {
-  if (typeof window === "undefined") return [];
+  if (typeof globalThis.window === "undefined") return [];
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
@@ -34,7 +34,7 @@ function loadFavorites(): FavoriteItem[] {
 }
 
 function saveFavorites(favorites: FavoriteItem[]) {
-  if (typeof window === "undefined") return;
+  if (typeof globalThis.window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
 }
 
@@ -54,18 +54,18 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   }, [favorites, mounted]);
 
   const addFavorite = (item: Omit<FavoriteItem, "addedAt">) => {
-    setFavorites((prev) => {
-      if (prev.some((f) => f.id === item.id)) return prev;
+    setFavorites(prev => {
+      if (prev.some(f => f.id === item.id)) return prev;
       return [...prev, { ...item, addedAt: Date.now() }];
     });
   };
 
   const removeFavorite = (id: string) => {
-    setFavorites((prev) => prev.filter((f) => f.id !== id));
+    setFavorites(prev => prev.filter(f => f.id !== id));
   };
 
   const isFavorite = (id: string) => {
-    return favorites.some((f) => f.id === id);
+    return favorites.some(f => f.id === id);
   };
 
   const toggleFavorite = (item: Omit<FavoriteItem, "addedAt">) => {

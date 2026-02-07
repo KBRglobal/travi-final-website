@@ -30,4 +30,6 @@ export async function getLocalizationSummary() {
 export async function getLocalizationGovernanceStatus() {
   return { enabled: false };
 }
-export function clearLocalizationCache() {}
+export function clearLocalizationCache() {
+  /* empty */
+}

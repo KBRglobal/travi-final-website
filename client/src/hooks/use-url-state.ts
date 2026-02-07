@@ -9,7 +9,7 @@ export function useUrlState<T extends Record<string, string>>(
   defaults: T
 ): [T, (updates: Partial<T>) => void] {
   const [location] = useLocation();
-  
+
   // Stabilize defaults reference to prevent infinite re-renders
   const defaultsRef = useRef(defaults);
   const stableDefaults = useMemo(() => {
@@ -26,7 +26,7 @@ export function useUrlState<T extends Record<string, string>>(
 
   // Parse current URL params
   const getParamsFromUrl = useCallback((): T => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(globalThis.location.search);
     const result = { ...stableDefaults };
 
     for (const key of Object.keys(stableDefaults)) {
@@ -71,7 +71,7 @@ export function useUrlState<T extends Record<string, string>>(
       const newPath = search ? `${location.split("?")[0]}?${search}` : location.split("?")[0];
 
       // Update URL without full navigation
-      window.history.replaceState(null, "", newPath);
+      globalThis.history.replaceState(null, "", newPath);
       setState(newState);
     },
     [state, stableDefaults, location]

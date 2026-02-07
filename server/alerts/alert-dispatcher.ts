@@ -10,4 +10,6 @@ export function dispatchAlert(alert: Alert): void {
   const reset = "\x1b[0m";
 }
 
-export function dispatchResolution(alert: Alert): void {}
+export function dispatchResolution(alert: Alert): void {
+  /* empty */
+}

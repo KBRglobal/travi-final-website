@@ -4,11 +4,7 @@
  */
 
 import type { Express, Request, Response } from "express";
-import { eq } from "drizzle-orm";
-import crypto from "node:crypto";
 import { Resend } from "resend";
-import { db } from "../db";
-import { newsletterCampaigns, campaignEvents } from "@shared/schema";
 import { storage } from "../storage";
 import { requirePermission, checkReadOnlyMode } from "../security";
 import { logAuditEvent } from "../utils/audit-logger";

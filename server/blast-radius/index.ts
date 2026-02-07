@@ -21,9 +21,15 @@ export async function getSimulationHistory() {
 export function getStatus() {
   return { enabled: false };
 }
-export function clearCache() {}
-export function clearHistory() {}
-export function clearAll() {}
+export function clearCache() {
+  /* empty */
+}
+export function clearHistory() {
+  /* empty */
+}
+export function clearAll() {
+  /* empty */
+}
 
 export type ImpactScope = string;
 export type ImpactSeverity = string;

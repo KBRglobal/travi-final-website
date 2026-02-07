@@ -1,6 +1,6 @@
 /**
  * LinkProcessor - Post-processor for adding internal links to generated content
- * 
+ *
  * Runs after Octypo article generation to:
  * 1. Find link opportunities within the content
  * 2. Insert 3-5 internal links per article
@@ -11,12 +11,11 @@
 import { db } from "../../db";
 import { internalLinks, contents } from "@shared/schema";
 import { eq, sql, and } from "drizzle-orm";
-import { 
-  insertInternalLinks, 
+import {
+  insertInternalLinks,
   loadLinkableContentFromDB,
-  analyzeExistingLinks,
   type LinkingResult,
-  type InternalLink
+  type InternalLink,
 } from "../../ai/internal-linking-engine";
 import { createLogger } from "../../lib/logger";
 
@@ -38,7 +37,7 @@ export interface LinkProcessorResult {
 
 export interface ContentForLinking {
   id: string;
-  type: 'attraction' | 'hotel' | 'article' | 'dining';
+  type: "attraction" | "hotel" | "article" | "dining";
   destination?: string;
   sections: {
     introduction?: string;
@@ -69,29 +68,34 @@ export async function processContentLinks(
   content: ContentForLinking
 ): Promise<LinkProcessorResult> {
   const startTime = Date.now();
-  
+
   try {
     await loadLinkableContentFromDB();
-    
+
     const limits = TOTAL_LINK_LIMITS[content.type] || { min: 3, max: 5 };
     let totalLinksAdded = 0;
     const allLinks: InternalLink[] = [];
     const processedSections: string[] = [];
     const processedContent: Record<string, string> = {};
-    
-    const sectionsToProcess = ['introduction', 'whatToExpect', 'visitorTips', 'howToGetThere'] as const;
-    
+
+    const sectionsToProcess = [
+      "introduction",
+      "whatToExpect",
+      "visitorTips",
+      "howToGetThere",
+    ] as const;
+
     for (const sectionName of sectionsToProcess) {
       const sectionContent = content.sections[sectionName];
       if (!sectionContent || sectionContent.length < 100) continue;
-      
+
       const sectionLimits = SECTION_LINK_LIMITS[sectionName];
       const remainingLinks = limits.max - totalLinksAdded;
-      
+
       if (remainingLinks <= 0) break;
-      
+
       const maxForSection = Math.min(sectionLimits.max, remainingLinks);
-      
+
       const result = insertInternalLinks(sectionContent, {
         contentType: content.type as any,
         currentDestination: content.destination,
@@ -99,38 +103,37 @@ export async function processContentLinks(
         minLinks: sectionLimits.min,
         maxLinks: maxForSection,
       });
-      
+
       processedContent[sectionName] = result.content;
       totalLinksAdded += result.linksAdded;
       allLinks.push(...result.links);
       processedSections.push(sectionName);
-      
+
       logger.debug(`Section ${sectionName}: Added ${result.linksAdded} links`);
     }
-    
+
     if (allLinks.length > 0) {
       await saveLinksToDatabase(content.id, allLinks);
     }
-    
+
     const duration = Date.now() - startTime;
     (logger.info as any)(`LinkProcessor completed for ${content.id}`, {
       linksAdded: totalLinksAdded,
       sections: processedSections.length,
       durationMs: duration,
     });
-    
+
     return {
       success: true,
       linksAdded: totalLinksAdded,
       links: allLinks,
       processedSections,
-      processedContent: processedContent as LinkProcessorResult['processedContent'],
+      processedContent: processedContent as LinkProcessorResult["processedContent"],
     };
-    
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    (logger.error as any)('LinkProcessor failed', { contentId: content.id, error: message });
-    
+    const message = error instanceof Error ? error.message : "Unknown error";
+    (logger.error as any)("LinkProcessor failed", { contentId: content.id, error: message });
+
     return {
       success: false,
       linksAdded: 0,
@@ -145,25 +148,24 @@ export async function processContentLinks(
 /**
  * Save internal links to database for tracking and analytics
  */
-async function saveLinksToDatabase(
-  sourceContentId: string,
-  links: InternalLink[]
-): Promise<void> {
+async function saveLinksToDatabase(sourceContentId: string, links: InternalLink[]): Promise<void> {
   try {
-    await db.delete(internalLinks).where(
-      and(
-        eq(internalLinks.sourceContentId, sourceContentId),
-        eq(internalLinks.isAutoSuggested, true)
-      )
-    );
-    
+    await db
+      .delete(internalLinks)
+      .where(
+        and(
+          eq(internalLinks.sourceContentId, sourceContentId),
+          eq(internalLinks.isAutoSuggested, true)
+        )
+      );
+
     for (const link of links) {
       const targetContent = await db
         .select({ id: contents.id })
         .from(contents)
-        .where(eq(contents.slug, link.url.replace(/^\/[^/]+\//, '')))
+        .where(eq(contents.slug, link.url.replace(/^\/[^/]+\//, "")))
         .limit(1);
-      
+
       if (targetContent.length > 0) {
         await db.insert(internalLinks).values({
           sourceContentId,
@@ -173,13 +175,12 @@ async function saveLinksToDatabase(
         });
       }
     }
-    
+
     logger.debug(`Saved ${links.length} links to database for content ${sourceContentId}`);
-    
   } catch (error) {
-    (logger.warn as any)('Failed to save links to database', {
+    (logger.warn as any)("Failed to save links to database", {
       contentId: sourceContentId,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
 }
@@ -198,31 +199,27 @@ export async function getContentLinkStats(contentId: string): Promise<{
       .select({ count: sql<number>`count(*)` })
       .from(internalLinks)
       .where(eq(internalLinks.sourceContentId, contentId));
-    
+
     const inbound = await db
       .select({ count: sql<number>`count(*)` })
       .from(internalLinks)
       .where(eq(internalLinks.targetContentId, contentId));
-    
+
     const autoGen = await db
       .select({ count: sql<number>`count(*)` })
       .from(internalLinks)
       .where(
-        and(
-          eq(internalLinks.sourceContentId, contentId),
-          eq(internalLinks.isAutoSuggested, true)
-        )
+        and(eq(internalLinks.sourceContentId, contentId), eq(internalLinks.isAutoSuggested, true))
       );
-    
+
     return {
       outboundLinks: Number(outbound[0]?.count || 0),
       inboundLinks: Number(inbound[0]?.count || 0),
       autoGenerated: Number(autoGen[0]?.count || 0),
       manual: Number(outbound[0]?.count || 0) - Number(autoGen[0]?.count || 0),
     };
-    
   } catch (error) {
-    (logger.error as any)('Failed to get link stats', { contentId, error });
+    (logger.error as any)("Failed to get link stats", { contentId, error });
     return { outboundLinks: 0, inboundLinks: 0, autoGenerated: 0, manual: 0 };
   }
 }
@@ -235,10 +232,10 @@ export async function batchProcessLinks(
   concurrency: number = 5
 ): Promise<Map<string, LinkProcessorResult>> {
   const results = new Map<string, LinkProcessorResult>();
-  
+
   for (let i = 0; i < contentIds.length; i += concurrency) {
     const batch = contentIds.slice(i, i + concurrency);
-    
+
     const contentRecords = await db
       .select({
         id: contents.id,
@@ -248,10 +245,10 @@ export async function batchProcessLinks(
       })
       .from(contents)
       .where(sql`${contents.id} = ANY(${batch})` as any);
-    
-    const batchPromises = contentRecords.map(async (record) => {
+
+    const batchPromises = contentRecords.map(async record => {
       const blocks = (record.blocks as any) || {};
-      
+
       const contentForLinking: ContentForLinking = {
         id: record.id,
         type: record.type as any,
@@ -262,26 +259,28 @@ export async function batchProcessLinks(
           howToGetThere: blocks.howToGetThere || blocks.directions,
         },
       };
-      
+
       const result = await processContentLinks(contentForLinking);
       results.set(record.id, result);
     });
-    
+
     await Promise.all(batchPromises);
   }
-  
+
   return results;
 }
 
 /**
  * Analyze orphan pages (pages with no inbound links)
  */
-export async function findOrphanPages(): Promise<{
-  id: string;
-  title: string;
-  type: string;
-  slug: string;
-}[]> {
+export async function findOrphanPages(): Promise<
+  {
+    id: string;
+    title: string;
+    type: string;
+    slug: string;
+  }[]
+> {
   try {
     const allContent = await db
       .select({
@@ -291,25 +290,24 @@ export async function findOrphanPages(): Promise<{
         slug: contents.slug,
       })
       .from(contents)
-      .where(eq(contents.status, 'published' as any));
-    
+      .where(eq(contents.status, "published" as any));
+
     const orphans: typeof allContent = [];
-    
+
     for (const content of allContent) {
       const inbound = await db
         .select({ count: sql<number>`count(*)` })
         .from(internalLinks)
         .where(eq(internalLinks.targetContentId, content.id));
-      
+
       if (Number(inbound[0]?.count || 0) === 0) {
         orphans.push(content);
       }
     }
-    
+
     return orphans;
-    
   } catch (error) {
-    (logger.error as any)('Failed to find orphan pages', { error });
+    (logger.error as any)("Failed to find orphan pages", { error });
     return [];
   }
 }
@@ -327,31 +325,29 @@ export async function getLinkHealthMetrics(): Promise<{
   totalPages: number;
 }> {
   try {
-    const totalLinksResult = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(internalLinks);
-    
+    const totalLinksResult = await db.select({ count: sql<number>`count(*)` }).from(internalLinks);
+
     const autoLinksResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(internalLinks)
       .where(eq(internalLinks.isAutoSuggested, true));
-    
+
     const totalPagesResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(contents)
-      .where(eq(contents.status, 'published' as any));
-    
+      .where(eq(contents.status, "published" as any));
+
     const pagesWithLinksResult = await db
       .select({ count: sql<number>`count(distinct source_content_id)` })
       .from(internalLinks);
-    
+
     const orphans = await findOrphanPages();
-    
+
     const totalLinks = Number(totalLinksResult[0]?.count || 0);
     const autoGeneratedLinks = Number(autoLinksResult[0]?.count || 0);
     const totalPages = Number(totalPagesResult[0]?.count || 0);
     const pagesWithLinks = Number(pagesWithLinksResult[0]?.count || 0);
-    
+
     return {
       totalLinks,
       autoGeneratedLinks,
@@ -361,9 +357,8 @@ export async function getLinkHealthMetrics(): Promise<{
       pagesWithLinks,
       totalPages,
     };
-    
   } catch (error) {
-    (logger.error as any)('Failed to get link health metrics', { error });
+    (logger.error as any)("Failed to get link health metrics", { error });
     return {
       totalLinks: 0,
       autoGeneratedLinks: 0,

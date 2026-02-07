@@ -56,6 +56,7 @@ async function runScheduledBackup(): Promise<void> {
     if (result.success) {
       await rotateBackups();
     } else {
+      // empty
     }
   } catch (error) {
     state.lastResult = {

@@ -7,7 +7,8 @@
 
 import { db } from "../../db";
 import { contents, searchIndex } from "@shared/schema";
-import { eq, isNull, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+
 import {
   type EligibilityResult,
   type EligibilityOptions,

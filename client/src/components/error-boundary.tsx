@@ -39,11 +39,11 @@ export class ErrorBoundary extends Component<Props, State> {
     this.setState({ errorInfo });
   }
 
-  private handleRetry = () => {
+  private readonly handleRetry = () => {
     this.setState({ hasError: false, error: null, errorInfo: null });
   };
 
-  private handleReload = () => {
+  private readonly handleReload = () => {
     globalThis.location.reload();
   };
 

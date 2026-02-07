@@ -9,8 +9,12 @@ export const readinessRoutes = Router();
 export async function checkNow() {
   return null;
 }
-export function startMonitor() {}
-export function stopMonitor() {}
+export function startMonitor() {
+  /* empty */
+}
+export function stopMonitor() {
+  /* empty */
+}
 export function getMonitorStatus() {
   return { running: false };
 }
@@ -38,7 +42,9 @@ export async function getEvents() {
 export function subscribe() {
   return () => {};
 }
-export function clearAll() {}
+export function clearAll() {
+  /* empty */
+}
 
 export type ReadinessState = { ready: boolean };
 export type ReadinessCheck = { name: string };

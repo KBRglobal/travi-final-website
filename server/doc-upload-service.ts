@@ -181,6 +181,7 @@ export async function parseDocxFile(buffer: Buffer): Promise<ParsedDocContent> {
 
   // Log any warnings from conversion
   if (messages.length > 0) {
+    // empty
   }
 
   // Also get raw text for word count
@@ -397,7 +398,7 @@ export function convertToContentBlocks(
     for (const item of list.items) {
       // Detect tips (action-oriented items)
       if (
-        item.match(/^(visit|try|book|avoid|don't|make sure|remember|tip:|pro tip:)/i) ||
+        /^(visit|try|book|avoid|don't|make sure|remember|tip:|pro tip:)/i.exec(item) ||
         item.length > 100
       ) {
         tips.push(item);

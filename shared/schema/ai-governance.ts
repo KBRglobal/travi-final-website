@@ -31,7 +31,6 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import {
   contentRepairStatusEnum,
-  governanceRoleEnum,
   changePlanStatusEnum,
   changePlanScopeEnum,
   changeItemTypeEnum,
@@ -42,8 +41,6 @@ import {
   helpArticleStatusEnum,
 } from "./enums";
 import { ContentBlock } from "./types";
-import { users } from "./auth";
-import { contents } from "./content-base";
 import { helpCategories } from "./help-webhooks";
 
 // =====================================================

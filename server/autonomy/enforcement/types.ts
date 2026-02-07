@@ -3,21 +3,21 @@
  * Core types for policy enforcement across the system
  */
 
-import { PolicyDecision, PolicyReason, BudgetStatus, ActionType, PolicyTarget } from '../policy/types';
+import { PolicyDecision, PolicyReason, ActionType } from "../policy/types";
 
 // Feature types that can be guarded
 export type GuardedFeature =
-  | 'chat'
-  | 'octopus'
-  | 'search'
-  | 'aeo'
-  | 'translation'
-  | 'images'
-  | 'content_enrichment'
-  | 'seo_optimization'
-  | 'internal_linking'
-  | 'background_job'
-  | 'publishing';
+  | "chat"
+  | "octopus"
+  | "search"
+  | "aeo"
+  | "translation"
+  | "images"
+  | "content_enrichment"
+  | "seo_optimization"
+  | "internal_linking"
+  | "background_job"
+  | "publishing";
 
 // Context provided when requesting enforcement
 export interface EnforcementContext {
@@ -50,8 +50,8 @@ export interface EnforcementResult {
 
 // Typed error for blocked operations
 export class AutonomyBlockedError extends Error {
-  public readonly code = 'AUTONOMY_BLOCKED';
-  public readonly decision: PolicyDecision = 'BLOCK';
+  public readonly code = "AUTONOMY_BLOCKED";
+  public readonly decision: PolicyDecision = "BLOCK";
   public readonly reasons: PolicyReason[];
   public readonly feature: GuardedFeature;
   public readonly action: ActionType;
@@ -69,7 +69,7 @@ export class AutonomyBlockedError extends Error {
     }
   ) {
     super(message);
-    this.name = 'AutonomyBlockedError';
+    this.name = "AutonomyBlockedError";
     this.reasons = params.reasons;
     this.feature = params.feature;
     this.action = params.action;
@@ -134,9 +134,11 @@ export interface EnforcementConfig {
 }
 
 export const DEFAULT_ENFORCEMENT_CONFIG: EnforcementConfig = {
-  enabled: process.env.ENABLE_AUTONOMY_POLICY === 'true',
-  degradedModeEnabled: process.env.ENABLE_AUTONOMY_DEGRADED_MODE === 'true',
-  defaultBlockMessage: process.env.AUTONOMY_BLOCK_MESSAGE || 'This operation is temporarily limited by system policies.',
+  enabled: process.env.ENABLE_AUTONOMY_POLICY === "true",
+  degradedModeEnabled: process.env.ENABLE_AUTONOMY_DEGRADED_MODE === "true",
+  defaultBlockMessage:
+    process.env.AUTONOMY_BLOCK_MESSAGE ||
+    "This operation is temporarily limited by system policies.",
   evaluationTimeoutMs: 3000,
   budgetCheckTimeoutMs: 2000,
   maxCacheSize: 1000,

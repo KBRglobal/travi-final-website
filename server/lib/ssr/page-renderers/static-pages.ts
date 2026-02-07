@@ -2,7 +2,6 @@
  * Static Pages Renderer (about, contact, privacy)
  */
 
-import type { Locale } from "@shared/schema";
 import { generateMetaTags, generateStructuredData, getCanonicalUrl } from "../../meta-tags";
 import { SITE_NAME } from "../constants";
 import type { SSRRenderOptions, SSRRenderResult } from "../types";

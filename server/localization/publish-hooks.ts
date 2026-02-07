@@ -11,9 +11,11 @@
 
 import { db } from "../db";
 import { contents, searchIndex, translations, type Content } from "@shared/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
+
 import { log } from "../lib/logger";
-import { enqueueTranslationJobs, computeSourceHash, QUEUE_CONFIG } from "./translation-queue";
+import { enqueueTranslationJobs } from "./translation-queue";
+
 import { generateFullAeo } from "./aeo-generator";
 
 const logger = {

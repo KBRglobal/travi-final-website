@@ -3,7 +3,8 @@
  * Consolidated API endpoints for all image operations
  */
 
-import { Express, Request, Response, NextFunction } from "express";
+import { Express, Request, Response } from "express";
+
 import multer from "multer";
 import {
   getImageService,
@@ -12,7 +13,6 @@ import {
   deleteImage,
   StoredImage,
   UploadError,
-  ImageUploadOptions,
 } from "../services/image-service";
 import {
   getExternalImageService,
@@ -22,7 +22,6 @@ import {
 import { SUPPORTED_MIME_TYPES } from "../services/image-processing";
 import {
   getImageSEOService,
-  generateImageSEOMetadata,
   generateAIImagePrompt,
   generateImageFilename,
   ImageSEOContext,

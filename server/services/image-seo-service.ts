@@ -399,8 +399,8 @@ const TIME_OF_DAY: Record<string, { en: string; he: string; ar: string }> = {
 // ============================================================================
 
 export class ImageSEOService {
-  private brandName = "TripMD";
-  private baseUrl = "https://tripmd.com";
+  private readonly brandName = "TripMD";
+  private readonly baseUrl = "https://tripmd.com";
 
   /**
    * Generate complete SEO metadata for an image

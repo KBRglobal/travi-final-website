@@ -7,13 +7,7 @@
  */
 
 import { log } from "../../lib/logger";
-import type {
-  GuardSeverity,
-  GuardCategory,
-  GuardCheckResult,
-  ReleaseGuardConfig,
-  SafetyReport,
-} from "./types";
+import type { GuardSeverity, GuardCheckResult, ReleaseGuardConfig, SafetyReport } from "./types";
 
 const logger = {
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[ReleaseGuard] ${msg}`, data),

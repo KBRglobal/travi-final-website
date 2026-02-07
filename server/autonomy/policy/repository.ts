@@ -14,7 +14,7 @@ import {
   PolicyReason,
   policyDefinitionSchema,
 } from "./types";
-import { DEFAULT_GLOBAL_POLICY, FEATURE_POLICIES, DEFAULT_AUTONOMY_CONFIG } from "./config";
+import { DEFAULT_GLOBAL_POLICY, FEATURE_POLICIES } from "./config";
 
 const OPERATION_TIMEOUT_MS = 5000;
 

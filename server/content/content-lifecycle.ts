@@ -1,7 +1,7 @@
 import { db } from "../db";
 import { contents, auditLogs } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { emitContentPublished, emitContentUpdated } from "../events";
+import { emitContentPublished } from "../events";
 
 export type ContentStatus =
   | "draft"

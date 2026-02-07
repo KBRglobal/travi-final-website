@@ -6,13 +6,7 @@
  */
 
 import { createLogger } from "./logger";
-import {
-  SEO_REQUIREMENTS,
-  CONTENT_TYPE_REQUIREMENTS,
-  BANNED_PHRASES,
-  PHRASE_ALTERNATIVES,
-  type ContentType,
-} from "./seo-standards";
+import { BANNED_PHRASES, PHRASE_ALTERNATIVES, type ContentType } from "./seo-standards";
 
 const logger = createLogger("content-quality-gateway");
 

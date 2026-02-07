@@ -6,13 +6,7 @@
 import { Router, Request, Response } from "express";
 import { z } from "zod";
 import { getDashboardData, simulateEvaluation } from "./risk-dashboard";
-import {
-  createOverride,
-  revokeOverride,
-  listOverrides,
-  getOverride,
-  createOverrideSchema,
-} from "./overrides";
+import { createOverride, revokeOverride, listOverrides, createOverrideSchema } from "./overrides";
 import { getPolicies, createPolicy, updatePolicy, getRecentDecisions } from "../policy/repository";
 import { resetBudget, getBudgetSummary, checkBudgetStatus } from "../policy/budgets";
 import { policyDefinitionSchema, policyUpdateSchema } from "../policy/types";

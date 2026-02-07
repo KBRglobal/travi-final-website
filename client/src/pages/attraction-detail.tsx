@@ -133,7 +133,7 @@ function AttractionError({ message }: { message: string }) {
         </p>
         <Button
           className="bg-[#6443F4] hover:bg-[#5539d4] text-white"
-          onClick={() => window.history.back()}
+          onClick={() => globalThis.history.back()}
           data-testid="button-go-back"
         >
           Go Back

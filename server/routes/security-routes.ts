@@ -10,12 +10,7 @@ import { authenticator } from "otplib";
 import QRCode from "qrcode";
 import { storage } from "../storage";
 import { isAuthenticated } from "../replitAuth";
-import {
-  requirePermission,
-  logAuditEvent as logSecurityEvent,
-  getAuditLogs,
-  getBlockedIps,
-} from "../security";
+import { logAuditEvent as logSecurityEvent, getAuditLogs, getBlockedIps } from "../security";
 import { loginRateLimiter } from "../security/rate-limiter";
 import { logSecurityEventFromRequest, SecurityEventType } from "../security/audit-logger";
 import { verifyPreAuthToken, consumePreAuthToken } from "../security/pre-auth-token";
@@ -27,7 +22,7 @@ import {
   sessionSecurity,
   threatIntelligence,
 } from "../enterprise-security";
-import { ROLE_PERMISSIONS, type UserRole } from "@shared/schema";
+import { type UserRole } from "@shared/schema";
 
 // Configure TOTP with time window tolerance
 authenticator.options = { window: 1 };

@@ -1,7 +1,9 @@
 import { Router, Request, Response } from "express";
 import { db } from "../db";
-import { update9987Guides, destinations } from "@shared/schema";
-import { eq, desc, ilike, and, isNotNull, sql } from "drizzle-orm";
+import { update9987Guides } from "@shared/schema";
+
+import { eq, desc, sql } from "drizzle-orm";
+
 import { parsePagination, paginationMeta } from "../lib/pagination";
 import {
   importWikivoyageGuide,

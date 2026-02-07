@@ -16,8 +16,8 @@ import {
   automatedSequences,
   type SequenceEmail,
 } from "@shared/schema";
-import { eq, desc, and, gte, sql, like, inArray, count } from "drizzle-orm";
-import { cache } from "./cache";
+import { eq, desc, and, gte, sql } from "drizzle-orm";
+
 import * as crypto from "node:crypto";
 
 // ============================================================================

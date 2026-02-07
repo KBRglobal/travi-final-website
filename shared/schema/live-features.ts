@@ -11,8 +11,10 @@ import {
 import { sql, relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { liveChatStatusEnum, surveyStatusEnum, questionTypeEnum } from "./enums";
-import { SurveyQuestion, SurveyDefinition } from "./types";
+import { liveChatStatusEnum, surveyStatusEnum } from "./enums";
+
+import { SurveyDefinition } from "./types";
+
 import { users } from "./auth";
 
 // ============================================================================

@@ -16,12 +16,7 @@
  */
 
 import * as crypto from "node:crypto";
-import {
-  evidenceGenerator,
-  ComplianceFramework,
-  ComplianceEvidence,
-  ComplianceReport,
-} from "./evidence-generator";
+import { evidenceGenerator, ComplianceFramework, ComplianceReport } from "./evidence-generator";
 import { getGateStatistics } from "../gate/security-gate";
 import { overrideRegistry } from "../overrides/override-registry";
 import { autonomyController } from "../autonomy/autonomy-controller";

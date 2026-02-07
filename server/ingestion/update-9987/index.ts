@@ -54,7 +54,9 @@ export async function paraphrase(
 export async function generateVariations(_content: string): Promise<string[]> {
   return [];
 }
-export async function submitFeedback(_feedback: unknown): Promise<void> {}
+export async function submitFeedback(_feedback: unknown): Promise<void> {
+  /* empty */
+}
 export async function quickReview(_content: string): Promise<{ passed: boolean }> {
   return { passed: true };
 }
@@ -74,7 +76,9 @@ export async function recordExperimentResult(
   _experimentId: string,
   _variantId: string,
   _result: unknown
-): Promise<void> {}
+): Promise<void> {
+  /* empty */
+}
 export async function getExperimentSummary(
   _experimentId: string
 ): Promise<ExperimentSummary | null> {

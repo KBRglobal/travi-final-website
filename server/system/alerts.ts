@@ -22,8 +22,12 @@ export interface AlertMetrics {
 
 export const ALERT_THRESHOLDS: Record<string, AlertThreshold> = {};
 
-export function checkAlerts(): void {}
-export function sendAlert(_type: string, _message: string): void {}
+export function checkAlerts(): void {
+  /* empty */
+}
+export function sendAlert(_type: string, _message: string): void {
+  /* empty */
+}
 export function getAlertStatus() {
   return { alerts: [] };
 }

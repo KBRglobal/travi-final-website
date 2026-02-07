@@ -123,7 +123,7 @@ Evaluate and respond with this exact JSON structure:
 Be thorough but fair. If it's good enough to publish, approve it. Don't nitpick.`;
 
 export class Gate2Approver {
-  private config: GatekeeperConfig;
+  private readonly config: GatekeeperConfig;
 
   constructor(config: Partial<GatekeeperConfig> = {}) {
     this.config = { ...DEFAULT_GATEKEEPER_CONFIG, ...config };
@@ -273,12 +273,12 @@ export class Gate2Approver {
   private parseResponse(response: string): any {
     let jsonStr = response;
 
-    const jsonMatch = response.match(/```(?:json)?\s*([\s\S]*?)```/);
+    const jsonMatch = /```(?:json)?\s*([\s\S]*?)```/.exec(response);
     if (jsonMatch) {
       jsonStr = jsonMatch[1].trim();
     }
 
-    const objectMatch = jsonStr.match(/\{[\s\S]*\}/);
+    const objectMatch = /\{[\s\S]*\}/.exec(jsonStr);
     if (objectMatch) {
       jsonStr = objectMatch[0];
     }

@@ -97,9 +97,6 @@ export const pilotEntityTypes = ["attraction"] as const;
 // Topic Clusters - For RSS aggregation of similar articles
 // ============================================================================
 
-import { contents } from "./content-base";
-import { rssFeeds } from "./content-support";
-
 export const topicClusters = pgTable("topic_clusters", {
   id: varchar("id")
     .primaryKey()

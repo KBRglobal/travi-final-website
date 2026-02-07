@@ -7,12 +7,12 @@
 
 import { db } from "../db";
 import { sql, ilike, or, desc } from "drizzle-orm";
-import { searchIndex, tiqetsAttractions, destinations } from "@shared/schema";
+import { tiqetsAttractions, destinations } from "@shared/schema";
+
 import { semanticSearch } from "./semantic-search";
 import { intentClassifier } from "./intent-classifier";
 import { hybridRanker, type SearchResultItem } from "./hybrid-ranker";
 import { queryProcessor } from "./query-processor";
-import { cache } from "../cache";
 import searchAnalytics from "../search-analytics";
 
 // Export new modules for spell check and query expansion

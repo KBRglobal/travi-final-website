@@ -165,6 +165,7 @@ export function validateRequiredEnvVars(): void {
 
   if (result.warnings.length === 0) {
   } else {
+    // empty
   }
 }
 

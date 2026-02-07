@@ -45,6 +45,7 @@ async function seedTable(
       await db.insert(table).values(batch).onConflictDoNothing();
       inserted += batch.length;
       if (i % 1000 === 0 && i > 0) {
+        // empty
       }
     } catch (e: any) {
       /* ignored */

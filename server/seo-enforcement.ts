@@ -476,6 +476,7 @@ export function enforceArticleSEO(article: any): any {
     const deficit = SEO_REQUIREMENTS.minInternalLinks - existingInternal;
     injectLinksIntoSections(result.article.sections, FALLBACK_INTERNAL_LINKS, deficit, "internal");
   } else {
+    // empty
   }
 
   // Inject external links if below minimum (once, into closing or last section)
@@ -490,6 +491,7 @@ export function enforceArticleSEO(article: any): any {
       }
     }
   } else {
+    // empty
   }
 
   // Ensure secondary keywords exist

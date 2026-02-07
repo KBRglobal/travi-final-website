@@ -31,7 +31,7 @@ import { uploadImageFromUrl } from "../services/image-service";
 
 function cleanJsonFromMarkdown(content: string): string {
   let cleaned = content.trim();
-  const jsonMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const jsonMatch = /```(?:json)?\s*([\s\S]*?)```/.exec(cleaned);
   if (jsonMatch) {
     cleaned = jsonMatch[1].trim();
   } else {
@@ -92,6 +92,7 @@ function addSystemLog(
   if (typeof (global as any).addSystemLog === "function") {
     (global as any).addSystemLog(level, category, message, _details);
   } else {
+    // empty
   }
 }
 

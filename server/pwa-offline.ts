@@ -8,8 +8,9 @@
  */
 
 import { db } from "./db";
-import { contents, siteSettings, pushSubscriptions } from "@shared/schema";
-import { eq, desc, count } from "drizzle-orm";
+import { contents, pushSubscriptions } from "@shared/schema";
+
+import { eq, desc } from "drizzle-orm";
 
 // ============================================================================
 // MANIFEST CONFIGURATION

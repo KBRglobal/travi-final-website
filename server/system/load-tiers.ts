@@ -52,7 +52,9 @@ class LoadTierManager {
   shouldThrottle(): boolean {
     return false;
   }
-  recordLoad(): void {}
+  recordLoad(): void {
+    /* empty */
+  }
   getMetrics(): LoadTierMetrics {
     return {
       currentTier: "green",

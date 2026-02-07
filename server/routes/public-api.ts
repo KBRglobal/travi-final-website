@@ -3,7 +3,8 @@ import { Router } from "express";
 import { db } from "../db";
 import { storage } from "../storage";
 import { log } from "../lib/logger";
-import { eq, and, desc, sql, ilike, or, not, notIlike } from "drizzle-orm";
+import { eq, and, desc, sql, ilike, or, notIlike } from "drizzle-orm";
+
 import {
   destinations,
   homepageSections,
@@ -18,7 +19,6 @@ import {
   contents,
   pageLayouts,
   tiqetsAttractions,
-  SUPPORTED_LOCALES,
 } from "@shared/schema";
 import { makeRenderSafeHomepageConfig } from "../lib/homepage-fallbacks";
 import { getTranslations, getBulkTranslations } from "../cms-translations";

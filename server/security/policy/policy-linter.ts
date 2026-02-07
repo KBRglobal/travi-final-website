@@ -10,14 +10,7 @@
  */
 
 import { policyEngine } from "../../governance/policy-engine";
-import {
-  PolicyRule,
-  PolicyCondition,
-  PolicyEffect,
-  Action,
-  Resource,
-  AdminRole,
-} from "../../governance/types";
+import { PolicyRule, Action, Resource } from "../../governance/types";
 
 // ============================================================================
 // LINT RESULT TYPES

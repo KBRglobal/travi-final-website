@@ -8,8 +8,6 @@
 export * from "./types";
 export * from "./engine";
 
-import { DEFAULT_LEARNING_CONFIG } from "./types";
-
 export function initLearningEngine(): void {
   const enabled = process.env.ENABLE_AUTONOMY_LEARNING === "true";
 }

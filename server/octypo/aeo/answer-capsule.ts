@@ -56,7 +56,7 @@ export class AnswerCapsuleGenerator {
     }
     // Note: 35-70 is acceptable, only flag outside that range
 
-    if (!capsule.directAnswer.match(/^[A-Z]/)) {
+    if (!/^[A-Z]/.exec(capsule.directAnswer)) {
       issues.push("Answer should start with a direct statement");
     }
 
@@ -237,7 +237,7 @@ export class SchemaGenerator {
 }
 
 export class AEOValidator {
-  private capsuleGenerator = new AnswerCapsuleGenerator();
+  private readonly capsuleGenerator = new AnswerCapsuleGenerator();
 
   validate(content: GeneratedAttractionContent): AEOScore {
     const issues: string[] = [];

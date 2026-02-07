@@ -5,7 +5,8 @@
 
 import { db } from "../../db";
 import { contents, internalLinks } from "../../../shared/schema";
-import { eq, and, desc, sql, count, ne } from "drizzle-orm";
+import { eq, and, desc, count, ne } from "drizzle-orm";
+
 import { log } from "../../lib/logger";
 
 export interface OrphanPageReport {

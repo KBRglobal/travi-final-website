@@ -6,7 +6,8 @@
 
 import { db } from "../../db";
 import { contents } from "@shared/schema";
-import { eq, and, isNull, ne } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
+
 import { evaluateEligibility } from "./engine";
 import type { BlockedContent } from "./types";
 

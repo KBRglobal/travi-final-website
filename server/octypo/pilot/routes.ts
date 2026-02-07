@@ -30,7 +30,6 @@ import {
   type GeneratedGuideContent,
   type PilotLocale,
 } from "./guide-localization-pilot";
-import type { AttractionData } from "../types";
 
 const router = Router();
 

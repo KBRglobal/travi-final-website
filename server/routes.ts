@@ -1,197 +1,73 @@
 import type { Express, Request, Response, NextFunction } from "express";
-import { createServer, type Server } from "node:http";
+import { type Server } from "node:http";
+
 import { storage } from "./storage";
-import { db } from "./db";
 import multer from "multer";
 // Object Storage is now handled through the unified storage adapter
 import type OpenAI from "openai";
 import { authenticator } from "otplib";
-import QRCode from "qrcode";
 
 // Configure TOTP with time window tolerance for clock drift (1 step = 30 seconds before/after)
 authenticator.options = { window: 1 };
-import bcrypt from "bcrypt";
 import { Resend } from "resend";
-import { eq, like, or, desc, and, sql, inArray, ilike, notIlike } from "drizzle-orm";
 import {
-  insertContentSchema,
-  insertAttractionSchema,
-  insertHotelSchema,
-  insertArticleSchema,
-  insertEventSchema,
-  insertItinerarySchema,
-  insertRssFeedSchema,
-  insertAffiliateLinkSchema,
-  insertMediaFileSchema,
-  insertTopicBankSchema,
-  insertKeywordRepositorySchema,
-  insertTranslationSchema,
-  insertUserSchema,
-  insertHomepagePromotionSchema,
-  insertTagSchema,
-  newsletterSubscribers,
-  newsletterCampaigns,
-  campaignEvents,
-  contentRules,
-  pageLayouts,
-  webhooks,
-  webhookLogs,
-  workflows,
-  workflowExecutions,
-  partners,
-  payouts,
-  abTests,
-  abTestVariants,
-  abTestEvents,
-  realEstatePages,
-  insertRealEstatePageSchema,
-  contents,
-  destinations,
-  homepageSections,
-  homepageCards,
-  experienceCategories,
-  regionLinks,
-  heroSlides,
-  homepageCta,
-  homepageSeoMeta,
-  ROLE_PERMISSIONS,
-  SUPPORTED_LOCALES,
   type UserRole,
   type HomepageSection,
   type ContentBlock,
   type InsertContent,
-  traviConfig,
-  traviDistricts,
-  tiqetsCities,
-  tiqetsAttractions,
-  affiliateClicks,
-  users,
 } from "@shared/schema";
-import { setupAuth, isAuthenticated, getSession } from "./replitAuth";
+import { setupAuth, getSession } from "./replitAuth";
+
 import passport from "passport";
-import { makeRenderSafeHomepageConfig } from "./lib/homepage-fallbacks";
-import { z } from "zod";
 import {
-  safeMode,
-  rateLimiters,
-  checkAiUsageLimit,
   requireAuth,
   requirePermission,
-  requireOwnContentOrPermission,
-  checkReadOnlyMode,
   csrfProtection,
-  validateMediaUpload,
-  validateAnalyticsRequest,
   secureErrorHandler,
-  auditLogReadOnly,
   securityHeaders,
   ipBlockMiddleware,
   approvedBotMiddleware,
-  recordFailedAttempt,
   logAuditEvent as logSecurityEvent,
-  getAuditLogs,
-  getBlockedIps,
-  validateUrlForSSRF,
 } from "./security";
-import { checkOptimisticLock, addETagHeader } from "./middleware/optimistic-locking";
-import { logAuditEvent } from "./utils/audit-logger";
 import { bootstrapFoundationDomains, bootstrapFoundationErrorHandler } from "./foundation";
-import {
-  getTranslations,
-  getBulkTranslations,
-  setTranslations,
-  deleteEntityTranslations,
-} from "./cms-translations";
+import {} from "./cms-translations";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import sharp from "sharp";
-import { findFolderByName, listFilesInFolder, downloadFile } from "./google-drive";
-import { sanitizeContentBlocks } from "./lib/sanitize-ai-output";
 // Image generation functions from modular AI system
-import {
-  generateContentImages,
-  generateImage,
-  type GeneratedImage,
-  type ImageGenerationOptions,
-} from "./ai";
+import { type GeneratedImage, type ImageGenerationOptions } from "./ai";
 // AI client providers (single source of truth)
-import {
-  getAIClient,
-  getAllAIClients,
-  getAllUnifiedProviders,
-  markProviderFailed,
-  markProviderSuccess,
-  getOpenAIClient,
-  getProviderStatus,
-  type AIProvider,
-  type ProviderStatus,
-  type FailureReason,
-} from "./ai/providers";
+import { type AIProvider, type ProviderStatus, type FailureReason } from "./ai/providers";
 // AI generators (stub modules - originals replaced by Octypo pipeline)
-import { generateHotelDescription } from "./ai/hotel-description-generator";
-import { generateAttractionContent } from "./ai/attraction-description-generator";
 // Security validators (single source of truth for sanitization)
 import { sanitizeHtml as sanitizeHtmlContent } from "./security/validators";
+
 // Rate limiter for auth endpoints (magic-link, TOTP) - excludes login which has its own limiter
-import { loginRateLimiter } from "./security/rate-limiter";
 // Security audit logger for critical auth events (failed logins, password changes, role changes)
 // PII masking is enabled by default - does NOT affect request flow
-import { logSecurityEventFromRequest, SecurityEventType } from "./security/audit-logger";
 import { log } from "./lib/logger";
 // Performance monitoring (N+1 detection, latency tracking)
-import { getPerformanceMetrics } from "./monitoring";
 // Admin security hardening: Emergency kill switch, IP allowlist, mandatory 2FA
-import {
-  emergencyKillSwitch,
-  ipAllowlistMiddleware,
-  enforceMandatory2FA,
-  logAdminSecurityConfig,
-  adminAuthGuards,
-  magicLinkDisableMiddleware,
-} from "./security/admin-hardening";
+import {} from "./security/admin-hardening";
 // Strict password policy enforcement for admin users
 // Note: Uses dual lockout (per-IP + per-username) instead of legacy single-username lockout
-import {
-  validatePasswordStrength,
-  validatePasswordChange,
-  checkDualLockout,
-  recordDualLockoutFailure,
-  clearDualLockout,
-  PASSWORD_POLICY,
-} from "./security/password-policy";
+import {} from "./security/password-policy";
 // Pre-auth token for MFA flow (session created only after TOTP verification)
-import {
-  createPreAuthToken,
-  verifyPreAuthToken,
-  consumePreAuthToken,
-} from "./security/pre-auth-token";
+import {} from "./security/pre-auth-token";
 // File upload hardening with magic bytes validation
-import { validateUploadedFile } from "./security/file-upload";
 // IDOR protection middleware for ownership and permission checks
-import {
-  requireOwnershipOrPermission,
-  requireSelfOrAdmin,
-  requireAdmin,
-} from "./middleware/idor-protection";
-import { jobQueue, type TranslateJobData, type AiGenerateJobData } from "./job-queue";
-import {
-  deviceFingerprint,
-  contextualAuth,
-  exponentialBackoff,
-  sessionSecurity,
-  threatIntelligence,
-} from "./enterprise-security";
+import {} from "./middleware/idor-protection";
+import { type TranslateJobData, type AiGenerateJobData } from "./job-queue";
+
+import {} from "./enterprise-security";
 import { registerEnterpriseRoutes } from "./enterprise-routes";
 import { registerSiteConfigRoutes } from "./site-config-routes";
 import { registerFeatureRoutes } from "./feature-routes";
-import { enterprise } from "./enterprise";
 import { registerImageRoutes } from "./routes/image-routes";
 import { registerLogRoutes } from "./routes/log-routes";
 import { registerMiscRoutes } from "./routes/misc-routes";
 import { registerSEORoutes } from "./routes/seo-routes";
 import { registerSEOEngineRoutes } from "./seo-engine/routes";
 // [REMOVED] automation-routes deleted in Phase 4.1 cleanup
-import { enforceArticleSEO, enforceWriterEngineSEO } from "./seo-enforcement";
 // [REMOVED] content-intelligence-routes deleted in Phase 4.1 cleanup
 // [REMOVED] destination-intelligence deleted in Phase 4.1 cleanup
 import { registerAdminIntelligenceRoutes, registerAdminIngestionRoutes } from "./admin";
@@ -204,11 +80,7 @@ import { registerAdminJobsRoutes } from "./routes/admin-jobs-routes";
 import { alertRoutes, startAlertEngine, isAlertingEnabled } from "./alerts";
 
 import { coverageRoutes } from "./intelligence/coverage";
-import {
-  autonomyPolicyRoutes,
-  initAutonomyPolicy,
-  shutdownAutonomyPolicy,
-} from "./autonomy/policy";
+import { autonomyPolicyRoutes, initAutonomyPolicy } from "./autonomy/policy";
 import { controlPlaneRoutes, initControlPlane } from "./autonomy/control-plane";
 import { initEnforcement } from "./autonomy/enforcement";
 import mediaLibraryRoutes from "./routes/admin/media-library-routes";
@@ -226,7 +98,6 @@ import localizedAssetsRoutes from "./routes/localized-assets-routes";
 import { registerCustomerJourneyRoutes } from "./customer-journey-routes";
 import { registerDocUploadRoutes } from "./doc-upload-routes";
 import { registerSearchRoutes } from "./search/routes";
-import { emitContentPublished, emitContentUpdated } from "./events";
 import translateRouter from "./routes/translate";
 // Chat System (AI Orchestrator-based contextual chat)
 import chatRouter from "./routes/chat";
@@ -234,7 +105,6 @@ import chatRouter from "./routes/chat";
 import { registerAllRoutes } from "./routes/index.js";
 // AEO (Answer Engine Optimization) routes
 import { aeoRoutes, aeoTrackingMiddleware } from "./aeo";
-import { getVersionInfo } from "./middleware/api-versioning";
 // Localization Engine (Translation Queue + AEO)
 import localizationRoutes from "./localization/routes";
 // Localization Governance (Multi-locale content management)
@@ -244,16 +114,12 @@ import {
 } from "./localization-governance";
 // Simulation Mode removed during cleanup
 // Content Scheduling (Calendar + Auto-publish)
-import { registerSchedulingRoutes, startScheduler } from "./scheduling";
+import { registerSchedulingRoutes } from "./scheduling";
+
 // Publishing Control & Safety
 // Entity Merge & Canonicalization
 import { registerEntityMergeRoutes } from "./entity-merge";
-import {
-  registerPublishingRoutes,
-  guardManualPublish,
-  isPublishGuardsEnabled,
-  registerChecklistRoutes,
-} from "./publishing";
+import { registerPublishingRoutes, registerChecklistRoutes } from "./publishing";
 // Content Ownership & Responsibility (Feature 1)
 import { registerContentOwnershipRoutes } from "./content-ownership";
 // Editorial SLA & Staleness Enforcement (Feature 2)
@@ -321,40 +187,12 @@ import { pcalRoutes } from "./pcal";
 import { registerGovernanceRoutes } from "./governance";
 import swaggerRouter from "./openapi/swagger-ui";
 import { getStorageManager } from "./services/storage-adapter";
-import { uploadImage, uploadImageFromUrl } from "./services/image-service";
-import { cache, cacheKeys } from "./cache";
-import {
-  getContentWriterSystemPrompt,
-  buildArticleGenerationPrompt,
-  determineContentCategory,
-  validateArticleResponse,
-  buildRetryPrompt,
-  CONTENT_WRITER_PERSONALITIES,
-  ARTICLE_STRUCTURES,
-  CATEGORY_PERSONALITY_MAPPING,
-  type ArticleResponse,
-} from "./content-writer-guidelines";
+import { type ArticleResponse } from "./content-writer-guidelines";
 
 // ============================================================================
 // MODULARIZED HELPERS (from routes/helpers/)
 // ============================================================================
-import {
-  cleanJsonFromMarkdown,
-  safeParseJson,
-  type AuthRequest,
-  type PermissionKey,
-  getUserId,
-  requireRole,
-  sanitizeForLog,
-  WEBP_QUALITY,
-  SUPPORTED_IMAGE_FORMATS,
-  type ConvertedImage,
-  convertToWebP,
-  VALID_BLOCK_TYPES,
-  normalizeBlock,
-  createDefaultBlocks,
-  validateAndNormalizeBlocks,
-} from "./routes/helpers";
+import { type AuthRequest, type PermissionKey, type ConvertedImage } from "./routes/helpers";
 
 // [REMOVED] rss-processing deleted in Phase 4.1 cleanup
 // autoProcessRssFeeds is no longer needed - Gatekeeper pipeline handles RSS

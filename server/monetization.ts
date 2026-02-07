@@ -9,7 +9,6 @@
 import { db } from "./db";
 import {
   contents,
-  users,
   premiumContent as premiumContentTable,
   contentPurchases,
   businessListings as businessListingsTable,
@@ -19,8 +18,8 @@ import {
   type BusinessListing as BusinessListingRow,
   type Lead as LeadRow,
 } from "@shared/schema";
-import { eq, desc, and, gte, lte, sql, inArray } from "drizzle-orm";
-import { cache } from "./cache";
+import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
+
 import * as crypto from "node:crypto";
 
 // ============================================================================

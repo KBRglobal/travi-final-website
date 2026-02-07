@@ -4,7 +4,8 @@
  */
 
 import type { Request, Response, NextFunction } from "express";
-import { enforceAutonomy, enforceOrThrow } from "./decision";
+import { enforceAutonomy } from "./decision";
+
 import {
   EnforcementContext,
   AutonomyBlockedError,

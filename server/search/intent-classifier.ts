@@ -253,7 +253,7 @@ export const intentClassifier = {
     }
 
     // Extract rating
-    const ratingMatch = query.match(/(\d+(?:\.\d+)?)\s*(?:star|stars|نجوم|\+)/i);
+    const ratingMatch = /(\d+(?:\.\d+)?)\s*(?:star|stars|نجوم|\+)/i.exec(query);
     if (ratingMatch) {
       entities.rating = Number.parseFloat(ratingMatch[1]);
     }
@@ -267,7 +267,7 @@ export const intentClassifier = {
     }
 
     // Extract group size
-    const groupMatch = query.match(/(?:for|لـ)\s*(\d+)\s*(?:people|persons|guests|أشخاص)/i);
+    const groupMatch = /(?:for|لـ)\s*(\d+)\s*(?:people|persons|guests|أشخاص)/i.exec(query);
     if (groupMatch) {
       entities.groupSize = Number.parseInt(groupMatch[1]);
     }

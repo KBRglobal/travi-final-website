@@ -13,16 +13,8 @@ import { sql, relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import {
-  pageLayoutStatusEnum,
-  homepageSectionEnum,
-  realEstatePageCategoryEnum,
-  sectionTypeEnum,
-} from "./enums";
+import { pageLayoutStatusEnum, homepageSectionEnum, realEstatePageCategoryEnum } from "./enums";
 import type { StaticPageTranslation } from "./types";
-
-import { users } from "./auth";
-import { contents } from "./content-base";
 
 // ============================================================================
 // PAGE LAYOUTS - VISUAL PAGE BUILDER SYSTEM

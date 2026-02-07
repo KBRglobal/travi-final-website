@@ -6,7 +6,7 @@
 
 import { db } from "./db";
 import { backgroundJobs } from "@shared/schema";
-import { eq, desc, and, lt, inArray, sql, count } from "drizzle-orm";
+import { eq, desc, and, lt, inArray, count } from "drizzle-orm";
 
 export type JobStatus = "pending" | "processing" | "completed" | "failed";
 export type JobType = "translate" | "ai_generate" | "email" | "image_process" | "cleanup";

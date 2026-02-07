@@ -9,8 +9,7 @@
  * - Automated alerting
  */
 
-import { SecurityEvent, SecurityEventType } from "../../governance/types";
-import { securityLogger } from "../../governance/security-logger";
+import { SecurityEventType } from "../../governance/types";
 
 // ============================================================================
 // TYPES
@@ -265,7 +264,7 @@ const eventBuffer = new EventBuffer();
 // ============================================================================
 
 class BaselineManager {
-  private baselines: Map<string, BehavioralBaseline> = new Map();
+  private readonly baselines: Map<string, BehavioralBaseline> = new Map();
 
   updateBaseline(userId: string, events: BufferedEvent[]): void {
     if (events.length < 10) return; // Need minimum events
@@ -401,7 +400,7 @@ const baselineManager = new BaselineManager();
 // ============================================================================
 
 class ThreatScorer {
-  private scores: Map<string, ThreatScore> = new Map();
+  private readonly scores: Map<string, ThreatScore> = new Map();
   private readonly decayRate = 0.95; // Score decays by 5% per hour
 
   updateScore(userId: string, anomaly: SecurityAnomaly): void {
@@ -485,7 +484,7 @@ const threatScorer = new ThreatScorer();
 // ============================================================================
 
 class CorrelationEngine {
-  private detectedAnomalies: SecurityAnomaly[] = [];
+  private readonly detectedAnomalies: SecurityAnomaly[] = [];
 
   processEvent(event: BufferedEvent): SecurityAnomaly[] {
     const anomalies: SecurityAnomaly[] = [];

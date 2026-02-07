@@ -4,7 +4,8 @@
  */
 
 import { enforceAutonomy, enforceOrThrow } from "./decision";
-import { consumeBudget, recordConsumption } from "./budget-consumer";
+import { recordConsumption } from "./budget-consumer";
+
 import {
   EnforcementContext,
   AutonomyBlockedError,

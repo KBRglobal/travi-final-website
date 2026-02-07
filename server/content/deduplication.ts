@@ -1,6 +1,7 @@
 import { db } from "../db";
 import { contents, contentFingerprints } from "@shared/schema";
-import { eq, or, ilike } from "drizzle-orm";
+import { eq, ilike } from "drizzle-orm";
+
 import crypto from "node:crypto";
 
 export interface DuplicateCheckResult {

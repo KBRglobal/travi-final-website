@@ -17,7 +17,7 @@
  */
 
 import * as crypto from "node:crypto";
-import { AdminRole, Resource, Action } from "../../governance/types";
+import { AdminRole } from "../../governance/types";
 
 // ============================================================================
 // TYPES

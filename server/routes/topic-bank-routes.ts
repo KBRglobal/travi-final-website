@@ -1,6 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "../storage";
-import { requirePermission, checkReadOnlyMode } from "../security";
+import { requirePermission } from "../security";
+
 import {
   generateContentImages,
   getAIClient,

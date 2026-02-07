@@ -19,7 +19,6 @@ import {
   getPerformance,
   getPerformanceScore,
   getAllPerformance,
-  HIGH_PERFORMING_SCORE_THRESHOLD,
 } from "./metrics/content-performance";
 // Inline stub: cost-analytics deleted in Phase 4.1 cleanup
 function getCostAnalytics() {

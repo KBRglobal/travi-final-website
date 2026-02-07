@@ -12,7 +12,8 @@ import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-import { jobStatusEnum, jobTypeEnum, webhookEventEnum } from "./enums";
+import { jobStatusEnum, jobTypeEnum } from "./enums";
+
 import { contents } from "./content-base";
 import { users } from "./auth";
 

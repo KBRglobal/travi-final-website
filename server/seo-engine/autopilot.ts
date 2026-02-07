@@ -1,6 +1,10 @@
 // Stub - SEO Engine Autopilot disabled
-export function startAutopilot() {}
-export function stopAutopilot() {}
+export function startAutopilot() {
+  /* empty */
+}
+export function stopAutopilot() {
+  /* empty */
+}
 export function getAutopilotStatus() {
   return { running: false, mode: "disabled" };
 }

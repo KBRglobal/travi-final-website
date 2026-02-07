@@ -1,4 +1,5 @@
 import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
+
 import { apiRequest } from "./queryClient";
 
 export interface GeneratedContent {

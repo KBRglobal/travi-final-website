@@ -4,8 +4,10 @@
  */
 
 import { incrementBudgetCounter, checkBudgetStatus, getBudgetSummary } from "../policy/budgets";
-import { generateTargetKey, getPeriodBoundaries } from "../policy/config";
-import { PolicyTarget, BudgetPeriod, BudgetLimit } from "../policy/types";
+import { getPeriodBoundaries } from "../policy/config";
+
+import { BudgetPeriod, BudgetLimit } from "../policy/types";
+
 import { ConsumptionRecord, GuardedFeature, DEFAULT_ENFORCEMENT_CONFIG } from "./types";
 
 // In-memory consumption buffer for batch updates
