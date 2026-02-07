@@ -41,4 +41,4 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 5000
 
-CMD ["node", "dist/index.cjs"]
+CMD ["node", "--max-old-space-size=4096", "dist/index.cjs"]
