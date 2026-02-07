@@ -188,12 +188,11 @@ const heroAnimationStyles = `
   .hero-gradient-text {
     background: linear-gradient(
       135deg,
-      #6443F4 0%,
-      #8B5CF6 20%,
-      #A78BFA 40%,
-      #6443F4 60%,
-      #8B5CF6 80%,
-      #6443F4 100%
+      hsl(15, 72%, 55%) 0%,
+      hsl(36, 90%, 55%) 25%,
+      hsl(15, 72%, 55%) 50%,
+      hsl(36, 90%, 55%) 75%,
+      hsl(15, 72%, 55%) 100%
     );
     background-size: 300% 300%;
     -webkit-background-clip: text;
@@ -521,13 +520,13 @@ function DestinationAttractionsPage() {
                   className="flex items-center gap-2 text-slate-500 text-sm mb-8"
                   data-testid="breadcrumbs-loading"
                 >
-                  <Link href={localePath("/")} className="hover:text-[#6443F4] transition-colors">
+                  <Link href={localePath("/")} className="hover:text-primary transition-colors">
                     Home
                   </Link>
                   <ChevronRight className="w-4 h-4" />
                   <Link
                     href={localePath("/attractions")}
-                    className="hover:text-[#6443F4] transition-colors"
+                    className="hover:text-primary transition-colors"
                   >
                     Attractions
                   </Link>
@@ -548,9 +547,9 @@ function DestinationAttractionsPage() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="w-24 h-24 rounded-full bg-[#6443F4]/10 flex items-center justify-center mx-auto mb-8"
+                    className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-8"
                   >
-                    <Loader2 className="w-12 h-12 text-[#6443F4] animate-spin" />
+                    <Loader2 className="w-12 h-12 text-primary animate-spin" />
                   </motion.div>
                   <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">
                     Loading Attractions
@@ -587,13 +586,13 @@ function DestinationAttractionsPage() {
                   className="flex items-center gap-2 text-slate-500 text-sm mb-8"
                   data-testid="breadcrumbs-error"
                 >
-                  <Link href={localePath("/")} className="hover:text-[#6443F4] transition-colors">
+                  <Link href={localePath("/")} className="hover:text-primary transition-colors">
                     Home
                   </Link>
                   <ChevronRight className="w-4 h-4" />
                   <Link
                     href={localePath("/attractions")}
-                    className="hover:text-[#6443F4] transition-colors"
+                    className="hover:text-primary transition-colors"
                   >
                     Attractions
                   </Link>
@@ -614,9 +613,9 @@ function DestinationAttractionsPage() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="w-24 h-24 rounded-full bg-[#6443F4]/10 flex items-center justify-center mx-auto mb-8"
+                    className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-8"
                   >
-                    <MapPin className="w-12 h-12 text-[#6443F4]" />
+                    <MapPin className="w-12 h-12 text-primary" />
                   </motion.div>
                   <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">
                     No Attractions Found
@@ -635,7 +634,7 @@ function DestinationAttractionsPage() {
                     </Button>
                     <Button
                       onClick={() => (window.location.href = localePath("/"))}
-                      className="bg-[#6443F4] hover:bg-[#5539d4]"
+                      className="bg-primary hover:bg-primary/90"
                       data-testid="button-return-home"
                     >
                       Return Home
@@ -760,7 +759,7 @@ function DestinationAttractionsPage() {
               >
                 <Link
                   href={localePath("/")}
-                  className="hover:text-[#6443F4] transition-colors"
+                  className="hover:text-primary transition-colors"
                   data-testid="link-breadcrumb-home"
                 >
                   Home
@@ -768,7 +767,7 @@ function DestinationAttractionsPage() {
                 <ChevronRight className="w-4 h-4" />
                 <Link
                   href={localePath("/attractions")}
-                  className="hover:text-[#6443F4] transition-colors"
+                  className="hover:text-primary transition-colors"
                   data-testid="link-breadcrumb-attractions"
                 >
                   Attractions
@@ -799,22 +798,22 @@ function DestinationAttractionsPage() {
 
                 {/* Stats Display */}
                 <div className="flex flex-wrap items-center gap-4 md:gap-6">
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#6443F4]/10 border border-[#6443F4]/20">
-                    <Ticket className="w-5 h-5 text-[#6443F4]" />
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                    <Ticket className="w-5 h-5 text-primary" />
                     <span className="font-semibold text-slate-900 dark:text-white">
                       {data.totalAttractions}
                     </span>
                     <span className="text-slate-600 dark:text-slate-400">Attractions</span>
                   </div>
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#6443F4]/10 border border-[#6443F4]/20">
-                    <Globe2 className="w-5 h-5 text-[#6443F4]" />
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                    <Globe2 className="w-5 h-5 text-primary" />
                     <span className="font-semibold text-slate-900 dark:text-white">
                       {data.categoryStats.length}
                     </span>
                     <span className="text-slate-600 dark:text-slate-400">Categories</span>
                   </div>
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#6443F4]/10 border border-[#6443F4]/20">
-                    <MapPin className="w-5 h-5 text-[#6443F4]" />
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+                    <MapPin className="w-5 h-5 text-primary" />
                     <span className="text-slate-600 dark:text-slate-400">{data.country}</span>
                   </div>
                 </div>
@@ -832,11 +831,11 @@ function DestinationAttractionsPage() {
             data-testid="section-answer-capsule"
           >
             <div className="container mx-auto px-4 md:px-6 lg:px-8">
-              <Card className="max-w-4xl mx-auto bg-gradient-to-br from-[#6443F4]/5 to-white dark:from-slate-800 dark:to-slate-900 border border-[#6443F4]/20 shadow-lg hover:shadow-xl transition-shadow">
+              <Card className="max-w-4xl mx-auto bg-gradient-to-br from-primary/5 to-white dark:from-slate-800 dark:to-slate-900 border border-primary/20 shadow-lg hover:shadow-xl transition-shadow">
                 <CardContent className="p-6 md:p-8">
                   <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#6443F4]/10 flex items-center justify-center">
-                      <HelpCircle className="w-6 h-6 text-[#6443F4]" />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <HelpCircle className="w-6 h-6 text-primary" />
                     </div>
                     <div>
                       <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-3">
@@ -877,15 +876,15 @@ function DestinationAttractionsPage() {
                       onClick={() => setCategoryFilter(stat.categoryKey)}
                       className={`flex-shrink-0 flex items-center gap-3 px-5 py-4 rounded-xl border-2 transition-all duration-200 ${
                         categoryFilter === stat.categoryKey
-                          ? "border-[#6443F4] bg-[#6443F4]/10"
-                          : "border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:border-[#6443F4]/50 hover:shadow-md"
+                          ? "border-primary bg-primary/10"
+                          : "border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:border-primary/50 hover:shadow-md"
                       }`}
                       data-testid={`stat-card-${stat.categoryKey}`}
                     >
                       <div
                         className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                           categoryFilter === stat.categoryKey
-                            ? "bg-[#6443F4] text-white"
+                            ? "bg-primary text-white"
                             : "bg-slate-100 dark:bg-slate-600 text-slate-600 dark:text-slate-300"
                         }`}
                       >
@@ -917,8 +916,8 @@ function DestinationAttractionsPage() {
                   onClick={() => setCategoryFilter("all")}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     categoryFilter === "all"
-                      ? "bg-[#6443F4] text-white"
-                      : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-[#6443F4]/10 hover:text-[#6443F4]"
+                      ? "bg-primary text-white"
+                      : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary"
                   }`}
                   data-testid="filter-chip-all"
                 >
@@ -935,8 +934,8 @@ function DestinationAttractionsPage() {
                       onClick={() => setCategoryFilter(stat.categoryKey)}
                       className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                         categoryFilter === stat.categoryKey
-                          ? "bg-[#6443F4] text-white"
-                          : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-[#6443F4]/10 hover:text-[#6443F4]"
+                          ? "bg-primary text-white"
+                          : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary"
                       }`}
                       data-testid={`filter-chip-${stat.categoryKey}`}
                     >
@@ -954,7 +953,7 @@ function DestinationAttractionsPage() {
                   {hasActiveFilters && (
                     <button
                       onClick={clearFilters}
-                      className="flex items-center gap-1 px-3 py-1.5 text-sm text-[#6443F4] hover:bg-[#6443F4]/10 rounded-full transition-colors"
+                      className="flex items-center gap-1 px-3 py-1.5 text-sm text-primary hover:bg-primary/10 rounded-full transition-colors"
                       data-testid="button-clear-filters"
                     >
                       <X className="w-4 h-4" />
@@ -972,7 +971,7 @@ function DestinationAttractionsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="py-10 md:py-14 bg-gradient-to-br from-[#6443F4]/5 via-transparent to-[#8B5CF6]/5"
+            className="py-10 md:py-14 bg-gradient-to-br from-primary/5 via-transparent to-travi-amber/5"
             data-testid="section-top10"
           >
             <div className="container mx-auto px-4 md:px-6 lg:px-8">
@@ -985,7 +984,7 @@ function DestinationAttractionsPage() {
                     variant="outline"
                     size="icon"
                     onClick={() => scrollCarousel("left")}
-                    className="rounded-full border-[#6443F4]/30 hover:border-[#6443F4] hover:bg-[#6443F4]/10"
+                    className="rounded-full border-primary/30 hover:border-primary hover:bg-primary/10"
                     data-testid="carousel-left"
                   >
                     <ChevronLeft className="w-5 h-5" />
@@ -994,7 +993,7 @@ function DestinationAttractionsPage() {
                     variant="outline"
                     size="icon"
                     onClick={() => scrollCarousel("right")}
-                    className="rounded-full border-[#6443F4]/30 hover:border-[#6443F4] hover:bg-[#6443F4]/10"
+                    className="rounded-full border-primary/30 hover:border-primary hover:bg-primary/10"
                     data-testid="carousel-right"
                   >
                     <ChevronRight className="w-5 h-5" />
@@ -1032,7 +1031,7 @@ function DestinationAttractionsPage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-                      <div className="absolute top-4 left-4 w-10 h-10 rounded-full bg-[#6443F4] text-white font-bold flex items-center justify-center text-lg shadow-lg">
+                      <div className="absolute top-4 left-4 w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-lg shadow-lg">
                         #{index + 1}
                       </div>
 
@@ -1068,8 +1067,8 @@ function DestinationAttractionsPage() {
 
               {filteredAttractions.length === 0 ? (
                 <div className="text-center py-16">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#6443F4]/10 flex items-center justify-center">
-                    <HelpCircle className="w-8 h-8 text-[#6443F4]" />
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                    <HelpCircle className="w-8 h-8 text-primary" />
                   </div>
                   <p className="text-lg text-slate-600 dark:text-slate-400 mb-4">
                     No attractions match your filters
@@ -1077,7 +1076,7 @@ function DestinationAttractionsPage() {
                   <Button
                     onClick={clearFilters}
                     variant="outline"
-                    className="border-[#6443F4] text-[#6443F4] hover:bg-[#6443F4]/10"
+                    className="border-primary text-primary hover:bg-primary/10"
                     data-testid="button-clear-filters-empty"
                   >
                     Clear Filters
@@ -1115,11 +1114,11 @@ function DestinationAttractionsPage() {
 
                             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                               {attraction.topRank && (
-                                <Badge className="bg-[#6443F4] text-white border-0 font-bold">
+                                <Badge className="bg-primary text-white border-0 font-bold">
                                   TOP {attraction.topRank}
                                 </Badge>
                               )}
-                              <Badge className="bg-[#6443F4]/10 text-[#6443F4] border border-[#6443F4]/20 backdrop-blur-sm">
+                              <Badge className="bg-primary/10 text-primary border border-primary/20 backdrop-blur-sm">
                                 <CategoryIcon className="w-3 h-3 mr-1" />
                                 {CATEGORY_LABELS[attraction.category] || attraction.category}
                               </Badge>
@@ -1140,7 +1139,7 @@ function DestinationAttractionsPage() {
                           <CardContent className="p-5">
                             <div className="flex items-center gap-4 mb-3">
                               <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 text-[#6443F4] fill-[#6443F4]" />
+                                <Star className="w-4 h-4 text-primary fill-primary" />
                                 <span className="font-semibold text-slate-900 dark:text-white">
                                   {attraction.rating}
                                 </span>
@@ -1169,7 +1168,7 @@ function DestinationAttractionsPage() {
                               href={localePath(
                                 `/${data.slug}/attractions/${attraction.seoSlug || attraction.slug || attraction.id}`
                               )}
-                              className="flex items-center gap-1 text-[#6443F4] font-medium hover:underline transition-colors group/link"
+                              className="flex items-center gap-1 text-primary font-medium hover:underline transition-colors group/link"
                               data-testid={`link-details-${attraction.id}`}
                             >
                               View Details
@@ -1192,7 +1191,7 @@ function DestinationAttractionsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="py-10 md:py-14 bg-gradient-to-br from-[#6443F4]/5 via-transparent to-[#8B5CF6]/5"
+              className="py-10 md:py-14 bg-gradient-to-br from-primary/5 via-transparent to-travi-amber/5"
               data-testid="section-tips"
             >
               <div className="container mx-auto px-4 md:px-6 lg:px-8">
@@ -1215,8 +1214,8 @@ function DestinationAttractionsPage() {
                           data-testid={`tip-card-${index}`}
                         >
                           <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#6443F4]/10 flex items-center justify-center">
-                              <TipIcon className="w-6 h-6 text-[#6443F4]" />
+                            <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                              <TipIcon className="w-6 h-6 text-primary" />
                             </div>
                             <div>
                               <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
@@ -1255,11 +1254,11 @@ function DestinationAttractionsPage() {
                     <AccordionItem
                       key={index}
                       value={`faq-${index}`}
-                      className="bg-gradient-to-br from-[#6443F4]/5 to-white dark:from-slate-800 dark:to-slate-900 rounded-xl border border-[#6443F4]/10 px-6 overflow-hidden"
+                      className="bg-gradient-to-br from-primary/5 to-white dark:from-slate-800 dark:to-slate-900 rounded-xl border border-primary/10 px-6 overflow-hidden"
                       data-testid={`faq-item-${index}`}
                     >
                       <AccordionTrigger className="text-left py-5 hover:no-underline group">
-                        <span className="font-semibold text-slate-900 dark:text-white pr-4 group-hover:text-[#6443F4] transition-colors">
+                        <span className="font-semibold text-slate-900 dark:text-white pr-4 group-hover:text-primary transition-colors">
                           {item.question}
                         </span>
                       </AccordionTrigger>
@@ -1279,7 +1278,7 @@ function DestinationAttractionsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="py-16 md:py-20 bg-gradient-to-br from-[#6443F4] via-[#8B5CF6] to-[#6443F4]"
+            className="py-16 md:py-20 bg-gradient-to-br from-primary via-travi-amber to-primary"
             data-testid="section-cta"
           >
             <div className="container mx-auto px-4 md:px-6 lg:px-8 text-center">
@@ -1292,7 +1291,7 @@ function DestinationAttractionsPage() {
               <div className="flex flex-wrap justify-center gap-4">
                 <Button
                   size="lg"
-                  className="bg-white text-[#6443F4] hover:bg-white/90 font-semibold"
+                  className="bg-white text-primary hover:bg-white/90 font-semibold"
                   onClick={() =>
                     document
                       .getElementById("section-attractions-grid")
@@ -1327,7 +1326,7 @@ function DestinationAttractionsPage() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-[#6443F4] text-white shadow-lg hover:bg-[#5539d4] transition-all duration-300 flex items-center justify-center z-50"
+            className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all duration-300 flex items-center justify-center z-50"
             aria-label="Back to top"
             data-testid="button-back-to-top"
           >

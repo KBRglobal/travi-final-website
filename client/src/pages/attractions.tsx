@@ -231,10 +231,10 @@ const heroAnimationStyles = `
   .animated-gradient-text {
     background: linear-gradient(
       135deg,
-      #6443F4 0%,
-      #8B5CF6 30%,
-      #F24294 70%,
-      #6443F4 100%
+      hsl(15, 72%, 55%) 0%,
+      hsl(36, 90%, 55%) 30%,
+      hsl(15, 72%, 55%) 70%,
+      hsl(36, 90%, 55%) 100%
     );
     background-size: 300% 300%;
     -webkit-background-clip: text;
@@ -244,7 +244,7 @@ const heroAnimationStyles = `
   }
 
   .decorative-line {
-    background: linear-gradient(90deg, transparent, #6443F4, #F24294, transparent);
+    background: linear-gradient(90deg, transparent, hsl(15, 72%, 55%), hsl(36, 90%, 55%), transparent);
     height: 2px;
   }
 
@@ -283,7 +283,7 @@ function DestinationChip({ destination, index }: { destination: Destination; ind
     >
       <Link href={localePath(`/attractions/list/${destination.slug}`)}>
         <div
-          className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30 cursor-pointer group"
+          className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-primary/30 cursor-pointer group"
           data-testid={`chip-destination-${destination.slug}`}
         >
           <img
@@ -292,7 +292,7 @@ function DestinationChip({ destination, index }: { destination: Destination; ind
               name: `${destination.name}, ${destination.country}`,
             })}
             title={`${destination.name} attractions`}
-            className="w-9 h-9 rounded-full object-cover ring-2 ring-[#6443F4]/20 group-hover:ring-[#6443F4]/50 transition-all"
+            className="w-9 h-9 rounded-full object-cover ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all"
             loading="lazy"
             decoding="async"
           />
@@ -568,9 +568,9 @@ export default function Attractions() {
               aria-hidden="true"
             >
               {/* Morphing blobs - adapted for dark mode */}
-              <div className="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-purple-200/40 via-pink-100/30 to-purple-100/40 dark:from-purple-900/30 dark:via-pink-900/20 dark:to-purple-900/30 morph-blob blur-3xl" />
+              <div className="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-travi-amber/20 via-travi-sand/15 to-travi-cream/20 dark:from-primary/10 dark:via-travi-amber/8 dark:to-primary/10 morph-blob blur-3xl" />
               <div
-                className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-blue-100/30 via-purple-100/20 to-pink-100/30 dark:from-blue-900/20 dark:via-purple-900/15 dark:to-pink-900/20 morph-blob blur-3xl"
+                className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-travi-cream/30 via-travi-sand/20 to-travi-amber/15 dark:from-travi-teal/10 dark:via-primary/8 dark:to-travi-amber/10 morph-blob blur-3xl"
                 style={{ animationDelay: "-4s" }}
               />
 
@@ -578,7 +578,10 @@ export default function Attractions() {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rotate-slow opacity-10 dark:opacity-20">
                 <div
                   className="w-full h-full rounded-full border-[40px] border-transparent"
-                  style={{ borderTopColor: "#6443F4", borderRightColor: "#F24294" }}
+                  style={{
+                    borderTopColor: "hsl(15, 72%, 55%)",
+                    borderRightColor: "hsl(36, 90%, 55%)",
+                  }}
                 />
               </div>
 
@@ -586,7 +589,7 @@ export default function Attractions() {
               <div
                 className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08]"
                 style={{
-                  backgroundImage: "radial-gradient(#6443F4 1px, transparent 1px)",
+                  backgroundImage: "radial-gradient(hsl(15, 72%, 55%) 1px, transparent 1px)",
                   backgroundSize: "30px 30px",
                 }}
               />
@@ -604,16 +607,16 @@ export default function Attractions() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.1 }}
                     >
-                      <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-[#6443F4]/10 border border-[#6443F4]/20">
+                      <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 shadow-lg shadow-primary/10 border border-primary/20">
                         <div className="relative flex items-center justify-center">
-                          <span className="absolute w-3 h-3 rounded-full bg-[#6443F4] animate-ping opacity-75" />
-                          <span className="relative w-2.5 h-2.5 rounded-full bg-[#6443F4]" />
+                          <span className="absolute w-3 h-3 rounded-full bg-primary animate-ping opacity-75" />
+                          <span className="relative w-2.5 h-2.5 rounded-full bg-primary" />
                         </div>
                         <span
                           className="text-sm font-semibold text-slate-700 dark:text-slate-300"
                           data-testid="badge-attractions-count"
                         >
-                          <span className="text-[#6443F4]">
+                          <span className="text-primary">
                             {totalAttractions > 0 ? `${totalAttractions.toLocaleString()}+` : ""}
                           </span>{" "}
                           {totalAttractions > 0
@@ -641,7 +644,7 @@ export default function Attractions() {
                           {t("attractions.hero.headlinePart2")}
                         </span>
                         {/* Gradient underline accent */}
-                        <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-full opacity-80" />
+                        <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-primary via-travi-amber to-primary rounded-full opacity-80" />
                       </span>
                     </motion.h1>
 
@@ -713,12 +716,9 @@ export default function Attractions() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.55 }}
                     >
-                      <div className="absolute -inset-1 bg-gradient-to-r from-[#6443F4] via-[#8B5CF6] to-[#F24294] rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
+                      <div className="absolute -inset-1 bg-gradient-to-r from-primary via-travi-amber to-primary rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity" />
                       <div className="relative flex items-center bg-white dark:bg-slate-800 backdrop-blur-xl rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-                        <Search
-                          className="w-5 h-5 text-[#6443F4] ml-5 shrink-0"
-                          aria-hidden="true"
-                        />
+                        <Search className="w-5 h-5 text-primary ml-5 shrink-0" aria-hidden="true" />
                         <Input
                           type="text"
                           placeholder={t("attractions.hero.searchPlaceholder")}
@@ -732,7 +732,7 @@ export default function Attractions() {
                           onClick={() =>
                             query.length >= 2 && navigate(`/search?q=${encodeURIComponent(query)}`)
                           }
-                          className="mr-2 md:mr-3 rounded-lg bg-[#6443F4] text-white"
+                          className="mr-2 md:mr-3 rounded-lg bg-primary text-white"
                           data-testid="button-hero-search"
                           aria-label={t("attractions.hero.searchButtonAriaLabel")}
                         >
@@ -766,9 +766,9 @@ export default function Attractions() {
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
                                       {result.type === "city" ? (
-                                        <MapPin className="w-4 h-4 text-[#6443F4]" />
+                                        <MapPin className="w-4 h-4 text-primary" />
                                       ) : (
-                                        <Ticket className="w-4 h-4 text-[#F24294]" />
+                                        <Ticket className="w-4 h-4 text-travi-amber" />
                                       )}
                                       <span
                                         className="font-medium text-slate-900 dark:text-white truncate"
@@ -812,7 +812,7 @@ export default function Attractions() {
                         <button
                           key={search}
                           onClick={() => setQuery(search)}
-                          className="px-3 py-1 text-sm rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-colors"
+                          className="px-3 py-1 text-sm rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors"
                         >
                           {search}
                         </button>
@@ -828,7 +828,7 @@ export default function Attractions() {
                     >
                       <Link href={localePath("/attractions/list/paris")}>
                         <Button
-                          className="rounded-full bg-gradient-to-r from-[#6443F4] to-[#8B5CF6] hover:opacity-90 text-white px-8 py-6 text-base font-semibold shadow-lg shadow-purple-500/25 transition-all hover:shadow-xl hover:shadow-purple-500/30"
+                          className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
                           data-testid="button-explore-paris"
                           aria-label={t("attractions.search.thingsToDoIn", { city: "Paris" })}
                         >
@@ -843,7 +843,7 @@ export default function Attractions() {
                           data-testid="button-browse-destinations"
                           aria-label={t("attractions.sections.allDestinations")}
                         >
-                          <Globe className="w-5 h-5 mr-2 text-[#6443F4]" />
+                          <Globe className="w-5 h-5 mr-2 text-primary" />
                           {t("attractions.sections.allDestinations")}
                         </Button>
                       </Link>
@@ -871,7 +871,7 @@ export default function Attractions() {
                           className={cn(
                             "h-2.5 rounded-full border-none cursor-pointer transition-all duration-500",
                             currentIndex === i
-                              ? "w-8 bg-gradient-to-r from-[#6443F4] to-[#8B5CF6]"
+                              ? "w-8 bg-gradient-to-r from-primary to-travi-amber"
                               : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
                           )}
                         />
@@ -889,7 +889,7 @@ export default function Attractions() {
                     >
                       {/* Main Featured Image */}
                       <div
-                        className="bento-card relative flex-1 min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-[#6443F4]/15 hover:-translate-y-2"
+                        className="bento-card relative flex-1 min-h-0 group bg-white dark:bg-slate-900 shadow-lg dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:shadow-primary/15 hover:-translate-y-2"
                         role="region"
                         aria-label={t("attractions.gallery.ariaFeaturedAttraction")}
                       >
@@ -924,7 +924,7 @@ export default function Attractions() {
                               <span className="text-slate-500 text-sm">(47K+ reviews)</span>
                             </div>
                             <motion.div
-                              className="relative px-4 py-2 rounded-full bg-gradient-to-r from-[#6443F4] to-[#F24294] text-white text-sm font-semibold shadow-lg"
+                              className="relative px-4 py-2 rounded-full bg-gradient-to-r from-primary to-travi-amber text-white text-sm font-semibold shadow-lg"
                               animate={{ scale: [1, 1.02, 1] }}
                               transition={{ duration: 2, repeat: Infinity }}
                             >
@@ -975,7 +975,7 @@ export default function Attractions() {
                                 </span>
                               </div>
                               <Link href={localePath(`/attractions/list/${dest.slug}`)}>
-                                <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
+                                <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-primary/10 hover:text-primary transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                                   {t("attractions.gallery.bookTickets")}
                                   <ArrowRight className="w-5 h-5" />
                                 </button>
@@ -996,10 +996,10 @@ export default function Attractions() {
                             key={i}
                             onClick={() => goTo(i)}
                             className={cn(
-                              "thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-[#6443F4]/20",
+                              "thumb-item w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-offset-2 dark:ring-offset-slate-800 shadow-sm hover:shadow-lg hover:shadow-primary/20",
                               currentIndex === i
-                                ? "ring-[#6443F4] active"
-                                : "ring-transparent hover:ring-[#6443F4]/50"
+                                ? "ring-primary active"
+                                : "ring-transparent hover:ring-primary/50"
                             )}
                             data-testid={`thumbnail-${i}`}
                             role="tab"
@@ -1060,7 +1060,7 @@ export default function Attractions() {
                           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6443F4] to-[#8B5CF6] flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-travi-amber flex items-center justify-center">
                               <Ticket className="w-6 h-6 text-white" />
                             </div>
                             <div>
@@ -1101,7 +1101,7 @@ export default function Attractions() {
                 <Link href={localePath("/destinations")}>
                   <Button
                     variant="outline"
-                    className="hidden sm:flex items-center gap-2 border-[#6443F4] text-[#6443F4] hover:bg-[#6443F4]/10"
+                    className="hidden sm:flex items-center gap-2 border-primary text-primary hover:bg-primary/10"
                     data-testid="button-view-all-destinations"
                   >
                     {t("attractions.sections.allDestinations")}
@@ -1138,7 +1138,7 @@ export default function Attractions() {
                           className="group overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 border-0"
                           data-testid={`destination-card-${dest.slug}`}
                         >
-                          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#6443F4]/20 to-[#8B5CF6]/20">
+                          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/20 to-travi-amber/20">
                             <img
                               src={dest.image}
                               alt={`Things to do in ${dest.name}, ${dest.country}`}
@@ -1171,7 +1171,7 @@ export default function Attractions() {
                 <Link href={localePath("/destinations")}>
                   <Button
                     variant="outline"
-                    className="border-[#6443F4] text-[#6443F4] hover:bg-[#6443F4]/10"
+                    className="border-primary text-primary hover:bg-primary/10"
                     data-testid="button-view-all-destinations-mobile"
                   >
                     {t("attractions.sections.allDestinations")}
@@ -1191,7 +1191,7 @@ export default function Attractions() {
                 viewport={{ once: true }}
                 className="text-center mb-12"
               >
-                <Badge className="mb-4 bg-[#6443F4]/10 text-[#6443F4] border-0">
+                <Badge className="mb-4 bg-primary/10 text-primary border-0">
                   <TrendingUp className="w-3.5 h-3.5 mr-1.5" />
                   {t("attractions.sections.whyBookBadge")}
                 </Badge>
@@ -1211,8 +1211,8 @@ export default function Attractions() {
                     className={cn(
                       "rounded-full",
                       activeType === type.id
-                        ? "bg-[#6443F4] hover:bg-[#5539d4] text-white"
-                        : "border-slate-300 dark:border-slate-600 hover:border-[#6443F4] hover:text-[#6443F4]"
+                        ? "bg-primary hover:bg-primary/90 text-white"
+                        : "border-slate-300 dark:border-slate-600 hover:border-primary hover:text-primary"
                     )}
                     onClick={() => {
                       setActiveType(type.id);
@@ -1237,13 +1237,13 @@ export default function Attractions() {
                     titleKey: "attractions.features.skipTheLine",
                     descKey: "attractions.features.skipTheLineDesc",
                     icon: Ticket,
-                    color: "bg-[#6443F4]",
+                    color: "bg-primary",
                   },
                   {
                     titleKey: "attractions.features.mobileTickets",
                     descKey: "attractions.features.mobileTicketsDesc",
                     icon: Sparkles,
-                    color: "bg-[#8B5CF6]",
+                    color: "bg-travi-amber",
                   },
                   {
                     titleKey: "attractions.features.freeCancellation",
@@ -1308,7 +1308,7 @@ export default function Attractions() {
                     <Card
                       className={cn(
                         "overflow-hidden transition-all duration-300 border-0 shadow-md",
-                        expandedFaq === i && "shadow-lg ring-2 ring-[#6443F4]/20"
+                        expandedFaq === i && "shadow-lg ring-2 ring-primary/20"
                       )}
                     >
                       <button
@@ -1321,7 +1321,7 @@ export default function Attractions() {
                         </h3>
                         <ChevronDown
                           className={cn(
-                            "w-5 h-5 text-[#6443F4] transition-transform flex-shrink-0",
+                            "w-5 h-5 text-primary transition-transform flex-shrink-0",
                             expandedFaq === i && "rotate-180"
                           )}
                         />
@@ -1360,7 +1360,7 @@ export default function Attractions() {
                   href={localePath("/destinations")}
                   className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm"
                 >
-                  <Globe className="w-5 h-5 text-[#6443F4]" />
+                  <Globe className="w-5 h-5 text-primary" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     {t("attractions.sections.allDestinations")}
                   </span>
@@ -1370,7 +1370,7 @@ export default function Attractions() {
                   href={localePath("/articles")}
                   className="flex items-center gap-2 p-3 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm"
                 >
-                  <TrendingUp className="w-5 h-5 text-[#6443F4]" />
+                  <TrendingUp className="w-5 h-5 text-primary" />
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     {t("attractions.exploreLinks.travelNews")}
                   </span>
@@ -1381,7 +1381,7 @@ export default function Attractions() {
           </section>
 
           {/* CTA Section */}
-          <section className="py-20 px-6 bg-gradient-to-br from-[#6443F4] via-[#8B5CF6] to-[#6443F4]">
+          <section className="py-20 px-6 bg-gradient-to-br from-primary via-travi-amber to-primary">
             <div className="max-w-4xl mx-auto text-center">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -1398,7 +1398,7 @@ export default function Attractions() {
                   <Link href={localePath("/attractions/list/paris")}>
                     <Button
                       size="lg"
-                      className="bg-white text-[#6443F4] hover:bg-white/90 font-semibold px-8"
+                      className="bg-white text-primary hover:bg-white/90 font-semibold px-8"
                       data-testid="button-paris-attractions"
                     >
                       <Ticket className="w-5 h-5 mr-2" />
