@@ -10,35 +10,80 @@ export const QUALITY_THRESHOLD = 85;
 // AI-typical phrases that should be avoided for human-like writing
 export const AI_PATTERNS = [
   // Classic AI overused words
-  "delve", "dive into", "vibrant", "bustling", "tapestry", "myriad",
-  "nestled", "situated", "stunning", "breathtaking", "embark on",
-  "embark upon", "journey through", "discover the magic",
-  
+  "delve",
+  "dive into",
+  "vibrant",
+  "bustling",
+  "tapestry",
+  "myriad",
+  "nestled",
+  "situated",
+  "stunning",
+  "breathtaking",
+  "embark on",
+  "embark upon",
+  "journey through",
+  "discover the magic",
+
   // AI sentence patterns
-  "whether you are", "whether you're", "from .* to .*,",
-  "offers something for everyone", "has something for everyone",
-  "is a must for", "is a must-see", "is a must-visit",
-  "perfect for", "ideal for those who",
-  
+  "whether you are",
+  "whether you're",
+  "from .* to .*,",
+  "offers something for everyone",
+  "has something for everyone",
+  "is a must for",
+  "is a must-see",
+  "is a must-visit",
+  "perfect for",
+  "ideal for those who",
+
   // AI transitional phrases
-  "in conclusion", "to sum up", "all in all", "in summary",
-  "it is worth noting", "it's worth mentioning", "importantly",
-  "furthermore", "moreover", "additionally", "consequently",
-  
+  "in conclusion",
+  "to sum up",
+  "all in all",
+  "in summary",
+  "it is worth noting",
+  "it's worth mentioning",
+  "importantly",
+  "furthermore",
+  "moreover",
+  "additionally",
+  "consequently",
+
   // AI enthusiasm markers
-  "truly", "simply", "absolutely", "definitely", "certainly",
-  "undoubtedly", "unquestionably", "remarkably", "incredibly",
-  "exceptionally", "extraordinarily",
-  
-  // AI vague descriptors  
-  "unique experience", "unforgettable experience", "memorable experience",
-  "world-class", "top-notch", "state-of-the-art", "cutting-edge",
-  "second to none", "like no other", "one of a kind",
-  
+  "truly",
+  "simply",
+  "absolutely",
+  "definitely",
+  "certainly",
+  "undoubtedly",
+  "unquestionably",
+  "remarkably",
+  "incredibly",
+  "exceptionally",
+  "extraordinarily",
+
+  // AI vague descriptors
+  "unique experience",
+  "unforgettable experience",
+  "memorable experience",
+  "world-class",
+  "top-notch",
+  "state-of-the-art",
+  "cutting-edge",
+  "second to none",
+  "like no other",
+  "one of a kind",
+
   // AI clichés
-  "hidden gem", "bucket list", "off the beaten path",
-  "a feast for the senses", "a treat for the eyes",
-  "step back in time", "transport you", "immerse yourself",
+  "hidden gem",
+  "bucket list",
+  "off the beaten path",
+  "a feast for the senses",
+  "a treat for the eyes",
+  "step back in time",
+  "transport you",
+  "immerse yourself",
 ] as const;
 
 // Required sections for attraction content per user spec
@@ -105,14 +150,17 @@ interface FactCheckDetails {
 
 function countWords(text: string): number {
   if (!text) return 0;
-  return text.trim().split(/\s+/).filter(w => w.length > 0).length;
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter(w => w.length > 0).length;
 }
 
 function findAIPatterns(text: string): string[] {
   if (!text) return [];
   const found: string[] = [];
   const lowerText = text.toLowerCase();
-  
+
   for (const pattern of AI_PATTERNS) {
     if (pattern.includes(".*")) {
       const regex = new RegExp(pattern, "i");
@@ -123,17 +171,17 @@ function findAIPatterns(text: string): string[] {
       found.push(pattern);
     }
   }
-  
+
   return found;
 }
 
 function findDuplicateParagraphs(text: string): number {
   if (!text) return 0;
-  
+
   const paragraphs = text.split(/\n\n+/).filter(p => p.trim().length > 50);
   const seen = new Set<string>();
   let duplicates = 0;
-  
+
   for (const p of paragraphs) {
     const normalized = p.trim().toLowerCase().replace(/\s+/g, " ");
     if (seen.has(normalized)) {
@@ -142,18 +190,18 @@ function findDuplicateParagraphs(text: string): number {
       seen.add(normalized);
     }
   }
-  
+
   return duplicates;
 }
 
 function calculateReadabilityScore(text: string): number {
   if (!text) return 0;
-  
+
   const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
   if (sentences.length === 0) return 0;
-  
+
   const avgSentenceLength = countWords(text) / sentences.length;
-  
+
   // Ideal sentence length is 15-20 words
   if (avgSentenceLength >= 15 && avgSentenceLength <= 20) {
     return 100;
@@ -168,7 +216,7 @@ function calculateReadabilityScore(text: string): number {
 
 export function validateSEO(content: Record<string, any>): SEODetails {
   const issues: string[] = [];
-  
+
   // Combine all text content
   const allText = [
     content.introduction || "",
@@ -178,11 +226,11 @@ export function validateSEO(content: Record<string, any>): SEODetails {
     content.visitorTips || "",
     content.howToGetThere || "",
   ].join(" ");
-  
+
   // Word count
   const wordCount = countWords(allText);
   let wordCountScore = 100;
-  
+
   if (wordCount < CONTENT_REQUIREMENTS.totalMinWords) {
     wordCountScore = Math.max(0, (wordCount / CONTENT_REQUIREMENTS.totalMinWords) * 100);
     issues.push(`Word count ${wordCount} is below minimum ${CONTENT_REQUIREMENTS.totalMinWords}`);
@@ -190,17 +238,24 @@ export function validateSEO(content: Record<string, any>): SEODetails {
     wordCountScore = 80;
     issues.push(`Word count ${wordCount} exceeds maximum ${CONTENT_REQUIREMENTS.totalMaxWords}`);
   }
-  
+
   // Section completeness
   let sectionsComplete = true;
   let sectionsMissing = 0;
-  
-  const sections = ["introduction", "whatToExpect", "bestTimeToVisit", "historicalContext", "visitorTips", "howToGetThere"];
+
+  const sections = [
+    "introduction",
+    "whatToExpect",
+    "bestTimeToVisit",
+    "historicalContext",
+    "visitorTips",
+    "howToGetThere",
+  ];
   for (const section of sections) {
     const sectionContent = content[section];
     const sectionWordCount = countWords(sectionContent);
     const req = REQUIRED_SECTIONS[section as keyof typeof REQUIRED_SECTIONS];
-    
+
     if ("minWords" in req) {
       if (sectionWordCount < req.minWords) {
         sectionsComplete = false;
@@ -209,26 +264,28 @@ export function validateSEO(content: Record<string, any>): SEODetails {
       }
     }
   }
-  
-  const sectionsScore = Math.max(0, 100 - (sectionsMissing * 15));
-  
+
+  const sectionsScore = Math.max(0, 100 - sectionsMissing * 15);
+
   // AI patterns
   const aiPatternsFound = findAIPatterns(allText);
-  const aiPatternScore = Math.max(0, 100 - (aiPatternsFound.length * 10));
-  
+  const aiPatternScore = Math.max(0, 100 - aiPatternsFound.length * 10);
+
   if (aiPatternsFound.length > 0) {
-    issues.push(`AI patterns found: ${aiPatternsFound.slice(0, 5).join(", ")}${aiPatternsFound.length > 5 ? "..." : ""}`);
+    issues.push(
+      `AI patterns found: ${aiPatternsFound.slice(0, 5).join(", ")}${aiPatternsFound.length > 5 ? "..." : ""}`
+    );
   }
-  
+
   // Readability
   const readabilityScore = calculateReadabilityScore(allText);
-  
+
   // Duplicate paragraphs
   const duplicateParagraphs = findDuplicateParagraphs(allText);
   if (duplicateParagraphs > 0) {
     issues.push(`Found ${duplicateParagraphs} duplicate paragraph(s)`);
   }
-  
+
   return {
     wordCount,
     wordCountScore,
@@ -242,62 +299,66 @@ export function validateSEO(content: Record<string, any>): SEODetails {
   };
 }
 
+function computeFaqBaseScore(faqCount: number, issues: string[]): number {
+  if (faqCount >= REQUIRED_SECTIONS.faqs.minCount) return 100;
+  if (faqCount >= 5) {
+    issues.push(`Only ${faqCount} FAQs (need ${REQUIRED_SECTIONS.faqs.minCount}+)`);
+    return 70;
+  }
+  if (faqCount > 0) {
+    issues.push(`Only ${faqCount} FAQs (need ${REQUIRED_SECTIONS.faqs.minCount}+)`);
+    return 40;
+  }
+  issues.push("No FAQs found");
+  return 0;
+}
+
+function computeFaqAnswerQuality(faqs: any[], faqCount: number): number {
+  let goodAnswers = 0;
+  for (const faq of faqs) {
+    const answerWords = countWords(faq.answer || "");
+    if (
+      answerWords >= REQUIRED_SECTIONS.faqs.answerMinWords &&
+      answerWords <= REQUIRED_SECTIONS.faqs.answerMaxWords
+    ) {
+      goodAnswers++;
+    }
+  }
+  return goodAnswers;
+}
+
 export function validateAEO(content: Record<string, any>): AEODetails {
   const issues: string[] = [];
-  
-  // FAQ validation
+
   const faqs = content.faqs || content.faqItems || [];
   const faqCount = Array.isArray(faqs) ? faqs.length : 0;
-  
-  let faqQualityScore = 0;
-  if (faqCount >= REQUIRED_SECTIONS.faqs.minCount) {
-    faqQualityScore = 100;
-  } else if (faqCount >= 5) {
-    faqQualityScore = 70;
-    issues.push(`Only ${faqCount} FAQs (need ${REQUIRED_SECTIONS.faqs.minCount}+)`);
-  } else if (faqCount > 0) {
-    faqQualityScore = 40;
-    issues.push(`Only ${faqCount} FAQs (need ${REQUIRED_SECTIONS.faqs.minCount}+)`);
-  } else {
-    issues.push("No FAQs found");
-  }
-  
-  // Check FAQ answer quality
+
+  let faqQualityScore = computeFaqBaseScore(faqCount, issues);
+
   if (faqCount > 0) {
-    let goodAnswers = 0;
-    for (const faq of faqs) {
-      const answerWords = countWords(faq.answer || "");
-      if (answerWords >= REQUIRED_SECTIONS.faqs.answerMinWords && 
-          answerWords <= REQUIRED_SECTIONS.faqs.answerMaxWords) {
-        goodAnswers++;
-      }
-    }
+    const goodAnswers = computeFaqAnswerQuality(faqs, faqCount);
     const answerQuality = (goodAnswers / faqCount) * 100;
     faqQualityScore = (faqQualityScore + answerQuality) / 2;
-    
+
     if (answerQuality < 80) {
       issues.push(`Only ${goodAnswers}/${faqCount} FAQ answers meet word count requirements`);
     }
   }
-  
-  // Answer capsule
+
   const answerCapsule = content.answerCapsule || content.answer_capsule || "";
   const answerCapsulePresent = countWords(answerCapsule) >= 30;
   const answerCapsuleScore = answerCapsulePresent ? 100 : 0;
-  
   if (!answerCapsulePresent) {
     issues.push("Missing or too short answer capsule for AEO");
   }
-  
-  // Schema validation (basic check)
+
   const schema = content.schemaPayload || content.schema || null;
   const schemaValid = schema !== null && typeof schema === "object";
   const schemaScore = schemaValid ? 100 : 0;
-  
   if (!schemaValid) {
     issues.push("Missing JSON-LD schema");
   }
-  
+
   return {
     faqCount,
     faqQualityScore,
@@ -315,7 +376,7 @@ export function validateFactCheck(
 ): FactCheckDetails {
   const issues: string[] = [];
   const unverifiedClaims: string[] = [];
-  
+
   // Extract ALL text content for verification
   const allText = [
     content.introduction || "",
@@ -326,14 +387,14 @@ export function validateFactCheck(
     content.howToGetThere || "",
     content.answerCapsule || "",
   ].join(" ");
-  
+
   // Base score: content exists and is substantial
   const hasSubstantialContent = countWords(allText) >= 800;
   let baseScore = hasSubstantialContent ? 80 : 60;
-  
+
   let bonusPoints = 0;
   let penaltyPoints = 0;
-  
+
   // Check location claims (optional bonus, not penalty)
   if (sourceData.cityName) {
     const cityLower = sourceData.cityName.toLowerCase();
@@ -341,16 +402,17 @@ export function validateFactCheck(
       bonusPoints += 10;
     }
   }
-  
+
   // Check attraction name (important - should be mentioned)
   if (sourceData.title) {
-    const titleParts = sourceData.title.split(/[:\-–]/)[0].trim().toLowerCase();
+    const titleParts = sourceData.title
+      .split(/[:\-–]/)[0]
+      .trim()
+      .toLowerCase();
     // Also check for partial matches (e.g., "IMAX" for "Grand Canyon IMAX Theater")
     const keywords = titleParts.split(/\s+/).filter((w: string) => w.length > 4);
-    const anyKeywordFound = keywords.some((kw: string) => 
-      allText.toLowerCase().includes(kw)
-    );
-    
+    const anyKeywordFound = keywords.some((kw: string) => allText.toLowerCase().includes(kw));
+
     if (allText.toLowerCase().includes(titleParts) || anyKeywordFound) {
       bonusPoints += 10;
     } else {
@@ -358,19 +420,19 @@ export function validateFactCheck(
       unverifiedClaims.push("Attraction name keywords not found");
     }
   }
-  
+
   // Bonus for mentioning practical details
   if (allText.toLowerCase().includes("hour") || allText.toLowerCase().includes("minute")) {
     bonusPoints += 5;
   }
-  
+
   // Calculate final score
   let verificationScore = Math.min(100, Math.max(0, baseScore + bonusPoints - penaltyPoints));
-  
+
   if (unverifiedClaims.length > 0) {
     issues.push(`Minor issues: ${unverifiedClaims.join(", ")}`);
   }
-  
+
   return {
     claimsVerified: bonusPoints > 0 ? 2 : 1,
     claimsTotal: 2,
@@ -387,28 +449,29 @@ export function validateContent(
   const seo = validateSEO(content);
   const aeo = validateAEO(content);
   const factCheck = validateFactCheck(content, sourceData);
-  
+
   // Calculate weighted scores
   const seoScore = Math.round(
-    (seo.wordCountScore * 0.3) +
-    (seo.sectionsScore * 0.3) +
-    (seo.aiPatternScore * 0.25) +
-    (seo.readabilityScore * 0.15) -
-    (seo.duplicateParagraphs * 5)
+    seo.wordCountScore * 0.3 +
+      seo.sectionsScore * 0.3 +
+      seo.aiPatternScore * 0.25 +
+      seo.readabilityScore * 0.15 -
+      seo.duplicateParagraphs * 5
   );
-  
+
   const aeoScore = Math.round(
-    (aeo.faqQualityScore * 0.5) +
-    (aeo.answerCapsuleScore * 0.3) +
-    (aeo.schemaScore * 0.2)
+    aeo.faqQualityScore * 0.5 + aeo.answerCapsuleScore * 0.3 + aeo.schemaScore * 0.2
   );
-  
+
   const factCheckScore = Math.round(factCheck.verificationScore);
-  
+
   // Overall score is minimum of all three (must pass ALL)
   const overallScore = Math.min(seoScore, aeoScore, factCheckScore);
-  const passed = seoScore >= QUALITY_THRESHOLD && aeoScore >= QUALITY_THRESHOLD && factCheckScore >= QUALITY_THRESHOLD;
-  
+  const passed =
+    seoScore >= QUALITY_THRESHOLD &&
+    aeoScore >= QUALITY_THRESHOLD &&
+    factCheckScore >= QUALITY_THRESHOLD;
+
   return {
     seoScore,
     aeoScore,
@@ -425,7 +488,7 @@ export function validateContent(
 
 export function getQualitySummary(score: QualityScore): string {
   const status = score.passed ? "✅ PASSED" : "❌ FAILED";
-  
+
   return `
 Quality Assessment ${status}
 ═══════════════════════════════════
@@ -436,8 +499,10 @@ Fact-Check Score: ${score.factCheckScore}/100 ${score.factCheckScore >= QUALITY_
 Overall:          ${score.overallScore}/100
 
 Issues:
-${[...score.details.seo.issues, ...score.details.aeo.issues, ...score.details.factCheck.issues]
-  .map(i => `  • ${i}`)
-  .join("\n") || "  None"}
+${
+  [...score.details.seo.issues, ...score.details.aeo.issues, ...score.details.factCheck.issues]
+    .map(i => `  • ${i}`)
+    .join("\n") || "  None"
+}
 `.trim();
 }

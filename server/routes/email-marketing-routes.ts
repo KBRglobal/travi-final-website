@@ -693,38 +693,46 @@ export function registerEmailMarketingRoutes(app: Express): void {
         });
       };
 
+      // Helper to personalize and send email to a single subscriber
+      const sendToSubscriber = async (subscriber: {
+        id: string;
+        email: string;
+        firstName?: string | null;
+      }) => {
+        let htmlContent = campaign.htmlContent || "";
+
+        // Add unsubscribe link if not present
+        const unsubscribeUrl = `${baseUrl}/api/newsletter/unsubscribe?token=${subscriber.id}`;
+        if (!htmlContent.includes("/api/newsletter/unsubscribe")) {
+          htmlContent = htmlContent.replace(
+            "</body>",
+            `<p style="text-align:center;font-size:12px;color:#999;margin-top:30px;"><a href="${unsubscribeUrl}" style="color:#999;">Unsubscribe</a></p></body>`
+          );
+        }
+
+        // Wrap links with click tracking
+        htmlContent = wrapLinksWithTracking(htmlContent, id, subscriber.id);
+
+        // Inject tracking pixel
+        htmlContent = injectTrackingPixel(htmlContent, id, subscriber.id);
+
+        // Replace personalization tokens
+        const firstName = subscriber.firstName || "there";
+        htmlContent = htmlContent.replace(/\{\{firstName\}\}/g, firstName);
+        htmlContent = htmlContent.replace(/\{\{email\}\}/g, subscriber.email);
+
+        await resend.emails.send({
+          from: "Dubai Travel <noreply@dubaitravel.com>",
+          to: subscriber.email,
+          subject: campaign.subject,
+          html: htmlContent,
+        });
+      };
+
       // Send to each subscriber
       for (const subscriber of subscribers) {
         try {
-          // Personalize content
-          let htmlContent = campaign.htmlContent || "";
-
-          // Add unsubscribe link if not present
-          const unsubscribeUrl = `${baseUrl}/api/newsletter/unsubscribe?token=${subscriber.id}`;
-          if (!htmlContent.includes("/api/newsletter/unsubscribe")) {
-            htmlContent = htmlContent.replace(
-              "</body>",
-              `<p style="text-align:center;font-size:12px;color:#999;margin-top:30px;"><a href="${unsubscribeUrl}" style="color:#999;">Unsubscribe</a></p></body>`
-            );
-          }
-
-          // Wrap links with click tracking
-          htmlContent = wrapLinksWithTracking(htmlContent, id, subscriber.id);
-
-          // Inject tracking pixel
-          htmlContent = injectTrackingPixel(htmlContent, id, subscriber.id);
-
-          // Replace personalization tokens
-          const firstName = subscriber.firstName || "there";
-          htmlContent = htmlContent.replace(/\{\{firstName\}\}/g, firstName);
-          htmlContent = htmlContent.replace(/\{\{email\}\}/g, subscriber.email);
-
-          await resend.emails.send({
-            from: "Dubai Travel <noreply@dubaitravel.com>",
-            to: subscriber.email,
-            subject: campaign.subject,
-            html: htmlContent,
-          });
+          await sendToSubscriber(subscriber);
 
           // Record sent event
           await storage.createCampaignEvent({

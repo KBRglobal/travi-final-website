@@ -70,100 +70,83 @@ export function getJobState(): JobState {
  * Process a coverage evaluation job.
  * Retry-safe: can be called multiple times without side effects.
  */
+/** Process a single content coverage evaluation */
+async function processSingleCoverage(
+  contentId: string,
+  startTime: number
+): Promise<CoverageJobResult> {
+  const evalResult = await evaluateContentCoverage(contentId);
+  if (evalResult.success && evalResult.coverage) {
+    cacheCoverage(evalResult.coverage);
+  }
+  return {
+    success: evalResult.success,
+    type: 'single',
+    contentId,
+    evaluated: evalResult.success ? 1 : 0,
+    failed: evalResult.success ? 0 : 1,
+    error: evalResult.error,
+    durationMs: Date.now() - startTime,
+  };
+}
+
+/** Process a batch coverage evaluation */
+async function processBatchCoverage(
+  batchSize: number,
+  cursor: string | undefined,
+  startTime: number
+): Promise<CoverageJobResult> {
+  const evalResult = await evaluateAllContentCoverage(batchSize, cursor);
+  for (const res of evalResult.results) {
+    if (res.success && res.coverage) {
+      cacheCoverage(res.coverage);
+    }
+  }
+  return {
+    success: evalResult.failed === 0,
+    type: 'batch',
+    evaluated: evalResult.evaluated,
+    failed: evalResult.failed,
+    nextCursor: evalResult.cursor,
+    durationMs: Date.now() - startTime,
+  };
+}
+
+/** Record job state after completion */
+function recordJobCompletion(result: CoverageJobResult): void {
+  jobState.lastRunAt = new Date();
+  jobState.lastResult = result;
+  jobState.runCount++;
+}
+
 export async function processCoverageJob(
   payload: CoverageJobPayload
 ): Promise<CoverageJobResult> {
   if (!isIntelligenceCoverageEnabled()) {
-    return {
-      success: false,
-      type: payload.type,
-      error: 'Intelligence coverage is disabled',
-      durationMs: 0,
-    };
+    return { success: false, type: payload.type, error: 'Intelligence coverage is disabled', durationMs: 0 };
   }
 
   if (jobState.isRunning) {
     logger.warn('Coverage job already running, skipping');
-    return {
-      success: false,
-      type: payload.type,
-      error: 'Job already running',
-      durationMs: 0,
-    };
+    return { success: false, type: payload.type, error: 'Job already running', durationMs: 0 };
   }
 
   jobState.isRunning = true;
   const startTime = Date.now();
 
   try {
-    let result: CoverageJobResult;
+    const result = payload.type === 'single' && payload.contentId
+      ? await processSingleCoverage(payload.contentId, startTime)
+      : await processBatchCoverage(payload.batchSize || 100, payload.cursor, startTime);
 
-    if (payload.type === 'single' && payload.contentId) {
-      // Single content evaluation
-      const evalResult = await evaluateContentCoverage(payload.contentId);
-
-      if (evalResult.success && evalResult.coverage) {
-        cacheCoverage(evalResult.coverage);
-      }
-
-      result = {
-        success: evalResult.success,
-        type: 'single',
-        contentId: payload.contentId,
-        evaluated: evalResult.success ? 1 : 0,
-        failed: evalResult.success ? 0 : 1,
-        error: evalResult.error,
-        durationMs: Date.now() - startTime,
-      };
-    } else {
-      // Batch evaluation
-      const batchSize = payload.batchSize || 100;
-      const evalResult = await evaluateAllContentCoverage(batchSize, payload.cursor);
-
-      // Cache successful evaluations
-      for (const res of evalResult.results) {
-        if (res.success && res.coverage) {
-          cacheCoverage(res.coverage);
-        }
-      }
-
-      result = {
-        success: evalResult.failed === 0,
-        type: 'batch',
-        evaluated: evalResult.evaluated,
-        failed: evalResult.failed,
-        nextCursor: evalResult.cursor,
-        durationMs: Date.now() - startTime,
-      };
-    }
-
-    jobState.lastRunAt = new Date();
-    jobState.lastResult = result;
-    jobState.runCount++;
-
-    logger.info('Coverage job completed', {
-      type: result.type,
-      evaluated: result.evaluated,
-      failed: result.failed,
-      durationMs: result.durationMs,
-    });
-
+    recordJobCompletion(result);
+    logger.info('Coverage job completed', { type: result.type, evaluated: result.evaluated, failed: result.failed, durationMs: result.durationMs });
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Coverage job failed', { error: errorMessage });
-
-    const result: CoverageJobResult = {
-      success: false,
-      type: payload.type,
-      error: errorMessage,
-      durationMs: Date.now() - startTime,
-    };
-
-    jobState.lastRunAt = new Date();
-    jobState.lastResult = result;
-    jobState.runCount++;
-
+    const result: CoverageJobResult = { success: false, type: payload.type, error: errorMessage, durationMs: Date.now() - startTime };
+    recordJobCompletion(result);
     return result;
   } finally {
     jobState.isRunning = false;

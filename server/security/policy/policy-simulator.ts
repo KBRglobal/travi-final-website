@@ -269,14 +269,12 @@ function assessChangeRisk(change: AccessChange): "low" | "medium" | "high" | "cr
 }
 
 /**
- * Simulate policy changes
+ * Apply policy changes to a copy of the current policy set
  */
-export function simulatePolicyChanges(changes: PolicyChange[]): SimulationResult {
-  const currentPolicies = policyEngine.getAllPolicies();
-  const scenarios = generateTestScenarios();
-  const warnings: string[] = [];
-
-  // Create proposed policy set
+function applyChangesToPolicies(
+  currentPolicies: PolicyRule[],
+  changes: PolicyChange[]
+): PolicyRule[] {
   const proposedPolicies = [...currentPolicies];
 
   for (const change of changes) {
@@ -284,89 +282,82 @@ export function simulatePolicyChanges(changes: PolicyChange[]): SimulationResult
       proposedPolicies.push(change.after);
     } else if (change.type === "update" && change.after) {
       const index = proposedPolicies.findIndex(p => p.id === change.policyId);
-      if (index >= 0) {
-        proposedPolicies[index] = change.after;
-      }
+      if (index >= 0) proposedPolicies[index] = change.after;
     } else if (change.type === "delete") {
       const index = proposedPolicies.findIndex(p => p.id === change.policyId);
-      if (index >= 0) {
-        proposedPolicies.splice(index, 1);
-      }
+      if (index >= 0) proposedPolicies.splice(index, 1);
     }
   }
 
-  // Run lint on both states
-  const lintBefore = lintPolicies();
+  return proposedPolicies;
+}
 
-  // Temporarily swap policies for lint
-  const originalGetAll = policyEngine.getAllPolicies;
-  (policyEngine as any).getAllPolicies = () => proposedPolicies;
-  const lintAfter = lintPolicies();
-  (policyEngine as any).getAllPolicies = originalGetAll;
+/**
+ * Determine the change type between before and after evaluation
+ */
+function determineChangeType(
+  before: { allowed: boolean; effect: PolicyEffect | "no_match" },
+  after: { allowed: boolean; effect: PolicyEffect | "no_match" }
+): AccessChange["changeType"] {
+  if (!before.allowed && after.allowed) return "gained_access";
+  if (before.allowed && !after.allowed) return "lost_access";
+  if (before.effect !== after.effect) return "effect_changed";
+  return "no_change";
+}
 
-  // Compare access for all scenarios
+/**
+ * Compare access across all scenarios between current and proposed policies
+ */
+function compareAccessChanges(
+  scenarios: SimulationScenario[],
+  currentPolicies: PolicyRule[],
+  proposedPolicies: PolicyRule[]
+): AccessChange[] {
   const accessChanges: AccessChange[] = [];
 
   for (const scenario of scenarios) {
     const before = evaluateScenario(scenario, currentPolicies);
     const after = evaluateScenario(scenario, proposedPolicies);
+    const changeType = determineChangeType(before, after);
 
-    let changeType: AccessChange["changeType"] = "no_change";
+    if (changeType === "no_change") continue;
 
-    if (!before.allowed && after.allowed) {
-      changeType = "gained_access";
-    } else if (before.allowed && !after.allowed) {
-      changeType = "lost_access";
-    } else if (before.effect !== after.effect) {
-      changeType = "effect_changed";
-    }
-
-    if (changeType !== "no_change") {
-      const accessChange: AccessChange = {
-        scenario,
-        before,
-        after,
-        changeType,
-        riskLevel: "low", // Will be set below
-      };
-      accessChange.riskLevel = assessChangeRisk(accessChange);
-      accessChanges.push(accessChange);
-    }
+    const accessChange: AccessChange = { scenario, before, after, changeType, riskLevel: "low" };
+    accessChange.riskLevel = assessChangeRisk(accessChange);
+    accessChanges.push(accessChange);
   }
 
-  // Calculate risk assessment
-  const accessGained = accessChanges.filter(c => c.changeType === "gained_access").length;
-  const accessLost = accessChanges.filter(c => c.changeType === "lost_access").length;
-  const criticalChanges = accessChanges.filter(c => c.riskLevel === "critical").length;
-  const highRiskChanges = accessChanges.filter(c => c.riskLevel === "high").length;
+  return accessChanges;
+}
 
-  // Compare lint issues
-  const beforeIssueIds = new Set(lintBefore.issues.map(i => i.id));
-  const afterIssueIds = new Set(lintAfter.issues.map(i => i.id));
+/**
+ * Generate simulation warnings from access changes and lint comparison
+ */
+function generateSimulationWarnings(
+  accessChanges: AccessChange[],
+  counts: {
+    criticalChanges: number;
+    highRiskChanges: number;
+    accessLost: number;
+    newIssues: number;
+  }
+): string[] {
+  const warnings: string[] = [];
 
-  const newIssues = lintAfter.issues.filter(i => !beforeIssueIds.has(i.id)).length;
-  const resolvedIssues = lintBefore.issues.filter(i => !afterIssueIds.has(i.id)).length;
-
-  // Generate warnings
-  if (criticalChanges > 0) {
+  if (counts.criticalChanges > 0)
     warnings.push(
-      `${criticalChanges} critical access changes detected - sensitive operations affected`
+      `${counts.criticalChanges} critical access changes detected - sensitive operations affected`
     );
-  }
+  if (counts.highRiskChanges > 5)
+    warnings.push(
+      `${counts.highRiskChanges} high-risk changes - manual review strongly recommended`
+    );
+  if (counts.newIssues > 0) warnings.push(`${counts.newIssues} new policy issues introduced`);
+  if (counts.accessLost > 10)
+    warnings.push(
+      `${counts.accessLost} access permissions removed - verify this doesn't break workflows`
+    );
 
-  if (highRiskChanges > 5) {
-    warnings.push(`${highRiskChanges} high-risk changes - manual review strongly recommended`);
-  }
-
-  if (newIssues > 0) {
-    warnings.push(`${newIssues} new policy issues introduced`);
-  }
-
-  if (accessLost > 10) {
-    warnings.push(`${accessLost} access permissions removed - verify this doesn't break workflows`);
-  }
-
-  // Super admin access change is always critical
   const superAdminChanges = accessChanges.filter(
     c =>
       c.scenario.role === "super_admin" &&
@@ -378,14 +369,58 @@ export function simulatePolicyChanges(changes: PolicyChange[]): SimulationResult
     );
   }
 
-  // Determine recommendation
-  let recommendation: SimulationResult["recommendation"] = "safe_to_deploy";
+  return warnings;
+}
 
-  if (criticalChanges > 0 || lintAfter.summary.errors > lintBefore.summary.errors) {
-    recommendation = "do_not_deploy";
-  } else if (highRiskChanges > 3 || newIssues > 0 || accessGained > 20) {
-    recommendation = "review_required";
-  }
+/**
+ * Determine deployment recommendation
+ */
+function determineRecommendation(
+  counts: {
+    criticalChanges: number;
+    highRiskChanges: number;
+    accessGained: number;
+    newIssues: number;
+  },
+  lintBefore: LintResult,
+  lintAfter: LintResult
+): SimulationResult["recommendation"] {
+  if (counts.criticalChanges > 0 || lintAfter.summary.errors > lintBefore.summary.errors)
+    return "do_not_deploy";
+  if (counts.highRiskChanges > 3 || counts.newIssues > 0 || counts.accessGained > 20)
+    return "review_required";
+  return "safe_to_deploy";
+}
+
+/**
+ * Simulate policy changes
+ */
+export function simulatePolicyChanges(changes: PolicyChange[]): SimulationResult {
+  const currentPolicies = policyEngine.getAllPolicies();
+  const proposedPolicies = applyChangesToPolicies(currentPolicies, changes);
+  const scenarios = generateTestScenarios();
+
+  const lintBefore = lintPolicies();
+  const originalGetAll = policyEngine.getAllPolicies;
+  (policyEngine as any).getAllPolicies = () => proposedPolicies;
+  const lintAfter = lintPolicies();
+  (policyEngine as any).getAllPolicies = originalGetAll;
+
+  const accessChanges = compareAccessChanges(scenarios, currentPolicies, proposedPolicies);
+
+  const accessGained = accessChanges.filter(c => c.changeType === "gained_access").length;
+  const accessLost = accessChanges.filter(c => c.changeType === "lost_access").length;
+  const criticalChanges = accessChanges.filter(c => c.riskLevel === "critical").length;
+  const highRiskChanges = accessChanges.filter(c => c.riskLevel === "high").length;
+
+  const beforeIssueIds = new Set(lintBefore.issues.map(i => i.id));
+  const afterIssueIds = new Set(lintAfter.issues.map(i => i.id));
+  const newIssues = lintAfter.issues.filter(i => !beforeIssueIds.has(i.id)).length;
+  const resolvedIssues = lintBefore.issues.filter(i => !afterIssueIds.has(i.id)).length;
+
+  const counts = { criticalChanges, highRiskChanges, accessGained, accessLost, newIssues };
+  const warnings = generateSimulationWarnings(accessChanges, counts);
+  const recommendation = determineRecommendation(counts, lintBefore, lintAfter);
 
   return {
     timestamp: new Date(),

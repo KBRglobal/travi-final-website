@@ -147,14 +147,11 @@ export function registerAuthRoutes(app: Express): void {
         // This prevents timing attacks and reduces database load during lockout
         const lockoutStatus = checkDualLockout(username.toLowerCase(), ip);
         if (lockoutStatus.locked) {
-          let lockTypeMsg: string;
-          if (lockoutStatus.lockType === "both") {
-            lockTypeMsg = "IP and account";
-          } else if (lockoutStatus.lockType === "ip") {
-            lockTypeMsg = "IP address";
-          } else {
-            lockTypeMsg = "account";
-          }
+          const lockTypeMsgMap: Record<string, string> = {
+            both: "IP and account",
+            ip: "IP address",
+          };
+          const lockTypeMsg = lockTypeMsgMap[lockoutStatus.lockType || ""] || "account";
           logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
             success: false,
             resource: "auth",
@@ -303,25 +300,22 @@ export function registerAuthRoutes(app: Express): void {
         };
 
         // Check for admin from environment first
-        if (ADMIN_PASSWORD_HASH && username === ADMIN_USERNAME) {
-          const isAdminPassword = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
-          if (isAdminPassword) {
-            // Find or create admin user
-            let adminUser = await storage.getUserByUsername(username);
-            if (!adminUser) {
-              adminUser = await storage.createUserWithPassword({
-                username: ADMIN_USERNAME,
-                passwordHash: ADMIN_PASSWORD_HASH,
-                firstName: "Admin",
-                lastName: "User",
-                role: "admin",
-                isActive: true,
-              });
-            }
-
-            await completeLogin(adminUser);
-            return;
+        const isEnvAdmin = ADMIN_PASSWORD_HASH && username === ADMIN_USERNAME;
+        const isAdminPassword = isEnvAdmin && (await bcrypt.compare(password, ADMIN_PASSWORD_HASH));
+        if (isAdminPassword) {
+          let adminUser = await storage.getUserByUsername(username);
+          if (!adminUser) {
+            adminUser = await storage.createUserWithPassword({
+              username: ADMIN_USERNAME,
+              passwordHash: ADMIN_PASSWORD_HASH,
+              firstName: "Admin",
+              lastName: "User",
+              role: "admin",
+              isActive: true,
+            });
           }
+          await completeLogin(adminUser);
+          return;
         }
 
         // Check database for user

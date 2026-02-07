@@ -184,42 +184,64 @@ const SECTION_TYPE_MAPPINGS: Record<string, string[]> = {
 
 function findSectionByType(sections: GuideSection[], sectionType: string): GuideSection | null {
   const mappings = SECTION_TYPE_MAPPINGS[sectionType] || [];
+  const lowerMappings = mappings.map(m => m.toLowerCase());
 
-  // First pass: Look for EXACT matches at level 2 (main sections)
-  for (const section of sections) {
-    if (section.level !== 2) continue;
-    const headingLower = section.heading.toLowerCase().trim();
-    for (const mapping of mappings) {
-      if (headingLower === mapping.toLowerCase()) {
-        return section;
-      }
+  // Helper: find first section matching a predicate
+  const findMatch = (
+    filter: (section: GuideSection) => boolean,
+    matcher: (heading: string) => boolean
+  ): GuideSection | null => {
+    for (const section of sections) {
+      if (!filter(section)) continue;
+      if (matcher(section.heading.toLowerCase().trim())) return section;
     }
-  }
+    return null;
+  };
 
-  // Second pass: Look for exact matches at any level
-  for (const section of sections) {
-    const headingLower = section.heading.toLowerCase().trim();
-    for (const mapping of mappings) {
-      if (headingLower === mapping.toLowerCase()) {
-        return section;
-      }
-    }
-  }
+  const isExactMatch = (heading: string) => lowerMappings.includes(heading);
+  const isStartsWithMatch = (heading: string) => lowerMappings.some(m => heading.startsWith(m));
+  const isLevel2 = (s: GuideSection) => s.level === 2;
+  const isAnyLevel = () => true;
 
-  // Third pass: Look for headings that START WITH the mapping (not contains)
-  // This handles cases like "See & Do" or "Eat and Drink"
-  for (const section of sections) {
-    if (section.level !== 2) continue;
-    const headingLower = section.heading.toLowerCase().trim();
-    for (const mapping of mappings) {
-      if (headingLower.startsWith(mapping.toLowerCase())) {
-        return section;
-      }
-    }
-  }
-
-  return null;
+  // First pass: EXACT matches at level 2
+  // Second pass: exact matches at any level
+  // Third pass: startsWith at level 2
+  return (
+    findMatch(isLevel2, isExactMatch) ||
+    findMatch(isAnyLevel, isExactMatch) ||
+    findMatch(isLevel2, isStartsWithMatch)
+  );
 }
+
+function extractUnderstandInfo(content: string, essentials: Record<string, any>): void {
+  const visaMatch = /visas?\s*(?:are\s*)?(?:required|not required|on arrival|free|exempt)/i.exec(
+    content
+  );
+  if (visaMatch) essentials.visa = visaMatch[0];
+
+  const currencyMatch = /(?:currency|money|währung)[\s:]*([A-Z]{3}|\w+\s+\w+)/i.exec(content);
+  if (currencyMatch) essentials.currency = currencyMatch[1];
+
+  const languageMatch = /(?:official language|spoken|language)[\s:]*(\w+)/i.exec(content);
+  if (languageMatch) essentials.language = languageMatch[1];
+}
+
+function extractCopeInfo(content: string, essentials: Record<string, any>): void {
+  const electricityMatch = /(?:electricity|voltage|plug|socket)[\s:]*(\d+\s*V|\w+\s+type)/i.exec(
+    content
+  );
+  if (electricityMatch) essentials.electricity = electricityMatch[1];
+
+  const timezoneMatch = /(?:timezone|time zone|UTC|GMT)[\s:]*([+-]?\d+)/i.exec(content);
+  if (timezoneMatch) essentials.timezone = `UTC${timezoneMatch[1]}`;
+}
+
+const headingMatchers: Record<string, (heading: string) => boolean> = {
+  understand: h => h.includes("understand") || h.includes("verstehen") || h.includes("background"),
+  safety: h => h.includes("stay safe") || h.includes("sicherheit") || h.includes("security"),
+  health: h => h.includes("stay healthy") || h.includes("gesundheit") || h.includes("health"),
+  cope: h => h.includes("cope") || h.includes("connect"),
+};
 
 function extractEssentialsFromSections(sections: GuideSection[]): Record<string, any> {
   const essentials: Record<string, any> = {
@@ -237,55 +259,17 @@ function extractEssentialsFromSections(sections: GuideSection[]): Record<string,
     const heading = section.heading.toLowerCase();
     const content = section.content;
 
-    if (
-      heading.includes("understand") ||
-      heading.includes("verstehen") ||
-      heading.includes("background")
-    ) {
-      const visaMatch =
-        /visas?\s*(?:are\s*)?(?:required|not required|on arrival|free|exempt)/i.exec(content);
-      if (visaMatch) {
-        essentials.visa = visaMatch[0];
-      }
-
-      const currencyMatch = /(?:currency|money|währung)[\s:]*([A-Z]{3}|\w+\s+\w+)/i.exec(content);
-      if (currencyMatch) {
-        essentials.currency = currencyMatch[1];
-      }
-
-      const languageMatch = /(?:official language|spoken|language)[\s:]*(\w+)/i.exec(content);
-      if (languageMatch) {
-        essentials.language = languageMatch[1];
-      }
+    if (headingMatchers.understand(heading)) {
+      extractUnderstandInfo(content, essentials);
     }
-
-    if (
-      heading.includes("stay safe") ||
-      heading.includes("sicherheit") ||
-      heading.includes("security")
-    ) {
+    if (headingMatchers.safety(heading)) {
       essentials.safety = content.substring(0, 500);
     }
-
-    if (
-      heading.includes("stay healthy") ||
-      heading.includes("gesundheit") ||
-      heading.includes("health")
-    ) {
+    if (headingMatchers.health(heading)) {
       essentials.health = content.substring(0, 500);
     }
-
-    if (heading.includes("cope") || heading.includes("connect")) {
-      const electricityMatch =
-        /(?:electricity|voltage|plug|socket)[\s:]*(\d+\s*V|\w+\s+type)/i.exec(content);
-      if (electricityMatch) {
-        essentials.electricity = electricityMatch[1];
-      }
-
-      const timezoneMatch = /(?:timezone|time zone|UTC|GMT)[\s:]*([+-]?\d+)/i.exec(content);
-      if (timezoneMatch) {
-        essentials.timezone = `UTC${timezoneMatch[1]}`;
-      }
+    if (headingMatchers.cope(heading)) {
+      extractCopeInfo(content, essentials);
     }
   }
 

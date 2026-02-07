@@ -122,81 +122,70 @@ class SecurityDashboardService {
   }
 
   /**
-   * Calculate overall security posture
+   * Get threat level score deduction
    */
-  async calculatePosture(): Promise<SecurityPosture> {
-    let score = 100;
+  private getThreatDeduction(level: string): number {
+    const deductions: Record<string, number> = { black: 40, red: 30, orange: 20, yellow: 10 };
+    return deductions[level] ?? 0;
+  }
 
-    // Check threat level
-    const threat = await assessThreatLevel();
-    if (threat.level === "black") {
-      score -= 40;
-    } else if (threat.level === "red") {
-      score -= 30;
-    } else if (threat.level === "orange") {
-      score -= 20;
-    } else if (threat.level === "yellow") {
-      score -= 10;
-    }
-
-    // Check policy health
-    const policyLint = lintPolicies();
-    if (policyLint.summary.errors > 0) {
-      const policyDeduction = Math.min(20, policyLint.summary.errors * 5);
-      score -= policyDeduction;
-    }
-
-    // Check for drift
+  /**
+   * Get drift score deduction
+   */
+  private async getDriftDeduction(): Promise<number> {
     try {
       const drift = await scanForDrift();
-      if (drift.summary.criticalDrifts > 0) {
-        score -= 15;
-      } else if (drift.summary.highDrifts > 0) {
-        score -= 10;
-      }
+      if (drift.summary.criticalDrifts > 0) return 15;
+      if (drift.summary.highDrifts > 0) return 10;
     } catch {
       // No baseline
     }
+    return 0;
+  }
 
-    // Check evidence chain
+  /**
+   * Determine grade from score
+   */
+  private scoreToGrade(score: number): SecurityPosture["grade"] {
+    if (score >= 90) return "A";
+    if (score >= 80) return "B";
+    if (score >= 70) return "C";
+    if (score >= 60) return "D";
+    return "F";
+  }
+
+  /**
+   * Determine status from threat level and score
+   */
+  private determineStatus(threatLevel: string, score: number): SecurityPosture["status"] {
+    if (threatLevel === "black" || threatLevel === "red") return "under_attack";
+    if (score < 60) return "critical";
+    if (score < 80) return "warning";
+    return "healthy";
+  }
+
+  /**
+   * Calculate overall security posture
+   */
+  async calculatePosture(): Promise<SecurityPosture> {
+    const threat = await assessThreatLevel();
+    const policyLint = lintPolicies();
     const chain = verifyEvidenceChain();
-    if (!chain.valid) {
-      score -= 10;
-    }
-
-    // Check mode
     const mode = getSecurityMode();
-    if (mode === "monitor" && process.env.NODE_ENV === "production") {
-      score -= 15;
-    }
 
-    // Ensure score is within bounds
+    let score = 100;
+    score -= this.getThreatDeduction(threat.level);
+    score -= Math.min(20, policyLint.summary.errors * 5);
+    score -= await this.getDriftDeduction();
+    if (!chain.valid) score -= 10;
+    if (mode === "monitor" && process.env.NODE_ENV === "production") score -= 15;
+
     score = Math.max(0, Math.min(100, score));
-
-    // Determine grade
-    let grade: SecurityPosture["grade"];
-    if (score >= 90) grade = "A";
-    else if (score >= 80) grade = "B";
-    else if (score >= 70) grade = "C";
-    else if (score >= 60) grade = "D";
-    else grade = "F";
-
-    // Determine status
-    let status: SecurityPosture["status"];
-    if (threat.level === "black" || threat.level === "red") {
-      status = "under_attack";
-    } else if (score < 60) {
-      status = "critical";
-    } else if (score < 80) {
-      status = "warning";
-    } else {
-      status = "healthy";
-    }
 
     const posture: SecurityPosture = {
       overallScore: score,
-      grade,
-      status,
+      grade: this.scoreToGrade(score),
+      status: this.determineStatus(threat.level, score),
       lastUpdated: new Date(),
     };
 

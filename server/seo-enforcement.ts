@@ -114,70 +114,81 @@ export const FALLBACK_INTERNAL_LINKS = [
 ];
 
 /**
- * Fix title to meet SEO requirements (50-60 characters)
+ * Replace clichés in title and clean punctuation
  */
-export function fixTitle(title: string): string {
-  if (!title) return title;
-
+function replaceTitleCliches(title: string): string {
   let fixed = title;
-
-  // Replace clichés with professional alternatives
   for (const [cliche, replacement] of Object.entries(TITLE_CLICHE_REPLACEMENTS)) {
     const regex = new RegExp(cliche, "gi");
     if (regex.test(fixed)) {
       fixed = fixed.replace(regex, replacement).replace(/\s+/g, " ").trim();
     }
   }
-
-  // Clean up leftover punctuation artifacts
-  fixed = fixed
+  return fixed
     .replace(/:\s*$/g, "")
     .replace(/\|\s*$/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+/**
+ * Try to split title at separator to fit within length limits
+ */
+function trySplitAtSeparator(title: string): string | null {
+  const separators = [" | ", " - ", ": "];
+  for (const sep of separators) {
+    if (!title.includes(sep)) continue;
+    const firstPart = title.split(sep)[0].trim();
+    if (
+      firstPart.length >= SEO_REQUIREMENTS.titleMinLength &&
+      firstPart.length <= SEO_REQUIREMENTS.titleMaxLength
+    ) {
+      return firstPart;
+    }
+  }
+  return null;
+}
+
+/**
+ * Truncate text at word boundary within min/max range
+ */
+function truncateAtWordBoundary(text: string, maxLen: number, minLen: number): string {
+  const maxCut = maxLen - 3;
+  let cutPoint = maxCut;
+  while (cutPoint > minLen && text[cutPoint] !== " ") {
+    cutPoint--;
+  }
+  return cutPoint >= minLen ? text.substring(0, cutPoint).trim() : text.substring(0, maxCut).trim();
+}
+
+/**
+ * Fix title to meet SEO requirements (50-60 characters)
+ */
+export function fixTitle(title: string): string {
+  if (!title) return title;
+
+  let fixed = replaceTitleCliches(title);
 
   // If title is too long, truncate intelligently
   if (fixed.length > SEO_REQUIREMENTS.titleMaxLength) {
-    const separators = [" | ", " - ", ": "];
-    for (const sep of separators) {
-      if (fixed.includes(sep)) {
-        const firstPart = fixed.split(sep)[0].trim();
-        if (
-          firstPart.length >= SEO_REQUIREMENTS.titleMinLength &&
-          firstPart.length <= SEO_REQUIREMENTS.titleMaxLength
-        ) {
-          fixed = firstPart;
-          break;
-        }
-      }
-    }
-
-    // Still too long? Smart truncate at word boundary
-    if (fixed.length > SEO_REQUIREMENTS.titleMaxLength) {
-      const maxCut = SEO_REQUIREMENTS.titleMaxLength - 3;
-      let cutPoint = maxCut;
-      while (cutPoint > SEO_REQUIREMENTS.titleMinLength && fixed[cutPoint] !== " ") {
-        cutPoint--;
-      }
-      if (cutPoint >= SEO_REQUIREMENTS.titleMinLength) {
-        fixed = fixed.substring(0, cutPoint).trim();
-      } else {
-        fixed = fixed.substring(0, maxCut).trim();
-      }
+    const splitResult = trySplitAtSeparator(fixed);
+    if (splitResult) {
+      fixed = splitResult;
+    } else {
+      fixed = truncateAtWordBoundary(
+        fixed,
+        SEO_REQUIREMENTS.titleMaxLength,
+        SEO_REQUIREMENTS.titleMinLength
+      );
     }
   }
 
-  // If title became too short, use original with smart truncation
+  // If title became too short after cliché removal, use original with truncation
   if (
     fixed.length < SEO_REQUIREMENTS.titleMinLength &&
     title.length > SEO_REQUIREMENTS.titleMaxLength
   ) {
-    const maxCut = SEO_REQUIREMENTS.titleMaxLength;
-    let cutPoint = maxCut;
-    while (cutPoint > 45 && title[cutPoint] !== " ") {
-      cutPoint--;
-    }
-    fixed = title.substring(0, cutPoint).trim();
+    fixed = truncateAtWordBoundary(title, SEO_REQUIREMENTS.titleMaxLength, 45);
   }
 
   return fixed;
@@ -400,104 +411,79 @@ export function injectExternalLinks(
 }
 
 /**
- * Apply all SEO enforcement to article-style AI response
- * This is the main function to call for the generate-article endpoint
- * Works on a deep clone to avoid mutating the original
+ * Remove clichés from article meta fields (title, description, h1, intro, closing)
  */
-export function enforceArticleSEO(article: any): any {
-  if (!article) return article;
-
-  // Deep clone to avoid mutating original
-  const result = JSON.parse(JSON.stringify(article));
-
-  // Fix meta title
-  if (result.meta?.title) {
-    result.meta.title = fixTitle(result.meta.title);
-  }
-
-  // Fix meta description
-  if (result.meta?.description) {
+function fixArticleMeta(result: any): void {
+  if (result.meta?.title) result.meta.title = fixTitle(result.meta.title);
+  if (result.meta?.description)
     result.meta.description = fixMetaDescription(result.meta.description, result.article?.intro);
-  }
+  if (result.article?.h1) result.article.h1 = removeClichesFromText(result.article.h1);
+  if (result.article?.intro) result.article.intro = removeClichesFromText(result.article.intro);
+  if (result.article?.closing)
+    result.article.closing = removeClichesFromText(result.article.closing);
+}
 
-  // Fix H1 headline
-  if (result.article?.h1) {
-    result.article.h1 = removeClichesFromText(result.article.h1);
-  }
-
-  // Fix intro
-  if (result.article?.intro) {
-    result.article.intro = removeClichesFromText(result.article.intro);
-  }
-
-  // Fix sections (clichés only - links handled separately)
+/**
+ * Remove clichés from article sections, pro tips, and FAQs
+ */
+function fixArticleContent(result: any): void {
   if (result.article?.sections && Array.isArray(result.article.sections)) {
     for (const section of result.article.sections) {
-      if (section.heading) {
-        section.heading = removeClichesFromText(section.heading);
-      }
-      if (section.body) {
-        section.body = removeClichesFromText(section.body);
-      }
+      if (section.heading) section.heading = removeClichesFromText(section.heading);
+      if (section.body) section.body = removeClichesFromText(section.body);
     }
   }
 
-  // Fix closing
-  if (result.article?.closing) {
-    result.article.closing = removeClichesFromText(result.article.closing);
-  }
-
-  // Fix pro tips
   if (result.article?.proTips && Array.isArray(result.article.proTips)) {
     result.article.proTips = result.article.proTips.map((tip: string) =>
       removeClichesFromText(tip)
     );
   }
 
-  // Fix FAQs
   if (result.article?.faq && Array.isArray(result.article.faq)) {
     for (const faq of result.article.faq) {
       if (faq.q) faq.q = removeClichesFromText(faq.q);
       if (faq.a) faq.a = removeClichesFromText(faq.a);
     }
   }
+}
 
-  // === SINGLE-PASS LINK INJECTION ===
-  // Count existing links across entire article, then inject if needed
-  const allContent = collectArticleContent(result);
-  const existingInternal = countInternalLinks(allContent);
-  const existingExternal = countExternalLinks(allContent);
+/**
+ * Inject internal links into article if below minimum
+ */
+function injectArticleInternalLinks(result: any, existingCount: number): void {
+  if (existingCount >= SEO_REQUIREMENTS.minInternalLinks) return;
+  if (!result.article?.sections?.length) return;
 
-  // Inject internal links if below minimum (once, into early sections)
-  if (
-    existingInternal < SEO_REQUIREMENTS.minInternalLinks &&
-    result.article?.sections?.length > 0
-  ) {
-    const deficit = SEO_REQUIREMENTS.minInternalLinks - existingInternal;
-    injectLinksIntoSections(result.article.sections, FALLBACK_INTERNAL_LINKS, deficit, "internal");
-  } else {
-    // empty
+  const deficit = SEO_REQUIREMENTS.minInternalLinks - existingCount;
+  injectLinksIntoSections(result.article.sections, FALLBACK_INTERNAL_LINKS, deficit, "internal");
+}
+
+/**
+ * Inject external links into article if below minimum
+ */
+function injectArticleExternalLinks(result: any, existingCount: number): void {
+  if (existingCount >= SEO_REQUIREMENTS.minExternalLinks) return;
+
+  const deficit = SEO_REQUIREMENTS.minExternalLinks - existingCount;
+  if (result.article?.closing) {
+    result.article.closing = injectExternalLinksOnce(result.article.closing, deficit);
+    return;
   }
-
-  // Inject external links if below minimum (once, into closing or last section)
-  if (existingExternal < SEO_REQUIREMENTS.minExternalLinks) {
-    const deficit = SEO_REQUIREMENTS.minExternalLinks - existingExternal;
-    if (result.article?.closing) {
-      result.article.closing = injectExternalLinksOnce(result.article.closing, deficit);
-    } else if (result.article?.sections?.length > 0) {
-      const lastSection = result.article.sections[result.article.sections.length - 1];
-      if (lastSection.body) {
-        lastSection.body = injectExternalLinksOnce(lastSection.body, deficit);
-      }
+  if (result.article?.sections?.length > 0) {
+    const lastSection = result.article.sections[result.article.sections.length - 1];
+    if (lastSection.body) {
+      lastSection.body = injectExternalLinksOnce(lastSection.body, deficit);
     }
-  } else {
-    // empty
   }
+}
 
-  // Ensure secondary keywords exist
+/**
+ * Ensure secondary keywords and alt texts exist
+ */
+function ensureArticleFallbacks(result: any): void {
   if (!result.analysis?.secondaryKeywords || result.analysis.secondaryKeywords.length === 0) {
     const primaryKeyword = result.analysis?.primaryKeyword || result.meta?.keywords?.[0];
-    // FAIL-FAST: Do not use implicit Dubai fallback for keywords
     if (primaryKeyword) {
       result.analysis = result.analysis || {};
       result.analysis.secondaryKeywords = [
@@ -508,10 +494,8 @@ export function enforceArticleSEO(article: any): any {
     }
   }
 
-  // Ensure alt texts exist
   if (!result.article?.altTexts || result.article.altTexts.length === 0) {
     const topic = result.meta?.title || result.article?.h1;
-    // FAIL-FAST: Do not use implicit Dubai fallback for alt texts
     if (topic) {
       result.article = result.article || {};
       result.article.altTexts = [
@@ -521,6 +505,25 @@ export function enforceArticleSEO(article: any): any {
       ];
     }
   }
+}
+
+/**
+ * Apply all SEO enforcement to article-style AI response
+ * This is the main function to call for the generate-article endpoint
+ * Works on a deep clone to avoid mutating the original
+ */
+export function enforceArticleSEO(article: any): any {
+  if (!article) return article;
+
+  const result = JSON.parse(JSON.stringify(article));
+
+  fixArticleMeta(result);
+  fixArticleContent(result);
+
+  const allContent = collectArticleContent(result);
+  injectArticleInternalLinks(result, countInternalLinks(allContent));
+  injectArticleExternalLinks(result, countExternalLinks(allContent));
+  ensureArticleFallbacks(result);
 
   return result;
 }
@@ -600,98 +603,65 @@ function injectExternalLinksOnce(html: string, count: number): string {
 }
 
 /**
+ * Fix SEO on body content: remove clichés and inject missing links
+ */
+function fixBodySEO(body: string): string {
+  let fixed = removeClichesFromText(body);
+
+  const existingInternal = countInternalLinks(fixed);
+  if (existingInternal < SEO_REQUIREMENTS.minInternalLinks) {
+    fixed = injectInternalLinksToBody(fixed, SEO_REQUIREMENTS.minInternalLinks - existingInternal);
+  }
+
+  const existingExternal = countExternalLinks(fixed);
+  if (existingExternal < SEO_REQUIREMENTS.minExternalLinks) {
+    fixed = injectExternalLinksToBody(fixed, SEO_REQUIREMENTS.minExternalLinks - existingExternal);
+  }
+
+  return fixed;
+}
+
+/**
+ * Fix SEO on top-level writer engine fields
+ */
+function fixWriterTopLevel(enforced: any): void {
+  if (enforced.title) enforced.title = fixTitle(enforced.title);
+  if (enforced.metaDescription !== undefined)
+    enforced.metaDescription = fixMetaDescription(
+      enforced.metaDescription || "",
+      enforced.intro || ""
+    );
+  if (enforced.intro) enforced.intro = removeClichesFromText(enforced.intro);
+  if (enforced.body) enforced.body = fixBodySEO(enforced.body);
+}
+
+/**
+ * Fix SEO on nested content object in writer engine format
+ */
+function fixWriterContentObject(content: any): void {
+  if (!content) return;
+  if (content.metaDescription !== undefined)
+    content.metaDescription = fixMetaDescription(
+      content.metaDescription || "",
+      content.intro || ""
+    );
+  if (content.title) content.title = fixTitle(content.title);
+  if (content.intro) content.intro = removeClichesFromText(content.intro);
+  if (content.body) content.body = fixBodySEO(content.body);
+  if (content.conclusion) content.conclusion = removeClichesFromText(content.conclusion);
+}
+
+/**
  * Apply SEO enforcement to writer-engine style content
  * Works with aiWritersContentGenerator output format
  */
 export function enforceWriterEngineSEO(result: any): any {
   if (!result) return result;
 
-  // Deep clone to avoid mutating original
   const enforced = JSON.parse(JSON.stringify(result));
 
-  // Fix title (if present)
-  if (enforced.title) {
-    enforced.title = fixTitle(enforced.title);
-  }
-
-  // Fix metaDescription (if present)
-  if (enforced.metaDescription !== undefined) {
-    enforced.metaDescription = fixMetaDescription(
-      enforced.metaDescription || "",
-      enforced.intro || ""
-    );
-  }
-
-  // Remove clichés from intro
-  if (enforced.intro) {
-    enforced.intro = removeClichesFromText(enforced.intro);
-  }
-
-  // Remove clichés and inject links into body
-  if (enforced.body) {
-    let body = removeClichesFromText(enforced.body);
-
-    // Count existing links
-    const existingInternal = countInternalLinks(body);
-    const existingExternal = countExternalLinks(body);
-
-    // Inject internal links if needed
-    if (existingInternal < SEO_REQUIREMENTS.minInternalLinks) {
-      const deficit = SEO_REQUIREMENTS.minInternalLinks - existingInternal;
-      body = injectInternalLinksToBody(body, deficit);
-    }
-
-    // Inject external links if needed
-    if (existingExternal < SEO_REQUIREMENTS.minExternalLinks) {
-      const deficit = SEO_REQUIREMENTS.minExternalLinks - existingExternal;
-      body = injectExternalLinksToBody(body, deficit);
-    }
-
-    enforced.body = body;
-  }
-
-  // Fix content.metaDescription if it exists (from writerEngine format)
-  if (enforced.content?.metaDescription !== undefined) {
-    enforced.content.metaDescription = fixMetaDescription(
-      enforced.content.metaDescription || "",
-      enforced.content.intro || ""
-    );
-  }
-
-  // Fix content.title if it exists
-  if (enforced.content?.title) {
-    enforced.content.title = fixTitle(enforced.content.title);
-  }
-
-  // Remove clichés from content.intro
-  if (enforced.content?.intro) {
-    enforced.content.intro = removeClichesFromText(enforced.content.intro);
-  }
-
-  // Process content.body
-  if (enforced.content?.body) {
-    let body = removeClichesFromText(enforced.content.body);
-
-    const existingInternal = countInternalLinks(body);
-    const existingExternal = countExternalLinks(body);
-
-    if (existingInternal < SEO_REQUIREMENTS.minInternalLinks) {
-      const deficit = SEO_REQUIREMENTS.minInternalLinks - existingInternal;
-      body = injectInternalLinksToBody(body, deficit);
-    }
-
-    if (existingExternal < SEO_REQUIREMENTS.minExternalLinks) {
-      const deficit = SEO_REQUIREMENTS.minExternalLinks - existingExternal;
-      body = injectExternalLinksToBody(body, deficit);
-    }
-
-    enforced.content.body = body;
-  }
-
-  // Process content.conclusion
-  if (enforced.content?.conclusion) {
-    enforced.content.conclusion = removeClichesFromText(enforced.content.conclusion);
-  }
+  fixWriterTopLevel(enforced);
+  fixWriterContentObject(enforced.content);
 
   return enforced;
 }

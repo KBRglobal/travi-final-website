@@ -38,6 +38,31 @@ const DEGRADED_FALLBACKS: Record<GuardedFeature, string> = {
  * Guard wrapper for AI calls
  * Wraps any async function with policy enforcement and budget tracking
  */
+function resolveFallback<T>(fallback: T | (() => T)): T {
+  return typeof fallback === "function" ? (fallback as () => T)() : fallback;
+}
+
+function makeDegradedResponse<T>(
+  reason: string,
+  fallbackData: T,
+  retryAfter?: number
+): DegradedResponse<T> {
+  return {
+    isDegraded: true,
+    reason,
+    fallbackData,
+    ...(retryAfter !== undefined ? { retryAfter } : {}),
+  } as DegradedResponse<T>;
+}
+
+function canUseDegradedMode<T>(options?: { fallback?: T | (() => T) }): boolean {
+  return DEFAULT_ENFORCEMENT_CONFIG.degradedModeEnabled && options?.fallback !== undefined;
+}
+
+function getErrorReason(reasons: Array<{ severity: string; message: string }>): string | undefined {
+  return reasons.find(r => r.severity === "error")?.message;
+}
+
 export async function guardAiCall<T>(
   feature: GuardedFeature,
   context: Omit<EnforcementContext, "feature" | "action">,
@@ -61,29 +86,18 @@ export async function guardAiCall<T>(
   const result = await enforceAutonomy(enforcementContext);
 
   if (!result.allowed) {
-    // Check if degraded mode is enabled
-    if (DEFAULT_ENFORCEMENT_CONFIG.degradedModeEnabled && options?.fallback !== undefined) {
-      const fallbackData =
-        typeof options.fallback === "function" ? (options.fallback as () => T)() : options.fallback;
-
-      return {
-        isDegraded: true,
-        reason:
-          result.reasons.find(r => r.severity === "error")?.message || DEGRADED_FALLBACKS[feature],
+    if (canUseDegradedMode(options)) {
+      const fallbackData = resolveFallback(options!.fallback!);
+      return makeDegradedResponse(
+        getErrorReason(result.reasons) || DEGRADED_FALLBACKS[feature],
         fallbackData,
-        retryAfter: 3600,
-      } as DegradedResponse<T>;
+        3600
+      );
     }
 
     throw new AutonomyBlockedError(
-      result.reasons.find(r => r.severity === "error")?.message ||
-        DEFAULT_ENFORCEMENT_CONFIG.defaultBlockMessage,
-      {
-        reasons: result.reasons,
-        feature,
-        action,
-        matchedPolicy: result.matchedPolicy,
-      }
+      getErrorReason(result.reasons) || DEFAULT_ENFORCEMENT_CONFIG.defaultBlockMessage,
+      { reasons: result.reasons, feature, action, matchedPolicy: result.matchedPolicy }
     );
   }
 
@@ -98,7 +112,6 @@ export async function guardAiCall<T>(
       ),
     ]);
 
-    // Record successful consumption
     const durationMs = Date.now() - startTime;
     await recordConsumption({
       feature,
@@ -112,32 +125,23 @@ export async function guardAiCall<T>(
 
     return response;
   } catch (error) {
-    // Record failed consumption
     const durationMs = Date.now() - startTime;
     await recordConsumption({
       feature,
       action,
       tokensUsed: context.estimatedTokens || 0,
-      aiSpendCents: 0, // No cost on failure
+      aiSpendCents: 0,
       success: false,
       durationMs,
       timestamp: new Date(),
     });
 
-    // If degraded mode enabled and has fallback, return degraded response
-    if (
-      DEFAULT_ENFORCEMENT_CONFIG.degradedModeEnabled &&
-      options?.fallback !== undefined &&
-      !(error instanceof AutonomyBlockedError)
-    ) {
-      const fallbackData =
-        typeof options.fallback === "function" ? (options.fallback as () => T)() : options.fallback;
-
-      return {
-        isDegraded: true,
-        reason: error instanceof Error ? error.message : "AI call failed",
-        fallbackData,
-      } as DegradedResponse<T>;
+    if (canUseDegradedMode(options) && !(error instanceof AutonomyBlockedError)) {
+      const fallbackData = resolveFallback(options!.fallback!);
+      return makeDegradedResponse(
+        error instanceof Error ? error.message : "AI call failed",
+        fallbackData
+      );
     }
 
     throw error;

@@ -285,6 +285,38 @@ export interface ImageSeoStructuredData {
   keywords?: string[];
 }
 
+/** Build contentLocation schema from image location data */
+function buildContentLocation(
+  loc: NonNullable<ImageSeoStructuredData["contentLocation"]>
+): Record<string, unknown> {
+  const place: Record<string, unknown> = {
+    "@type": "Place",
+    name: loc.name,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: loc.addressLocality,
+      addressRegion: loc.addressRegion,
+      addressCountry: loc.addressCountry,
+    },
+  };
+  if (loc.latitude && loc.longitude) {
+    place.geo = {
+      "@type": "GeoCoordinates",
+      latitude: loc.latitude,
+      longitude: loc.longitude,
+    };
+  }
+  return place;
+}
+
+/** Detect image encoding format from URL extension */
+function detectEncodingFormat(url: string): string | undefined {
+  const formatMatch = /\.(webp|jpg|jpeg|png|gif)(\?|$)/i.exec(url);
+  if (!formatMatch) return undefined;
+  const format = formatMatch[1].toLowerCase();
+  return `image/${format === "jpg" ? "jpeg" : format}`;
+}
+
 /**
  * Generate ImageObject schema markup
  */
@@ -296,65 +328,21 @@ export function generateImageObjectStructuredData(image: ImageSeoStructuredData,
     description: image.description,
   };
 
-  if (pageUrl) {
-    schema.url = pageUrl;
-  }
-
+  if (pageUrl) schema.url = pageUrl;
   if (image.width && image.height) {
     schema.width = String(image.width);
     schema.height = String(image.height);
   }
+  if (image.datePublished) schema.datePublished = image.datePublished;
+  if (image.author) schema.author = { "@type": "Organization", name: image.author };
+  if (image.license) schema.license = image.license;
 
-  if (image.datePublished) {
-    schema.datePublished = image.datePublished;
-  }
+  const encodingFormat = detectEncodingFormat(image.contentUrl);
+  if (encodingFormat) schema.encodingFormat = encodingFormat;
 
-  if (image.author) {
-    schema.author = {
-      "@type": "Organization",
-      name: image.author,
-    };
-  }
-
-  if (image.license) {
-    schema.license = image.license;
-  }
-
-  // Detect format from URL
-  const formatMatch = /\.(webp|jpg|jpeg|png|gif)(\?|$)/i.exec(image.contentUrl);
-  if (formatMatch) {
-    const format = formatMatch[1].toLowerCase();
-    schema.encodingFormat = `image/${format === "jpg" ? "jpeg" : format}`;
-  }
-
-  if (image.contentLocation) {
-    schema.contentLocation = {
-      "@type": "Place",
-      name: image.contentLocation.name,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: image.contentLocation.addressLocality,
-        addressRegion: image.contentLocation.addressRegion,
-        addressCountry: image.contentLocation.addressCountry,
-      },
-    };
-
-    if (image.contentLocation.latitude && image.contentLocation.longitude) {
-      (schema.contentLocation as Record<string, unknown>).geo = {
-        "@type": "GeoCoordinates",
-        latitude: image.contentLocation.latitude,
-        longitude: image.contentLocation.longitude,
-      };
-    }
-  }
-
-  if (image.caption) {
-    schema.caption = image.caption;
-  }
-
-  if (image.keywords && image.keywords.length > 0) {
-    schema.keywords = image.keywords.join(", ");
-  }
+  if (image.contentLocation) schema.contentLocation = buildContentLocation(image.contentLocation);
+  if (image.caption) schema.caption = image.caption;
+  if (image.keywords && image.keywords.length > 0) schema.keywords = image.keywords.join(", ");
 
   return schema;
 }

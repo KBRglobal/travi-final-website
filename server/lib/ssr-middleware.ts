@@ -76,25 +76,31 @@ const CACHE_STRATEGIES: Record<
 /**
  * Determine content type from path for caching strategy
  */
+const CONTENT_TYPE_PATTERNS: Array<[RegExp, string]> = [
+  [/^\/article\//, "article"],
+  [/^\/articles$/, "category"],
+  [/^\/attraction\//, "attraction"],
+  [/^\/attractions($|\/)/, "category"],
+  [/^\/hotel\//, "hotel"],
+  [/^\/hotels($|\/)/, "category"],
+  [/^\/dining\//, "dining"],
+  [/^\/dining$/, "category"],
+  [/^\/events\//, "event"],
+  [/^\/events$/, "category"],
+  [/^\/news\//, "news"],
+  [/^\/news$/, "category"],
+  [/^\/(about|contact|privacy|terms|faq)$/, "static"],
+  [/^\/districts($|\/)/, "category"],
+  [/^\/shopping($|\/)/, "category"],
+  [/^\/guides($|\/)/, "category"],
+  [/^\/destinations($|\/)/, "category"],
+];
+
 function getContentType(path: string): string {
   if (path === "/" || path === "") return "homepage";
-  if (/^\/article\//.exec(path)) return "article";
-  if (/^\/articles$/.exec(path)) return "category";
-  if (/^\/attraction\//.exec(path)) return "attraction";
-  if (/^\/attractions($|\/)/.exec(path)) return "category";
-  if (/^\/hotel\//.exec(path)) return "hotel";
-  if (/^\/hotels($|\/)/.exec(path)) return "category";
-  if (/^\/dining\//.exec(path)) return "dining";
-  if (/^\/dining$/.exec(path)) return "category";
-  if (/^\/events\//.exec(path)) return "event";
-  if (/^\/events$/.exec(path)) return "category";
-  if (/^\/news\//.exec(path)) return "news";
-  if (/^\/news$/.exec(path)) return "category";
-  if (/^\/(about|contact|privacy|terms|faq)$/.exec(path)) return "static";
-  if (/^\/districts($|\/)/.exec(path)) return "category";
-  if (/^\/shopping($|\/)/.exec(path)) return "category";
-  if (/^\/guides($|\/)/.exec(path)) return "category";
-  if (/^\/destinations($|\/)/.exec(path)) return "category";
+  for (const [pattern, type] of CONTENT_TYPE_PATTERNS) {
+    if (pattern.test(path)) return type;
+  }
   return "default";
 }
 

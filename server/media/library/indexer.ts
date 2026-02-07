@@ -87,57 +87,53 @@ function getSourceFromPath(filePath: string): "upload" | "ai_generated" | "attac
 /**
  * Recursively get all files from a directory
  */
+/** Try to add a single file entry to the files list */
+async function tryAddFileEntry(
+  entry: fs.Dirent,
+  dirPath: string,
+  baseDir: string,
+  supportedMimes: string[],
+  files: FileInfo[]
+): Promise<void> {
+  if (entry.name.startsWith(".")) return;
+
+  const fullPath = path.join(dirPath, entry.name);
+  const mimeType = getMimeType(entry.name);
+  if (!supportedMimes.includes(mimeType)) return;
+
+  try {
+    const stats = await fs.promises.stat(fullPath);
+    files.push({
+      path: path.relative(baseDir, fullPath),
+      absolutePath: fullPath,
+      filename: entry.name,
+      size: stats.size,
+      mimeType,
+    });
+  } catch (error) {
+    log.warn(`[MediaLibrary] Cannot stat file: ${fullPath}`, error);
+  }
+}
+
 async function getFilesRecursive(
   dirPath: string,
   baseDir: string,
   files: FileInfo[] = [],
   maxFiles = 1000
 ): Promise<FileInfo[]> {
-  if (files.length >= maxFiles) {
-    return files;
-  }
+  if (files.length >= maxFiles) return files;
 
   try {
     const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
     const supportedMimes = getSupportedMimeTypes();
 
     for (const entry of entries) {
-      if (files.length >= maxFiles) {
-        break;
-      }
+      if (files.length >= maxFiles) break;
 
-      const fullPath = path.join(dirPath, entry.name);
-      const relativePath = path.relative(baseDir, fullPath);
-
-      if (entry.isDirectory()) {
-        // Skip hidden directories
-        if (!entry.name.startsWith(".")) {
-          await getFilesRecursive(fullPath, baseDir, files, maxFiles);
-        }
+      if (entry.isDirectory() && !entry.name.startsWith(".")) {
+        await getFilesRecursive(path.join(dirPath, entry.name), baseDir, files, maxFiles);
       } else if (entry.isFile()) {
-        // Skip hidden files
-        if (entry.name.startsWith(".")) {
-          continue;
-        }
-
-        const mimeType = getMimeType(entry.name);
-        if (!supportedMimes.includes(mimeType)) {
-          continue;
-        }
-
-        try {
-          const stats = await fs.promises.stat(fullPath);
-          files.push({
-            path: relativePath,
-            absolutePath: fullPath,
-            filename: entry.name,
-            size: stats.size,
-            mimeType,
-          });
-        } catch (error) {
-          // Skip files we can't stat
-          log.warn(`[MediaLibrary] Cannot stat file: ${fullPath}`, error);
-        }
+        await tryAddFileEntry(entry, dirPath, baseDir, supportedMimes, files);
       }
     }
   } catch (error) {
@@ -150,6 +146,93 @@ async function getFilesRecursive(
 /**
  * Scan uploads and attached_assets directories and index to database
  */
+/** Process a single file: upsert into database */
+async function processFileForIndex(
+  file: FileInfo,
+  calculateChecksums: boolean,
+  result: ScanResult
+): Promise<void> {
+  const existing = await db
+    .select()
+    .from(mediaAssets)
+    .where(eq(mediaAssets.path, file.path))
+    .limit(1);
+
+  let checksum: string | undefined;
+  if (calculateChecksums || existing.length === 0) {
+    try {
+      checksum = await calculateChecksum(file.absolutePath);
+    } catch (error) {
+      log.warn(`[MediaLibrary] Cannot calculate checksum: ${file.path}`, error);
+    }
+  }
+
+  if (existing.length === 0) {
+    await db.insert(mediaAssets).values({
+      path: file.path,
+      url: `/${file.path}`,
+      filename: file.filename,
+      mimeType: file.mimeType,
+      size: file.size,
+      checksum,
+      source: getSourceFromPath(file.path),
+      lastScannedAt: new Date(),
+    } as any);
+    result.filesIndexed++;
+  } else {
+    await db
+      .update(mediaAssets)
+      .set({
+        size: file.size,
+        mimeType: file.mimeType,
+        lastScannedAt: new Date(),
+        ...(checksum && { checksum }),
+      } as any)
+      .where(eq(mediaAssets.id, existing[0].id));
+    result.filesUpdated++;
+  }
+}
+
+/** Remove DB assets that no longer exist on disk */
+async function cleanupMissingAssets(projectRoot: string): Promise<void> {
+  const dbAssets = await db
+    .select({ id: mediaAssets.id, path: mediaAssets.path })
+    .from(mediaAssets);
+
+  for (const asset of dbAssets) {
+    const absolutePath = path.join(projectRoot, asset.path);
+    if (!fs.existsSync(absolutePath)) {
+      await db.delete(mediaAssets).where(eq(mediaAssets.id, asset.id));
+      log.info(`[MediaLibrary] Removed missing asset: ${asset.path}`);
+    }
+  }
+}
+
+/** Collect files from scan directories */
+async function collectFiles(
+  scanDirectories: string[],
+  projectRoot: string,
+  limit: number
+): Promise<{ files: FileInfo[]; batchComplete: boolean }> {
+  const allFiles: FileInfo[] = [];
+  let batchComplete = true;
+
+  for (const dir of scanDirectories) {
+    const dirPath = path.join(projectRoot, dir);
+    if (!fs.existsSync(dirPath)) {
+      log.info(`[MediaLibrary] Directory does not exist: ${dir}`);
+      continue;
+    }
+    await getFilesRecursive(dirPath, projectRoot, allFiles, limit);
+    if (allFiles.length >= limit) {
+      batchComplete = false;
+      break;
+    }
+  }
+
+  return { files: allFiles, batchComplete };
+}
+
 export async function scanUploadsAndIndex(options?: {
   limit?: number;
   calculateChecksums?: boolean;
@@ -176,79 +259,15 @@ export async function scanUploadsAndIndex(options?: {
     const config = getMediaLibraryConfig();
     const limit = options?.limit ?? config.batchSize;
     const calculateChecksums = options?.calculateChecksums ?? false;
-
-    // Get project root directory
     const projectRoot = process.cwd();
 
-    // Collect files from all scan directories
-    const allFiles: FileInfo[] = [];
+    const collected = await collectFiles(config.scanDirectories, projectRoot, limit);
+    result.filesScanned = collected.files.length;
+    result.batchComplete = collected.batchComplete;
 
-    for (const dir of config.scanDirectories) {
-      const dirPath = path.join(projectRoot, dir);
-
-      if (!fs.existsSync(dirPath)) {
-        log.info(`[MediaLibrary] Directory does not exist: ${dir}`);
-        continue;
-      }
-
-      await getFilesRecursive(dirPath, projectRoot, allFiles, limit);
-
-      if (allFiles.length >= limit) {
-        result.batchComplete = false;
-        break;
-      }
-    }
-
-    result.filesScanned = allFiles.length;
-
-    // Process files in batches
-    for (const file of allFiles) {
+    for (const file of collected.files) {
       try {
-        // Check if file already exists in database
-        const existing = await db
-          .select()
-          .from(mediaAssets)
-          .where(eq(mediaAssets.path, file.path))
-          .limit(1);
-
-        // Calculate checksum if requested or if new file
-        let checksum: string | undefined;
-        if (calculateChecksums || existing.length === 0) {
-          try {
-            checksum = await calculateChecksum(file.absolutePath);
-          } catch (error) {
-            log.warn(`[MediaLibrary] Cannot calculate checksum: ${file.path}`, error);
-          }
-        }
-
-        const assetData: InsertMediaAsset = {
-          path: file.path,
-          url: `/${file.path}`,
-          filename: file.filename,
-          mimeType: file.mimeType,
-          size: file.size,
-          checksum,
-          source: getSourceFromPath(file.path),
-          lastScannedAt: new Date(),
-        };
-
-        if (existing.length === 0) {
-          // Insert new asset
-          await db.insert(mediaAssets).values(assetData as any);
-          result.filesIndexed++;
-        } else {
-          // Update existing asset
-          await db
-            .update(mediaAssets)
-            .set({
-              size: file.size,
-              mimeType: file.mimeType,
-              lastScannedAt: new Date(),
-              ...(checksum && { checksum }),
-            } as any)
-            .where(eq(mediaAssets.id, existing[0].id));
-          result.filesUpdated++;
-        }
+        await processFileForIndex(file, calculateChecksums, result);
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         result.errors.push({ path: file.path, error: errorMessage });
@@ -256,23 +275,9 @@ export async function scanUploadsAndIndex(options?: {
       }
     }
 
-    // Remove assets that no longer exist on disk
-    const allPaths = allFiles.map(f => f.path);
-    if (allPaths.length > 0 && result.batchComplete) {
+    if (collected.files.length > 0 && result.batchComplete) {
       try {
-        // Find assets in DB that are not on disk
-        const dbAssets = await db
-          .select({ id: mediaAssets.id, path: mediaAssets.path })
-          .from(mediaAssets);
-
-        for (const asset of dbAssets) {
-          const absolutePath = path.join(projectRoot, asset.path);
-          if (!fs.existsSync(absolutePath)) {
-            // File no longer exists - mark as orphan or remove
-            await db.delete(mediaAssets).where(eq(mediaAssets.id, asset.id));
-            log.info(`[MediaLibrary] Removed missing asset: ${asset.path}`);
-          }
-        }
+        await cleanupMissingAssets(projectRoot);
       } catch (error) {
         log.warn("[MediaLibrary] Error cleaning up missing assets", error);
       }

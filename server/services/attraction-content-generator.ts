@@ -236,46 +236,31 @@ CRITICAL: Return ONLY the JSON object. No markdown fences, no explanations befor
 // ============================================================================
 
 /**
- * Attempt to repair truncated or malformed JSON responses from AI providers.
- * This is critical for production reliability - AI providers often return
- * incomplete responses due to token limits or network issues.
+ * Count braces, brackets, and track string state in a JSON string.
  */
-function repairJSON(jsonString: string): string {
-  let fixed = jsonString.trim();
-
-  // Remove markdown code fences if present
-  if (fixed.startsWith("```json")) {
-    fixed = fixed.slice(7);
-  } else if (fixed.startsWith("```")) {
-    fixed = fixed.slice(3);
-  }
-  if (fixed.endsWith("```")) {
-    fixed = fixed.slice(0, -3);
-  }
-  fixed = fixed.trim();
-
-  // Count opening and closing braces/brackets
+function countJsonDelimiters(text: string): {
+  braceCount: number;
+  bracketCount: number;
+  inString: boolean;
+} {
   let braceCount = 0;
   let bracketCount = 0;
   let inString = false;
   let escapeNext = false;
 
-  for (const char of fixed) {
+  for (const char of text) {
     if (escapeNext) {
       escapeNext = false;
       continue;
     }
-
     if (char === "\\") {
       escapeNext = true;
       continue;
     }
-
     if (char === '"') {
       inString = !inString;
       continue;
     }
-
     if (!inString) {
       if (char === "{") braceCount++;
       else if (char === "}") braceCount--;
@@ -284,55 +269,58 @@ function repairJSON(jsonString: string): string {
     }
   }
 
+  return { braceCount, bracketCount, inString };
+}
+
+/**
+ * Remove markdown code fences from a string.
+ */
+function stripMarkdownFences(text: string): string {
+  let result = text.trim();
+  if (result.startsWith("```json")) {
+    result = result.slice(7);
+  } else if (result.startsWith("```")) {
+    result = result.slice(3);
+  }
+  if (result.endsWith("```")) {
+    result = result.slice(0, -3);
+  }
+  return result.trim();
+}
+
+/**
+ * Close any unclosed brackets and braces in the JSON string.
+ */
+function closeOpenDelimiters(text: string, braceCount: number, bracketCount: number): string {
+  let result = text;
+  for (let i = 0; i < bracketCount; i++) result += "]";
+  for (let i = 0; i < braceCount; i++) result += "}";
+  return result;
+}
+
+/**
+ * Attempt to repair truncated or malformed JSON responses from AI providers.
+ * This is critical for production reliability - AI providers often return
+ * incomplete responses due to token limits or network issues.
+ */
+function repairJSON(jsonString: string): string {
+  let fixed = stripMarkdownFences(jsonString);
+
+  let counts = countJsonDelimiters(fixed);
+
   // Fix truncated strings - if we're inside a string, close it
-  if (inString) {
+  if (counts.inString) {
     fixed += '"';
   }
 
   // If JSON ends abruptly mid-object/array, try to salvage
-  // Remove trailing incomplete key-value pairs
   const lastCompleteIndex = findLastCompleteElement(fixed);
   if (lastCompleteIndex > 0 && lastCompleteIndex < fixed.length - 1) {
     fixed = fixed.slice(0, lastCompleteIndex + 1);
-    // Recount after truncation
-    braceCount = 0;
-    bracketCount = 0;
-    inString = false;
-    escapeNext = false;
-
-    for (const char of fixed) {
-      if (escapeNext) {
-        escapeNext = false;
-        continue;
-      }
-      if (char === "\\") {
-        escapeNext = true;
-        continue;
-      }
-      if (char === '"') {
-        inString = !inString;
-        continue;
-      }
-      if (!inString) {
-        if (char === "{") braceCount++;
-        else if (char === "}") braceCount--;
-        else if (char === "[") bracketCount++;
-        else if (char === "]") bracketCount--;
-      }
-    }
+    counts = countJsonDelimiters(fixed);
   }
 
-  // Close any open brackets first, then braces
-  while (bracketCount > 0) {
-    fixed += "]";
-    bracketCount--;
-  }
-  while (braceCount > 0) {
-    fixed += "}";
-    braceCount--;
-  }
-
-  return fixed;
+  return closeOpenDelimiters(fixed, counts.braceCount, counts.bracketCount);
 }
 
 /**
@@ -370,75 +358,58 @@ function findLastCompleteElement(json: string): number {
 // Response Parser
 // ============================================================================
 
-function parseAIResponse(rawContent: string): GeneratedAttractionContent {
-  // First attempt: try parsing as-is after basic cleanup
-  let jsonString = rawContent.trim();
-
-  // Remove markdown code fences if present
-  if (jsonString.startsWith("```json")) {
-    jsonString = jsonString.slice(7);
-  } else if (jsonString.startsWith("```")) {
-    jsonString = jsonString.slice(3);
-  }
-  if (jsonString.endsWith("```")) {
-    jsonString = jsonString.slice(0, -3);
-  }
-  jsonString = jsonString.trim();
-
-  let parsed: any;
+function parseJsonWithRepair(rawContent: string): any {
+  const jsonString = stripMarkdownFences(rawContent);
 
   try {
-    parsed = JSON.parse(jsonString);
+    return JSON.parse(jsonString);
   } catch (firstError) {
-    // Second attempt: try auto-repair
     try {
       const repaired = repairJSON(rawContent);
-      parsed = JSON.parse(repaired);
-      // Log that we auto-repaired
+      return JSON.parse(repaired);
     } catch (error) {
       console.error(error);
-      // If repair also fails, throw original error for better debugging
       throw firstError;
     }
   }
+}
 
-  // Map snake_case to camelCase and build the structured content
-  const aiContent: AIContent = {
-    introduction: parsed.ai_content?.introduction || "",
-    whyVisit: parsed.ai_content?.why_visit || "",
-    proTip: parsed.ai_content?.pro_tip || "",
-    whatToExpect: Array.isArray(parsed.ai_content?.what_to_expect)
-      ? parsed.ai_content.what_to_expect.map(
-          (item: { title?: string; description?: string; icon?: string }) => ({
-            title: item.title || "",
-            description: item.description || "",
-            icon: item.icon || "Info",
-          })
-        )
-      : [],
-    visitorTips: Array.isArray(parsed.ai_content?.visitor_tips)
-      ? parsed.ai_content.visitor_tips.map(
-          (item: { title?: string; description?: string; icon?: string }) => ({
-            title: item.title || "",
-            description: item.description || "",
-            icon: item.icon || "Info",
-          })
-        )
-      : [],
+function mapTitleDescIcon(
+  items: any[] | undefined
+): Array<{ title: string; description: string; icon: string }> {
+  if (!Array.isArray(items)) return [];
+  return items.map((item: { title?: string; description?: string; icon?: string }) => ({
+    title: item.title || "",
+    description: item.description || "",
+    icon: item.icon || "Info",
+  }));
+}
+
+function mapAIContent(parsed: any): AIContent {
+  const ai = parsed.ai_content;
+  return {
+    introduction: ai?.introduction || "",
+    whyVisit: ai?.why_visit || "",
+    proTip: ai?.pro_tip || "",
+    whatToExpect: mapTitleDescIcon(ai?.what_to_expect),
+    visitorTips: mapTitleDescIcon(ai?.visitor_tips),
     howToGetThere: {
-      description: parsed.ai_content?.how_to_get_there?.description || "",
-      transport: Array.isArray(parsed.ai_content?.how_to_get_there?.transport)
-        ? parsed.ai_content.how_to_get_there.transport.map(
-            (t: { mode?: string; details?: string }) => ({
-              mode: t.mode || "",
-              details: t.details || "",
-            })
-          )
+      description: ai?.how_to_get_there?.description || "",
+      transport: Array.isArray(ai?.how_to_get_there?.transport)
+        ? ai.how_to_get_there.transport.map((t: { mode?: string; details?: string }) => ({
+            mode: t.mode || "",
+            details: t.details || "",
+          }))
         : [],
     },
-    answerCapsule: parsed.ai_content?.answer_capsule || "",
+    answerCapsule: ai?.answer_capsule || "",
     schemaPayload: parsed.schema_payload || {},
   };
+}
+
+function parseAIResponse(rawContent: string): GeneratedAttractionContent {
+  const parsed = parseJsonWithRepair(rawContent);
+  const aiContent = mapAIContent(parsed);
 
   return {
     h1Title: parsed.h1_title || "",

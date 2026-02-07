@@ -173,76 +173,78 @@ function getAffectedSystems(rule: GovernorRule): string[] {
 // Main Evaluation
 // ============================================================================
 
+/** Build a GovernorDecision from a triggered rule */
+function buildDecision(rule: GovernorRule): GovernorDecision {
+  return {
+    id: `dec_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    ruleId: rule.id,
+    ruleName: rule.name,
+    decision: determineDecision(rule),
+    reason: rule.description,
+    actions: rule.actions,
+    affectedSystems: getAffectedSystems(rule),
+    triggeredAt: new Date(),
+    expiresAt: rule.actions.some(a => a.duration)
+      ? new Date(Date.now() + Math.max(...rule.actions.map(a => a.duration || 0)))
+      : undefined,
+  };
+}
+
+/** Apply restrictions from a rule's actions */
+function applyRestrictions(rule: GovernorRule): void {
+  for (const action of rule.actions) {
+    if (action.type === "alert_only") continue;
+    activeRestrictions.push({
+      system: getAffectedSystems({ ...rule, actions: [action] })[0] || "unknown",
+      restriction: action.type,
+      reason: rule.description,
+      appliedAt: new Date(),
+      expiresAt: action.duration ? new Date(Date.now() + action.duration) : undefined,
+      ruleId: rule.id,
+    });
+  }
+}
+
+/** Trim arrays to max size */
+function enforceMaxSize<T>(arr: T[], max: number): void {
+  while (arr.length > max) arr.pop();
+}
+
 export function evaluateRules(context: GovernorContext): GovernorDecision[] {
   const rules = getEnabledRules();
   const newDecisions: GovernorDecision[] = [];
 
   for (const rule of rules) {
-    if (evaluateRule(rule, context)) {
-      const decision: GovernorDecision = {
-        id: `dec_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-        ruleId: rule.id,
-        ruleName: rule.name,
-        decision: determineDecision(rule),
-        reason: rule.description,
-        actions: rule.actions,
-        affectedSystems: getAffectedSystems(rule),
-        triggeredAt: new Date(),
-        expiresAt: rule.actions.some(a => a.duration)
-          ? new Date(Date.now() + Math.max(...rule.actions.map(a => a.duration || 0)))
-          : undefined,
-      };
+    if (!evaluateRule(rule, context)) continue;
 
-      newDecisions.push(decision);
-      decisions.unshift(decision);
+    const decision = buildDecision(rule);
+    newDecisions.push(decision);
+    decisions.unshift(decision);
+    ruleCooldowns.set(rule.id, Date.now());
 
-      // Update cooldown
-      ruleCooldowns.set(rule.id, Date.now());
+    auditLog.unshift({
+      id: decision.id,
+      timestamp: decision.triggeredAt,
+      ruleId: rule.id,
+      ruleName: rule.name,
+      decision: decision.decision,
+      reason: decision.reason,
+      actions: rule.actions.map(a => a.type),
+      affectedSystems: decision.affectedSystems,
+      duration: 0,
+      overridden: false,
+    });
 
-      // Add audit entry
-      auditLog.unshift({
-        id: decision.id,
-        timestamp: decision.triggeredAt,
-        ruleId: rule.id,
-        ruleName: rule.name,
-        decision: decision.decision,
-        reason: decision.reason,
-        actions: rule.actions.map(a => a.type),
-        affectedSystems: decision.affectedSystems,
-        duration: 0,
-        overridden: false,
-      });
+    applyRestrictions(rule);
 
-      // Apply restrictions
-      for (const action of rule.actions) {
-        if (action.type !== "alert_only") {
-          activeRestrictions.push({
-            system: getAffectedSystems({ ...rule, actions: [action] })[0] || "unknown",
-            restriction: action.type,
-            reason: rule.description,
-            appliedAt: new Date(),
-            expiresAt: action.duration ? new Date(Date.now() + action.duration) : undefined,
-            ruleId: rule.id,
-          });
-        }
-      }
-
-      logger.warn(
-        { ruleId: rule.id, decision: decision.decision, actions: rule.actions.map(a => a.type) },
-        `Governor rule triggered: ${rule.name}`
-      );
-    }
+    logger.warn(
+      { ruleId: rule.id, decision: decision.decision, actions: rule.actions.map(a => a.type) },
+      `Governor rule triggered: ${rule.name}`
+    );
   }
 
-  // Enforce max decisions
-  while (decisions.length > maxDecisions) {
-    decisions.pop();
-  }
-  while (auditLog.length > maxDecisions) {
-    auditLog.pop();
-  }
-
-  // Clean expired restrictions
+  enforceMaxSize(decisions, maxDecisions);
+  enforceMaxSize(auditLog, maxDecisions);
   cleanExpiredRestrictions();
 
   return newDecisions;

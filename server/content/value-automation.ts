@@ -187,6 +187,51 @@ export function isContentProtected(entityId: string): boolean {
  *
  * Uses existing background-scheduler from Phase 10
  */
+/** Classify content into candidates, protected, and skipped */
+function classifyContent(allPerformance: Array<{ entityId: string; score: number }>): {
+  candidates: Array<{
+    entityId: string;
+    value: ContentValueResult;
+    priority: BackgroundJobPriority;
+  }>;
+  protectedCount: number;
+  skippedCount: number;
+} {
+  const candidates: Array<{
+    entityId: string;
+    value: ContentValueResult;
+    priority: BackgroundJobPriority;
+  }> = [];
+  let protectedCount = 0;
+  let skippedCount = 0;
+
+  for (const perf of allPerformance) {
+    if (perf.score > HIGH_PERFORMING_THRESHOLD) {
+      protectedCount++;
+      continue;
+    }
+    const value = calculateContentValue(perf.entityId);
+    if (value.recommendation === "protect") {
+      protectedCount++;
+      continue;
+    }
+    if (value.recommendation === "maintain") {
+      skippedCount++;
+      continue;
+    }
+    const priority: BackgroundJobPriority =
+      value.recommendation === "improve" && value.valueScore < 10 ? "medium" : "low";
+    candidates.push({ entityId: perf.entityId, value, priority });
+  }
+
+  candidates.sort((a, b) => {
+    if (a.priority !== b.priority) return a.priority === "medium" ? -1 : 1;
+    return a.value.valueScore - b.value.valueScore;
+  });
+
+  return { candidates, protectedCount, skippedCount };
+}
+
 export function queueHighValueImprovements(
   maxItems: number = MAX_AUTO_QUEUE_SIZE
 ): AutomationQueueResult {
@@ -204,53 +249,7 @@ export function queueHighValueImprovements(
     };
   }
 
-  const allPerformance = getAllPerformance();
-  const costAnalytics = getCostAnalytics();
-
-  const candidates: Array<{
-    entityId: string;
-    value: ContentValueResult;
-    priority: BackgroundJobPriority;
-  }> = [];
-
-  let protectedCount = 0;
-  let skippedCount = 0;
-
-  for (const perf of allPerformance) {
-    if (perf.score > HIGH_PERFORMING_THRESHOLD) {
-      protectedCount++;
-      continue;
-    }
-
-    const value = calculateContentValue(perf.entityId);
-
-    if (value.recommendation === "protect") {
-      protectedCount++;
-      continue;
-    }
-
-    if (value.recommendation === "maintain") {
-      skippedCount++;
-      continue;
-    }
-
-    const priority: BackgroundJobPriority =
-      value.recommendation === "improve" && value.valueScore < 10 ? "medium" : "low";
-
-    candidates.push({
-      entityId: perf.entityId,
-      value,
-      priority,
-    });
-  }
-
-  candidates.sort((a, b) => {
-    if (a.priority !== b.priority) {
-      return a.priority === "medium" ? -1 : 1;
-    }
-    return a.value.valueScore - b.value.valueScore;
-  });
-
+  const { candidates, protectedCount, skippedCount } = classifyContent(getAllPerformance());
   const toQueue = candidates.slice(0, maxItems);
   const jobIds: string[] = [];
   const errors: string[] = [];
@@ -263,7 +262,6 @@ export function queueHighValueImprovements(
         candidate.priority
       );
       jobIds.push(jobId);
-
       logger.audit("Improvement job scheduled", {
         jobId,
         entityId: candidate.entityId,
@@ -283,14 +281,12 @@ export function queueHighValueImprovements(
 
   lastAutomationRun = new Date();
   automationRunCount++;
-
   logger.info("High-value improvements queued", {
     scheduled: jobIds.length,
     skipped: skippedCount,
     protected: protectedCount,
     runNumber: automationRunCount,
   });
-
   return {
     scheduled: jobIds.length,
     skipped: skippedCount,

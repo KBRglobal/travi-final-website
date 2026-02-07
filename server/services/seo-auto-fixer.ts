@@ -600,45 +600,44 @@ export class SEOAutoFixer {
     }
   }
 
+  private findLocationFromTitle(titleLower: string): { location: string; city: string } {
+    let location = "";
+    let foundCity = "";
+
+    for (const [city, locations] of Object.entries(this.locationPatterns)) {
+      if (titleLower.includes(city.toLowerCase())) {
+        foundCity = city.charAt(0).toUpperCase() + city.slice(1);
+      }
+      for (const loc of locations) {
+        if (!titleLower.includes(loc)) continue;
+        location = loc
+          .split(" ")
+          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ");
+        foundCity = city.charAt(0).toUpperCase() + city.slice(1);
+        break;
+      }
+      if (location) break;
+    }
+
+    return { location, city: foundCity };
+  }
+
+  private buildLocationSuffix(location: string, city: string): string {
+    if (location) return ` - scenic view in ${location}`;
+    if (city) return ` - scenic view in ${city}`;
+    return " - scenic travel view";
+  }
+
   private fixHeroAltText(article: Record<string, unknown>): FixResult {
     try {
       const title = (article.title as string) || "attraction";
-
-      // Find location context from title (destination-agnostic)
       const titleLower = title.toLowerCase();
-      let location = "";
-      let foundCity = "";
 
-      // Search all destination location patterns
-      for (const [city, locations] of Object.entries(this.locationPatterns)) {
-        // Check if city name is in title
-        if (titleLower.includes(city.toLowerCase())) {
-          foundCity = city.charAt(0).toUpperCase() + city.slice(1);
-        }
-        // Check for specific locations within the city
-        for (const loc of locations) {
-          if (titleLower.includes(loc)) {
-            location = loc
-              .split(" ")
-              .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-              .join(" ");
-            foundCity = city.charAt(0).toUpperCase() + city.slice(1);
-            break;
-          }
-        }
-        if (location) break;
-      }
+      const { location, city } = this.findLocationFromTitle(titleLower);
 
-      // Build alt text without assuming specific location
       const cleanTitle = title.replace(/\s*-\s*Complete Guide.*/i, "").replace(/\s*Guide$/i, "");
-      let locationSuffix: string;
-      if (location) {
-        locationSuffix = ` - scenic view in ${location}`;
-      } else if (foundCity) {
-        locationSuffix = ` - scenic view in ${foundCity}`;
-      } else {
-        locationSuffix = " - scenic travel view";
-      }
+      const locationSuffix = this.buildLocationSuffix(location, city);
       const altText = `${cleanTitle}${locationSuffix}`.substring(0, 125);
 
       return {
@@ -839,6 +838,28 @@ export class SEOAutoFixer {
     }
   }
 
+  private collectBlockParts(blocks: Array<Record<string, unknown>> | undefined): string[] {
+    if (!blocks) return [];
+    const parts: string[] = [];
+    for (const block of blocks) {
+      if (block.content) parts.push(block.content as string);
+      if (block.text) parts.push(block.text as string);
+      if (block.items) parts.push((block.items as string[]).join(" "));
+    }
+    return parts;
+  }
+
+  private collectFaqParts(
+    faq: Array<{ question?: string; answer?: string }> | undefined
+  ): string[] {
+    if (!faq) return [];
+    const parts: string[] = [];
+    for (const f of faq) {
+      parts.push(f.question || "", f.answer || "");
+    }
+    return parts;
+  }
+
   private getFullText(article: Record<string, unknown>): string {
     const parts: string[] = [
       (article.title as string) || "",
@@ -846,40 +867,23 @@ export class SEOAutoFixer {
       (article.content as string) || "",
     ];
 
-    // Add blocks content
-    const blocks = article.blocks as Array<Record<string, unknown>> | undefined;
-    if (blocks) {
-      for (const block of blocks) {
-        if (block.content) parts.push(block.content as string);
-        if (block.text) parts.push(block.text as string);
-        if (block.items) parts.push((block.items as string[]).join(" "));
-      }
-    }
+    parts.push(
+      ...this.collectBlockParts(article.blocks as Array<Record<string, unknown>> | undefined)
+    );
 
-    // Add quick facts
     const quickFacts = article.quickFacts as string[] | undefined;
-    if (quickFacts) {
-      parts.push(quickFacts.join(" "));
-    }
+    if (quickFacts) parts.push(quickFacts.join(" "));
 
-    // Add FAQ
-    const faq = article.faq as Array<{ question?: string; answer?: string }> | undefined;
-    if (faq) {
-      for (const f of faq) {
-        parts.push(f.question || "", f.answer || "");
-      }
-    }
+    parts.push(
+      ...this.collectFaqParts(
+        article.faq as Array<{ question?: string; answer?: string }> | undefined
+      )
+    );
 
-    // Add tips
     const proTips = article.proTips as string[] | undefined;
-    if (proTips) {
-      parts.push(proTips.join(" "));
-    }
+    if (proTips) parts.push(proTips.join(" "));
 
-    // Add conclusion
-    if (article.conclusion) {
-      parts.push(article.conclusion as string);
-    }
+    if (article.conclusion) parts.push(article.conclusion as string);
 
     return parts.filter(Boolean).join(" ");
   }

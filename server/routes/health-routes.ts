@@ -18,6 +18,73 @@ function getVersionInfo() {
   };
 }
 
+// Helper: get memory health status
+function getMemoryStatus(): {
+  check: { status: string; usage: number; details: string };
+  isUnhealthy: boolean;
+} {
+  const memUsage = process.memoryUsage();
+  const heapUsedMB = Math.round(memUsage.heapUsed / 1024 / 1024);
+  const MAX_HEAP_MB = 4096; // matches --max-old-space-size in Dockerfile
+  const memoryPercent = Math.round((heapUsedMB / MAX_HEAP_MB) * 100);
+
+  let status = "healthy";
+  let isUnhealthy = false;
+  if (memoryPercent > 90) {
+    status = "critical";
+    isUnhealthy = true;
+  } else if (memoryPercent > 75) {
+    status = "warning";
+  }
+
+  return {
+    check: { status, usage: memoryPercent, details: `${heapUsedMB}MB / ${MAX_HEAP_MB}MB` },
+    isUnhealthy,
+  };
+}
+
+// Helper: format cache check result
+function formatCacheCheck(cacheCheck: { success: boolean; result?: any; error?: string }): {
+  status: string;
+  latency?: number;
+  details?: string;
+} {
+  if (cacheCheck.success && cacheCheck.result) {
+    const cacheErrorDetail = cacheCheck.result.error ? ": " + cacheCheck.result.error : "";
+    return {
+      status: cacheCheck.result.status,
+      latency: cacheCheck.result.latency,
+      details: `${cacheCheck.result.type}${cacheErrorDetail}`,
+    };
+  }
+  return {
+    status: "unknown",
+    details: cacheCheck.error || "Cache check failed",
+  };
+}
+
+// Helper: format storage check result
+function formatStorageCheck(storageCheck: { success: boolean; result?: any; error?: string }): {
+  status: string;
+  latency?: number;
+  details?: string;
+} {
+  if (storageCheck.success && storageCheck.result) {
+    const storageErrorDetail = storageCheck.result.error
+      ? " (" + storageCheck.result.error + ")"
+      : "";
+    return {
+      status: storageCheck.result.status,
+      latency: storageCheck.result.latency,
+      details: `${storageCheck.result.primary || "fallback"}: ${storageCheck.result.fallback}${storageErrorDetail}`,
+    };
+  }
+  return {
+    status: "unknown",
+    details: storageCheck.error || "Storage check skipped (timeout)",
+  };
+}
+
 export function registerHealthRoutes(app: Express): void {
   // Health check endpoint for monitoring and load balancers
   app.get("/api/health", async (_req: Request, res: Response) => {
@@ -87,27 +154,10 @@ export function registerHealthRoutes(app: Express): void {
     };
     if (!dbCheck.success) health.status = "unhealthy";
 
-    // Memory check - use fixed max-old-space-size (4096MB) as reference
-    // Node's heapTotal is dynamic and much smaller than the actual limit,
-    // causing false "critical" alerts when heapUsed/heapTotal > 95%
-    const memUsage = process.memoryUsage();
-    const heapUsedMB = Math.round(memUsage.heapUsed / 1024 / 1024);
-    const MAX_HEAP_MB = 4096; // matches --max-old-space-size in Dockerfile
-    const memoryPercent = Math.round((heapUsedMB / MAX_HEAP_MB) * 100);
-
-    let memoryStatus = "healthy";
-    if (memoryPercent > 90) {
-      memoryStatus = "critical";
-      health.status = "unhealthy";
-    } else if (memoryPercent > 75) {
-      memoryStatus = "warning";
-    }
-
-    health.checks.memory = {
-      status: memoryStatus,
-      usage: memoryPercent,
-      details: `${heapUsedMB}MB / ${MAX_HEAP_MB}MB`,
-    };
+    // Memory check
+    const memoryResult = getMemoryStatus();
+    health.checks.memory = memoryResult.check;
+    if (memoryResult.isUnhealthy) health.status = "unhealthy";
 
     // Event loop check
     const eventLoopStart = Date.now();
@@ -142,36 +192,8 @@ export function registerHealthRoutes(app: Express): void {
       ),
     ]);
 
-    if (cacheCheck.success && cacheCheck.result) {
-      const cacheErrorDetail = cacheCheck.result.error ? ": " + cacheCheck.result.error : "";
-      health.checks.cache = {
-        status: cacheCheck.result.status,
-        latency: cacheCheck.result.latency,
-        details: `${cacheCheck.result.type}${cacheErrorDetail}`,
-      };
-    } else {
-      health.checks.cache = {
-        status: "unknown",
-        details: cacheCheck.error || "Cache check failed",
-      };
-    }
-
-    // Storage timeout/failure should NOT make the whole health check unhealthy
-    if (storageCheck.success && storageCheck.result) {
-      const storageErrorDetail = storageCheck.result.error
-        ? " (" + storageCheck.result.error + ")"
-        : "";
-      health.checks.storage = {
-        status: storageCheck.result.status,
-        latency: storageCheck.result.latency,
-        details: `${storageCheck.result.primary || "fallback"}: ${storageCheck.result.fallback}${storageErrorDetail}`,
-      };
-    } else {
-      health.checks.storage = {
-        status: "unknown",
-        details: storageCheck.error || "Storage check skipped (timeout)",
-      };
-    }
+    health.checks.cache = formatCacheCheck(cacheCheck);
+    health.checks.storage = formatStorageCheck(storageCheck);
 
     health.responseTime = Date.now() - startTime;
 

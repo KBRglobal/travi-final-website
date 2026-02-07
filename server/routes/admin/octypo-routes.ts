@@ -1399,22 +1399,18 @@ router.post("/jobs/create", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Source type is required" });
     }
 
-    let priority: number;
-    if (config.priority === "high") priority = 10;
-    else if (config.priority === "low") priority = 1;
-    else priority = 5;
+    const priorityMap: Record<string, number> = { high: 10, low: 1 };
+    const priority = priorityMap[config.priority || ""] ?? 5;
     const createdJobs: { id: string; type: string; destination?: string }[] = [];
 
-    if (config.sourceType === "rss") {
+    // Helper: create RSS jobs
+    const createRssJobs = async () => {
       if (!config.rssFeedIds || config.rssFeedIds.length === 0) {
         return res.status(400).json({ error: "At least one RSS feed is required" });
       }
-
       const { rssFeeds } = await import("@shared/schema");
       const { inArray } = await import("drizzle-orm");
-
       const feeds = await db.select().from(rssFeeds).where(inArray(rssFeeds.id, config.rssFeedIds));
-
       for (const feed of feeds) {
         const jobId = await jobQueue.addJob(
           "ai_generate" as any,
@@ -1428,22 +1424,21 @@ router.post("/jobs/create", async (req: Request, res: Response) => {
           },
           { priority }
         );
-
         createdJobs.push({
           id: jobId,
           type: "rss-content-generation",
           destination: config.destination || feed.destinationId || undefined,
         });
       }
-
       log.info(`[Octypo] Created ${createdJobs.length} RSS content jobs`);
-    } else if (config.sourceType === "topic") {
+    };
+
+    // Helper: create topic jobs
+    const createTopicJobs = async () => {
       if (!config.topicKeywords || config.topicKeywords.length === 0) {
         return res.status(400).json({ error: "At least one topic keyword is required" });
       }
-
       const quantity = Math.min(config.quantity || 5, 20);
-
       const jobId = await jobQueue.addJob(
         "ai_generate" as any,
         {
@@ -1454,21 +1449,21 @@ router.post("/jobs/create", async (req: Request, res: Response) => {
         },
         { priority }
       );
-
       createdJobs.push({
         id: jobId,
         type: "topic-content-generation",
         destination: config.destination,
       });
-
       log.info(
         `[Octypo] Created topic content job for keywords: ${config.topicKeywords.join(", ")}`
       );
-    } else if (config.sourceType === "manual") {
+    };
+
+    // Helper: create manual jobs
+    const createManualJobs = async () => {
       if (!config.manualContent || config.manualContent.length === 0) {
         return res.status(400).json({ error: "Manual content items required" });
       }
-
       for (const item of config.manualContent) {
         const jobId = await jobQueue.addJob(
           "ai_generate" as any,
@@ -1480,15 +1475,25 @@ router.post("/jobs/create", async (req: Request, res: Response) => {
           },
           { priority }
         );
-
         createdJobs.push({
           id: jobId,
           type: "manual-content-generation",
           destination: config.destination,
         });
       }
-
       log.info(`[Octypo] Created ${createdJobs.length} manual content jobs`);
+    };
+
+    const jobCreators: Record<string, () => Promise<any>> = {
+      rss: createRssJobs,
+      topic: createTopicJobs,
+      manual: createManualJobs,
+    };
+
+    const creator = jobCreators[config.sourceType];
+    if (creator) {
+      const earlyReturn = await creator();
+      if (earlyReturn) return; // Early return from validation errors
     }
 
     res.json({

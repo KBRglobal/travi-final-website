@@ -24,43 +24,55 @@ export class EntityMatcher {
    * Find matching entities in database
    */
   async findMatches(entity: ExtractedEntity): Promise<MatchResult[]> {
-    const results: MatchResult[] = [];
     const normalizedName = this.normalize(entity.name);
 
-    // 1. Exact match
-    const exactMatches = await db
+    // 1. Exact match - return early if found
+    const exactResults = await this.findExactMatches(normalizedName);
+    if (exactResults.length > 0) return exactResults;
+
+    // 2. Partial match (contains)
+    const partialResults = await this.findPartialMatches(normalizedName, entity.type);
+    if (partialResults.length > 0)
+      return partialResults.sort((a, b) => b.matchScore - a.matchScore);
+
+    // 3. Fuzzy match using trigram similarity (if available)
+    const fuzzyResults = await this.findFuzzyMatches(normalizedName, entity.type);
+    return fuzzyResults.sort((a, b) => b.matchScore - a.matchScore);
+  }
+
+  private async findExactMatches(normalizedName: string): Promise<MatchResult[]> {
+    const matches = await db
       .select()
       .from(contentEntities)
       .where(eq(contentEntities.normalizedName, normalizedName))
       .limit(5);
 
-    for (const match of exactMatches) {
-      results.push({
-        entityId: match.id,
-        name: match.name,
-        normalizedName: match.normalizedName,
-        matchScore: 1,
-        matchType: "exact",
-      });
-    }
+    return matches.map(match => ({
+      entityId: match.id,
+      name: match.name,
+      normalizedName: match.normalizedName,
+      matchScore: 1,
+      matchType: "exact" as const,
+    }));
+  }
 
-    if (results.length > 0) {
-      return results; // Return early if exact match found
-    }
-
-    // 2. Partial match (contains)
-    const partialMatches = await db
+  private async findPartialMatches(
+    normalizedName: string,
+    entityType: EntityType
+  ): Promise<MatchResult[]> {
+    const matches = await db
       .select()
       .from(contentEntities)
       .where(
         and(
-          eq(contentEntities.entityType, entity.type),
+          eq(contentEntities.entityType, entityType),
           ilike(contentEntities.normalizedName, `%${normalizedName}%`)
         )
       )
       .limit(10);
 
-    for (const match of partialMatches) {
+    const results: MatchResult[] = [];
+    for (const match of matches) {
       const score = this.calculateSimilarity(normalizedName, match.normalizedName);
       if (score >= this.PARTIAL_THRESHOLD) {
         results.push({
@@ -72,43 +84,47 @@ export class EntityMatcher {
         });
       }
     }
+    return results;
+  }
 
-    // 3. Fuzzy match using trigram similarity (if available)
-    if (results.length === 0) {
-      try {
-        const fuzzyMatches = await db.execute(
-          sql`SELECT id, name, normalized_name,
-              similarity(normalized_name, ${normalizedName}) as score
-              FROM content_entities
-              WHERE entity_type = ${entity.type}
-              AND similarity(normalized_name, ${normalizedName}) > ${this.PARTIAL_THRESHOLD}
-              ORDER BY score DESC
-              LIMIT 5`
-        );
+  private async findFuzzyMatches(
+    normalizedName: string,
+    entityType: EntityType
+  ): Promise<MatchResult[]> {
+    try {
+      const fuzzyMatches = await db.execute(
+        sql`SELECT id, name, normalized_name,
+            similarity(normalized_name, ${normalizedName}) as score
+            FROM content_entities
+            WHERE entity_type = ${entityType}
+            AND similarity(normalized_name, ${normalizedName}) > ${this.PARTIAL_THRESHOLD}
+            ORDER BY score DESC
+            LIMIT 5`
+      );
 
-        if (Array.isArray(fuzzyMatches.rows)) {
-          for (const row of fuzzyMatches.rows) {
-            const typedRow = row as {
-              id: string;
-              name: string;
-              normalized_name: string;
-              score: number;
-            };
-            results.push({
-              entityId: typedRow.id,
-              name: typedRow.name,
-              normalizedName: typedRow.normalized_name,
-              matchScore: typedRow.score,
-              matchType: typedRow.score >= this.FUZZY_THRESHOLD ? "fuzzy" : "partial",
-            });
-          }
-        }
-      } catch {
-        // Trigram extension might not be available
-      }
+      if (!Array.isArray(fuzzyMatches.rows)) return [];
+
+      return fuzzyMatches.rows.map(row => {
+        const typedRow = row as {
+          id: string;
+          name: string;
+          normalized_name: string;
+          score: number;
+        };
+        return {
+          entityId: typedRow.id,
+          name: typedRow.name,
+          normalizedName: typedRow.normalized_name,
+          matchScore: typedRow.score,
+          matchType: (typedRow.score >= this.FUZZY_THRESHOLD ? "fuzzy" : "partial") as
+            | "fuzzy"
+            | "partial",
+        };
+      });
+    } catch {
+      // Trigram extension might not be available
+      return [];
     }
-
-    return results.sort((a, b) => b.matchScore - a.matchScore);
   }
 
   /**

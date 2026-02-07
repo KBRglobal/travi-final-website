@@ -13,6 +13,30 @@ export function isAlertingEnabled(): boolean {
   return process.env.ENABLE_ALERTING_SYSTEM === "true";
 }
 
+async function handleTriggeredRule(
+  rule: (typeof alertRules)[number],
+  message: string,
+  metadata: Record<string, unknown>
+): Promise<void> {
+  const existingAlert = await repository.findActiveAlertByType(rule.type);
+  if (existingAlert) return;
+
+  const newAlert = await repository.createAlert(rule.type, rule.severity, message, metadata);
+  if (newAlert) {
+    dispatchAlert(newAlert);
+  }
+}
+
+async function handleResolvedRule(rule: (typeof alertRules)[number]): Promise<void> {
+  const existingAlert = await repository.findActiveAlertByType(rule.type);
+  if (!existingAlert) return;
+
+  const resolved = await repository.resolveAlert(existingAlert.id);
+  if (resolved) {
+    dispatchResolution({ ...existingAlert, isActive: false, resolvedAt: new Date() });
+  }
+}
+
 export async function runDetection(): Promise<void> {
   if (!isAlertingEnabled()) return;
 
@@ -23,26 +47,9 @@ export async function runDetection(): Promise<void> {
       const result = await rule.detect();
 
       if (result.triggered) {
-        const existingAlert = await repository.findActiveAlertByType(rule.type);
-        if (!existingAlert) {
-          const newAlert = await repository.createAlert(
-            rule.type,
-            rule.severity,
-            result.message,
-            result.metadata || {}
-          );
-          if (newAlert) {
-            dispatchAlert(newAlert);
-          }
-        }
+        await handleTriggeredRule(rule, result.message, result.metadata || {});
       } else {
-        const existingAlert = await repository.findActiveAlertByType(rule.type);
-        if (existingAlert) {
-          const resolved = await repository.resolveAlert(existingAlert.id);
-          if (resolved) {
-            dispatchResolution({ ...existingAlert, isActive: false, resolvedAt: new Date() });
-          }
-        }
+        await handleResolvedRule(rule);
       }
     } catch (error) {
       /* ignored */

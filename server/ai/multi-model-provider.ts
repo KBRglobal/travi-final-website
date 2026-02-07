@@ -181,6 +181,38 @@ export class MultiModelProvider {
     return client;
   }
 
+  private initializeSimpleOpenAIProvider(
+    OpenAICtor: typeof import("openai").default,
+    name: string,
+    priority: number,
+    model: string,
+    apiKey: string | null,
+    baseURL: string,
+    defaultHeaders?: Record<string, string>
+  ): OpenAI | null {
+    if (!apiKey) {
+      this.providers.push({ name, available: false, priority, reason: "No API key configured" });
+      return null;
+    }
+    try {
+      const client = new OpenAICtor({
+        apiKey,
+        baseURL,
+        ...(defaultHeaders ? { defaultHeaders } : {}),
+      });
+      this.providers.push({ name, available: true, priority, model });
+      logger.info(`${name} provider initialized successfully`);
+      return client;
+    } catch (error) {
+      logger.warn({ error: String(error) }, `Failed to initialize ${name} provider`);
+      return null;
+    }
+  }
+
+  private addDisabledProvider(name: string, priority: number, reason: string): void {
+    this.providers.push({ name, available: false, priority, reason });
+  }
+
   private async initializeProviders(): Promise<void> {
     this.providers = [];
 
@@ -190,17 +222,13 @@ export class MultiModelProvider {
       lazyGoogleGenAI(),
     ]);
 
-    // Priority 1: Anthropic (Claude) - Support for 6 parallel API keys
+    // Priority 1: Anthropic
     const anthropicKeys = this.getAllAnthropicKeys();
     const anthropicBaseUrl = process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL;
     if (anthropicKeys.length > 0) {
       try {
         this.anthropicClients = anthropicKeys.map(
-          key =>
-            new AnthropicCtor({
-              apiKey: key,
-              baseURL: anthropicBaseUrl || undefined,
-            })
+          key => new AnthropicCtor({ apiKey: key, baseURL: anthropicBaseUrl || undefined })
         );
         this.providers.push({
           name: "anthropic",
@@ -216,15 +244,10 @@ export class MultiModelProvider {
         logger.warn({ error: String(error) }, "Failed to initialize Anthropic provider");
       }
     } else {
-      this.providers.push({
-        name: "anthropic",
-        available: false,
-        priority: 1,
-        reason: "No API key configured",
-      });
+      this.addDisabledProvider("anthropic", 1, "No API key configured");
     }
 
-    // Priority 2: OpenAI (GPT-4)
+    // Priority 2: OpenAI
     const openaiKey = this.getOpenAIKey();
     const openaiBaseUrl = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
     if (openaiKey) {
@@ -233,26 +256,16 @@ export class MultiModelProvider {
           apiKey: openaiKey,
           baseURL: openaiBaseUrl || undefined,
         });
-        this.providers.push({
-          name: "openai",
-          available: true,
-          priority: 2,
-          model: "gpt-4o",
-        });
+        this.providers.push({ name: "openai", available: true, priority: 2, model: "gpt-4o" });
         logger.info("OpenAI provider initialized successfully");
       } catch (error) {
         logger.warn({ error: String(error) }, "Failed to initialize OpenAI provider");
       }
     } else {
-      this.providers.push({
-        name: "openai",
-        available: false,
-        priority: 2,
-        reason: "No API key configured",
-      });
+      this.addDisabledProvider("openai", 2, "No API key configured");
     }
 
-    // Priority 3: Google Gemini
+    // Priority 3: Gemini
     const geminiKey = this.getGeminiKey();
     if (geminiKey) {
       try {
@@ -268,125 +281,52 @@ export class MultiModelProvider {
         logger.warn({ error: String(error) }, "Failed to initialize Gemini provider");
       }
     } else {
-      this.providers.push({
-        name: "gemini",
-        available: false,
-        priority: 3,
-        reason: "No API key configured",
-      });
+      this.addDisabledProvider("gemini", 3, "No API key configured");
     }
 
     // Priority 4: OpenRouter
-    const openrouterKey = this.getOpenRouterKey();
-    if (openrouterKey) {
-      try {
-        this.openrouterClient = new OpenAICtor({
-          apiKey: openrouterKey,
-          baseURL: "https://openrouter.ai/api/v1",
-          defaultHeaders: {
-            "HTTP-Referer": process.env.APP_URL || "https://travi.world",
-            "X-Title": "Travi CMS",
-          },
-        });
-        this.providers.push({
-          name: "openrouter",
-          available: true,
-          priority: 4,
-          model: "anthropic/claude-3.5-sonnet",
-        });
-        logger.info("OpenRouter provider initialized successfully");
-      } catch (error) {
-        logger.warn({ error: String(error) }, "Failed to initialize OpenRouter provider");
-      }
-    } else {
-      this.providers.push({
-        name: "openrouter",
-        available: false,
-        priority: 4,
-        reason: "No API key configured",
-      });
-    }
+    this.openrouterClient = this.initializeSimpleOpenAIProvider(
+      OpenAICtor,
+      "openrouter",
+      4,
+      "anthropic/claude-3.5-sonnet",
+      this.getOpenRouterKey(),
+      "https://openrouter.ai/api/v1",
+      { "HTTP-Referer": process.env.APP_URL || "https://travi.world", "X-Title": "Travi CMS" }
+    );
 
-    // Priority 5: DeepSeek - disabled due to connection issues
-    this.providers.push({
-      name: "deepseek",
-      available: false,
-      priority: 5,
-      reason: "Disabled - connection issues",
-    });
+    // Priority 5: DeepSeek (disabled)
+    this.addDisabledProvider("deepseek", 5, "Disabled - connection issues");
 
     // Priority 6: Perplexity
-    const perplexityKey = process.env.PERPLEXITY_API_KEY;
-    if (perplexityKey) {
-      try {
-        this.perplexityClient = new OpenAICtor({
-          apiKey: perplexityKey,
-          baseURL: "https://api.perplexity.ai",
-        });
-        this.providers.push({
-          name: "perplexity",
-          available: true,
-          priority: 6,
-          model: "sonar",
-        });
-        logger.info("Perplexity provider initialized successfully");
-      } catch (error) {
-        logger.warn({ error: String(error) }, "Failed to initialize Perplexity provider");
-      }
-    } else {
-      this.providers.push({
-        name: "perplexity",
-        available: false,
-        priority: 6,
-        reason: "No API key configured",
-      });
-    }
+    this.perplexityClient = this.initializeSimpleOpenAIProvider(
+      OpenAICtor,
+      "perplexity",
+      6,
+      "sonar",
+      process.env.PERPLEXITY_API_KEY || null,
+      "https://api.perplexity.ai"
+    );
 
-    // Priority 7: Groq (DISABLED - aggressive rate limiting causes mass failures)
-    this.providers.push({
-      name: "groq",
-      available: false,
-      priority: 7,
-      reason: "Disabled - aggressive rate limiting",
-    });
+    // Priority 7: Groq (disabled)
+    this.addDisabledProvider("groq", 7, "Disabled - aggressive rate limiting");
 
-    // Priority 8: Mistral (high quality, competitive pricing)
-    const mistralKey = process.env.MISTRAL_API_KEY;
-    if (mistralKey) {
-      try {
-        this.mistralClient = new OpenAICtor({
-          apiKey: mistralKey,
-          baseURL: "https://api.mistral.ai/v1",
-        });
-        this.providers.push({
-          name: "mistral",
-          available: true,
-          priority: 8,
-          model: "mistral-large-latest",
-        });
-        logger.info("Mistral provider initialized successfully");
-      } catch (error) {
-        logger.warn({ error: String(error) }, "Failed to initialize Mistral provider");
-      }
-    } else {
-      this.providers.push({
-        name: "mistral",
-        available: false,
-        priority: 8,
-        reason: "No API key configured",
-      });
-    }
+    // Priority 8: Mistral
+    this.mistralClient = this.initializeSimpleOpenAIProvider(
+      OpenAICtor,
+      "mistral",
+      8,
+      "mistral-large-latest",
+      process.env.MISTRAL_API_KEY || null,
+      "https://api.mistral.ai/v1"
+    );
 
-    // Priority 9: Helicone AI Gateway (0% markup, 100+ models) - Support for 6 parallel API keys
+    // Priority 9: Helicone
     const heliconeKeys = this.getAllHeliconeKeys();
     if (heliconeKeys.length > 0) {
       try {
         this.heliconeClients = heliconeKeys.map(
-          key =>
-            new OpenAICtor({
-              apiKey: key,
-              baseURL: "https://ai-gateway.helicone.ai",
-            })
+          key => new OpenAICtor({ apiKey: key, baseURL: "https://ai-gateway.helicone.ai" })
         );
         this.providers.push({
           name: "helicone",
@@ -402,15 +342,10 @@ export class MultiModelProvider {
         logger.warn({ error: String(error) }, "Failed to initialize Helicone provider");
       }
     } else {
-      this.providers.push({
-        name: "helicone",
-        available: false,
-        priority: 9,
-        reason: "No API key configured",
-      });
+      this.addDisabledProvider("helicone", 9, "No API key configured");
     }
 
-    // Priority 10: Eden AI (unified API for 100+ models)
+    // Priority 10: Eden AI
     const edenKey = process.env.EDEN_API_KEY;
     if (edenKey) {
       try {
@@ -426,17 +361,10 @@ export class MultiModelProvider {
         logger.warn({ error: String(error) }, "Failed to initialize Eden AI provider");
       }
     } else {
-      this.providers.push({
-        name: "eden",
-        available: false,
-        priority: 10,
-        reason: "No API key configured",
-      });
+      this.addDisabledProvider("eden", 10, "No API key configured");
     }
 
-    // Sort by priority
     this.providers.sort((a, b) => a.priority - b.priority);
-
     const availableCount = this.providers.filter(p => p.available).length;
     logger.info(
       { availableProviders: availableCount, totalProviders: this.providers.length },

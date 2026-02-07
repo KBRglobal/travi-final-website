@@ -398,54 +398,41 @@ Your output should be immediately usable as the first paragraph of a content pag
 /**
  * Evaluate the quality of a generated capsule
  */
-function evaluateQuality(
-  capsuleText: string,
-  quickAnswer: string,
-  keyFacts: string[],
-  differentiator: string
-): number {
-  let score = 0;
-
-  // Word count check (0-25 points)
+function scoreWordCount(capsuleText: string): number {
   const wordCount = countWords(capsuleText);
-  if (wordCount >= ANSWER_CAPSULE_CONFIG.minWords && wordCount <= ANSWER_CAPSULE_CONFIG.maxWords) {
-    score += 25;
-  } else if (wordCount >= 30 && wordCount <= 70) {
-    score += 15;
-  }
+  if (wordCount >= ANSWER_CAPSULE_CONFIG.minWords && wordCount <= ANSWER_CAPSULE_CONFIG.maxWords)
+    return 25;
+  if (wordCount >= 30 && wordCount <= 70) return 15;
+  return 0;
+}
 
-  // Quick answer check (0-15 points)
+function scoreQuickAnswer(quickAnswer: string): number {
   const quickWordCount = countWords(quickAnswer);
   if (
     quickWordCount >= ANSWER_CAPSULE_CONFIG.quickAnswerMinWords &&
     quickWordCount <= ANSWER_CAPSULE_CONFIG.quickAnswerMaxWords
-  ) {
-    score += 15;
-  } else if (quickWordCount > 0 && quickWordCount <= 25) {
-    score += 8;
-  }
+  )
+    return 15;
+  if (quickWordCount > 0 && quickWordCount <= 25) return 8;
+  return 0;
+}
 
-  // Key facts check (0-20 points)
-  if (keyFacts.length >= 3 && keyFacts.length <= 5) {
-    score += 20;
-  } else if (keyFacts.length > 0) {
-    score += keyFacts.length * 4;
-  }
+function scoreKeyFacts(keyFacts: string[]): number {
+  if (keyFacts.length >= 3 && keyFacts.length <= 5) return 20;
+  if (keyFacts.length > 0) return keyFacts.length * 4;
+  return 0;
+}
 
-  // Differentiator check (0-15 points)
-  if (differentiator && differentiator.length > 20) {
-    score += 15;
-  } else if (differentiator && differentiator.length > 0) {
-    score += 8;
-  }
+function scoreDifferentiator(differentiator: string): number {
+  if (differentiator && differentiator.length > 20) return 15;
+  if (differentiator && differentiator.length > 0) return 8;
+  return 0;
+}
 
-  // Content quality checks (0-25 points)
-  // Check for specific numbers
-  if (/\d+/.test(capsuleText)) {
-    score += 5;
-  }
+function scoreContentQuality(capsuleText: string): number {
+  let score = 0;
+  if (/\d+/.test(capsuleText)) score += 5;
 
-  // Check for no marketing clichés
   const cliches = [
     "must-visit",
     "hidden gem",
@@ -454,20 +441,25 @@ function evaluateQuality(
     "incredible",
     "jaw-dropping",
   ];
-  const hasCliches = cliches.some(c => capsuleText.toLowerCase().includes(c));
-  if (!hasCliches) {
-    score += 10;
-  }
+  if (!cliches.some(c => capsuleText.toLowerCase().includes(c))) score += 10;
+  if (!/[\u{1F300}-\u{1F9FF}]/u.test(capsuleText)) score += 5;
+  if (!capsuleText.includes("!")) score += 5;
 
-  // Check for no emojis
-  if (!/[\u{1F300}-\u{1F9FF}]/u.test(capsuleText)) {
-    score += 5;
-  }
+  return score;
+}
 
-  // Check for factual tone (no exclamation marks)
-  if (!capsuleText.includes("!")) {
-    score += 5;
-  }
+function evaluateQuality(
+  capsuleText: string,
+  quickAnswer: string,
+  keyFacts: string[],
+  differentiator: string
+): number {
+  const score =
+    scoreWordCount(capsuleText) +
+    scoreQuickAnswer(quickAnswer) +
+    scoreKeyFacts(keyFacts) +
+    scoreDifferentiator(differentiator) +
+    scoreContentQuality(capsuleText);
 
   return Math.min(100, score);
 }

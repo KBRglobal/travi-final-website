@@ -362,38 +362,116 @@ function normalizeQuery(query: string): string {
  * NEVER returns empty results - always provides usable content
  * ALWAYS returns structured response with suggestions and message
  */
+/** Deduplicate search results into allResults and seenIds */
+async function searchAndDedupe(
+  queries: string[],
+  types: SearchServiceOptions["types"],
+  seenIds: Set<string>,
+  allResults: SearchResult[]
+): Promise<void> {
+  for (const searchQuery of queries) {
+    const results = await searchAll({ query: searchQuery, limit: 0, types });
+    for (const result of results) {
+      if (!seenIds.has(result.id)) {
+        seenIds.add(result.id);
+        allResults.push(result);
+      }
+    }
+  }
+}
+
+/** Build common expansion info */
+function buildExpansionInfo(
+  expansion: { original: string; synonymsApplied: string[]; resolvedCity: string | null },
+  overrideSynonyms?: string[]
+) {
+  return {
+    original: expansion.original,
+    synonymsApplied: overrideSynonyms ?? expansion.synonymsApplied,
+    resolvedCity: expansion.resolvedCity,
+  };
+}
+
+/** Track search telemetry */
+function trackSearch(
+  query: string,
+  resultCount: number,
+  fallback: boolean,
+  startTime: number
+): void {
+  searchTelemetry.track({ query, resultCount, fallback, responseTimeMs: Date.now() - startTime });
+}
+
+/** Try fuzzy match via spell correction */
+async function tryFuzzyMatch(
+  trimmedQuery: string,
+  types: SearchServiceOptions["types"],
+  sessionId: string | undefined,
+  activeIntent: UnifiedIntentType | undefined,
+  limit: number,
+  expansion: any,
+  startTime: number
+): Promise<PublicSearchResponse | null> {
+  const spellResult = await spellChecker.check(trimmedQuery);
+  if (!spellResult.wasChanged || spellResult.confidence < 0.6) return null;
+
+  const fuzzyResults = await searchAll({ query: spellResult.corrected, limit: 0, types });
+  if (fuzzyResults.length === 0) return null;
+
+  const rankedResults = applyRankingSignals(
+    fuzzyResults,
+    spellResult.corrected,
+    sessionId,
+    activeIntent
+  );
+  recordLoopStep("search", 2, "content_discovery");
+  trackSearch(trimmedQuery, rankedResults.slice(0, limit).length, true, startTime);
+
+  return {
+    results: rankedResults.slice(0, limit),
+    fallback: true,
+    fallbackUsed: true,
+    fallbackStage: "fuzzy_match",
+    query: trimmedQuery,
+    total: rankedResults.length,
+    suggestions: generateSuggestions(
+      trimmedQuery,
+      spellResult,
+      await getPopularSearchSuggestions(3)
+    ),
+    message: generateFallbackMessage("fuzzy_match", trimmedQuery, spellResult.corrected),
+    expansion: buildExpansionInfo(expansion),
+    spellCorrection: {
+      original: spellResult.original,
+      corrected: spellResult.corrected,
+      wasChanged: spellResult.wasChanged,
+      confidence: spellResult.confidence,
+    },
+    intentDetected: activeIntent,
+  };
+}
+
 export async function publicSearch(options: SearchServiceOptions): Promise<PublicSearchResponse> {
   const startTime = Date.now();
   const { query, limit = 10, types, sessionId, intent: explicitIntent } = options;
   const trimmedQuery = query?.trim() || "";
 
-  // Record search loop entry for growth metrics
-  const entryPointType = sessionId ? "session" : "api";
-  recordLoopEntry("search", { source: entryPointType } as any);
+  recordLoopEntry("search", { source: sessionId ? "session" : "api" } as any);
 
-  // Detect intent from query and sync to cognitive layer
   let detectedIntent: UnifiedIntentType | null = null;
   if (trimmedQuery && sessionId) {
     syncSearchIntentToChat(trimmedQuery, "search" as UnifiedIntentType);
     detectedIntent = getDominantUnifiedIntent(sessionId);
   }
+  const activeIntent = explicitIntent || detectedIntent || undefined;
 
-  const activeIntent = explicitIntent || detectedIntent;
-
-  // === EMPTY QUERY: Return popular content ===
+  // === EMPTY QUERY ===
   if (!trimmedQuery) {
     const [fallbackResults, popularSuggestions] = await Promise.all([
       getFallbackResults(limit),
       getPopularSearchSuggestions(5),
     ]);
-
-    searchTelemetry.track({
-      query: "",
-      resultCount: fallbackResults.length,
-      fallback: true,
-      responseTimeMs: Date.now() - startTime,
-    });
-
+    trackSearch("", fallbackResults.length, true, startTime);
     return {
       results: fallbackResults,
       fallback: true,
@@ -406,199 +484,84 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
     };
   }
 
-  // === QUERY NORMALIZATION ===
   const processed = queryProcessor.process(trimmedQuery);
-
-  // === STEP 1: EXACT MATCH ===
   const expansion = expandQuery(trimmedQuery);
   let allResults: SearchResult[] = [];
   const seenIds = new Set<string>();
 
-  // Search with original and city-resolved queries
+  // === STEP 1: EXACT MATCH ===
   const searchQueries = [trimmedQuery];
   if (expansion.resolvedCity && !trimmedQuery.toLowerCase().includes(expansion.resolvedCity)) {
     searchQueries.push(expansion.resolvedCity);
   }
+  await searchAndDedupe(searchQueries, types, seenIds, allResults);
 
-  for (const searchQuery of searchQueries) {
-    const results = await searchAll({
-      query: searchQuery,
-      limit: 0, // NO LIMIT - fetch ALL matches
-      types,
-    });
-
-    for (const result of results) {
-      if (!seenIds.has(result.id)) {
-        seenIds.add(result.id);
-        allResults.push(result);
-      }
-    }
-  }
-
-  // Check if exact match found
   if (allResults.length > 0) {
-    allResults = applyRankingSignals(
-      allResults,
-      trimmedQuery,
-      sessionId,
-      activeIntent || undefined
-    );
-    const paginatedResults = allResults.slice(0, limit);
+    allResults = applyRankingSignals(allResults, trimmedQuery, sessionId, activeIntent);
     recordLoopStep("search", 1, "content_discovery");
-
-    searchTelemetry.track({
-      query: trimmedQuery,
-      resultCount: paginatedResults.length,
-      fallback: false,
-      responseTimeMs: Date.now() - startTime,
-    });
-
+    trackSearch(trimmedQuery, allResults.slice(0, limit).length, false, startTime);
     return {
-      results: paginatedResults,
+      results: allResults.slice(0, limit),
       fallback: false,
       fallbackUsed: false,
       fallbackStage: "exact_match",
       query: trimmedQuery,
-      total: allResults.length, // Total BEFORE pagination
+      total: allResults.length,
       suggestions: [],
       message: generateFallbackMessage("exact_match", trimmedQuery),
-      expansion: {
-        original: expansion.original,
-        synonymsApplied: expansion.synonymsApplied,
-        resolvedCity: expansion.resolvedCity,
-      },
-      intentDetected: activeIntent || undefined,
+      expansion: buildExpansionInfo(expansion),
+      intentDetected: activeIntent,
     };
   }
 
-  // === STEP 2: FUZZY MATCH (Spell Correction) ===
-  const spellResult = await spellChecker.check(trimmedQuery);
-
-  if (spellResult.wasChanged && spellResult.confidence >= 0.6) {
-    const fuzzyResults = await searchAll({
-      query: spellResult.corrected,
-      limit: 0, // NO LIMIT - fetch ALL matches
-      types,
-    });
-
-    if (fuzzyResults.length > 0) {
-      let rankedResults = applyRankingSignals(
-        fuzzyResults,
-        spellResult.corrected,
-        sessionId,
-        activeIntent || undefined
-      );
-      const totalFuzzy = rankedResults.length;
-      const paginatedFuzzy = rankedResults.slice(0, limit);
-      recordLoopStep("search", 2, "content_discovery");
-
-      searchTelemetry.track({
-        query: trimmedQuery,
-        resultCount: paginatedFuzzy.length,
-        fallback: true,
-        responseTimeMs: Date.now() - startTime,
-      });
-
-      return {
-        results: paginatedFuzzy,
-        fallback: true,
-        fallbackUsed: true,
-        fallbackStage: "fuzzy_match",
-        query: trimmedQuery,
-        total: totalFuzzy, // Total BEFORE pagination
-        suggestions: generateSuggestions(
-          trimmedQuery,
-          spellResult,
-          await getPopularSearchSuggestions(3)
-        ),
-        message: generateFallbackMessage("fuzzy_match", trimmedQuery, spellResult.corrected),
-        expansion: {
-          original: expansion.original,
-          synonymsApplied: expansion.synonymsApplied,
-          resolvedCity: expansion.resolvedCity,
-        },
-        spellCorrection: {
-          original: spellResult.original,
-          corrected: spellResult.corrected,
-          wasChanged: spellResult.wasChanged,
-          confidence: spellResult.confidence,
-        },
-        intentDetected: activeIntent || undefined,
-      };
-    }
-  }
+  // === STEP 2: FUZZY MATCH ===
+  const fuzzyResponse = await tryFuzzyMatch(
+    trimmedQuery,
+    types,
+    sessionId,
+    activeIntent,
+    limit,
+    expansion,
+    startTime
+  );
+  if (fuzzyResponse) return fuzzyResponse;
 
   // === STEP 3: SYNONYM MATCH ===
   const synonymExpansion = synonymExpander.expand(processed.tokens, processed.language);
-
   if (synonymExpansion.expanded.length > processed.tokens.length) {
-    for (const synonymTerm of synonymExpansion.expanded) {
-      const synonymResults = await searchAll({
-        query: synonymTerm,
-        limit: 0, // NO LIMIT - fetch ALL matches
-        types,
-      });
-
-      for (const result of synonymResults) {
-        if (!seenIds.has(result.id)) {
-          seenIds.add(result.id);
-          allResults.push(result);
-        }
-      }
-    }
+    await searchAndDedupe(synonymExpansion.expanded, types, seenIds, allResults);
 
     if (allResults.length > 0) {
-      allResults = applyRankingSignals(
-        allResults,
-        trimmedQuery,
-        sessionId,
-        activeIntent || undefined
-      );
-      const totalSynonym = allResults.length;
-      const paginatedSynonym = allResults.slice(0, limit);
+      allResults = applyRankingSignals(allResults, trimmedQuery, sessionId, activeIntent);
       recordLoopStep("search", 3, "content_discovery");
-
-      searchTelemetry.track({
-        query: trimmedQuery,
-        resultCount: paginatedSynonym.length,
-        fallback: true,
-        responseTimeMs: Date.now() - startTime,
-      });
-
+      trackSearch(trimmedQuery, allResults.slice(0, limit).length, true, startTime);
+      const spellResult = await spellChecker.check(trimmedQuery);
       return {
-        results: paginatedSynonym,
+        results: allResults.slice(0, limit),
         fallback: true,
         fallbackUsed: true,
         fallbackStage: "synonym_match",
         query: trimmedQuery,
-        total: totalSynonym, // Total BEFORE pagination
+        total: allResults.length,
         suggestions: generateSuggestions(
           trimmedQuery,
           spellResult,
           await getPopularSearchSuggestions(3)
         ),
         message: generateFallbackMessage("synonym_match", trimmedQuery),
-        expansion: {
-          original: expansion.original,
-          synonymsApplied: synonymExpansion.expanded.filter(e => !processed.tokens.includes(e)),
-          resolvedCity: expansion.resolvedCity,
-        },
-        intentDetected: activeIntent || undefined,
+        expansion: buildExpansionInfo(
+          expansion,
+          synonymExpansion.expanded.filter(e => !processed.tokens.includes(e))
+        ),
+        intentDetected: activeIntent,
       };
     }
   }
 
   // === STEP 4: POPULAR FALLBACK ===
-  // No results found in any stage - return popular content with helpful messaging
   const fallbackResults = await getFallbackResults(limit);
-
-  searchTelemetry.track({
-    query: trimmedQuery,
-    resultCount: 0,
-    fallback: true,
-    responseTimeMs: Date.now() - startTime,
-  });
-
+  trackSearch(trimmedQuery, 0, true, startTime);
+  const spellResult = await spellChecker.check(trimmedQuery);
   return {
     results: fallbackResults,
     fallback: true,
@@ -612,11 +575,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
       await getPopularSearchSuggestions(3)
     ),
     message: generateFallbackMessage("popular_fallback", trimmedQuery),
-    expansion: {
-      original: expansion.original,
-      synonymsApplied: expansion.synonymsApplied,
-      resolvedCity: expansion.resolvedCity,
-    },
+    expansion: buildExpansionInfo(expansion),
     spellCorrection: spellResult.wasChanged
       ? {
           original: spellResult.original,
@@ -625,7 +584,7 @@ export async function publicSearch(options: SearchServiceOptions): Promise<Publi
           confidence: spellResult.confidence,
         }
       : undefined,
-    intentDetected: activeIntent || undefined,
+    intentDetected: activeIntent,
   };
 }
 

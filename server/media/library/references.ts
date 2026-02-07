@@ -120,67 +120,75 @@ function safeGetValue(obj: unknown, key: string): unknown {
 /**
  * Recursively extract media references from an object
  */
+/** Check if a string is a media path and create a reference */
+function createMediaRefFromString(
+  str: string,
+  source: string,
+  contentId?: string
+): MediaReference | null {
+  const normalized = normalizeMediaPath(str);
+  if (
+    normalized &&
+    (normalized.startsWith("uploads/") || normalized.startsWith("attached_assets/"))
+  ) {
+    return { path: str, normalizedPath: normalized, source, contentId };
+  }
+  return null;
+}
+
+/** Extract media references from known image fields in a record */
+function extractFromImageFields(
+  record: Record<string, unknown>,
+  source: string,
+  contentId?: string
+): MediaReference[] {
+  const refs: MediaReference[] = [];
+  for (const field of IMAGE_FIELDS) {
+    const value = safeGetValue(record, field);
+    if (typeof value === "string" && value) {
+      const normalized = normalizeMediaPath(value);
+      if (normalized) {
+        refs.push({
+          path: value,
+          normalizedPath: normalized,
+          source: `${source}.${field}`,
+          contentId,
+        });
+      }
+    }
+  }
+  return refs;
+}
+
 function extractFromObject(
   obj: unknown,
   source: string,
   contentId?: string,
   depth = 0
 ): MediaReference[] {
-  // Prevent infinite recursion
-  if (depth > 10 || !obj) {
-    return [];
-  }
-
-  const references: MediaReference[] = [];
+  if (depth > 10 || !obj) return [];
 
   if (typeof obj === "string") {
-    // Check if the string itself is a media path
-    const normalized = normalizeMediaPath(obj);
-    if (
-      normalized &&
-      (normalized.startsWith("uploads/") || normalized.startsWith("attached_assets/"))
-    ) {
-      references.push({
-        path: obj,
-        normalizedPath: normalized,
-        source,
-        contentId,
-      });
-    }
-    return references;
+    const ref = createMediaRefFromString(obj, source, contentId);
+    return ref ? [ref] : [];
   }
 
   if (Array.isArray(obj)) {
+    const refs: MediaReference[] = [];
     for (let i = 0; i < obj.length; i++) {
-      references.push(...extractFromObject(obj[i], `${source}[${i}]`, contentId, depth + 1));
+      refs.push(...extractFromObject(obj[i], `${source}[${i}]`, contentId, depth + 1));
     }
-    return references;
+    return refs;
   }
 
-  if (typeof obj === "object" && obj !== null) {
-    const record = obj as Record<string, unknown>;
+  if (typeof obj !== "object" || obj === null) return [];
 
-    // Check known image fields first
-    for (const field of IMAGE_FIELDS) {
-      const value = safeGetValue(record, field);
-      if (typeof value === "string" && value) {
-        const normalized = normalizeMediaPath(value);
-        if (normalized) {
-          references.push({
-            path: value,
-            normalizedPath: normalized,
-            source: `${source}.${field}`,
-            contentId,
-          });
-        }
-      }
-    }
+  const record = obj as Record<string, unknown>;
+  const references = extractFromImageFields(record, source, contentId);
 
-    // Recursively check all properties
-    for (const [key, value] of Object.entries(record)) {
-      if (!IMAGE_FIELDS.includes(key)) {
-        references.push(...extractFromObject(value, `${source}.${key}`, contentId, depth + 1));
-      }
+  for (const [key, value] of Object.entries(record)) {
+    if (!IMAGE_FIELDS.includes(key)) {
+      references.push(...extractFromObject(value, `${source}.${key}`, contentId, depth + 1));
     }
   }
 

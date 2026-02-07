@@ -460,6 +460,101 @@ export class GuideRewriteService {
     return { results };
   }
 
+  /** Parse wiki markup (== Heading ==) into sections */
+  private parseWikiSections(
+    content: string,
+    wikiMatches: RegExpMatchArray[]
+  ): Array<{ heading: string; content: string; type: string }> {
+    const sections: Array<{ heading: string; content: string; type: string }> = [];
+    for (let i = 0; i < wikiMatches.length; i++) {
+      const match = wikiMatches[i];
+      const heading = match[1].trim();
+      const startIndex = match.index! + match[0].length;
+      const endIndex = i < wikiMatches.length - 1 ? wikiMatches[i + 1].index! : content.length;
+      const sectionContent = content.slice(startIndex, endIndex).trim();
+      if (sectionContent.length > 50) {
+        sections.push({
+          heading,
+          content: sectionContent.slice(0, 15000),
+          type: this.detectSectionType(heading),
+        });
+      }
+    }
+    return sections;
+  }
+
+  /** Parse HTML "Edit section:" markers into sections */
+  private parseHtmlSections(
+    content: string,
+    mainMatches: RegExpMatchArray[]
+  ): Array<{ heading: string; content: string; type: string }> {
+    const sections: Array<{ heading: string; content: string; type: string }> = [];
+    for (let i = 0; i < mainMatches.length; i++) {
+      const match = mainMatches[i];
+      const heading = match[1].trim();
+      const startIndex = match.index! + match[0].length;
+      const endIndex = i < mainMatches.length - 1 ? mainMatches[i + 1].index! : content.length;
+      const sectionContent = stripHtmlContent(content.slice(startIndex, endIndex));
+      if (sectionContent.length > 100) {
+        sections.push({
+          heading,
+          content: sectionContent.slice(0, 15000),
+          type: this.detectSectionType(heading),
+        });
+      }
+    }
+    return sections;
+  }
+
+  /** Parse plaintext format - sections as standalone heading lines */
+  private parsePlaintextSections(
+    content: string,
+    headingRegex: RegExp
+  ): {
+    sections: Array<{ heading: string; content: string; type: string }>;
+    foundHeadings: boolean;
+  } {
+    const sections: Array<{ heading: string; content: string; type: string }> = [];
+    const lines = content.split("\n");
+    let currentHeading = "Overview";
+    let currentContent: string[] = [];
+    let foundHeadings = false;
+
+    for (const line of lines) {
+      const headingMatch = headingRegex.exec(line);
+      if (headingMatch) {
+        foundHeadings = true;
+        if (currentContent.length > 0) {
+          const sectionText = currentContent.join("\n").trim();
+          if (sectionText.length > 50) {
+            sections.push({
+              heading: currentHeading,
+              content: sectionText.slice(0, 15000),
+              type: this.detectSectionType(currentHeading),
+            });
+          }
+        }
+        currentHeading = headingMatch[1].trim();
+        currentContent = [];
+      } else {
+        currentContent.push(line);
+      }
+    }
+
+    if (currentContent.length > 0) {
+      const sectionText = currentContent.join("\n").trim();
+      if (sectionText.length > 50) {
+        sections.push({
+          heading: currentHeading,
+          content: sectionText.slice(0, 15000),
+          type: this.detectSectionType(currentHeading),
+        });
+      }
+    }
+
+    return { sections, foundHeadings };
+  }
+
   /**
    * Parse content into sections
    * Handles wiki markup (== Heading ==), HTML with "Edit section:" markers, and plaintext
@@ -467,9 +562,6 @@ export class GuideRewriteService {
   private parseContentSections(
     content: string
   ): Array<{ heading: string; content: string; type: string }> {
-    const sections: Array<{ heading: string; content: string; type: string }> = [];
-
-    // Known main section headings for travel guides
     const mainSections = [
       "Understand",
       "Get in",
@@ -492,70 +584,25 @@ export class GuideRewriteService {
       "Regions",
     ];
 
-    // First try wiki markup format (== Heading ==)
-    const wikiHeadingRegex = /^==\s*([^=]+)\s*==/gm;
-    const wikiMatches = [...content.matchAll(wikiHeadingRegex)];
-
+    // Try wiki markup first
+    const wikiMatches = [...content.matchAll(/^==\s*([^=]+)\s*==/gm)];
     if (wikiMatches.length > 0) {
-      for (let i = 0; i < wikiMatches.length; i++) {
-        const match = wikiMatches[i];
-        const heading = match[1].trim();
-        const startIndex = match.index! + match[0].length;
-        const endIndex = i < wikiMatches.length - 1 ? wikiMatches[i + 1].index! : content.length;
-
-        const sectionContent = content.slice(startIndex, endIndex).trim();
-        const sectionType = this.detectSectionType(heading);
-
-        if (sectionContent.length > 50) {
-          sections.push({
-            heading,
-            content: sectionContent.slice(0, 15000), // Increased for comprehensive content
-            type: sectionType,
-          });
-        }
-      }
-      return sections;
+      return this.parseWikiSections(content, wikiMatches);
     }
 
-    // HTML format - look for "Edit section: SECTION_NAME" patterns from Wikivoyage
-    const htmlSectionRegex = /Edit section:\s*([^"<>]+)/gi;
-    const htmlMatches = [...content.matchAll(htmlSectionRegex)];
-
+    // Try HTML "Edit section:" format
+    const htmlMatches = [...content.matchAll(/Edit section:\s*([^"<>]+)/gi)];
     if (htmlMatches.length > 0) {
-      // Filter to main sections only
       const mainMatches = htmlMatches.filter(m =>
         mainSections.some(s => s.toLowerCase() === m[1].trim().toLowerCase())
       );
-
       if (mainMatches.length > 0) {
-        // Reuse module-level stripHtmlContent for stripping HTML tags
-        const stripHtml = stripHtmlContent;
-
-        for (let i = 0; i < mainMatches.length; i++) {
-          const match = mainMatches[i];
-          const heading = match[1].trim();
-          const startIndex = match.index! + match[0].length;
-          const endIndex = i < mainMatches.length - 1 ? mainMatches[i + 1].index! : content.length;
-
-          const sectionContent = stripHtml(content.slice(startIndex, endIndex));
-          const sectionType = this.detectSectionType(heading);
-
-          if (sectionContent.length > 100) {
-            sections.push({
-              heading,
-              content: sectionContent.slice(0, 15000), // Comprehensive content
-              type: sectionType,
-            });
-          }
-        }
-
-        if (sections.length > 0) {
-          return sections;
-        }
+        const sections = this.parseHtmlSections(content, mainMatches);
+        if (sections.length > 0) return sections;
       }
     }
 
-    // Plaintext format - sections appear as standalone lines
+    // Plaintext format
     const headingPattern = mainSections
       .map(h => h.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`))
       .join("|");
@@ -564,52 +611,10 @@ export class GuideRewriteService {
       "gmi"
     );
 
-    const lines = content.split("\n");
-    let currentHeading = "Overview";
-    let currentContent: string[] = [];
-    let foundHeadings = false;
-
-    for (const line of lines) {
-      const headingMatch = plaintextHeadingRegex.exec(line);
-
-      if (headingMatch) {
-        foundHeadings = true;
-        if (currentContent.length > 0) {
-          const sectionText = currentContent.join("\n").trim();
-          if (sectionText.length > 50) {
-            sections.push({
-              heading: currentHeading,
-              content: sectionText.slice(0, 15000), // Comprehensive content
-              type: this.detectSectionType(currentHeading),
-            });
-          }
-        }
-        currentHeading = headingMatch[1].trim();
-        currentContent = [];
-      } else {
-        currentContent.push(line);
-      }
-    }
-
-    if (currentContent.length > 0) {
-      const sectionText = currentContent.join("\n").trim();
-      if (sectionText.length > 50) {
-        sections.push({
-          heading: currentHeading,
-          content: sectionText.slice(0, 15000), // Comprehensive content
-          type: this.detectSectionType(currentHeading),
-        });
-      }
-    }
+    const { sections, foundHeadings } = this.parsePlaintextSections(content, plaintextHeadingRegex);
 
     if (sections.length === 0 || (!foundHeadings && sections.length === 1)) {
-      return [
-        {
-          heading: "Overview",
-          content: content.slice(0, 20000), // Full Overview
-          type: "understand",
-        },
-      ];
+      return [{ heading: "Overview", content: content.slice(0, 20000), type: "understand" }];
     }
 
     return sections;
@@ -714,91 +719,41 @@ Extract EVERY proper noun, price, time, address, phone number, and specific deta
     return "default";
   }
 
-  /**
-   * Rewrite a single section with COMPREHENSIVE content preservation
-   * Uses two-pass system: 1) Extract facts, 2) Rewrite with validation
-   */
-  private async rewriteSection(
+  /** Build a GuideSection result from section metadata and content */
+  private buildSectionResult(
+    section: { type: string; heading: string },
+    content: string
+  ): GuideSection {
+    return {
+      id: `${section.type}-${Date.now()}`,
+      type: section.type,
+      heading: section.heading,
+      content,
+    };
+  }
+
+  /** Validate a rewrite response against source stats and fact coverage */
+  private validateRewrite(
+    response: string,
+    sourceWordCount: number,
+    facts: FactItem[]
+  ): { ratio: number; coverageRatio: number; passed: boolean } {
+    const outputWordCount = response.split(/\s+/).length;
+    const ratio = Math.round((outputWordCount / sourceWordCount) * 100);
+    const coverage = this.validateFactCoverage(response, facts);
+    return { ratio, coverageRatio: coverage.ratio, passed: ratio >= 90 && coverage.ratio >= 0.7 };
+  }
+
+  /** Build the rewrite prompt for a section */
+  private buildRewritePrompt(
     destination: string,
-    section: { heading: string; content: string; type: string }
-  ): Promise<GuideSection | null> {
-    const sectionEnhancement = SECTION_ENHANCEMENTS[section.type] || SECTION_ENHANCEMENTS.default;
-
-    // Calculate source stats for validation
-    const sourceWordCount = section.content.split(/\s+/).length;
-    const sourceCharCount = section.content.length;
-
-    // PASS 1: Extract facts for validation
-    log(`[GuideRewrite] Pass 1: Extracting facts from ${section.heading}...`);
-    const { facts, counts } = await this.extractSectionFacts(section.heading, section.content);
-    log(`[GuideRewrite] Extracted ${facts.length} facts from ${section.heading}`);
-
-    // If fact extraction failed for a substantial section, log warning
-    if (facts.length === 0 && section.content.length > 500) {
-      log(
-        `[GuideRewrite] Warning: No facts extracted for ${section.heading} - proceeding with length-only validation`
-      );
-    }
-
-    // Build fact checklist for prompt
-    const factLines = facts.map(f => "- " + f.sourceText + " (" + f.category + ")").join("\n");
-    const factChecklist =
-      facts.length > 0
-        ? `\nFACT CHECKLIST - You MUST include all of these:\n${factLines}\n\nREQUIRED COUNTS: ${JSON.stringify(counts)}\n`
-        : "";
-
-    // PASS 2: Rewrite with up to 3 retries
-    const MAX_RETRIES = 3;
-    let bestResponse: string | null = null;
-    let bestRatio = 0;
-    let bestCoverage = 0;
-
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-      // Determine model based on attempt
-      const model = attempt >= 2 ? MODELS.premium : MODELS.primary;
-
-      // On retry 3, use paragraph-by-paragraph mode
-      if (attempt === 3) {
-        log(
-          `[GuideRewrite] Retry 3: Using paragraph-by-paragraph approach for ${section.heading}...`
-        );
-        try {
-          const paragraphResult = await this.rewriteSectionByParagraphs(
-            section,
-            sectionEnhancement
-          );
-          if (paragraphResult) {
-            const paragraphWordCount = paragraphResult.split(/\s+/).length;
-            const paragraphRatio = Math.round((paragraphWordCount / sourceWordCount) * 100);
-            const paragraphCoverage = this.validateFactCoverage(paragraphResult, facts);
-            log(
-              `[GuideRewrite] PARAGRAPH ${section.heading}: ${paragraphWordCount} words (${paragraphRatio}%), coverage: ${Math.round(paragraphCoverage.ratio * 100)}%`
-            );
-
-            if (paragraphRatio >= 90 && paragraphCoverage.ratio >= 0.7) {
-              return {
-                id: `${section.type}-${Date.now()}`,
-                type: section.type,
-                heading: section.heading,
-                content: paragraphResult,
-              };
-            }
-
-            // Use paragraph result if it's better than previous attempts
-            if (paragraphRatio > bestRatio || paragraphCoverage.ratio > bestCoverage) {
-              bestResponse = paragraphResult;
-              bestRatio = paragraphRatio;
-              bestCoverage = paragraphCoverage.ratio;
-            }
-          }
-        } catch (retryError) {
-          log(`[GuideRewrite] Paragraph approach failed for ${section.heading}: ${retryError}`);
-        }
-        continue;
-      }
-
-      // Build comprehensive prompt with fact checklist
-      const userPrompt = `SECTION TO REWRITE: "${section.heading}" for ${destination}
+    section: { heading: string; content: string },
+    sourceWordCount: number,
+    sourceCharCount: number,
+    factChecklist: string,
+    sectionEnhancement: string
+  ): string {
+    return `SECTION TO REWRITE: "${section.heading}" for ${destination}
 
 SOURCE CONTENT STATS:
 - Word count: ~${sourceWordCount} words
@@ -824,267 +779,276 @@ OUTPUT REQUIREMENTS:
 7. Write in English with TRAVI voice
 
 YOUR COMPREHENSIVE REWRITE:`;
+  }
+
+  /** Attempt paragraph-by-paragraph rewrite (retry 3 fallback) */
+  private async attemptParagraphRewrite(
+    section: { heading: string; content: string; type: string },
+    sectionEnhancement: string,
+    sourceWordCount: number,
+    facts: FactItem[],
+    best: { response: string | null; ratio: number; coverage: number }
+  ): Promise<GuideSection | null> {
+    log(`[GuideRewrite] Retry 3: Using paragraph-by-paragraph approach for ${section.heading}...`);
+    try {
+      const paragraphResult = await this.rewriteSectionByParagraphs(section, sectionEnhancement);
+      if (!paragraphResult) return null;
+
+      const validation = this.validateRewrite(paragraphResult, sourceWordCount, facts);
+      log(
+        `[GuideRewrite] PARAGRAPH ${section.heading}: ${validation.ratio}%, coverage: ${Math.round(validation.coverageRatio * 100)}%`
+      );
+
+      if (validation.passed) return this.buildSectionResult(section, paragraphResult);
+
+      if (validation.ratio > best.ratio || validation.coverageRatio > best.coverage) {
+        best.response = paragraphResult;
+        best.ratio = validation.ratio;
+        best.coverage = validation.coverageRatio;
+      }
+    } catch (retryError) {
+      log(`[GuideRewrite] Paragraph approach failed for ${section.heading}: ${retryError}`);
+    }
+    return null;
+  }
+
+  /** Attempt a single model-based rewrite */
+  private async attemptModelRewrite(
+    model: string,
+    userPrompt: string,
+    section: { heading: string; content: string; type: string },
+    attempt: number,
+    maxRetries: number,
+    sourceWordCount: number,
+    facts: FactItem[],
+    best: { response: string | null; ratio: number; coverage: number }
+  ): Promise<GuideSection | null> {
+    log(
+      `[GuideRewrite] Pass 2 (attempt ${attempt}/${maxRetries}): Rewriting ${section.heading} with ${model}...`
+    );
+    const response = await this.callModelWithSystem(
+      model,
+      COMPREHENSIVE_REWRITE_SYSTEM,
+      userPrompt
+    );
+    if (!response) return null;
+
+    this.totalCost += this.calculateCost(
+      model,
+      COMPREHENSIVE_REWRITE_SYSTEM + userPrompt,
+      response
+    );
+    const validation = this.validateRewrite(response, sourceWordCount, facts);
+    log(
+      `[GuideRewrite] ${section.heading} (attempt ${attempt}): ${validation.ratio}%, coverage: ${Math.round(validation.coverageRatio * 100)}%`
+    );
+
+    if (validation.ratio > best.ratio || validation.coverageRatio > best.coverage) {
+      best.response = response;
+      best.ratio = validation.ratio;
+      best.coverage = validation.coverageRatio;
+    }
+
+    if (validation.passed) {
+      log(`[GuideRewrite] ${section.heading}: PASSED validation on attempt ${attempt}`);
+      return this.buildSectionResult(section, response);
+    }
+
+    if (validation.ratio < 90)
+      log(
+        `[GuideRewrite] ${section.heading}: Length too short (${validation.ratio}% < 90%) - retrying...`
+      );
+    if (validation.coverageRatio < 0.7)
+      log(`[GuideRewrite] ${section.heading}: Coverage too low - retrying...`);
+    return null;
+  }
+
+  /**
+   * Rewrite a single section with COMPREHENSIVE content preservation
+   * Uses two-pass system: 1) Extract facts, 2) Rewrite with validation
+   */
+  private async rewriteSection(
+    destination: string,
+    section: { heading: string; content: string; type: string }
+  ): Promise<GuideSection | null> {
+    const sectionEnhancement = SECTION_ENHANCEMENTS[section.type] || SECTION_ENHANCEMENTS.default;
+    const sourceWordCount = section.content.split(/\s+/).length;
+    const sourceCharCount = section.content.length;
+
+    // PASS 1: Extract facts
+    log(`[GuideRewrite] Pass 1: Extracting facts from ${section.heading}...`);
+    const { facts, counts } = await this.extractSectionFacts(section.heading, section.content);
+    log(`[GuideRewrite] Extracted ${facts.length} facts from ${section.heading}`);
+
+    if (facts.length === 0 && section.content.length > 500) {
+      log(
+        `[GuideRewrite] Warning: No facts extracted for ${section.heading} - proceeding with length-only validation`
+      );
+    }
+
+    const factLines = facts.map(f => "- " + f.sourceText + " (" + f.category + ")").join("\n");
+    const factChecklist =
+      facts.length > 0
+        ? `\nFACT CHECKLIST - You MUST include all of these:\n${factLines}\n\nREQUIRED COUNTS: ${JSON.stringify(counts)}\n`
+        : "";
+
+    // PASS 2: Rewrite with retries
+    const MAX_RETRIES = 3;
+    const best = { response: null as string | null, ratio: 0, coverage: 0 };
+
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      if (attempt === 3) {
+        const result = await this.attemptParagraphRewrite(
+          section,
+          sectionEnhancement,
+          sourceWordCount,
+          facts,
+          best
+        );
+        if (result) return result;
+        continue;
+      }
+
+      const model = attempt >= 2 ? MODELS.premium : MODELS.primary;
+      const userPrompt = this.buildRewritePrompt(
+        destination,
+        section,
+        sourceWordCount,
+        sourceCharCount,
+        factChecklist,
+        sectionEnhancement
+      );
 
       try {
-        log(
-          `[GuideRewrite] Pass 2 (attempt ${attempt}/${MAX_RETRIES}): Rewriting ${section.heading} with ${model}...`
-        );
-
-        // Use system + user message structure for better results
-        const response = await this.callModelWithSystem(
+        const result = await this.attemptModelRewrite(
           model,
-          COMPREHENSIVE_REWRITE_SYSTEM,
-          userPrompt
+          userPrompt,
+          section,
+          attempt,
+          MAX_RETRIES,
+          sourceWordCount,
+          facts,
+          best
         );
-
-        if (response) {
-          this.totalCost += this.calculateCost(
-            model,
-            COMPREHENSIVE_REWRITE_SYSTEM + userPrompt,
-            response
-          );
-
-          // Validate output length
-          const outputWordCount = response.split(/\s+/).length;
-          const ratio = Math.round((outputWordCount / sourceWordCount) * 100);
-
-          // Validate fact coverage
-          const coverage = this.validateFactCoverage(response, facts);
-          const coveragePercent = Math.round(coverage.ratio * 100);
-
-          log(
-            `[GuideRewrite] ${section.heading} (attempt ${attempt}): ${outputWordCount} words (${ratio}%), coverage: ${coveragePercent}%`
-          );
-
-          // Track best result
-          if (ratio > bestRatio || coverage.ratio > bestCoverage) {
-            bestResponse = response;
-            bestRatio = ratio;
-            bestCoverage = coverage.ratio;
-          }
-
-          // Success conditions: length >= 90% AND coverage >= 70%
-          if (ratio >= 90 && coverage.ratio >= 0.7) {
-            log(`[GuideRewrite] ${section.heading}: PASSED validation on attempt ${attempt}`);
-            return {
-              id: `${section.type}-${Date.now()}`,
-              type: section.type,
-              heading: section.heading,
-              content: response,
-            };
-          }
-
-          // Log why we're retrying
-          if (ratio < 90) {
-            log(
-              `[GuideRewrite] ${section.heading}: Length too short (${ratio}% < 90%) - retrying...`
-            );
-          }
-          if (coverage.ratio < 0.7) {
-            log(
-              `[GuideRewrite] ${section.heading}: Coverage too low (${coveragePercent}% < 70%), missing ${coverage.missingFacts.length} facts - retrying...`
-            );
-          }
-        }
+        if (result) return result;
       } catch (error) {
         log(`[GuideRewrite] Attempt ${attempt} failed for ${section.heading}: ${error}`);
       }
 
-      // Rate limit between retries
       await this.sleep(500);
     }
 
-    // Use best result if we have one, even if it didn't pass all validations
-    if (bestResponse) {
+    if (best.response) {
       log(
-        `[GuideRewrite] ${section.heading}: Using best result (${bestRatio}% length, ${Math.round(bestCoverage * 100)}% coverage)`
+        `[GuideRewrite] ${section.heading}: Using best result (${best.ratio}% length, ${Math.round(best.coverage * 100)}% coverage)`
       );
-      return {
-        id: `${section.type}-${Date.now()}`,
-        type: section.type,
-        heading: section.heading,
-        content: bestResponse,
-      };
+      return this.buildSectionResult(section, best.response);
     }
 
     log(`[GuideRewrite] ${section.heading}: All attempts failed`);
     return null;
   }
 
-  /**
-   * Rewrite a section by processing each paragraph separately
-   * This approach gives better length control for long sections
-   */
-  private async rewriteSectionByParagraphs(
-    section: { heading: string; content: string; type: string },
-    sectionEnhancement: string
-  ): Promise<string | null> {
-    const chunks: string[] = [];
-
-    // Reuse module-level stripHtmlContent for stripping HTML tags
-    const stripHtml = stripHtmlContent;
-
-    // Extract ALL block-level elements from Wikivoyage HTML content
-    const paragraphMatches = section.content.match(/<p[^>]*>[\s\S]*?<\/p>/gi) || [];
-    const listMatches = section.content.match(/<li[^>]*>[\s\S]*?<\/li>/gi) || [];
-    const headerMatches = section.content.match(/<h[3-6][^>]*>[\s\S]*?<\/h[3-6]>/gi) || [];
-    const dlMatches = section.content.match(/<dl[^>]*>[\s\S]*?<\/dl>/gi) || [];
-    const ddMatches = section.content.match(/<dd[^>]*>[\s\S]*?<\/dd>/gi) || [];
-    const divMatches = section.content.match(/<div[^>]*>[\s\S]*?<\/div>/gi) || [];
-    const figureMatches = section.content.match(/<figure[^>]*>[\s\S]*?<\/figure>/gi) || [];
-    const blockquoteMatches =
-      section.content.match(/<blockquote[^>]*>[\s\S]*?<\/blockquote>/gi) || [];
-    const tableMatches = section.content.match(/<table[^>]*>[\s\S]*?<\/table>/gi) || [];
-    const trMatches = section.content.match(/<tr[^>]*>[\s\S]*?<\/tr>/gi) || [];
-
-    // Combine all HTML block matches
-    const allMatches = [
-      ...paragraphMatches,
-      ...listMatches,
-      ...headerMatches,
-      ...dlMatches,
-      ...ddMatches,
-      ...divMatches,
-      ...figureMatches,
-      ...blockquoteMatches,
-      ...tableMatches,
-      ...trMatches,
+  /** Extract all HTML block elements from content */
+  private extractHtmlBlocks(content: string): string[] {
+    const blockTags = [
+      "p",
+      "li",
+      "h[3-6]",
+      "dl",
+      "dd",
+      "div",
+      "figure",
+      "blockquote",
+      "table",
+      "tr",
     ];
+    const allMatches: string[] = [];
+    for (const tag of blockTags) {
+      const regex = new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, "gi");
+      const matches = content.match(regex);
+      if (matches) allMatches.push(...matches);
+    }
+    return allMatches;
+  }
 
-    // Calculate total source word count for chunk planning
-    const totalWordCount = section.content.split(/\s+/).length;
-    const targetChunkSize = 300; // Target 200-400 words per chunk
-    const minChunks = totalWordCount > 300 ? 3 : 1; // Ensure at least 3 chunks for longer sections
+  /** Group text items into chunks of targetSize words */
+  private groupIntoChunks(
+    items: string[],
+    targetSize: number,
+    minWords: number,
+    separator: string
+  ): string[] {
+    const chunks: string[] = [];
+    let currentChunk = "";
+    let currentWordCount = 0;
 
-    if (allMatches.length === 0) {
-      // No HTML structure found - split by sentences instead of just lines
-      // Split on ". " followed by capital letter (sentence boundary)
-      const sentenceRegex = /(?<=[.!?])\s+(?=[A-Z])/g;
-      const sentences = section.content.split(sentenceRegex);
+    for (const item of items) {
+      const clean = stripHtmlContent(item.trim());
+      if (!clean || clean.length < 10) continue;
 
-      // Also try double newline split as fallback
-      if (sentences.length <= 1) {
-        const lines = section.content.split(/\n\n+/);
-        for (const line of lines) {
-          const cleanLine = stripHtml(line.trim());
-          if (cleanLine.length > 30) {
-            chunks.push(cleanLine);
-          }
-        }
-      } else {
-        // Group sentences into chunks of 200-400 words
-        let currentChunk = "";
-        let currentWordCount = 0;
+      const itemWords = clean.split(/\s+/).length;
 
-        for (const sentence of sentences) {
-          const cleanSentence = stripHtml(sentence.trim());
-          if (!cleanSentence) continue;
-
-          const sentenceWords = cleanSentence.split(/\s+/).length;
-
-          // Start new chunk if current exceeds target (200-400 range)
-          if (
-            currentWordCount + sentenceWords > targetChunkSize &&
-            currentWordCount >= 200 &&
-            currentChunk
-          ) {
-            chunks.push(currentChunk.trim());
-            currentChunk = cleanSentence;
-            currentWordCount = sentenceWords;
-          } else {
-            currentChunk += (currentChunk ? " " : "") + cleanSentence;
-            currentWordCount += sentenceWords;
-          }
-        }
-        if (currentChunk.trim()) {
-          chunks.push(currentChunk.trim());
-        }
-      }
-    } else {
-      // HTML structure found - group into chunks of 200-400 words
-      let currentChunk = "";
-      let currentWordCount = 0;
-
-      for (const match of allMatches) {
-        // Strip HTML to get clean text for the AI
-        const cleanText = stripHtml(match);
-        if (!cleanText || cleanText.length < 10) continue;
-
-        const matchWords = cleanText.split(/\s+/).length;
-
-        // Start new chunk if current exceeds target range (200-400 words)
-        if (
-          currentWordCount + matchWords > targetChunkSize &&
-          currentWordCount >= 200 &&
-          currentChunk
-        ) {
-          chunks.push(currentChunk.trim());
-          currentChunk = cleanText;
-          currentWordCount = matchWords;
-        } else {
-          currentChunk += (currentChunk ? "\n\n" : "") + cleanText;
-          currentWordCount += matchWords;
-        }
-      }
-      if (currentChunk.trim()) {
+      if (
+        currentWordCount + itemWords > targetSize &&
+        currentWordCount >= minWords &&
+        currentChunk
+      ) {
         chunks.push(currentChunk.trim());
+        currentChunk = clean;
+        currentWordCount = itemWords;
+      } else {
+        currentChunk += (currentChunk ? separator : "") + clean;
+        currentWordCount += itemWords;
       }
     }
+    if (currentChunk.trim()) chunks.push(currentChunk.trim());
+    return chunks;
+  }
 
-    // If we have too few chunks for a long section, split the existing chunks further
-    if (chunks.length < minChunks && chunks.length > 0 && totalWordCount > 300) {
-      const newChunks: string[] = [];
-      const targetPerChunk = Math.ceil(totalWordCount / minChunks);
+  /** Split content into chunks when no HTML structure is found */
+  private chunkPlaintext(content: string, targetSize: number): string[] {
+    const sentenceRegex = /(?<=[.!?])\s+(?=[A-Z])/g;
+    const sentences = content.split(sentenceRegex);
 
-      for (const chunk of chunks) {
-        const chunkWords = chunk.split(/\s+/).length;
-        if (chunkWords > targetPerChunk * 1.5) {
-          // Split this chunk by sentences
-          const sentences = chunk.split(/(?<=[.!?])\s+(?=[A-Z])/g);
-          let subChunk = "";
-          let subWordCount = 0;
-
-          for (const sentence of sentences) {
-            const sentenceWords = sentence.split(/\s+/).length;
-            if (subWordCount + sentenceWords > targetPerChunk && subChunk) {
-              newChunks.push(subChunk.trim());
-              subChunk = sentence;
-              subWordCount = sentenceWords;
-            } else {
-              subChunk += (subChunk ? " " : "") + sentence;
-              subWordCount += sentenceWords;
-            }
-          }
-          if (subChunk.trim()) {
-            newChunks.push(subChunk.trim());
-          }
-        } else {
-          newChunks.push(chunk);
-        }
+    if (sentences.length <= 1) {
+      const chunks: string[] = [];
+      const lines = content.split(/\n\n+/);
+      for (const line of lines) {
+        const cleanLine = stripHtmlContent(line.trim());
+        if (cleanLine.length > 30) chunks.push(cleanLine);
       }
-
-      if (newChunks.length > chunks.length) {
-        chunks.length = 0;
-        chunks.push(...newChunks);
-      }
+      return chunks;
     }
 
-    if (chunks.length === 0) {
-      return null;
+    return this.groupIntoChunks(sentences, targetSize, 200, " ");
+  }
+
+  /** Subdivide oversized chunks into smaller ones */
+  private subdivideChunks(chunks: string[], targetPerChunk: number): string[] {
+    const newChunks: string[] = [];
+    for (const chunk of chunks) {
+      const chunkWords = chunk.split(/\s+/).length;
+      if (chunkWords <= targetPerChunk * 1.5) {
+        newChunks.push(chunk);
+        continue;
+      }
+      const sentences = chunk.split(/(?<=[.!?])\s+(?=[A-Z])/g);
+      const subChunks = this.groupIntoChunks(sentences, targetPerChunk, 0, " ");
+      newChunks.push(...subChunks);
     }
+    return newChunks;
+  }
 
-    log(
-      `[GuideRewrite] Splitting ${section.heading} into ${chunks.length} chunks (${totalWordCount} words total, ~${Math.round(totalWordCount / chunks.length)} per chunk)`
-    );
-
-    // Rewrite each chunk with a focused prompt
-    const rewrittenChunks: string[] = [];
-
-    for (let i = 0; i < chunks.length; i++) {
-      const chunk = chunks[i];
-      const chunkWordCount = chunk.split(/\s+/).length;
-
-      const chunkPrompt = `You are rewriting part ${i + 1}/${chunks.length} of the "${section.heading}" section.
+  /** Rewrite a single chunk via AI */
+  private async rewriteChunk(
+    chunk: string,
+    index: number,
+    total: number,
+    sectionHeading: string
+  ): Promise<string> {
+    const chunkWordCount = chunk.split(/\s+/).length;
+    const chunkPrompt = `You are rewriting part ${index + 1}/${total} of the "${sectionHeading}" section.
 
 CRITICAL RULES:
 1. Preserve EVERY fact, name, number, price, and detail
@@ -1097,23 +1061,63 @@ ${chunk}
 
 COMPREHENSIVE REWRITTEN CHUNK:`;
 
-      try {
-        const response = await this.callModel(MODELS.primary, chunkPrompt);
-        if (response) {
-          this.totalCost += this.calculateCost(MODELS.primary, chunkPrompt, response);
-          rewrittenChunks.push(response);
-        } else {
-          // Keep original if rewrite fails
-          rewrittenChunks.push(chunk);
-        }
-      } catch (error) {
-        rewrittenChunks.push(chunk); // Keep original on error
+    try {
+      const response = await this.callModel(MODELS.primary, chunkPrompt);
+      if (response) {
+        this.totalCost += this.calculateCost(MODELS.primary, chunkPrompt, response);
+        return response;
+      }
+    } catch {
+      // Keep original on error
+    }
+    return chunk;
+  }
+
+  /**
+   * Rewrite a section by processing each paragraph separately
+   * This approach gives better length control for long sections
+   */
+  private async rewriteSectionByParagraphs(
+    section: { heading: string; content: string; type: string },
+    sectionEnhancement: string
+  ): Promise<string | null> {
+    const totalWordCount = section.content.split(/\s+/).length;
+    const targetChunkSize = 300;
+    const minChunks = totalWordCount > 300 ? 3 : 1;
+
+    // Build initial chunks
+    const htmlBlocks = this.extractHtmlBlocks(section.content);
+    let chunks: string[];
+
+    if (htmlBlocks.length === 0) {
+      chunks = this.chunkPlaintext(section.content, targetChunkSize);
+    } else {
+      chunks = this.groupIntoChunks(htmlBlocks, targetChunkSize, 200, "\n\n");
+    }
+
+    // Subdivide if too few chunks for a long section
+    if (chunks.length < minChunks && chunks.length > 0 && totalWordCount > 300) {
+      const targetPerChunk = Math.ceil(totalWordCount / minChunks);
+      const subdivided = this.subdivideChunks(chunks, targetPerChunk);
+      if (subdivided.length > chunks.length) {
+        chunks = subdivided;
       }
     }
 
-    // Combine all rewritten chunks
-    const combinedContent = rewrittenChunks.join("\n\n");
-    return combinedContent;
+    if (chunks.length === 0) return null;
+
+    log(
+      `[GuideRewrite] Splitting ${section.heading} into ${chunks.length} chunks (${totalWordCount} words total, ~${Math.round(totalWordCount / chunks.length)} per chunk)`
+    );
+
+    // Rewrite each chunk
+    const rewrittenChunks: string[] = [];
+    for (let i = 0; i < chunks.length; i++) {
+      const result = await this.rewriteChunk(chunks[i], i, chunks.length, section.heading);
+      rewrittenChunks.push(result);
+    }
+
+    return rewrittenChunks.join("\n\n");
   }
 
   /**

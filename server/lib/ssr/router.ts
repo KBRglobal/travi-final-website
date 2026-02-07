@@ -26,6 +26,62 @@ import {
   renderEventPage,
 } from "./page-renderers";
 
+// Route definitions: [pattern, handler]
+type RouteHandler = (cleanPath: string, options: SSRRenderOptions) => Promise<SSRRenderResult>;
+
+const EXACT_ROUTES: Record<string, RouteHandler> = {
+  "/": (_, opts) => renderHomepage(opts),
+  "/articles": (_, opts) => renderCategoryPage("article", opts),
+  "/attractions": (_, opts) => renderCategoryPage("attraction", opts),
+  "/hotels": (_, opts) => renderCategoryPage("hotel", opts),
+  "/dining": (_, opts) => renderCategoryPage("dining", opts),
+  "/about": (_, opts) => renderStaticPage("about", opts),
+  "/contact": (_, opts) => renderStaticPage("contact", opts),
+  "/privacy": (_, opts) => renderStaticPage("privacy", opts),
+  "/destinations": (_, opts) => renderDestinationsHub(opts),
+  "/guides": (_, opts) => renderGuidesHub(opts),
+  "/travel-guides": (_, opts) => renderGuidesHub(opts),
+  "/news": (_, opts) => renderNewsHub(opts),
+  "/events": (_, opts) => renderEventsHub(opts),
+  "/shopping": (_, opts) => renderShoppingHub(opts),
+  "/districts": (_, opts) => renderDistrictsHub(opts),
+};
+
+const PREFIX_ROUTES: Array<[string, RouteHandler]> = [
+  ["/article/", (p, opts) => renderContentPage(p.replace("/article/", ""), "article", opts)],
+  ["/attraction/", (p, opts) => renderTiqetsAttractionPage(p.replace("/attraction/", ""), opts)],
+  ["/hotel/", (p, opts) => renderContentPage(p.replace("/hotel/", ""), "hotel", opts)],
+  ["/destinations/", (p, opts) => routeDestinationSubpage(p, opts)],
+  ["/guides/", (p, opts) => renderGuidePage(p.replace("/guides/", ""), opts)],
+  ["/districts/", (p, opts) => renderDistrictPage(p.replace("/districts/", ""), opts)],
+  ["/dining/", (p, opts) => renderRestaurantPage(p.replace("/dining/", ""), opts)],
+  ["/events/", (p, opts) => renderEventPage(p.replace("/events/", ""), opts)],
+];
+
+async function routeDestinationSubpage(
+  cleanPath: string,
+  options: SSRRenderOptions
+): Promise<SSRRenderResult> {
+  const parts = cleanPath.replace("/destinations/", "").split("/");
+  const slug = parts[0];
+  const subpage = parts[1];
+
+  const validSubpages = ["hotels", "attractions", "dining", "guides"];
+  if (subpage && validSubpages.includes(subpage)) {
+    return renderDestinationSubpage(slug, subpage as any, options);
+  }
+  if (!subpage) {
+    return renderDestinationPage(slug, options);
+  }
+  return render404(options);
+}
+
+function normalizePath(path: string): string {
+  if (path === "") return "/";
+  if (path.startsWith("/")) return path;
+  return `/${path}`;
+}
+
 /**
  * Main SSR render function - routes to appropriate renderer
  * Note: The path should already be normalized (locale stripped) by ssr-middleware
@@ -36,157 +92,26 @@ export async function renderSSR(
   searchParams?: URLSearchParams
 ): Promise<SSRRenderResult> {
   const options: SSRRenderOptions = { locale, path, searchParams };
+  const cleanPath = normalizePath(path);
 
-  // Normalize path - ensure it starts with / and handle empty paths
-  // Do NOT strip locale here - middleware already handles that
-  let cleanPath: string;
-  if (path === "") {
-    cleanPath = "/";
-  } else if (path.startsWith("/")) {
-    cleanPath = path;
-  } else {
-    cleanPath = `/${path}`;
+  // Check exact routes
+  const exactHandler = EXACT_ROUTES[cleanPath];
+  if (exactHandler) return exactHandler(cleanPath, options);
+
+  // Check prefix routes
+  for (const [prefix, handler] of PREFIX_ROUTES) {
+    if (cleanPath.startsWith(prefix)) return handler(cleanPath, options);
   }
 
-  if (cleanPath === "/" || cleanPath === "") {
-    return renderHomepage(options);
-  }
-
-  if (cleanPath.startsWith("/article/")) {
-    const slug = cleanPath.replace("/article/", "");
-    return renderContentPage(slug, "article", options);
-  }
-
-  if (cleanPath.startsWith("/attraction/")) {
-    const slug = cleanPath.replace("/attraction/", "");
-    // Redirect singular /attraction/ to plural /attractions/ for Tiqets data
-    return renderTiqetsAttractionPage(slug, options);
-  }
-
-  if (cleanPath.startsWith("/hotel/")) {
-    const slug = cleanPath.replace("/hotel/", "");
-    return renderContentPage(slug, "hotel", options);
-  }
-
-  if (cleanPath === "/articles") {
-    return renderCategoryPage("article", options);
-  }
-
-  if (cleanPath === "/attractions") {
-    return renderCategoryPage("attraction", options);
-  }
-
-  if (cleanPath === "/hotels") {
-    return renderCategoryPage("hotel", options);
-  }
-
-  if (cleanPath === "/dining") {
-    return renderCategoryPage("dining", options);
-  }
-
-  if (cleanPath === "/about") {
-    return renderStaticPage("about", options);
-  }
-
-  if (cleanPath === "/contact") {
-    return renderStaticPage("contact", options);
-  }
-
-  if (cleanPath === "/privacy") {
-    return renderStaticPage("privacy", options);
-  }
-
-  // ====== NEW SSR ROUTES ======
-
-  // Destinations hub page
-  if (cleanPath === "/destinations") {
-    return renderDestinationsHub(options);
-  }
-
-  // Destination detail pages: /destinations/:slug
-  if (cleanPath.startsWith("/destinations/")) {
-    const parts = cleanPath.replace("/destinations/", "").split("/");
-    const slug = parts[0];
-    const subpage = parts[1]; // hotels, attractions, dining, etc.
-
-    if (subpage === "hotels") {
-      return renderDestinationSubpage(slug, "hotels", options);
-    }
-    if (subpage === "attractions") {
-      return renderDestinationSubpage(slug, "attractions", options);
-    }
-    if (subpage === "dining") {
-      return renderDestinationSubpage(slug, "dining", options);
-    }
-    if (subpage === "guides") {
-      return renderDestinationSubpage(slug, "guides", options);
-    }
-    if (!subpage) {
-      return renderDestinationPage(slug, options);
-    }
-  }
-
-  // Travel guides hub
-  if (cleanPath === "/guides" || cleanPath === "/travel-guides") {
-    return renderGuidesHub(options);
-  }
-
-  // Guide detail: /guides/:slug
-  if (cleanPath.startsWith("/guides/")) {
-    const slug = cleanPath.replace("/guides/", "");
-    return renderGuidePage(slug, options);
+  // Tiqets attraction detail: /attractions/:slug (different from /attraction/:slug)
+  if (cleanPath.startsWith("/attractions/") && cleanPath !== "/attractions") {
+    return renderTiqetsAttractionPage(cleanPath.replace("/attractions/", ""), options);
   }
 
   // City shortcut pages: /singapore, /dubai, /bangkok, etc.
   const citySlug = cleanPath.replace("/", "");
   if (DESTINATION_DATA[citySlug]) {
     return renderDestinationPage(citySlug, options);
-  }
-
-  // Tiqets attraction detail: /attractions/:slug (different from /attraction/:slug)
-  if (cleanPath.startsWith("/attractions/") && cleanPath !== "/attractions") {
-    const slug = cleanPath.replace("/attractions/", "");
-    return renderTiqetsAttractionPage(slug, options);
-  }
-
-  // ====== ADDITIONAL SSR ROUTES (Phase 2) ======
-
-  // News hub page
-  if (cleanPath === "/news") {
-    return renderNewsHub(options);
-  }
-
-  // Events hub page
-  if (cleanPath === "/events") {
-    return renderEventsHub(options);
-  }
-
-  // Shopping hub page
-  if (cleanPath === "/shopping") {
-    return renderShoppingHub(options);
-  }
-
-  // Districts hub page
-  if (cleanPath === "/districts") {
-    return renderDistrictsHub(options);
-  }
-
-  // District detail pages: /districts/:slug
-  if (cleanPath.startsWith("/districts/")) {
-    const slug = cleanPath.replace("/districts/", "");
-    return renderDistrictPage(slug, options);
-  }
-
-  // Dining/Restaurant detail pages: /dining/:slug
-  if (cleanPath.startsWith("/dining/")) {
-    const slug = cleanPath.replace("/dining/", "");
-    return renderRestaurantPage(slug, options);
-  }
-
-  // Event detail pages: /events/:slug (if individual event pages exist)
-  if (cleanPath.startsWith("/events/")) {
-    const slug = cleanPath.replace("/events/", "");
-    return renderEventPage(slug, options);
   }
 
   return render404(options);

@@ -237,6 +237,44 @@ export async function bulkOperationMiddleware(
 // ============================================================================
 
 /**
+ * Determine action and resource from governance request path and method
+ */
+function resolveGovernanceActionResource(
+  path: string,
+  method: string
+): { action: string; resource: string } {
+  const isMutation = method !== "GET";
+
+  const pathRules: Array<{ match: string; resource: string; getAction: () => string }> = [
+    { match: "role", resource: "roles", getAction: () => (isMutation ? "manage_roles" : "view") },
+    { match: "permission", resource: "roles", getAction: () => "manage_roles" },
+    { match: "user", resource: "users", getAction: () => (isMutation ? "manage_users" : "view") },
+    {
+      match: "polic",
+      resource: "policies",
+      getAction: () => (isMutation ? "manage_policies" : "view"),
+    },
+    {
+      match: "approval",
+      resource: "policies",
+      getAction: () => {
+        if (path.includes("decide")) return "approve";
+        if (method === "POST") return "manage_policies";
+        return "view";
+      },
+    },
+  ];
+
+  for (const rule of pathRules) {
+    if (path.includes(rule.match)) {
+      return { action: rule.getAction(), resource: rule.resource };
+    }
+  }
+
+  return { action: "view", resource: "policies" };
+}
+
+/**
  * Guard for governance/RBAC operations
  */
 export async function governanceGuard(
@@ -253,27 +291,7 @@ export async function governanceGuard(
   const method = req.method.toUpperCase();
   const path = req.path.toLowerCase();
 
-  // Determine action and resource from path
-  let action: string = "view";
-  let resource: string = "policies";
-
-  if (path.includes("role")) {
-    resource = "roles";
-    if (method === "POST" || method === "PUT" || method === "PATCH" || method === "DELETE") {
-      action = "manage_roles";
-    }
-  } else if (path.includes("permission")) {
-    resource = "roles";
-    action = "manage_roles";
-  } else if (path.includes("user")) {
-    resource = "users";
-    if (method !== "GET") action = "manage_users";
-  } else if (path.includes("polic")) {
-    if (method !== "GET") action = "manage_policies";
-  } else if (path.includes("approval")) {
-    if (path.includes("decide")) action = "approve";
-    else if (method === "POST") action = "manage_policies";
-  }
+  const { action, resource } = resolveGovernanceActionResource(path, method);
 
   // Skip GET requests in monitor mode
   if (method === "GET" && action === "view") {

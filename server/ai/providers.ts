@@ -396,46 +396,24 @@ function isProviderAvailable(provider: string): boolean {
 // Get All Available Providers (Unified Interface)
 // ============================================================================
 
+// Provider registry: name -> factory function (priority order)
+const UNIFIED_PROVIDER_REGISTRY: Array<{ name: string; create: () => UnifiedAIProvider | null }> = [
+  { name: "anthropic", create: createAnthropicProvider },
+  { name: "openrouter", create: createOpenRouterProvider },
+  { name: "deepseek", create: createDeepSeekProvider },
+  { name: "gemini", create: createGeminiProvider },
+  { name: "groq", create: createGroqProvider },
+  { name: "openai", create: createOpenAIProvider },
+  { name: "replit-ai", create: createReplitAIProvider },
+];
+
 export function getAllUnifiedProviders(): UnifiedAIProvider[] {
   const providers: UnifiedAIProvider[] = [];
 
-  // Priority order: Anthropic first (most reliable), then OpenRouter, DeepSeek, OpenAI last (rate limited)
-
-  if (isProviderAvailable("anthropic")) {
-    const anthropic = createAnthropicProvider();
-    if (anthropic) providers.push(anthropic);
-  }
-
-  if (isProviderAvailable("openrouter")) {
-    const openrouter = createOpenRouterProvider();
-    if (openrouter) providers.push(openrouter);
-  }
-
-  if (isProviderAvailable("deepseek")) {
-    const deepseek = createDeepSeekProvider();
-    if (deepseek) providers.push(deepseek);
-  }
-
-  if (isProviderAvailable("gemini")) {
-    const gemini = createGeminiProvider();
-    if (gemini) providers.push(gemini);
-  }
-
-  if (isProviderAvailable("groq")) {
-    const groq = createGroqProvider();
-    if (groq) providers.push(groq);
-  }
-
-  if (isProviderAvailable("openai")) {
-    const openai = createOpenAIProvider();
-    if (openai) providers.push(openai);
-  }
-
-  // Replit AI as last fallback - always available via Replit AI Integrations
-  // Uses the modelfarm proxy with dummy key - billed to user's Replit credits
-  if (isProviderAvailable("replit-ai")) {
-    const replitAI = createReplitAIProvider();
-    if (replitAI) providers.push(replitAI);
+  for (const entry of UNIFIED_PROVIDER_REGISTRY) {
+    if (!isProviderAvailable(entry.name)) continue;
+    const provider = entry.create();
+    if (provider) providers.push(provider);
   }
 
   return providers;
@@ -456,75 +434,85 @@ export function getOpenAIClient(): OpenAI | null {
 
 export type AIProvider = { client: OpenAI; provider: string; model: string };
 
+interface LegacyProviderDef {
+  name: string;
+  model: string;
+  create: () => { client: OpenAI; valid: boolean } | null;
+}
+
+function createLegacyOpenAI(): { client: OpenAI; valid: boolean } | null {
+  const openai = getOpenAIClient();
+  return openai ? { client: openai, valid: true } : null;
+}
+
+function createLegacyOpenRouter(): { client: OpenAI; valid: boolean } | null {
+  const apiKey =
+    process.env.OPENROUTER_API_KEY ||
+    process.env.New_open_routers ||
+    process.env.openrouterapi ||
+    process.env.travisite;
+  if (!apiKey) return null;
+  return {
+    client: new OpenAI({
+      apiKey,
+      baseURL: "https://openrouter.ai/api/v1",
+      defaultHeaders: {
+        "HTTP-Referer": process.env.APP_URL || "https://travi.world",
+        "X-Title": "Travi CMS",
+      },
+    }),
+    valid: true,
+  };
+}
+
+function createLegacyDeepSeek(): { client: OpenAI; valid: boolean } | null {
+  const apiKey = process.env.DEEPSEEK_API_KEY;
+  if (!apiKey) return null;
+  return { client: new OpenAI({ apiKey, baseURL: "https://api.deepseek.com/v1" }), valid: true };
+}
+
+function createLegacyGemini(): { client: OpenAI; valid: boolean } | null {
+  const apiKey = process.env.GOOGLE_GENAI_API_KEY;
+  if (!apiKey) return null;
+  return {
+    client: new OpenAI({
+      apiKey,
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+    }),
+    valid: true,
+  };
+}
+
+function createLegacyGroq(): { client: OpenAI; valid: boolean } | null {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+  return { client: new OpenAI({ apiKey, baseURL: "https://api.groq.com/openai/v1" }), valid: true };
+}
+
+function createLegacyReplitAI(): { client: OpenAI; valid: boolean } | null {
+  const baseURL = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
+  const apiKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
+  if (!baseURL || !apiKey) return null;
+  return { client: new OpenAI({ apiKey, baseURL }), valid: true };
+}
+
+const LEGACY_PROVIDER_REGISTRY: LegacyProviderDef[] = [
+  { name: "openai", model: "gpt-4o-mini", create: createLegacyOpenAI },
+  { name: "openrouter", model: "anthropic/claude-3.5-sonnet", create: createLegacyOpenRouter },
+  { name: "deepseek", model: "deepseek-chat", create: createLegacyDeepSeek },
+  { name: "gemini", model: "gemini-1.5-flash", create: createLegacyGemini },
+  { name: "groq", model: "llama-3.1-70b-versatile", create: createLegacyGroq },
+  { name: "replit-ai", model: "gpt-4o-mini", create: createLegacyReplitAI },
+];
+
 export function getAllAIClients(): AIProvider[] {
   const clients: AIProvider[] = [];
 
-  if (isProviderAvailable("openai")) {
-    const openai = getOpenAIClient();
-    if (openai) {
-      clients.push({ client: openai, provider: "openai", model: "gpt-4o-mini" });
-    }
-  }
-
-  if (isProviderAvailable("openrouter")) {
-    const apiKey =
-      process.env.OPENROUTER_API_KEY ||
-      process.env.New_open_routers ||
-      process.env.openrouterapi ||
-      process.env.travisite;
-    if (apiKey) {
-      const client = new OpenAI({
-        apiKey,
-        baseURL: "https://openrouter.ai/api/v1",
-        defaultHeaders: {
-          "HTTP-Referer": process.env.APP_URL || "https://travi.world",
-          "X-Title": "Travi CMS",
-        },
-      });
-      clients.push({ client, provider: "openrouter", model: "anthropic/claude-3.5-sonnet" });
-    }
-  }
-
-  if (isProviderAvailable("deepseek")) {
-    const apiKey = process.env.DEEPSEEK_API_KEY;
-    if (apiKey) {
-      const client = new OpenAI({
-        apiKey,
-        baseURL: "https://api.deepseek.com/v1",
-      });
-      clients.push({ client, provider: "deepseek", model: "deepseek-chat" });
-    }
-  }
-
-  if (isProviderAvailable("gemini")) {
-    const apiKey = process.env.GOOGLE_GENAI_API_KEY;
-    if (apiKey) {
-      const client = new OpenAI({
-        apiKey,
-        baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
-      });
-      clients.push({ client, provider: "gemini", model: "gemini-1.5-flash" });
-    }
-  }
-
-  if (isProviderAvailable("groq")) {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (apiKey) {
-      const client = new OpenAI({
-        apiKey,
-        baseURL: "https://api.groq.com/openai/v1",
-      });
-      clients.push({ client, provider: "groq", model: "llama-3.1-70b-versatile" });
-    }
-  }
-
-  // Replit AI as last fallback - always available via Replit AI Integrations
-  if (isProviderAvailable("replit-ai")) {
-    const baseURL = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
-    const apiKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
-    if (baseURL && apiKey) {
-      const client = new OpenAI({ apiKey, baseURL });
-      clients.push({ client, provider: "replit-ai", model: "gpt-4o-mini" });
+  for (const def of LEGACY_PROVIDER_REGISTRY) {
+    if (!isProviderAvailable(def.name)) continue;
+    const result = def.create();
+    if (result) {
+      clients.push({ client: result.client, provider: def.name, model: def.model });
     }
   }
 

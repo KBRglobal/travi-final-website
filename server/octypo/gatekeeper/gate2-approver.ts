@@ -210,19 +210,8 @@ export class Gate2Approver {
     const textParts: string[] = [];
 
     for (const block of blocks) {
-      if (block.type === "paragraph" && block.data?.text) {
-        textParts.push(block.data.text);
-      } else if (block.type === "text" && block.data?.content) {
-        textParts.push(block.data.content);
-      } else if (block.type === "heading" && block.data?.text) {
-        textParts.push(`\n## ${block.data.text}\n`);
-      } else if (block.type === "list" && block.data?.items) {
-        textParts.push(block.data.items.map((item: string) => `- ${item}`).join("\n"));
-      } else if (block.type === "faq" && block.data?.items) {
-        for (const faq of block.data.items) {
-          textParts.push(`Q: ${faq.question}\nA: ${faq.answer}\n`);
-        }
-      }
+      const extracted = this.extractBlockText(block);
+      if (extracted) textParts.push(extracted);
     }
 
     // Limit content length for LLM context
@@ -232,6 +221,27 @@ export class Gate2Approver {
     }
 
     return fullText;
+  }
+
+  private extractBlockText(block: any): string | null {
+    switch (block.type) {
+      case "paragraph":
+        return block.data?.text || null;
+      case "text":
+        return block.data?.content || null;
+      case "heading":
+        return block.data?.text ? `\n## ${block.data.text}\n` : null;
+      case "list":
+        return block.data?.items
+          ? block.data.items.map((item: string) => `- ${item}`).join("\n")
+          : null;
+      case "faq":
+        return block.data?.items
+          ? block.data.items.map((faq: any) => `Q: ${faq.question}\nA: ${faq.answer}\n`).join("")
+          : null;
+      default:
+        return null;
+    }
   }
 
   private async callLLM(prompt: string): Promise<string> {

@@ -121,6 +121,87 @@ export async function renderContentPage(
   return { html, status: 200 };
 }
 
+const ITEMS_PER_PAGE = 50;
+
+function parsePageNumber(contentType: string, searchParams?: URLSearchParams): number {
+  if (contentType !== "attraction" || !searchParams) return 1;
+  const pageParam = searchParams.get("page");
+  if (!pageParam) return 1;
+  const parsed = Number.parseInt(pageParam, 10);
+  return !Number.isNaN(parsed) && parsed >= 1 ? parsed : 1;
+}
+
+async function fetchAttractionItems(
+  currentPage: number
+): Promise<{ items: NormalizedItem[]; totalPages: number; finalPage: number }> {
+  try {
+    const countResult = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(tiqetsAttractions);
+
+    const totalCount = countResult[0]?.count || 0;
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+    const finalPage = currentPage > totalPages && totalPages > 0 ? totalPages : currentPage;
+    const offset = (finalPage - 1) * ITEMS_PER_PAGE;
+
+    const tiqetsResults = await db
+      .select({
+        slug: tiqetsAttractions.slug,
+        seoSlug: tiqetsAttractions.seoSlug,
+        title: tiqetsAttractions.title,
+        description: tiqetsAttractions.description,
+        tiqetsSummary: tiqetsAttractions.tiqetsSummary,
+        cityName: tiqetsAttractions.cityName,
+      })
+      .from(tiqetsAttractions)
+      .orderBy(desc(tiqetsAttractions.updatedAt))
+      .limit(ITEMS_PER_PAGE)
+      .offset(offset);
+
+    const items = tiqetsResults.map(item => ({
+      title: item.title || item.slug,
+      slug: item.seoSlug || item.slug,
+      description:
+        item.description ||
+        item.tiqetsSummary ||
+        `Attraction in ${item.cityName || "various destinations"}`,
+    }));
+
+    return { items, totalPages, finalPage };
+  } catch {
+    return { items: [], totalPages: 1, finalPage: currentPage };
+  }
+}
+
+async function fetchContentItems(contentType: string): Promise<NormalizedItem[]> {
+  try {
+    const contentResults = await db
+      .select({
+        slug: contents.slug,
+        title: contents.title,
+        metaDescription: contents.metaDescription,
+      })
+      .from(contents)
+      .where(
+        and(
+          eq(contents.type, contentType as any),
+          eq(contents.status, "published"),
+          isNull(contents.deletedAt)
+        )
+      )
+      .orderBy(desc(contents.createdAt))
+      .limit(50);
+
+    return contentResults.map(item => ({
+      title: item.title,
+      slug: item.slug,
+      description: item.metaDescription || undefined,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Render category listing page with pagination support for attractions
  */
@@ -130,98 +211,17 @@ export async function renderCategoryPage(
 ): Promise<SSRRenderResult> {
   const { locale = "en", searchParams } = options;
 
-  // Pagination constants
-  const ITEMS_PER_PAGE = 50;
-
-  // Parse page number from query params (only for attractions)
-  let currentPage = 1;
+  let currentPage = parsePageNumber(contentType, searchParams);
   let totalPages = 1;
-  let totalCount = 0;
+  let normalizedItems: NormalizedItem[];
 
-  if (contentType === "attraction" && searchParams) {
-    const pageParam = searchParams.get("page");
-    if (pageParam) {
-      const parsed = Number.parseInt(pageParam, 10);
-      if (!Number.isNaN(parsed) && parsed >= 1) {
-        currentPage = parsed;
-      }
-    }
-  }
-
-  let normalizedItems: NormalizedItem[] = [];
-
-  // For attractions, use tiqets_attractions table which has actual data (with pagination)
   if (contentType === "attraction") {
-    try {
-      // Get total count for pagination
-      const countResult = await db
-        .select({ count: sql<number>`count(*)::int` })
-        .from(tiqetsAttractions);
-
-      totalCount = countResult[0]?.count || 0;
-      totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-
-      // Ensure current page is valid
-      if (currentPage > totalPages && totalPages > 0) {
-        currentPage = totalPages;
-      }
-
-      // Calculate offset
-      const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-      const tiqetsResults = await db
-        .select({
-          slug: tiqetsAttractions.slug,
-          seoSlug: tiqetsAttractions.seoSlug,
-          title: tiqetsAttractions.title,
-          description: tiqetsAttractions.description,
-          tiqetsSummary: tiqetsAttractions.tiqetsSummary,
-          cityName: tiqetsAttractions.cityName,
-        })
-        .from(tiqetsAttractions)
-        .orderBy(desc(tiqetsAttractions.updatedAt))
-        .limit(ITEMS_PER_PAGE)
-        .offset(offset);
-
-      normalizedItems = tiqetsResults.map(item => ({
-        title: item.title || item.slug,
-        slug: item.seoSlug || item.slug,
-        description:
-          item.description ||
-          item.tiqetsSummary ||
-          `Attraction in ${item.cityName || "various destinations"}`,
-      }));
-    } catch (error) {
-      /* ignored */
-    }
+    const result = await fetchAttractionItems(currentPage);
+    normalizedItems = result.items;
+    totalPages = result.totalPages;
+    currentPage = result.finalPage;
   } else {
-    // For other content types, directly query contents table (no pagination for now)
-    try {
-      const contentResults = await db
-        .select({
-          slug: contents.slug,
-          title: contents.title,
-          metaDescription: contents.metaDescription,
-        })
-        .from(contents)
-        .where(
-          and(
-            eq(contents.type, contentType as any),
-            eq(contents.status, "published"),
-            isNull(contents.deletedAt)
-          )
-        )
-        .orderBy(desc(contents.createdAt))
-        .limit(50);
-
-      normalizedItems = contentResults.map(item => ({
-        title: item.title,
-        slug: item.slug,
-        description: item.metaDescription || undefined,
-      }));
-    } catch (error) {
-      /* ignored */
-    }
+    normalizedItems = await fetchContentItems(contentType);
   }
 
   const baseUrlPath = `/${contentType}s`;

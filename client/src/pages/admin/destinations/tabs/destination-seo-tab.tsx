@@ -50,6 +50,23 @@ interface DestinationSeoTabProps {
   };
 }
 
+/** Calculate SEO score for a field based on length and ideal range */
+function calculateFieldScore(length: number, idealMin: number, idealMax: number): number {
+  if (length >= idealMin && length <= idealMax) return 100;
+  if (length > 0) return 60;
+  return 0;
+}
+
+/** Get score badge variant and label */
+function getScoreDisplay(score: number): {
+  variant: "default" | "secondary" | "destructive";
+  label: string;
+} {
+  if (score >= 80) return { variant: "default", label: "Good" };
+  if (score >= 50) return { variant: "secondary", label: "Needs Work" };
+  return { variant: "destructive", label: "Poor" };
+}
+
 export default function DestinationSeoTab({
   destinationId,
   destination,
@@ -115,26 +132,10 @@ export default function DestinationSeoTab({
   const titleLength = metaTitle.length || seoData?.metaTitle?.length || 0;
   const descLength = metaDescription.length || seoData?.metaDescription?.length || 0;
 
-  let titleScore: number;
-  if (titleLength >= 30 && titleLength <= 60) titleScore = 100;
-  else if (titleLength > 0) titleScore = 60;
-  else titleScore = 0;
-
-  let descScore: number;
-  if (descLength >= 120 && descLength <= 160) descScore = 100;
-  else if (descLength > 0) descScore = 60;
-  else descScore = 0;
+  const titleScore = calculateFieldScore(titleLength, 30, 60);
+  const descScore = calculateFieldScore(descLength, 120, 160);
   const overallScore = Math.round((titleScore + descScore) / 2);
-
-  let scoreVariant: "default" | "secondary" | "destructive";
-  if (overallScore >= 80) scoreVariant = "default";
-  else if (overallScore >= 50) scoreVariant = "secondary";
-  else scoreVariant = "destructive";
-
-  let scoreLabel: string;
-  if (overallScore >= 80) scoreLabel = "Good";
-  else if (overallScore >= 50) scoreLabel = "Needs Work";
-  else scoreLabel = "Poor";
+  const { variant: scoreVariant, label: scoreLabel } = getScoreDisplay(overallScore);
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">

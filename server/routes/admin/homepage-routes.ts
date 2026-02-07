@@ -1015,16 +1015,25 @@ export function registerAdminHomepageRoutes(app: Express): void {
         let skippedCount = 0;
         const errors: string[] = [];
 
+        // Helper: check if a translation should be skipped
+        const shouldSkipTranslation = (
+          engTrans: (typeof englishTranslations)[number],
+          targetLocale: string
+        ): boolean => {
+          if (!engTrans.value || engTrans.value.trim() === "") return true;
+          if (overwrite) return false;
+          const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
+          return existingKeys.has(key);
+        };
+
         // Process translations for each target locale
         for (const targetLocale of targetLocales) {
           for (const engTrans of englishTranslations) {
-            if (!engTrans.value || engTrans.value.trim() === "") continue;
-
-            const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
-
-            // Skip if translation already exists (unless overwrite is true)
-            if (!overwrite && existingKeys.has(key)) {
-              skippedCount++;
+            if (shouldSkipTranslation(engTrans, targetLocale)) {
+              if (engTrans.value && engTrans.value.trim() !== "" && !overwrite) {
+                const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
+                if (existingKeys.has(key)) skippedCount++;
+              }
               continue;
             }
 

@@ -343,20 +343,7 @@ export class MagicEngine {
     );
 
     // Filter fields based on mode
-    let fieldsToGenerate = [...fields];
-    if (mode === "seo-optimize") {
-      fieldsToGenerate = fields.filter(f =>
-        ["metaTitle", "metaDescription", "slug", "faqs"].includes(f)
-      );
-    } else if (mode === "enhance") {
-      // In enhance mode, skip fields that already exist
-      if (input.existingTitle) {
-        fieldsToGenerate = fieldsToGenerate.filter(f => f !== "title");
-      }
-      if (input.existingDescription) {
-        fieldsToGenerate = fieldsToGenerate.filter(f => f !== "description");
-      }
-    }
+    const fieldsToGenerate = this.filterFieldsByMode(fields, mode, input);
 
     const context: GeneratorContext = {
       entityName: input.entityName,
@@ -442,6 +429,27 @@ export class MagicEngine {
         errors: { _all: error instanceof Error ? error.message : String(error) },
       };
     }
+  }
+
+  /**
+   * Filter fields based on generation mode
+   */
+  private filterFieldsByMode(
+    fields: FieldType[],
+    mode: GenerationMode,
+    input: MagicFieldInput
+  ): FieldType[] {
+    if (mode === "seo-optimize") {
+      return fields.filter(f => ["metaTitle", "metaDescription", "slug", "faqs"].includes(f));
+    }
+    if (mode === "enhance") {
+      return fields.filter(f => {
+        if (f === "title" && input.existingTitle) return false;
+        if (f === "description" && input.existingDescription) return false;
+        return true;
+      });
+    }
+    return [...fields];
   }
 
   /**

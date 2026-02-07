@@ -41,134 +41,86 @@ import path from "node:path";
  * 3. Admin pages split more granularly to reduce largest chunk size
  * 4. Homepage and public pages have dedicated chunks for faster initial load
  */
-function fixedManualChunks(id: string): string | undefined {
-  // React core, routing, AND their essential dependencies
-  // Including scheduler, use-sync-external-store, and i18n libraries
-  // i18n is included here because react-i18next depends on React
-  // and placing them together prevents CJS helper circular dependencies
-  if (
-    id.includes("node_modules/react/") ||
-    id.includes("node_modules/react-dom/") ||
-    id.includes("node_modules/wouter/") ||
-    id.includes("node_modules/scheduler/") ||
-    id.includes("node_modules/use-sync-external-store/") ||
-    id.includes("node_modules/i18next") ||
-    id.includes("node_modules/react-i18next") ||
-    id.includes("node_modules/react-helmet-async/")
-  ) {
-    return "react-vendor";
-  }
-  // Radix UI components
-  if (id.includes("node_modules/@radix-ui/")) {
-    return "ui-vendor";
-  }
-  // Form libraries
-  if (
-    id.includes("node_modules/react-hook-form/") ||
-    id.includes("node_modules/@hookform/") ||
-    id.includes("node_modules/zod/")
-  ) {
-    return "form-vendor";
-  }
-  // Query and state management
-  if (id.includes("node_modules/@tanstack/react-query")) {
-    return "query-vendor";
-  }
-  // Icons - lucide
-  if (id.includes("node_modules/lucide-react/")) {
-    return "icons-vendor";
-  }
-  // react-icons (separate from lucide to avoid bloating main icon chunk)
-  if (id.includes("node_modules/react-icons/")) {
-    return "react-icons-vendor";
-  }
-  // Animation library
-  if (id.includes("node_modules/framer-motion/")) {
-    return "animation-vendor";
-  }
-  // Date utilities
-  if (id.includes("node_modules/date-fns/")) {
-    return "date-vendor";
-  }
-  // NOTE: i18n (i18next, react-i18next) is now in react-vendor to prevent circular dependencies
-  // Editor libraries - heavy, admin only
-  if (id.includes("node_modules/@tiptap/") || id.includes("node_modules/prosemirror")) {
-    return "editor-vendor";
-  }
-  // Analytics
-  if (id.includes("node_modules/posthog-js/")) {
-    return "analytics-vendor";
-  }
-  // DOMPurify - used for sanitization
-  if (id.includes("node_modules/dompurify/")) {
-    return "sanitize-vendor";
-  }
-  // NOTE: react-helmet-async is in react-vendor to prevent circular dependencies
-  // Homepage - separate chunk for fast initial load
-  if (id.includes("/pages/homepage") || id.includes("/components/homepage/")) {
-    return "homepage";
-  }
-  // Admin pages - split by feature for granular loading
-  if (id.includes("/pages/admin/")) {
-    // Destinations management
-    if (id.includes("/admin/destinations/")) {
-      return "admin-destinations";
-    }
-    // Gatekeeper / access control
-    if (id.includes("/admin/gatekeeper/")) {
-      return "admin-gatekeeper";
-    }
-    // Octypo content engine
-    if (id.includes("/admin/octypo/")) {
-      return "admin-octypo";
-    }
-    // Tiqets integration
-    if (id.includes("/admin/tiqets")) {
-      return "admin-tiqets";
-    }
-    // Content management pages
-    if (id.includes("/admin/homepage-editor") || id.includes("/admin/static-page-editor")) {
-      return "admin-content";
-    }
-    // Remaining admin pages (dashboard, rss-feeds, site-settings)
-    return "admin-pages";
-  }
-  // Content editor - large page
-  if (id.includes("/pages/content-editor")) {
-    return "content-editor";
-  }
-  // NOTE: destination-page is intentionally NOT in manual chunks
-  // Let Rollup naturally place it to avoid circular dependencies
-  // The CJS helper will be placed in a shared chunk or react-vendor
+/** Vendor module patterns: each entry maps a set of path fragments to a chunk name */
+const VENDOR_CHUNKS: Array<{ patterns: string[]; chunk: string }> = [
+  // React core, routing, and essential deps (including i18n to prevent CJS circular deps)
+  {
+    patterns: [
+      "node_modules/react/",
+      "node_modules/react-dom/",
+      "node_modules/wouter/",
+      "node_modules/scheduler/",
+      "node_modules/use-sync-external-store/",
+      "node_modules/i18next",
+      "node_modules/react-i18next",
+      "node_modules/react-helmet-async/",
+    ],
+    chunk: "react-vendor",
+  },
+  { patterns: ["node_modules/@radix-ui/"], chunk: "ui-vendor" },
+  {
+    patterns: ["node_modules/react-hook-form/", "node_modules/@hookform/", "node_modules/zod/"],
+    chunk: "form-vendor",
+  },
+  { patterns: ["node_modules/@tanstack/react-query"], chunk: "query-vendor" },
+  { patterns: ["node_modules/lucide-react/"], chunk: "icons-vendor" },
+  { patterns: ["node_modules/react-icons/"], chunk: "react-icons-vendor" },
+  { patterns: ["node_modules/framer-motion/"], chunk: "animation-vendor" },
+  { patterns: ["node_modules/date-fns/"], chunk: "date-vendor" },
+  { patterns: ["node_modules/@tiptap/", "node_modules/prosemirror"], chunk: "editor-vendor" },
+  { patterns: ["node_modules/posthog-js/"], chunk: "analytics-vendor" },
+  { patterns: ["node_modules/dompurify/"], chunk: "sanitize-vendor" },
+];
 
-  // Destination components (shared across destination pages)
-  if (id.includes("/components/destination/")) {
-    return "destination-components";
+/** Match vendor module to chunk name */
+function matchVendorChunk(id: string): string | undefined {
+  for (const { patterns, chunk } of VENDOR_CHUNKS) {
+    if (patterns.some(p => id.includes(p))) return chunk;
   }
-  // Guide and attraction detail pages
-  if (id.includes("/pages/guide-detail") || id.includes("/pages/attraction-detail")) {
-    return "travel-details";
+  return undefined;
+}
+
+/** Admin page sub-routing: map admin paths to specific chunks */
+const ADMIN_SUB_CHUNKS: Array<{ pattern: string; chunk: string }> = [
+  { pattern: "/admin/destinations/", chunk: "admin-destinations" },
+  { pattern: "/admin/gatekeeper/", chunk: "admin-gatekeeper" },
+  { pattern: "/admin/octypo/", chunk: "admin-octypo" },
+  { pattern: "/admin/tiqets", chunk: "admin-tiqets" },
+  { pattern: "/admin/homepage-editor", chunk: "admin-content" },
+  { pattern: "/admin/static-page-editor", chunk: "admin-content" },
+];
+
+function matchAdminChunk(id: string): string {
+  for (const { pattern, chunk } of ADMIN_SUB_CHUNKS) {
+    if (id.includes(pattern)) return chunk;
   }
-  // Attractions listing page
-  if (id.includes("/pages/attractions") || id.includes("/pages/destination-attractions")) {
-    return "attractions";
+  return "admin-pages";
+}
+
+/** App page patterns: maps path fragments to chunk names */
+const PAGE_CHUNKS: Array<{ patterns: string[]; chunk: string }> = [
+  { patterns: ["/pages/homepage", "/components/homepage/"], chunk: "homepage" },
+  { patterns: ["/pages/content-editor"], chunk: "content-editor" },
+  { patterns: ["/components/destination/"], chunk: "destination-components" },
+  { patterns: ["/pages/guide-detail", "/pages/attraction-detail"], chunk: "travel-details" },
+  { patterns: ["/pages/attractions", "/pages/destination-attractions"], chunk: "attractions" },
+  { patterns: ["/pages/travel-style-article"], chunk: "travel-articles" },
+  { patterns: ["/pages/public-off-plan", "/pages/public-content-viewer"], chunk: "public-content" },
+  { patterns: ["/pages/destinations"], chunk: "destinations-landing" },
+  { patterns: ["/pages/travel-guides"], chunk: "travel-guides" },
+];
+
+function fixedManualChunks(id: string): string | undefined {
+  const vendor = matchVendorChunk(id);
+  if (vendor) return vendor;
+
+  if (id.includes("/pages/admin/")) return matchAdminChunk(id);
+
+  // NOTE: destination-page intentionally NOT in manual chunks to avoid circular deps
+  for (const { patterns, chunk } of PAGE_CHUNKS) {
+    if (patterns.some(p => id.includes(p))) return chunk;
   }
-  // Travel style articles
-  if (id.includes("/pages/travel-style-article")) {
-    return "travel-articles";
-  }
-  // Public off-plan and content viewer
-  if (id.includes("/pages/public-off-plan") || id.includes("/pages/public-content-viewer")) {
-    return "public-content";
-  }
-  // Destinations landing page
-  if (id.includes("/pages/destinations")) {
-    return "destinations-landing";
-  }
-  // Travel guides listing page
-  if (id.includes("/pages/travel-guides")) {
-    return "travel-guides";
-  }
+
   return undefined;
 }
 

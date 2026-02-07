@@ -4,6 +4,80 @@ import path from "node:path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import viteCompression from "vite-plugin-compression";
 
+/** Vendor module patterns: each entry maps path fragments to a chunk name */
+const VENDOR_CHUNKS: Array<{ patterns: string[]; chunk: string }> = [
+  {
+    patterns: [
+      "node_modules/react/",
+      "node_modules/react-dom/",
+      "node_modules/wouter/",
+      "node_modules/scheduler/",
+      "node_modules/use-sync-external-store/",
+      "node_modules/react-helmet-async/",
+    ],
+    chunk: "react-vendor",
+  },
+  { patterns: ["node_modules/i18next", "node_modules/react-i18next"], chunk: "i18n-vendor" },
+  { patterns: ["node_modules/@radix-ui/"], chunk: "ui-vendor" },
+  {
+    patterns: ["node_modules/react-hook-form/", "node_modules/@hookform/", "node_modules/zod/"],
+    chunk: "form-vendor",
+  },
+  { patterns: ["node_modules/@tanstack/react-query"], chunk: "query-vendor" },
+  { patterns: ["node_modules/lucide-react/"], chunk: "icons-vendor" },
+  { patterns: ["node_modules/react-icons/"], chunk: "react-icons-vendor" },
+  { patterns: ["node_modules/framer-motion/"], chunk: "animation-vendor" },
+  { patterns: ["node_modules/date-fns/"], chunk: "date-vendor" },
+  { patterns: ["node_modules/@tiptap/", "node_modules/prosemirror"], chunk: "editor-vendor" },
+  { patterns: ["node_modules/posthog-js/"], chunk: "analytics-vendor" },
+  { patterns: ["node_modules/dompurify/"], chunk: "sanitize-vendor" },
+];
+
+/** Admin sub-paths to chunk mapping */
+const ADMIN_SUB_CHUNKS: Array<{ pattern: string; chunk: string }> = [
+  { pattern: "/admin/destinations/", chunk: "admin-destinations" },
+  { pattern: "/admin/gatekeeper/", chunk: "admin-gatekeeper" },
+  { pattern: "/admin/octypo/", chunk: "admin-octypo" },
+  { pattern: "/admin/tiqets", chunk: "admin-tiqets" },
+  { pattern: "/admin/homepage-editor", chunk: "admin-content" },
+  { pattern: "/admin/static-page-editor", chunk: "admin-content" },
+];
+
+/** App page path patterns to chunk mapping */
+const PAGE_CHUNKS: Array<{ patterns: string[]; chunk: string }> = [
+  { patterns: ["/pages/homepage", "/components/homepage/"], chunk: "homepage" },
+  { patterns: ["/pages/content-editor"], chunk: "content-editor" },
+  { patterns: ["/pages/destination-page"], chunk: "destination-page" },
+  { patterns: ["/components/destination/"], chunk: "destination-components" },
+  { patterns: ["/pages/guide-detail", "/pages/attraction-detail"], chunk: "travel-details" },
+  { patterns: ["/pages/attractions", "/pages/destination-attractions"], chunk: "attractions" },
+  { patterns: ["/pages/travel-style-article"], chunk: "travel-articles" },
+  { patterns: ["/pages/public-off-plan", "/pages/public-content-viewer"], chunk: "public-content" },
+  { patterns: ["/pages/destinations"], chunk: "destinations-landing" },
+  { patterns: ["/pages/travel-guides"], chunk: "travel-guides" },
+];
+
+function matchVendorChunk(id: string): string | undefined {
+  for (const { patterns, chunk } of VENDOR_CHUNKS) {
+    if (patterns.some(p => id.includes(p))) return chunk;
+  }
+  return undefined;
+}
+
+function matchAdminChunk(id: string): string {
+  for (const { pattern, chunk } of ADMIN_SUB_CHUNKS) {
+    if (id.includes(pattern)) return chunk;
+  }
+  return "admin-pages";
+}
+
+function matchPageChunk(id: string): string | undefined {
+  for (const { patterns, chunk } of PAGE_CHUNKS) {
+    if (patterns.some(p => id.includes(p))) return chunk;
+  }
+  return undefined;
+}
+
 export default defineConfig({
   plugins: [
     react(),
@@ -43,135 +117,12 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // React core, routing, and essential React dependencies
-          // Including scheduler and use-sync-external-store prevents circular deps
-          if (
-            id.includes("node_modules/react/") ||
-            id.includes("node_modules/react-dom/") ||
-            id.includes("node_modules/wouter/") ||
-            id.includes("node_modules/scheduler/") ||
-            id.includes("node_modules/use-sync-external-store/") ||
-            id.includes("node_modules/react-helmet-async/")
-          ) {
-            return "react-vendor";
-          }
-          // i18n - internationalization (kept separate from react-vendor for caching)
-          if (id.includes("node_modules/i18next") || id.includes("node_modules/react-i18next")) {
-            return "i18n-vendor";
-          }
-          // Radix UI components
-          if (id.includes("node_modules/@radix-ui/")) {
-            return "ui-vendor";
-          }
-          // Form libraries
-          if (
-            id.includes("node_modules/react-hook-form/") ||
-            id.includes("node_modules/@hookform/") ||
-            id.includes("node_modules/zod/")
-          ) {
-            return "form-vendor";
-          }
-          // Query and state management
-          if (id.includes("node_modules/@tanstack/react-query")) {
-            return "query-vendor";
-          }
-          // Icons - lucide
-          if (id.includes("node_modules/lucide-react/")) {
-            return "icons-vendor";
-          }
-          // react-icons (separate from lucide to avoid bloating main icon chunk)
-          if (id.includes("node_modules/react-icons/")) {
-            return "react-icons-vendor";
-          }
-          // Animation library
-          if (id.includes("node_modules/framer-motion/")) {
-            return "animation-vendor";
-          }
-          // Date utilities
-          if (id.includes("node_modules/date-fns/")) {
-            return "date-vendor";
-          }
-          // Editor libraries - heavy, admin only
-          if (id.includes("node_modules/@tiptap/") || id.includes("node_modules/prosemirror")) {
-            return "editor-vendor";
-          }
-          // Analytics
-          if (id.includes("node_modules/posthog-js/")) {
-            return "analytics-vendor";
-          }
-          // DOMPurify - used for sanitization
-          if (id.includes("node_modules/dompurify/")) {
-            return "sanitize-vendor";
-          }
-          // NOTE: react-helmet-async is in react-vendor to prevent circular dependencies
-          // Homepage - separate chunk for fast initial load
-          if (id.includes("/pages/homepage") || id.includes("/components/homepage/")) {
-            return "homepage";
-          }
-          // Admin pages - split by feature for granular loading
-          if (id.includes("/pages/admin/")) {
-            // Destinations management
-            if (id.includes("/admin/destinations/")) {
-              return "admin-destinations";
-            }
-            // Gatekeeper / access control
-            if (id.includes("/admin/gatekeeper/")) {
-              return "admin-gatekeeper";
-            }
-            // Octypo content engine
-            if (id.includes("/admin/octypo/")) {
-              return "admin-octypo";
-            }
-            // Tiqets integration
-            if (id.includes("/admin/tiqets")) {
-              return "admin-tiqets";
-            }
-            // Content management pages
-            if (id.includes("/admin/homepage-editor") || id.includes("/admin/static-page-editor")) {
-              return "admin-content";
-            }
-            // Remaining admin pages (dashboard, rss-feeds, site-settings)
-            return "admin-pages";
-          }
-          // Content editor - large page
-          if (id.includes("/pages/content-editor")) {
-            return "content-editor";
-          }
-          // Destination page - complex public page
-          if (id.includes("/pages/destination-page")) {
-            return "destination-page";
-          }
-          // Destination components (shared across destination pages)
-          if (id.includes("/components/destination/")) {
-            return "destination-components";
-          }
-          // Guide and attraction detail pages
-          if (id.includes("/pages/guide-detail") || id.includes("/pages/attraction-detail")) {
-            return "travel-details";
-          }
-          // Attractions listing page
-          if (id.includes("/pages/attractions") || id.includes("/pages/destination-attractions")) {
-            return "attractions";
-          }
-          // Travel style articles
-          if (id.includes("/pages/travel-style-article")) {
-            return "travel-articles";
-          }
-          // Public off-plan and content viewer
-          if (
-            id.includes("/pages/public-off-plan") ||
-            id.includes("/pages/public-content-viewer")
-          ) {
-            return "public-content";
-          }
-          // Destinations landing page
-          if (id.includes("/pages/destinations")) {
-            return "destinations-landing";
-          }
-          // Travel guides listing page
-          if (id.includes("/pages/travel-guides")) {
-            return "travel-guides";
-          }
+          const vendor = matchVendorChunk(id);
+          if (vendor) return vendor;
+
+          if (id.includes("/pages/admin/")) return matchAdminChunk(id);
+
+          return matchPageChunk(id);
         },
       },
     },

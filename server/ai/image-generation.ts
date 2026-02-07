@@ -159,28 +159,49 @@ Return ONLY the prompt text, no additional explanation.`,
  * Generate image using Flux 1.1 Pro via Replicate
  * ~$0.03/image - 67% cheaper than DALL-E
  */
+function extractOutput(output: unknown): string | null {
+  if (!output) return null;
+  return Array.isArray(output) ? output[0] : (output as string);
+}
+
+async function pollForResult(
+  pollUrl: string,
+  apiKey: string,
+  maxAttempts: number = 30,
+  intervalMs: number = 2000
+): Promise<string | null> {
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, intervalMs));
+    const pollResponse = await fetch(pollUrl, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    const pollResult = await pollResponse.json();
+
+    if (pollResult.status === "succeeded") return extractOutput(pollResult.output);
+    if (pollResult.status === "failed") return null;
+  }
+  return null;
+}
+
 async function generateWithFlux(
   prompt: string,
   aspectRatio: "16:9" | "1:1" | "9:16" = "16:9"
 ): Promise<string | null> {
   const replicateApiKey = process.env.REPLICATE_API_KEY;
-  if (!replicateApiKey) {
-    return null;
-  }
+  if (!replicateApiKey) return null;
 
   try {
-    // Using Replicate's HTTP API for Flux 1.1 Pro
     const response = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${replicateApiKey}`,
         "Content-Type": "application/json",
-        Prefer: "wait", // Wait for result synchronously
+        Prefer: "wait",
       },
       body: JSON.stringify({
         version: "black-forest-labs/flux-1.1-pro",
         input: {
-          prompt: prompt,
+          prompt,
           aspect_ratio: aspectRatio,
           output_format: "jpg",
           output_quality: 90,
@@ -190,34 +211,12 @@ async function generateWithFlux(
       }),
     });
 
-    if (!response.ok) {
-      return null;
-    }
+    if (!response.ok) return null;
 
     const result = await response.json();
 
-    // If using 'wait' header, output should be ready
-    if (result.output) {
-      return Array.isArray(result.output) ? result.output[0] : result.output;
-    }
-
-    // If not ready, poll for result (max 60 seconds)
-    if (result.urls?.get) {
-      for (let i = 0; i < 30; i++) {
-        await new Promise(r => setTimeout(r, 2000));
-        const pollResponse = await fetch(result.urls.get, {
-          headers: { Authorization: `Bearer ${replicateApiKey}` },
-        });
-        const pollResult = await pollResponse.json();
-
-        if (pollResult.status === "succeeded" && pollResult.output) {
-          return Array.isArray(pollResult.output) ? pollResult.output[0] : pollResult.output;
-        }
-        if (pollResult.status === "failed") {
-          return null;
-        }
-      }
-    }
+    if (result.output) return extractOutput(result.output);
+    if (result.urls?.get) return pollForResult(result.urls.get, replicateApiKey);
 
     return null;
   } catch (error) {

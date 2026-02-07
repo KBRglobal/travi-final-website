@@ -105,6 +105,52 @@ async function translateText(
  * Translate content blocks (JSONB array)
  * ContentBlock structure: { id?, type, data: Record<string, unknown>, order? }
  */
+async function translateSingleBlock(
+  block: ContentBlock,
+  sourceLocale: string,
+  targetLocale: string
+): Promise<ContentBlock> {
+  const translatedBlock: ContentBlock = {
+    ...block,
+    data: { ...block.data },
+  };
+
+  const textContent = block.data?.content || block.data?.text;
+
+  if ((block.type === "text" || block.type === "heading") && typeof textContent === "string") {
+    const { translation } = await translateText(textContent, sourceLocale, targetLocale);
+    translatedBlock.data.content = translation;
+    return translatedBlock;
+  }
+
+  if (block.type === "list" && Array.isArray(block.data?.items)) {
+    translatedBlock.data.items = await translateListItems(
+      block.data.items as string[],
+      sourceLocale,
+      targetLocale
+    );
+  }
+
+  return translatedBlock;
+}
+
+async function translateListItems(
+  items: string[],
+  sourceLocale: string,
+  targetLocale: string
+): Promise<string[]> {
+  const translatedItems: string[] = [];
+  for (const item of items) {
+    if (typeof item === "string") {
+      const { translation } = await translateText(item, sourceLocale, targetLocale);
+      translatedItems.push(translation);
+    } else {
+      translatedItems.push(item);
+    }
+  }
+  return translatedItems;
+}
+
 async function translateBlocks(
   blocks: ContentBlock[],
   sourceLocale: string,
@@ -113,35 +159,9 @@ async function translateBlocks(
   if (!blocks || blocks.length === 0) return [];
 
   const translatedBlocks: ContentBlock[] = [];
-
   for (const block of blocks) {
-    const translatedBlock: ContentBlock = {
-      ...block,
-      data: { ...block.data },
-    };
-
-    // Translate text content in blocks - content is stored in data.content or data.text
-    const textContent = block.data?.content || block.data?.text;
-
-    if ((block.type === "text" || block.type === "heading") && typeof textContent === "string") {
-      const { translation } = await translateText(textContent, sourceLocale, targetLocale);
-      translatedBlock.data.content = translation;
-    } else if (block.type === "list" && Array.isArray(block.data?.items)) {
-      const translatedItems: string[] = [];
-      for (const item of block.data.items as string[]) {
-        if (typeof item === "string") {
-          const { translation } = await translateText(item, sourceLocale, targetLocale);
-          translatedItems.push(translation);
-        } else {
-          translatedItems.push(item);
-        }
-      }
-      translatedBlock.data.items = translatedItems;
-    }
-
-    translatedBlocks.push(translatedBlock);
+    translatedBlocks.push(await translateSingleBlock(block, sourceLocale, targetLocale));
   }
-
   return translatedBlocks;
 }
 
@@ -172,99 +192,72 @@ async function translateFaq(
   return translatedFaq;
 }
 
+/** Translate a single text field and track the provider used */
+async function translateTextField(
+  text: string | null | undefined,
+  sourceLocale: string,
+  targetLocale: string
+): Promise<{ translation: string; provider: TranslationProvider } | null> {
+  if (!text) return null;
+  return translateText(text, sourceLocale, targetLocale);
+}
+
+/** Map of simple text fields to their source content accessors */
+const TEXT_FIELD_KEYS = ["title", "metaTitle", "metaDescription", "answerCapsule"] as const;
+
+/**
+ * Translate all fields for a content item
+ */
+async function translateAllFields(
+  sourceContent: any,
+  sourceLocale: string,
+  targetLocale: string,
+  fields: string[]
+): Promise<{ translatedData: Record<string, unknown>; usedProvider: TranslationProvider }> {
+  const translatedData: Record<string, unknown> = {};
+  let usedProvider: TranslationProvider = "openai";
+
+  for (const field of fields) {
+    if (TEXT_FIELD_KEYS.includes(field as any)) {
+      const result = await translateTextField(sourceContent[field], sourceLocale, targetLocale);
+      if (result) {
+        translatedData[field] = result.translation;
+        usedProvider = result.provider;
+      }
+    } else if (field === "blocks" && sourceContent.blocks?.length > 0) {
+      translatedData.blocks = await translateBlocks(
+        sourceContent.blocks,
+        sourceLocale,
+        targetLocale
+      );
+    } else if (field === "faq") {
+      await translateEntityFaq(sourceContent.id, sourceLocale, targetLocale);
+    } else if (field === "highlights") {
+      await translateContentHighlights(sourceContent.id, sourceLocale, targetLocale);
+    }
+    // "tags" handled at taxonomy level, not per-content
+  }
+
+  return { translatedData, usedProvider };
+}
+
 /**
  * Process a single translation job
  */
 export async function processTranslationJob(job: TranslationJob): Promise<void> {
   const { contentId, sourceLocale, targetLocale, fields } = job;
 
-  // Fetch source content
   const [sourceContent] = await db.select().from(contents).where(eq(contents.id, contentId));
-
   if (!sourceContent) {
     throw new Error(`Content not found: ${contentId}`);
   }
 
-  // Get optimal providers for target language (routing handled by AITranslationService)
-  // The providers parameter is now legacy - AITranslationService uses language-optimized routing
-  let usedProvider: TranslationProvider = "openai";
-
-  // Translate each field
-  const translatedData: {
-    title?: string;
-    metaTitle?: string;
-    metaDescription?: string;
-    blocks?: ContentBlock[];
-    answerCapsule?: string;
-  } = {};
-
-  for (const field of fields || []) {
-    switch (field) {
-      case "title":
-        if (sourceContent.title) {
-          const result = await translateText(sourceContent.title, sourceLocale, targetLocale);
-          translatedData.title = result.translation;
-          usedProvider = result.provider;
-        }
-        break;
-
-      case "metaTitle":
-        if (sourceContent.metaTitle) {
-          const result = await translateText(sourceContent.metaTitle, sourceLocale, targetLocale);
-          translatedData.metaTitle = result.translation;
-          usedProvider = result.provider;
-        }
-        break;
-
-      case "metaDescription":
-        if (sourceContent.metaDescription) {
-          const result = await translateText(
-            sourceContent.metaDescription,
-            sourceLocale,
-            targetLocale
-          );
-          translatedData.metaDescription = result.translation;
-          usedProvider = result.provider;
-        }
-        break;
-
-      case "blocks":
-        if (sourceContent.blocks && sourceContent.blocks.length > 0) {
-          translatedData.blocks = await translateBlocks(
-            sourceContent.blocks,
-            sourceLocale,
-            targetLocale
-          );
-        }
-        break;
-
-      case "answerCapsule":
-        if (sourceContent.answerCapsule) {
-          const result = await translateText(
-            sourceContent.answerCapsule,
-            sourceLocale,
-            targetLocale
-          );
-          translatedData.answerCapsule = result.translation;
-          usedProvider = result.provider;
-        }
-        break;
-
-      case "faq":
-        // FAQ is stored on entity tables (hotels, attractions), handle separately
-        await translateEntityFaq(contentId, sourceLocale, targetLocale);
-        break;
-
-      case "highlights":
-        await translateContentHighlights(contentId, sourceLocale, targetLocale);
-        break;
-
-      case "tags":
-        // Tags labels are stored in tagDefinitions.labelTranslations
-        // This is handled at taxonomy level, not per-content
-        break;
-    }
-  }
+  const { translatedData, usedProvider } = await translateAllFields(
+    sourceContent,
+    sourceLocale,
+    targetLocale,
+    fields || []
+  );
 
   // Upsert translation record
   const [existingTranslation] = await db
@@ -274,23 +267,22 @@ export async function processTranslationJob(job: TranslationJob): Promise<void> 
       and(eq(translations.contentId, contentId), eq(translations.locale, targetLocale as any))
     );
 
+  const translationPayload = {
+    ...translatedData,
+    status: "completed",
+    translationProvider: usedProvider,
+  };
+
   if (existingTranslation) {
     await db
       .update(translations)
-      .set({
-        ...translatedData,
-        status: "completed",
-        translationProvider: usedProvider,
-        updatedAt: new Date(),
-      } as any)
+      .set({ ...translationPayload, updatedAt: new Date() } as any)
       .where(eq(translations.id, existingTranslation.id));
   } else {
     await db.insert(translations).values({
       contentId,
       locale: targetLocale as any,
-      ...translatedData,
-      status: "completed",
-      translationProvider: usedProvider,
+      ...translationPayload,
     } as any);
   }
 

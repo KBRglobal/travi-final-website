@@ -74,48 +74,53 @@ export interface PasswordValidationResult {
 }
 
 /**
- * Validate password against security policy
+ * Check password character requirements and collect errors
  */
-export function validatePasswordStrength(
-  password: string,
-  userInputs?: string[]
-): PasswordValidationResult {
+function checkCharacterRequirements(password: string): string[] {
   const errors: string[] = [];
 
-  // Length check
-  if (!password || password.length < PASSWORD_POLICY.minLength) {
-    errors.push(`Password must be at least ${PASSWORD_POLICY.minLength} characters long`);
+  const checks: Array<{ enabled: boolean; test: RegExp; message: string }> = [
+    {
+      enabled: PASSWORD_POLICY.requireUppercase,
+      test: /[A-Z]/,
+      message: "Password must contain at least one uppercase letter",
+    },
+    {
+      enabled: PASSWORD_POLICY.requireLowercase,
+      test: /[a-z]/,
+      message: "Password must contain at least one lowercase letter",
+    },
+    {
+      enabled: PASSWORD_POLICY.requireNumbers,
+      test: /\d/,
+      message: "Password must contain at least one number",
+    },
+    {
+      enabled: PASSWORD_POLICY.requireSpecialChars,
+      test: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
+      message: "Password must contain at least one special character",
+    },
+  ];
+
+  for (const check of checks) {
+    if (check.enabled && !check.test.test(password)) {
+      errors.push(check.message);
+    }
   }
 
-  // Uppercase check
-  if (PASSWORD_POLICY.requireUppercase && !/[A-Z]/.test(password)) {
-    errors.push("Password must contain at least one uppercase letter");
-  }
+  return errors;
+}
 
-  // Lowercase check
-  if (PASSWORD_POLICY.requireLowercase && !/[a-z]/.test(password)) {
-    errors.push("Password must contain at least one lowercase letter");
-  }
+/**
+ * Check password for common weak patterns
+ */
+function checkWeakPatterns(password: string): string[] {
+  const errors: string[] = [];
 
-  // Number check
-  if (PASSWORD_POLICY.requireNumbers && !/\d/.test(password)) {
-    errors.push("Password must contain at least one number");
-  }
-
-  // Special character check
-  if (
-    PASSWORD_POLICY.requireSpecialChars &&
-    !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)
-  ) {
-    errors.push("Password must contain at least one special character");
-  }
-
-  // Check for common patterns
   if (/^(.)\1+$/.test(password)) {
     errors.push("Password cannot be all the same character");
   }
 
-  // Numeric sequences (012-890) and alphabetic sequences (abc-xyz)
   const numericSeqs = "012|123|234|345|456|567|678|789|890";
   const alphaSeqs =
     "abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz";
@@ -124,21 +129,37 @@ export function validatePasswordStrength(
     errors.push("Password cannot be a simple sequence");
   }
 
+  return errors;
+}
+
+/**
+ * Validate password against security policy
+ */
+export function validatePasswordStrength(
+  password: string,
+  userInputs?: string[]
+): PasswordValidationResult {
+  const errors: string[] = [];
+
+  if (!password || password.length < PASSWORD_POLICY.minLength) {
+    errors.push(`Password must be at least ${PASSWORD_POLICY.minLength} characters long`);
+  }
+
+  errors.push(...checkCharacterRequirements(password));
+  errors.push(...checkWeakPatterns(password));
+
   // Use zxcvbn for comprehensive strength analysis
   const strengthResult = zxcvbn(password, userInputs || []);
 
   const strength = {
     score: strengthResult.score,
-    feedback: [] as string[],
+    feedback:
+      strengthResult.feedback.suggestions.length > 0
+        ? strengthResult.feedback.suggestions
+        : ([] as string[]),
     warning: strengthResult.feedback.warning,
   };
 
-  // Add zxcvbn suggestions
-  if (strengthResult.feedback.suggestions.length > 0) {
-    strength.feedback = strengthResult.feedback.suggestions;
-  }
-
-  // Check minimum strength score
   if (strengthResult.score < PASSWORD_POLICY.minStrengthScore) {
     errors.push(
       `Password is too weak (strength score: ${strengthResult.score}/4, minimum required: ${PASSWORD_POLICY.minStrengthScore})`
@@ -370,6 +391,39 @@ export function recordDualLockoutFailure(username: string, ip: string): void {
  * @param username - The username being attempted
  * @param ip - The IP address of the request
  */
+/**
+ * Check a single lockout entry and clean up if expired
+ */
+function checkLockoutEntry(
+  entry: DualLockoutEntry | undefined,
+  storeKey: string,
+  store: Map<string, DualLockoutEntry>,
+  now: number
+): { locked: boolean; remainingTime: number } {
+  if (!entry) {
+    return { locked: false, remainingTime: 0 };
+  }
+
+  if (entry.lockedUntil && entry.lockedUntil > now) {
+    return { locked: true, remainingTime: Math.ceil((entry.lockedUntil - now) / 1000 / 60) };
+  }
+
+  if (entry.lockedUntil && entry.lockedUntil <= now) {
+    store.delete(storeKey);
+  }
+
+  return { locked: false, remainingTime: 0 };
+}
+
+/**
+ * Determine the lock type from IP and username lock status
+ */
+function determineLockType(ipLocked: boolean, userLocked: boolean): "ip" | "username" | "both" {
+  if (ipLocked && userLocked) return "both";
+  if (ipLocked) return "ip";
+  return "username";
+}
+
 export function checkDualLockout(
   username: string,
   ip: string
@@ -383,37 +437,13 @@ export function checkDualLockout(
   const now = Date.now();
   const normalizedUsername = username.toLowerCase();
 
-  // Check IP lockout
   const ipEntry = ipLockoutStore.get(ip);
-  let ipLocked = false;
-  let ipRemainingTime = 0;
-
-  if (ipEntry) {
-    if (ipEntry.lockedUntil && ipEntry.lockedUntil > now) {
-      ipLocked = true;
-      ipRemainingTime = Math.ceil((ipEntry.lockedUntil - now) / 1000 / 60);
-    } else if (ipEntry.lockedUntil && ipEntry.lockedUntil <= now) {
-      // Expired, clean up
-      ipLockoutStore.delete(ip);
-    }
-  }
-
-  // Check username lockout
   const userEntry = usernameLockoutStore.get(normalizedUsername);
-  let userLocked = false;
-  let userRemainingTime = 0;
 
-  if (userEntry) {
-    if (userEntry.lockedUntil && userEntry.lockedUntil > now) {
-      userLocked = true;
-      userRemainingTime = Math.ceil((userEntry.lockedUntil - now) / 1000 / 60);
-    } else if (userEntry.lockedUntil && userEntry.lockedUntil <= now) {
-      // Expired, clean up
-      usernameLockoutStore.delete(normalizedUsername);
-    }
-  }
+  const ipStatus = checkLockoutEntry(ipEntry, ip, ipLockoutStore, now);
+  const userStatus = checkLockoutEntry(userEntry, normalizedUsername, usernameLockoutStore, now);
 
-  if (!ipLocked && !userLocked) {
+  if (!ipStatus.locked && !userStatus.locked) {
     return {
       locked: false,
       ipAttempts: ipEntry?.failedAttempts,
@@ -421,20 +451,10 @@ export function checkDualLockout(
     };
   }
 
-  // Determine lock type and max remaining time
-  let lockType: "ip" | "username" | "both";
-  if (ipLocked && userLocked) {
-    lockType = "both";
-  } else if (ipLocked) {
-    lockType = "ip";
-  } else {
-    lockType = "username";
-  }
-
   return {
     locked: true,
-    lockType,
-    remainingTime: Math.max(ipRemainingTime, userRemainingTime),
+    lockType: determineLockType(ipStatus.locked, userStatus.locked),
+    remainingTime: Math.max(ipStatus.remainingTime, userStatus.remainingTime),
     ipAttempts: ipEntry?.failedAttempts,
     usernameAttempts: userEntry?.failedAttempts,
   };

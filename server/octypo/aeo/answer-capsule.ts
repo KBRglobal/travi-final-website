@@ -243,52 +243,9 @@ export class AEOValidator {
     const issues: string[] = [];
     const suggestions: string[] = [];
 
-    let answerCapsuleScore = 100;
-    const capsules = this.capsuleGenerator.processFAQs(content.faqs);
-
-    let validCapsules = 0;
-    for (const capsule of capsules) {
-      const validation = this.capsuleGenerator.validateCapsule(capsule);
-      if (validation.valid) {
-        validCapsules++;
-      } else {
-        issues.push(...validation.issues);
-        answerCapsuleScore -= 10;
-      }
-    }
-
-    // NEW: 15-20 FAQs target
-    if (capsules.length < 15) {
-      issues.push(`Only ${capsules.length} FAQs (need 15-20)`);
-      answerCapsuleScore -= Math.max(0, (15 - capsules.length) * 3); // Proportional penalty
-    }
-
-    let schemaScore = 100;
-    if (!content.schemaPayload || Object.keys(content.schemaPayload).length === 0) {
-      issues.push("Missing schema payload");
-      schemaScore = 0;
-    } else {
-      if (!content.schemaPayload["@type"]) {
-        issues.push("Schema missing @type");
-        schemaScore -= 20;
-      }
-      if (!content.schemaPayload["@context"]) {
-        issues.push("Schema missing @context");
-        schemaScore -= 20;
-      }
-    }
-
-    let faqScore = 100;
-    for (let i = 0; i < content.faqs.length; i++) {
-      const faq = content.faqs[i];
-      if (!faq.question.endsWith("?")) {
-        issues.push(`FAQ ${i + 1} question should end with ?`);
-        faqScore -= 5;
-      }
-      if (faq.answer.length < 100) {
-        suggestions.push(`FAQ ${i + 1} answer could be more comprehensive`);
-      }
-    }
+    const answerCapsuleScore = this.scoreCapsules(content.faqs, issues);
+    const schemaScore = this.scoreSchema(content.schemaPayload, issues);
+    const faqScore = this.scoreFAQs(content.faqs, issues, suggestions);
 
     const answerCapsuleClipped = Math.max(0, Math.min(100, answerCapsuleScore));
     const schemaClipped = Math.max(0, Math.min(100, schemaScore));
@@ -306,6 +263,62 @@ export class AEOValidator {
       issues,
       suggestions,
     };
+  }
+
+  private scoreCapsules(faqs: GeneratedAttractionContent["faqs"], issues: string[]): number {
+    let score = 100;
+    const capsules = this.capsuleGenerator.processFAQs(faqs);
+
+    for (const capsule of capsules) {
+      const validation = this.capsuleGenerator.validateCapsule(capsule);
+      if (!validation.valid) {
+        issues.push(...validation.issues);
+        score -= 10;
+      }
+    }
+
+    if (capsules.length < 15) {
+      issues.push(`Only ${capsules.length} FAQs (need 15-20)`);
+      score -= Math.max(0, (15 - capsules.length) * 3);
+    }
+
+    return score;
+  }
+
+  private scoreSchema(schemaPayload: any, issues: string[]): number {
+    if (!schemaPayload || Object.keys(schemaPayload).length === 0) {
+      issues.push("Missing schema payload");
+      return 0;
+    }
+    let score = 100;
+    if (!schemaPayload["@type"]) {
+      issues.push("Schema missing @type");
+      score -= 20;
+    }
+    if (!schemaPayload["@context"]) {
+      issues.push("Schema missing @context");
+      score -= 20;
+    }
+    return score;
+  }
+
+  private scoreFAQs(
+    faqs: GeneratedAttractionContent["faqs"],
+    issues: string[],
+    suggestions: string[]
+  ): number {
+    let score = 100;
+    for (let i = 0; i < faqs.length; i++) {
+      const faq = faqs[i];
+      if (!faq.question.endsWith("?")) {
+        issues.push(`FAQ ${i + 1} question should end with ?`);
+        score -= 5;
+      }
+      if (faq.answer.length < 100) {
+        suggestions.push(`FAQ ${i + 1} answer could be more comprehensive`);
+      }
+    }
+    return score;
   }
 }
 

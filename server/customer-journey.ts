@@ -142,6 +142,54 @@ const BATCH_SIZE = 100;
 const FLUSH_INTERVAL_MS = 30000; // 30 seconds
 
 // ============================================================================
+// HELPERS
+// ============================================================================
+
+/** Map a DB analytics event row to the AnalyticsEvent type */
+function mapDbEventToAnalyticsEvent(e: typeof analyticsEvents.$inferSelect): AnalyticsEvent {
+  return {
+    sessionId: e.sessionId,
+    visitorId: e.visitorId,
+    eventType: e.eventType as EventType,
+    eventName: e.eventName || "",
+    timestamp: e.timestamp,
+    pageUrl: e.pageUrl || "",
+    pagePath: e.pagePath || "",
+    pageTitle: e.pageTitle || undefined,
+    referrer: e.referrer || undefined,
+    elementId: e.elementId || undefined,
+    elementClass: e.elementClass || undefined,
+    elementText: e.elementText || undefined,
+    elementHref: e.elementHref || undefined,
+    scrollDepth: e.scrollDepth || undefined,
+    viewportWidth: e.viewportWidth || undefined,
+    viewportHeight: e.viewportHeight || undefined,
+    clickX: e.clickX || undefined,
+    clickY: e.clickY || undefined,
+    timeOnPage: e.timeOnPage || undefined,
+    pageLoadTime: e.pageLoadTime || undefined,
+    isNewSession: e.isNewSession || undefined,
+    isNewVisitor: e.isNewVisitor || undefined,
+    userAgent: e.userAgent || undefined,
+    deviceType: e.deviceType as AnalyticsEvent["deviceType"],
+    browser: e.browser || undefined,
+    os: e.os || undefined,
+    language: e.language || undefined,
+    country: e.country || undefined,
+    city: e.city || undefined,
+    contentId: e.contentId || undefined,
+    contentType: e.contentType || undefined,
+    contentTitle: e.contentTitle || undefined,
+    utmSource: e.utmSource || undefined,
+    utmMedium: e.utmMedium || undefined,
+    utmCampaign: e.utmCampaign || undefined,
+    utmTerm: e.utmTerm || undefined,
+    utmContent: e.utmContent || undefined,
+    metadata: e.metadata as Record<string, any>,
+  };
+}
+
+// ============================================================================
 // CUSTOMER JOURNEY ANALYTICS SERVICE
 // ============================================================================
 
@@ -481,48 +529,7 @@ export const customerJourney = {
 
     if (dbEvents.length === 0) return null;
 
-    // Map DB events to AnalyticsEvent type
-    const events: AnalyticsEvent[] = dbEvents.map(e => ({
-      sessionId: e.sessionId,
-      visitorId: e.visitorId,
-      eventType: e.eventType as EventType,
-      eventName: e.eventName || "",
-      timestamp: e.timestamp,
-      pageUrl: e.pageUrl || "",
-      pagePath: e.pagePath || "",
-      pageTitle: e.pageTitle || undefined,
-      referrer: e.referrer || undefined,
-      elementId: e.elementId || undefined,
-      elementClass: e.elementClass || undefined,
-      elementText: e.elementText || undefined,
-      elementHref: e.elementHref || undefined,
-      scrollDepth: e.scrollDepth || undefined,
-      viewportWidth: e.viewportWidth || undefined,
-      viewportHeight: e.viewportHeight || undefined,
-      clickX: e.clickX || undefined,
-      clickY: e.clickY || undefined,
-      timeOnPage: e.timeOnPage || undefined,
-      pageLoadTime: e.pageLoadTime || undefined,
-      isNewSession: e.isNewSession || undefined,
-      isNewVisitor: e.isNewVisitor || undefined,
-      userAgent: e.userAgent || undefined,
-      deviceType: e.deviceType as AnalyticsEvent["deviceType"],
-      browser: e.browser || undefined,
-      os: e.os || undefined,
-      language: e.language || undefined,
-      country: e.country || undefined,
-      city: e.city || undefined,
-      contentId: e.contentId || undefined,
-      contentType: e.contentType || undefined,
-      contentTitle: e.contentTitle || undefined,
-      utmSource: e.utmSource || undefined,
-      utmMedium: e.utmMedium || undefined,
-      utmCampaign: e.utmCampaign || undefined,
-      utmTerm: e.utmTerm || undefined,
-      utmContent: e.utmContent || undefined,
-      metadata: e.metadata as Record<string, any>,
-    }));
-
+    const events: AnalyticsEvent[] = dbEvents.map(mapDbEventToAnalyticsEvent);
     const pageViews = events.filter(e => e.eventType === "page_view");
     const conversions = events.filter(e => e.eventType === "conversion");
 

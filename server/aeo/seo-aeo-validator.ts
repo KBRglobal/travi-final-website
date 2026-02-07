@@ -216,42 +216,13 @@ interface SEOValidationResults {
   imagesValid: boolean;
 }
 
-function validateSEO(
+function validateSEOTitle(
   input: ContentValidationInput,
   issues: ValidationIssue[],
   warnings: ValidationWarning[]
-): SEOValidationResults {
-  const results: SEOValidationResults = {
-    titleValid: true,
-    metaDescriptionValid: true,
-    slugValid: true,
-    headingsValid: true,
-    linksValid: true,
-    imagesValid: true,
-  };
-
-  // Validate title
+): boolean {
   const title = input.metaTitle || input.title;
-  if (title) {
-    if (title.length < SEO_RULES.title.minLength) {
-      warnings.push({
-        type: "seo",
-        field: "title",
-        message: `Title is too short (${title.length} chars, minimum ${SEO_RULES.title.minLength})`,
-        suggestion: "Expand title with relevant keywords",
-      });
-    }
-    if (title.length > SEO_RULES.title.maxLength) {
-      issues.push({
-        type: "seo",
-        severity: "major",
-        field: "title",
-        message: `Title is too long (${title.length} chars, maximum ${SEO_RULES.title.maxLength})`,
-        fix: "Shorten title to prevent truncation in search results",
-      });
-      results.titleValid = false;
-    }
-  } else {
+  if (!title) {
     issues.push({
       type: "seo",
       severity: "critical",
@@ -259,30 +230,36 @@ function validateSEO(
       message: "Title is missing",
       fix: "Add a descriptive title between 50-60 characters",
     });
-    results.titleValid = false;
+    return false;
   }
+  if (title.length < SEO_RULES.title.minLength) {
+    warnings.push({
+      type: "seo",
+      field: "title",
+      message: `Title is too short (${title.length} chars, minimum ${SEO_RULES.title.minLength})`,
+      suggestion: "Expand title with relevant keywords",
+    });
+  }
+  if (title.length > SEO_RULES.title.maxLength) {
+    issues.push({
+      type: "seo",
+      severity: "major",
+      field: "title",
+      message: `Title is too long (${title.length} chars, maximum ${SEO_RULES.title.maxLength})`,
+      fix: "Shorten title to prevent truncation in search results",
+    });
+    return false;
+  }
+  return true;
+}
 
-  // Validate meta description
+function validateSEOMetaDesc(
+  input: ContentValidationInput,
+  issues: ValidationIssue[],
+  warnings: ValidationWarning[]
+): boolean {
   const metaDesc = input.metaDescription;
-  if (metaDesc) {
-    if (metaDesc.length < SEO_RULES.metaDescription.minLength) {
-      warnings.push({
-        type: "seo",
-        field: "metaDescription",
-        message: `Meta description is short (${metaDesc.length} chars)`,
-        suggestion: "Expand to 150-155 characters for better CTR",
-      });
-    }
-    if (metaDesc.length > SEO_RULES.metaDescription.maxLength) {
-      issues.push({
-        type: "seo",
-        severity: "minor",
-        field: "metaDescription",
-        message: `Meta description is too long (${metaDesc.length} chars)`,
-        fix: "Shorten to prevent truncation in search results",
-      });
-    }
-  } else {
+  if (!metaDesc) {
     issues.push({
       type: "seo",
       severity: "major",
@@ -290,73 +267,111 @@ function validateSEO(
       message: "Meta description is missing",
       fix: "Add a compelling meta description between 150-155 characters",
     });
-    results.metaDescriptionValid = false;
+    return false;
+  }
+  if (metaDesc.length < SEO_RULES.metaDescription.minLength) {
+    warnings.push({
+      type: "seo",
+      field: "metaDescription",
+      message: `Meta description is short (${metaDesc.length} chars)`,
+      suggestion: "Expand to 150-155 characters for better CTR",
+    });
+  }
+  if (metaDesc.length > SEO_RULES.metaDescription.maxLength) {
+    issues.push({
+      type: "seo",
+      severity: "minor",
+      field: "metaDescription",
+      message: `Meta description is too long (${metaDesc.length} chars)`,
+      fix: "Shorten to prevent truncation in search results",
+    });
+  }
+  return true;
+}
+
+function validateSEOSlug(
+  input: ContentValidationInput,
+  issues: ValidationIssue[],
+  warnings: ValidationWarning[]
+): boolean {
+  if (!input.slug) return true;
+  if (!SEO_RULES.slug.pattern.test(input.slug)) {
+    issues.push({
+      type: "seo",
+      severity: "minor",
+      field: "slug",
+      message: "Slug contains invalid characters",
+      fix: "Use only lowercase letters, numbers, and hyphens",
+    });
+    return false;
+  }
+  if (input.slug.length > SEO_RULES.slug.maxLength) {
+    warnings.push({
+      type: "seo",
+      field: "slug",
+      message: `Slug is long (${input.slug.length} chars)`,
+      suggestion: "Shorter URLs are generally better for SEO",
+    });
+  }
+  return true;
+}
+
+function validateSEOHeadings(
+  input: ContentValidationInput,
+  issues: ValidationIssue[],
+  warnings: ValidationWarning[]
+): boolean {
+  if (!input.blocks || !Array.isArray(input.blocks)) return true;
+
+  const headings = input.blocks.filter((b: any) => b.type === "heading" || b.type?.startsWith("h"));
+  const h1Count = headings.filter((h: any) => h.level === 1 || h.type === "h1").length;
+
+  if (h1Count === 0) {
+    warnings.push({
+      type: "seo",
+      field: "headings",
+      message: "No H1 heading found in content",
+      suggestion: "Add one H1 heading that matches the page title",
+    });
+  }
+  if (h1Count > 1) {
+    issues.push({
+      type: "seo",
+      severity: "minor",
+      field: "headings",
+      message: `Multiple H1 headings found (${h1Count})`,
+      fix: "Use only one H1 heading per page",
+    });
+    return false;
   }
 
-  // Validate slug
-  if (input.slug) {
-    if (!SEO_RULES.slug.pattern.test(input.slug)) {
-      issues.push({
-        type: "seo",
-        severity: "minor",
-        field: "slug",
-        message: "Slug contains invalid characters",
-        fix: "Use only lowercase letters, numbers, and hyphens",
-      });
-      results.slugValid = false;
-    }
-    if (input.slug.length > SEO_RULES.slug.maxLength) {
-      warnings.push({
-        type: "seo",
-        field: "slug",
-        message: `Slug is long (${input.slug.length} chars)`,
-        suggestion: "Shorter URLs are generally better for SEO",
-      });
-    }
+  const linkBlocks = input.blocks.filter(
+    (b: any) => b.type === "link" || b.content?.includes("<a ")
+  );
+  if (linkBlocks.length < SEO_RULES.internalLinks.minimum) {
+    warnings.push({
+      type: "seo",
+      field: "links",
+      message: "Few internal links detected",
+      suggestion: "Add relevant internal links to improve site structure",
+    });
   }
+  return true;
+}
 
-  // Validate content structure (headings)
-  if (input.blocks && Array.isArray(input.blocks)) {
-    const headings = input.blocks.filter(
-      (b: any) => b.type === "heading" || b.type?.startsWith("h")
-    );
-
-    const h1Count = headings.filter((h: any) => h.level === 1 || h.type === "h1").length;
-
-    if (h1Count === 0) {
-      warnings.push({
-        type: "seo",
-        field: "headings",
-        message: "No H1 heading found in content",
-        suggestion: "Add one H1 heading that matches the page title",
-      });
-    }
-    if (h1Count > 1) {
-      issues.push({
-        type: "seo",
-        severity: "minor",
-        field: "headings",
-        message: `Multiple H1 headings found (${h1Count})`,
-        fix: "Use only one H1 heading per page",
-      });
-      results.headingsValid = false;
-    }
-
-    // Check internal links
-    const linkBlocks = input.blocks.filter(
-      (b: any) => b.type === "link" || b.content?.includes("<a ")
-    );
-    if (linkBlocks.length < SEO_RULES.internalLinks.minimum) {
-      warnings.push({
-        type: "seo",
-        field: "links",
-        message: "Few internal links detected",
-        suggestion: "Add relevant internal links to improve site structure",
-      });
-    }
-  }
-
-  return results;
+function validateSEO(
+  input: ContentValidationInput,
+  issues: ValidationIssue[],
+  warnings: ValidationWarning[]
+): SEOValidationResults {
+  return {
+    titleValid: validateSEOTitle(input, issues, warnings),
+    metaDescriptionValid: validateSEOMetaDesc(input, issues, warnings),
+    slugValid: validateSEOSlug(input, issues, warnings),
+    headingsValid: validateSEOHeadings(input, issues, warnings),
+    linksValid: true,
+    imagesValid: true,
+  };
 }
 
 // ============================================================================
@@ -371,90 +386,134 @@ interface AEOValidationResults {
   firstParagraphOptimized: boolean;
 }
 
+function validateAEOCapsule(
+  capsule: string,
+  issues: ValidationIssue[],
+  warnings: ValidationWarning[]
+): { valid: boolean; quality: number } {
+  const wordCount = countWords(capsule);
+  let valid = true;
+
+  if (wordCount < AEO_RULES.answerCapsule.minWords) {
+    issues.push({
+      type: "aeo",
+      severity: "major",
+      field: "answerCapsule",
+      message: `Capsule too short (${wordCount} words, minimum ${AEO_RULES.answerCapsule.minWords})`,
+      fix: "Expand capsule to include more key information",
+    });
+    valid = false;
+  }
+  if (wordCount > AEO_RULES.answerCapsule.maxWords) {
+    issues.push({
+      type: "aeo",
+      severity: "major",
+      field: "answerCapsule",
+      message: `Capsule too long (${wordCount} words, maximum ${AEO_RULES.answerCapsule.maxWords})`,
+      fix: "Shorten capsule to be more concise for AI extraction",
+    });
+    valid = false;
+  }
+
+  const marketingWords = [
+    "amazing",
+    "incredible",
+    "must-visit",
+    "breathtaking",
+    "hidden gem",
+    "best-kept secret",
+  ];
+  if (marketingWords.some(w => capsule.toLowerCase().includes(w))) {
+    issues.push({
+      type: "aeo",
+      severity: "minor",
+      field: "answerCapsule",
+      message: "Capsule contains marketing language",
+      fix: "Use factual, objective language instead of marketing superlatives",
+    });
+  }
+  if (/[\u{1F300}-\u{1F9FF}]/u.test(capsule)) {
+    issues.push({
+      type: "aeo",
+      severity: "minor",
+      field: "answerCapsule",
+      message: "Capsule contains emojis",
+      fix: "Remove emojis for professional AI-optimized content",
+    });
+  }
+  if (!/\d+/.test(capsule)) {
+    warnings.push({
+      type: "aeo",
+      field: "answerCapsule",
+      message: "Capsule lacks specific numbers or statistics",
+      suggestion:
+        "Include concrete data points (prices, distances, counts) for better AI citations",
+    });
+  }
+
+  return { valid, quality: calculateCapsuleQuality(capsule) };
+}
+
+function validateAEOSchema(input: ContentValidationInput, warnings: ValidationWarning[]): boolean {
+  if (!input.schemaMarkup) {
+    warnings.push({
+      type: "aeo",
+      field: "schema",
+      message: "No AEO schema enhancements found",
+      suggestion: "Add FAQPage, HowTo, or other relevant schema types",
+    });
+    return false;
+  }
+  const schemaTypes = extractSchemaTypes(input.schemaMarkup);
+  if (!schemaTypes.includes("FAQPage") && input.type !== "event") {
+    warnings.push({
+      type: "aeo",
+      field: "schema",
+      message: "FAQPage schema not found",
+      suggestion: "Add FAQ schema for better AI platform visibility",
+    });
+  }
+  if (!schemaTypes.includes("BreadcrumbList")) {
+    warnings.push({
+      type: "aeo",
+      field: "schema",
+      message: "BreadcrumbList schema not found",
+      suggestion: "Add breadcrumb schema for navigation context",
+    });
+  }
+  return schemaTypes.includes("FAQPage");
+}
+
+function checkFirstParagraphOptimization(
+  input: ContentValidationInput,
+  warnings: ValidationWarning[]
+): boolean {
+  if (!input.blocks || !Array.isArray(input.blocks)) return false;
+  const firstParagraph = input.blocks.find((b: any) => b.type === "paragraph" || b.type === "text");
+  if (!firstParagraph?.content) return false;
+  const paragraphWords = countWords(firstParagraph.content);
+  if (paragraphWords >= 40 && paragraphWords <= 80) return true;
+  warnings.push({
+    type: "aeo",
+    field: "content",
+    message: "First paragraph not optimized for AI extraction",
+    suggestion: "Make first paragraph 40-80 words with direct answer",
+  });
+  return false;
+}
+
 function validateAEO(
   input: ContentValidationInput,
   issues: ValidationIssue[],
   warnings: ValidationWarning[]
 ): AEOValidationResults {
-  const results: AEOValidationResults = {
-    capsuleValid: true,
-    capsuleQuality: 0,
-    schemaValid: true,
-    faqPresent: false,
-    firstParagraphOptimized: false,
-  };
+  let capsuleValid = true;
+  let capsuleQuality = 0;
 
-  // Validate answer capsule
   if (input.answerCapsule) {
-    const capsule = input.answerCapsule;
-    const wordCount = countWords(capsule);
-
-    // Word count validation
-    if (wordCount < AEO_RULES.answerCapsule.minWords) {
-      issues.push({
-        type: "aeo",
-        severity: "major",
-        field: "answerCapsule",
-        message: `Capsule too short (${wordCount} words, minimum ${AEO_RULES.answerCapsule.minWords})`,
-        fix: "Expand capsule to include more key information",
-      });
-      results.capsuleValid = false;
-    }
-    if (wordCount > AEO_RULES.answerCapsule.maxWords) {
-      issues.push({
-        type: "aeo",
-        severity: "major",
-        field: "answerCapsule",
-        message: `Capsule too long (${wordCount} words, maximum ${AEO_RULES.answerCapsule.maxWords})`,
-        fix: "Shorten capsule to be more concise for AI extraction",
-      });
-      results.capsuleValid = false;
-    }
-
-    // Marketing language check
-    const marketingWords = [
-      "amazing",
-      "incredible",
-      "must-visit",
-      "breathtaking",
-      "hidden gem",
-      "best-kept secret",
-    ];
-    const hasMarketing = marketingWords.some(w => capsule.toLowerCase().includes(w));
-    if (hasMarketing) {
-      issues.push({
-        type: "aeo",
-        severity: "minor",
-        field: "answerCapsule",
-        message: "Capsule contains marketing language",
-        fix: "Use factual, objective language instead of marketing superlatives",
-      });
-    }
-
-    // Emoji check
-    if (/[\u{1F300}-\u{1F9FF}]/u.test(capsule)) {
-      issues.push({
-        type: "aeo",
-        severity: "minor",
-        field: "answerCapsule",
-        message: "Capsule contains emojis",
-        fix: "Remove emojis for professional AI-optimized content",
-      });
-    }
-
-    // Number/fact check (good for AI)
-    if (!/\d+/.test(capsule)) {
-      warnings.push({
-        type: "aeo",
-        field: "answerCapsule",
-        message: "Capsule lacks specific numbers or statistics",
-        suggestion:
-          "Include concrete data points (prices, distances, counts) for better AI citations",
-      });
-    }
-
-    // Calculate quality score
-    results.capsuleQuality = calculateCapsuleQuality(capsule);
+    const result = validateAEOCapsule(input.answerCapsule, issues, warnings);
+    capsuleValid = result.valid;
+    capsuleQuality = result.quality;
   } else {
     issues.push({
       type: "aeo",
@@ -463,64 +522,16 @@ function validateAEO(
       message: "Answer capsule is missing",
       fix: "Generate an answer capsule (40-60 words) for AI platform optimization",
     });
-    results.capsuleValid = false;
+    capsuleValid = false;
   }
 
-  // Validate schema
-  if (input.schemaMarkup) {
-    // Check for required schema types
-    const schemaTypes = extractSchemaTypes(input.schemaMarkup);
-    const hasFAQ = schemaTypes.includes("FAQPage");
-    const hasBreadcrumb = schemaTypes.includes("BreadcrumbList");
-
-    if (!hasFAQ && input.type !== "event") {
-      warnings.push({
-        type: "aeo",
-        field: "schema",
-        message: "FAQPage schema not found",
-        suggestion: "Add FAQ schema for better AI platform visibility",
-      });
-    }
-    if (!hasBreadcrumb) {
-      warnings.push({
-        type: "aeo",
-        field: "schema",
-        message: "BreadcrumbList schema not found",
-        suggestion: "Add breadcrumb schema for navigation context",
-      });
-    }
-
-    results.faqPresent = hasFAQ;
-  } else {
-    warnings.push({
-      type: "aeo",
-      field: "schema",
-      message: "No AEO schema enhancements found",
-      suggestion: "Add FAQPage, HowTo, or other relevant schema types",
-    });
-  }
-
-  // Check first paragraph optimization
-  if (input.blocks && Array.isArray(input.blocks)) {
-    const firstParagraph = input.blocks.find(
-      (b: any) => b.type === "paragraph" || b.type === "text"
-    );
-    if (firstParagraph?.content) {
-      const paragraphWords = countWords(firstParagraph.content);
-      if (paragraphWords >= 40 && paragraphWords <= 80) {
-        results.firstParagraphOptimized = true;
-      } else {
-        warnings.push({
-          type: "aeo",
-          field: "content",
-          message: "First paragraph not optimized for AI extraction",
-          suggestion: "Make first paragraph 40-80 words with direct answer",
-        });
-      }
-    }
-  }
-
-  return results;
+  return {
+    capsuleValid,
+    capsuleQuality,
+    schemaValid: true,
+    faqPresent: validateAEOSchema(input, warnings),
+    firstParagraphOptimized: checkFirstParagraphOptimization(input, warnings),
+  };
 }
 
 // ============================================================================

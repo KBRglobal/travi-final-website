@@ -324,6 +324,41 @@ function FeaturedGuideCard({ guide, locale }: Readonly<{ guide: Guide; locale: s
   );
 }
 
+/** Build ItemList structured data for SEO */
+function buildGuidesItemListSchema(guides: Guide[] | undefined) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Travel Guides",
+    description: "Comprehensive travel guides for destinations worldwide",
+    numberOfItems: guides?.length || 0,
+    itemListElement:
+      guides?.map((guide, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "TravelGuide",
+          name: guide.title,
+          description: guide.summary,
+          url: `https://travi.world/guides/${guide.slug}`,
+          inLanguage: guide.locale,
+        },
+      })) || [],
+  };
+}
+
+/** Filter guides by search query */
+function filterGuides(guides: Guide[] | undefined, query: string): Guide[] {
+  if (!guides) return [];
+  if (!query) return guides;
+  const lowerQuery = query.toLowerCase();
+  return guides.filter(
+    guide =>
+      guide.title.toLowerCase().includes(lowerQuery) ||
+      guide.summary?.toLowerCase().includes(lowerQuery)
+  );
+}
+
 export default function TravelGuidesPage() {
   const [location] = useLocation();
   const [selectedLocale, setSelectedLocale] = useState("en");
@@ -351,37 +386,10 @@ export default function TravelGuidesPage() {
     }
   }, []);
 
-  // Filter guides by search query
-  const filteredGuides =
-    data?.guides.filter(
-      guide =>
-        guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        guide.summary?.toLowerCase().includes(searchQuery.toLowerCase())
-    ) || [];
-
-  // Get featured guide (first one or random)
+  const filteredGuides = filterGuides(data?.guides, searchQuery);
   const featuredGuide = filteredGuides[0];
   const otherGuides = filteredGuides.slice(1);
-
-  const itemListSchema = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Travel Guides",
-    description: "Comprehensive travel guides for destinations worldwide",
-    numberOfItems: data?.guides.length || 0,
-    itemListElement:
-      data?.guides.map((guide, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        item: {
-          "@type": "TravelGuide",
-          name: guide.title,
-          description: guide.summary,
-          url: `https://travi.world/guides/${guide.slug}`,
-          inLanguage: guide.locale,
-        },
-      })) || [],
-  };
+  const itemListSchema = buildGuidesItemListSchema(data?.guides);
 
   return (
     <>

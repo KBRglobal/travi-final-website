@@ -43,6 +43,70 @@ const CONFIG = {
   POLL_INTERVAL_MS: 5000, // Check for new jobs every 5 seconds
 };
 
+/**
+ * Upsert a single translation job for a locale
+ */
+async function upsertTranslationJob(
+  contentId: string,
+  sourceLocale: string,
+  targetLocale: string,
+  sourceHash: string,
+  priority: number,
+  fields?: TranslationJobField[]
+): Promise<TranslationJob | null> {
+  const [existingJob] = await db
+    .select()
+    .from(translationJobs)
+    .where(
+      and(eq(translationJobs.contentId, contentId), eq(translationJobs.targetLocale, targetLocale))
+    );
+
+  if (!existingJob) {
+    const [newJob] = await db
+      .insert(translationJobs)
+      .values({
+        contentId,
+        sourceLocale,
+        targetLocale,
+        sourceHash,
+        priority,
+        fields: fields || [
+          "title",
+          "metaTitle",
+          "metaDescription",
+          "blocks",
+          "answerCapsule",
+          "faq",
+          "highlights",
+          "tags",
+        ],
+      } as any)
+      .returning();
+    return newJob || null;
+  }
+
+  if (existingJob.sourceHash === sourceHash && existingJob.status === "completed") {
+    logger.info("Skipping unchanged content", { contentId, targetLocale });
+    return null;
+  }
+
+  const [updatedJob] = await db
+    .update(translationJobs)
+    .set({
+      status: "pending",
+      sourceHash,
+      priority,
+      retryCount: 0,
+      error: null,
+      nextRunAt: null,
+      updatedAt: new Date(),
+      fields: fields || existingJob.fields,
+    } as any)
+    .where(eq(translationJobs.id, existingJob.id))
+    .returning();
+  return updatedJob || null;
+}
+
 // Queue state
 let isRunning = false;
 let isPaused = false;
@@ -111,65 +175,15 @@ export async function enqueueTranslationJobs(
   const createdJobs: TranslationJob[] = [];
 
   for (const targetLocale of targetLocales) {
-    // Check if job already exists with same source hash (skip if unchanged)
-    const [existingJob] = await db
-      .select()
-      .from(translationJobs)
-      .where(
-        and(
-          eq(translationJobs.contentId, contentId),
-          eq(translationJobs.targetLocale, targetLocale)
-        )
-      );
-
-    if (existingJob) {
-      if (existingJob.sourceHash === sourceHash && existingJob.status === "completed") {
-        logger.info("Skipping unchanged content", { contentId, targetLocale });
-        continue;
-      }
-
-      // Update existing job if source changed
-      const [updatedJob] = await db
-        .update(translationJobs)
-        .set({
-          status: "pending",
-          sourceHash,
-          priority,
-          retryCount: 0,
-          error: null,
-          nextRunAt: null,
-          updatedAt: new Date(),
-          fields: fields || existingJob.fields,
-        } as any)
-        .where(eq(translationJobs.id, existingJob.id))
-        .returning();
-
-      if (updatedJob) createdJobs.push(updatedJob);
-    } else {
-      // Create new job
-      const [newJob] = await db
-        .insert(translationJobs)
-        .values({
-          contentId,
-          sourceLocale,
-          targetLocale,
-          sourceHash,
-          priority,
-          fields: fields || [
-            "title",
-            "metaTitle",
-            "metaDescription",
-            "blocks",
-            "answerCapsule",
-            "faq",
-            "highlights",
-            "tags",
-          ],
-        } as any)
-        .returning();
-
-      if (newJob) createdJobs.push(newJob);
-    }
+    const job = await upsertTranslationJob(
+      contentId,
+      sourceLocale,
+      targetLocale,
+      sourceHash,
+      priority,
+      fields
+    );
+    if (job) createdJobs.push(job);
   }
 
   logger.info(`Enqueued ${createdJobs.length} translation jobs`, {

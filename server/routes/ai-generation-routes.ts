@@ -282,10 +282,11 @@ export function registerAiGenerationRoutes(app: Express): void {
           inputType,
         });
 
-        let contextInfo = `Title: "${articleTitle}"`;
-        if (summary) contextInfo += `\nSummary: ${summary}`;
-        if (sourceText) contextInfo += `\nSource text: ${sourceText}`;
-        if (sourceUrl) contextInfo += `\nSource URL: ${sourceUrl}`;
+        const contextParts = [`Title: "${articleTitle}"`];
+        if (summary) contextParts.push(`Summary: ${summary}`);
+        if (sourceText) contextParts.push(`Source text: ${sourceText}`);
+        if (sourceUrl) contextParts.push(`Source URL: ${sourceUrl}`);
+        const contextInfo = contextParts.join("\n");
 
         const systemPrompt = `You are an expert travel content writer.
 Write a comprehensive, SEO-optimized article based on the given information.
@@ -320,56 +321,56 @@ ${contextInfo}
 
 Generate a complete, SEO-optimized article ready for publication.`;
 
-        let result: any = null;
+        // Try each AI provider with fallback
+        const tryProvider = async (
+          openai: any,
+          provider: string
+        ): Promise<{ result: any; provider: string } | null> => {
+          addSystemLog("info", "ai", `Attempting article generation with ${provider}`);
+          const response = await openai.chat.completions.create({
+            model: getModelForProvider(provider),
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            response_format: { type: "json_object" },
+            temperature: 0.7,
+            max_tokens: 4000,
+          });
+          markProviderSuccess(provider);
+          const parsed = safeParseJson(response.choices[0].message.content || "{}", {});
+          if (parsed.title && parsed.content) {
+            addSystemLog(
+              "info",
+              "ai",
+              `Article generation successful with ${provider}: "${parsed.title}"`
+            );
+            return { result: parsed, provider };
+          }
+          addSystemLog(
+            "warning",
+            "ai",
+            `${provider} returned incomplete response, trying next provider`
+          );
+          return null;
+        };
+
+        let finalResult: { result: any; provider: string } | null = null;
         let lastError: Error | null = null;
-        let usedProvider = "";
 
         for (const { client: openai, provider } of aiProviders) {
           try {
-            addSystemLog("info", "ai", `Attempting article generation with ${provider}`);
-
-            const response = await openai.chat.completions.create({
-              model: getModelForProvider(provider),
-              messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt },
-              ],
-              response_format: { type: "json_object" },
-              temperature: 0.7,
-              max_tokens: 4000,
-            });
-
-            markProviderSuccess(provider);
-            result = safeParseJson(response.choices[0].message.content || "{}", {});
-            usedProvider = provider;
-
-            if (result.title && result.content) {
-              addSystemLog(
-                "info",
-                "ai",
-                `Article generation successful with ${provider}: "${result.title}"`
-              );
-              break;
-            } else {
-              addSystemLog(
-                "warning",
-                "ai",
-                `${provider} returned incomplete response, trying next provider`
-              );
-              result = null;
-            }
+            finalResult = await tryProvider(openai, provider);
+            if (finalResult) break;
           } catch (error) {
             lastError = error instanceof Error ? error : new Error(String(error));
-            const isCreditsError =
-              lastError.message.includes("insufficient") ||
-              lastError.message.includes("quota") ||
-              lastError.message.includes("credits");
+            const isCreditsError = /insufficient|quota|credits/.test(lastError.message);
             markProviderFailed(provider, isCreditsError ? "no_credits" : "rate_limited");
             addSystemLog("warning", "ai", `${provider} failed: ${lastError.message}`);
           }
         }
 
-        if (!result?.title || !result.content) {
+        if (!finalResult) {
           addSystemLog(
             "error",
             "ai",
@@ -380,6 +381,9 @@ Generate a complete, SEO-optimized article ready for publication.`;
             details: lastError?.message,
           });
         }
+
+        const result = finalResult.result;
+        const usedProvider = finalResult.provider;
 
         const enforced = enforceWriterEngineSEO(result);
         res.json({

@@ -153,19 +153,20 @@ export class EntityExtractor {
     // Extract text from blocks
     if (content.blocks && Array.isArray(content.blocks)) {
       for (const block of content.blocks) {
-        if (typeof block === "object" && block !== null) {
-          const blockObj = block as unknown as Record<string, unknown>;
-          if (blockObj.contents && typeof blockObj.contents === "object") {
-            const contents = blockObj.contents as Record<string, unknown>;
-            if (contents.text && typeof contents.text === "string") {
-              parts.push(contents.text);
-            }
-          }
-        }
+        const text = this.extractBlockText(block);
+        if (text) parts.push(text);
       }
     }
 
     return parts.join("\n\n");
+  }
+
+  private extractBlockText(block: unknown): string | null {
+    if (typeof block !== "object" || block === null) return null;
+    const blockObj = block as Record<string, unknown>;
+    if (typeof blockObj.contents !== "object" || blockObj.contents === null) return null;
+    const blockContents = blockObj.contents as Record<string, unknown>;
+    return typeof blockContents.text === "string" ? blockContents.text : null;
   }
 
   /**

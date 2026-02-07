@@ -203,6 +203,13 @@ const UNIVERSAL_TECHNICAL_PATTERNS = [
 // Extended Latin regex for French accented characters
 const FRENCH_LATIN_REGEX = /[a-zA-ZàâäæçéèêëïîôœùûüÿÀÂÄÆÇÉÈÊËÏÎÔŒÙÛÜŸ]/g;
 
+// Locale-to-character pattern lookup
+const LOCALE_CHAR_PATTERNS: Record<string, RegExp> = {
+  ar: ARABIC_REGEX,
+  fr: FRENCH_LATIN_REGEX,
+  en: /[a-zA-Z]/g,
+};
+
 export function calculateLocalePurity(
   text: string,
   targetLocale: PilotLocale,
@@ -230,29 +237,12 @@ export function calculateLocalePurity(
 
   if (cleanText.length === 0) return 1;
 
-  if (targetLocale === "ar") {
-    // Count Arabic characters
-    const arabicChars = (cleanText.match(ARABIC_REGEX) || []).length;
-    // Count total non-whitespace characters
-    const totalChars = cleanText.replace(/\s/g, "").length;
+  const charPattern = LOCALE_CHAR_PATTERNS[targetLocale] || /[a-zA-Z]/g;
+  const matchedChars = (cleanText.match(charPattern) || []).length;
+  const totalChars = cleanText.replace(/\s/g, "").length;
 
-    if (totalChars === 0) return 1;
-    return arabicChars / totalChars;
-  } else if (targetLocale === "fr") {
-    // For French, count Latin characters including French accented characters
-    const latinChars = (cleanText.match(FRENCH_LATIN_REGEX) || []).length;
-    const totalChars = cleanText.replace(/\s/g, "").length;
-
-    if (totalChars === 0) return 1;
-    return latinChars / totalChars;
-  } else {
-    // For English, count Latin characters
-    const latinChars = (cleanText.match(/[a-zA-Z]/g) || []).length;
-    const totalChars = cleanText.replace(/\s/g, "").length;
-
-    if (totalChars === 0) return 1;
-    return latinChars / totalChars;
-  }
+  if (totalChars === 0) return 1;
+  return matchedChars / totalChars;
 }
 
 export function validateLocalePurity(

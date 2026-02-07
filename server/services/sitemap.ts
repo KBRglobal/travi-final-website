@@ -149,129 +149,121 @@ function generateSitemapIndexXml(sitemaps: { loc: string; lastmod?: string }[]):
   return xml;
 }
 
-// Get all URLs for a specific locale
-async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
-  // Skip inactive locales
-  if (!isLocaleActive(locale)) {
-    return [];
-  }
+// Static pages definition - ONLY real, indexable pages
+// Updated January 2026: Global travel platform (no Dubai bias at top level)
+const STATIC_PAGES = [
+  // Core Pages
+  { path: "", priority: 1, changefreq: "daily" as const },
 
-  const urls: SitemapUrl[] = [];
-  const now = new Date().toISOString().split("T")[0];
+  // Main Category Pages (ONLY pages with real content)
+  { path: "/destinations", priority: 0.9, changefreq: "daily" as const },
+  { path: "/attractions", priority: 0.9, changefreq: "daily" as const },
+  { path: "/guides", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/news", priority: 0.7, changefreq: "daily" as const },
 
-  // Static pages - ONLY real, indexable pages
-  // Updated January 2026: Global travel platform (no Dubai bias at top level)
-  const staticPages = [
-    // Core Pages
-    { path: "", priority: 1, changefreq: "daily" as const },
+  // Destination Pages (17 cities)
+  { path: "/destinations/dubai", priority: 0.9, changefreq: "weekly" as const },
+  { path: "/destinations/paris", priority: 0.9, changefreq: "weekly" as const },
+  { path: "/destinations/tokyo", priority: 0.9, changefreq: "weekly" as const },
+  { path: "/destinations/new-york", priority: 0.9, changefreq: "weekly" as const },
+  { path: "/destinations/london", priority: 0.9, changefreq: "weekly" as const },
+  { path: "/destinations/barcelona", priority: 0.9, changefreq: "weekly" as const },
+  { path: "/destinations/singapore", priority: 0.9, changefreq: "weekly" as const },
+  { path: "/destinations/bangkok", priority: 0.9, changefreq: "weekly" as const },
+  { path: "/destinations/abu-dhabi", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/destinations/amsterdam", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/destinations/hong-kong", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/destinations/istanbul", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/destinations/las-vegas", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/destinations/los-angeles", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/destinations/miami", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/destinations/rome", priority: 0.8, changefreq: "weekly" as const },
+  { path: "/destinations/ras-al-khaimah", priority: 0.8, changefreq: "weekly" as const },
 
-    // Main Category Pages (ONLY pages with real content)
-    { path: "/destinations", priority: 0.9, changefreq: "daily" as const },
-    { path: "/attractions", priority: 0.9, changefreq: "daily" as const },
-    { path: "/guides", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/news", priority: 0.7, changefreq: "daily" as const },
+  // Dubai-specific content (allowed under /destinations/dubai/ hierarchy)
+  { path: "/destinations/dubai/real-estate", priority: 0.9, changefreq: "daily" as const },
+  { path: "/destinations/dubai/off-plan", priority: 0.9, changefreq: "daily" as const },
+  {
+    path: "/destinations/dubai/guides/rak-transport",
+    priority: 0.7,
+    changefreq: "monthly" as const,
+  },
+  {
+    path: "/destinations/dubai/guides/rak-comparison",
+    priority: 0.7,
+    changefreq: "monthly" as const,
+  },
 
-    // Destination Pages (17 cities)
-    { path: "/destinations/dubai", priority: 0.9, changefreq: "weekly" as const },
-    { path: "/destinations/paris", priority: 0.9, changefreq: "weekly" as const },
-    { path: "/destinations/tokyo", priority: 0.9, changefreq: "weekly" as const },
-    { path: "/destinations/new-york", priority: 0.9, changefreq: "weekly" as const },
-    { path: "/destinations/london", priority: 0.9, changefreq: "weekly" as const },
-    { path: "/destinations/barcelona", priority: 0.9, changefreq: "weekly" as const },
-    { path: "/destinations/singapore", priority: 0.9, changefreq: "weekly" as const },
-    { path: "/destinations/bangkok", priority: 0.9, changefreq: "weekly" as const },
-    { path: "/destinations/abu-dhabi", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/destinations/amsterdam", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/destinations/hong-kong", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/destinations/istanbul", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/destinations/las-vegas", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/destinations/los-angeles", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/destinations/miami", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/destinations/rome", priority: 0.8, changefreq: "weekly" as const },
-    { path: "/destinations/ras-al-khaimah", priority: 0.8, changefreq: "weekly" as const },
+  // Guide Pages (global)
+  { path: "/guides/wynn-al-marjan-island", priority: 0.7, changefreq: "monthly" as const },
+  { path: "/guides/jebel-jais-adventure", priority: 0.7, changefreq: "monthly" as const },
+  { path: "/guides/where-to-stay-rak", priority: 0.7, changefreq: "monthly" as const },
+  { path: "/guides/rak-real-estate-investment", priority: 0.7, changefreq: "monthly" as const },
 
-    // Dubai-specific content (allowed under /destinations/dubai/ hierarchy)
-    { path: "/destinations/dubai/real-estate", priority: 0.9, changefreq: "daily" as const },
-    { path: "/destinations/dubai/off-plan", priority: 0.9, changefreq: "daily" as const },
-    {
-      path: "/destinations/dubai/guides/rak-transport",
-      priority: 0.7,
-      changefreq: "monthly" as const,
-    },
-    {
-      path: "/destinations/dubai/guides/rak-comparison",
-      priority: 0.7,
-      changefreq: "monthly" as const,
-    },
+  // Legal Pages (canonical only - no duplicates)
+  { path: "/privacy", priority: 0.3, changefreq: "yearly" as const },
+  { path: "/terms", priority: 0.3, changefreq: "yearly" as const },
+  { path: "/cookies", priority: 0.3, changefreq: "yearly" as const },
+  { path: "/security", priority: 0.3, changefreq: "yearly" as const },
+  { path: "/affiliate-disclosure", priority: 0.3, changefreq: "yearly" as const },
 
-    // Guide Pages (global)
-    { path: "/guides/wynn-al-marjan-island", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/guides/jebel-jais-adventure", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/guides/where-to-stay-rak", priority: 0.7, changefreq: "monthly" as const },
-    { path: "/guides/rak-real-estate-investment", priority: 0.7, changefreq: "monthly" as const },
+  // Company Pages
+  { path: "/about", priority: 0.5, changefreq: "monthly" as const },
+  { path: "/contact", priority: 0.5, changefreq: "monthly" as const },
 
-    // Legal Pages (canonical only - no duplicates)
-    { path: "/privacy", priority: 0.3, changefreq: "yearly" as const },
-    { path: "/terms", priority: 0.3, changefreq: "yearly" as const },
-    { path: "/cookies", priority: 0.3, changefreq: "yearly" as const },
-    { path: "/security", priority: 0.3, changefreq: "yearly" as const },
-    { path: "/affiliate-disclosure", priority: 0.3, changefreq: "yearly" as const },
+  // Partner Pages
+  { path: "/partners/join", priority: 0.5, changefreq: "monthly" as const },
+];
 
-    // Company Pages
-    { path: "/about", priority: 0.5, changefreq: "monthly" as const },
-    { path: "/contact", priority: 0.5, changefreq: "monthly" as const },
+function buildLocaleUrl(locale: Locale, path: string): string {
+  return locale === "en" ? `${BASE_URL}${path || "/"}` : `${BASE_URL}/${locale}${path}`;
+}
 
-    // Partner Pages
-    { path: "/partners/join", priority: 0.5, changefreq: "monthly" as const },
-  ];
-
-  for (const page of staticPages) {
-    // Only include alternates for ACTIVE locales
-    const activeLocales = getActiveLocales();
+function getStaticPageUrls(locale: Locale, now: string): SitemapUrl[] {
+  const activeLocales = getActiveLocales();
+  return STATIC_PAGES.map(page => {
     const alternates = activeLocales.map(l => ({
       locale: l.code,
-      url: l.code === "en" ? `${BASE_URL}${page.path || "/"}` : `${BASE_URL}/${l.code}${page.path}`,
+      url: buildLocaleUrl(l.code, page.path),
     }));
 
-    urls.push({
-      loc: locale === "en" ? `${BASE_URL}${page.path || "/"}` : `${BASE_URL}/${locale}${page.path}`,
+    return {
+      loc: buildLocaleUrl(locale, page.path),
       lastmod: now,
       changefreq: page.changefreq,
       priority: page.priority,
       alternates,
-    });
+    };
+  });
+}
+
+async function getDestinationAttractionUrls(now: string): Promise<SitemapUrl[]> {
+  try {
+    const destinationCounts = await db
+      .select({ cityName: tiqetsAttractions.cityName })
+      .from(tiqetsAttractions)
+      .where(eq(tiqetsAttractions.status, "published"))
+      .groupBy(tiqetsAttractions.cityName);
+
+    return destinationCounts
+      .filter(dest => !!dest.cityName)
+      .map(dest => ({
+        loc: `${BASE_URL}/attractions/list/${dest.cityName!.toLowerCase().replaceAll(" ", "-")}`,
+        lastmod: now,
+        changefreq: "daily" as const,
+        priority: 0.85,
+      }));
+  } catch (error) {
+    sitemapLog.error({ err: error }, "Sitemap generation error");
+    return [];
   }
+}
 
-  // Dynamic destination attraction pages (from tiqets_attractions - single source of truth)
-  if (locale === "en") {
-    try {
-      const destinationCounts = await db
-        .select({
-          cityName: tiqetsAttractions.cityName,
-        })
-        .from(tiqetsAttractions)
-        .where(eq(tiqetsAttractions.status, "published"))
-        .groupBy(tiqetsAttractions.cityName);
-
-      for (const dest of destinationCounts) {
-        if (!dest.cityName) continue;
-        const slug = dest.cityName.toLowerCase().replaceAll(" ", "-");
-        urls.push({
-          loc: `${BASE_URL}/attractions/list/${slug}`,
-          lastmod: now,
-          changefreq: "daily",
-          priority: 0.85,
-        });
-      }
-    } catch (error) {
-      sitemapLog.error({ err: error }, "Sitemap generation error");
-    }
-  }
-
-  // Dynamic content pages
+async function getDynamicContentUrls(locale: Locale, now: string): Promise<SitemapUrl[]> {
   try {
     const contents = await storage.getContents();
     const publishedContents = contents.filter(c => c.status === "published");
+    const urls: SitemapUrl[] = [];
 
     for (const content of publishedContents) {
       const contentPath = `/${content.type}/${content.slug}`;
@@ -279,10 +271,7 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         ? new Date(content.updatedAt).toISOString().split("T")[0]
         : now;
 
-      // Get available translations for this content
       const translations = await storage.getTranslationsByContentId(content.id);
-
-      // Filter to only ACTIVE locales that have translations
       const availableActiveLocales = ["en", ...translations.map(t => t.locale)].filter(l =>
         isLocaleActive(l as Locale)
       ) as Locale[];
@@ -292,11 +281,8 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         url: l === "en" ? `${BASE_URL}${contentPath}` : `${BASE_URL}/${l}${contentPath}`,
       }));
 
-      // Only add URL if this locale is active AND has a translation (or is English)
-      if (
-        isLocaleActive(locale) &&
-        (locale === "en" || translations.some(t => t.locale === locale))
-      ) {
+      const hasTranslation = locale === "en" || translations.some(t => t.locale === locale);
+      if (isLocaleActive(locale) && hasTranslation) {
         urls.push({
           loc:
             locale === "en" ? `${BASE_URL}${contentPath}` : `${BASE_URL}/${locale}${contentPath}`,
@@ -307,40 +293,53 @@ async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
         });
       }
     }
+    return urls;
   } catch (error) {
     console.error(error);
+    return [];
+  }
+}
+
+async function getTiqetsAttractionUrls(now: string): Promise<SitemapUrl[]> {
+  try {
+    const attractions = await db
+      .select({
+        seoSlug: tiqetsAttractions.seoSlug,
+        updatedAt: tiqetsAttractions.updatedAt,
+      })
+      .from(tiqetsAttractions);
+
+    return attractions
+      .filter(a => !!a.seoSlug)
+      .map(attraction => ({
+        loc: `${BASE_URL}/attractions/${attraction.seoSlug}`,
+        lastmod: attraction.updatedAt
+          ? new Date(attraction.updatedAt).toISOString().split("T")[0]
+          : now,
+        changefreq: "weekly" as const,
+        priority: 0.6,
+      }));
+  } catch (error) {
+    sitemapLog.error({ err: error }, "Sitemap generation error");
+    return [];
+  }
+}
+
+// Get all URLs for a specific locale
+async function getUrlsForLocale(locale: Locale): Promise<SitemapUrl[]> {
+  if (!isLocaleActive(locale)) return [];
+
+  const now = new Date().toISOString().split("T")[0];
+  const urls: SitemapUrl[] = getStaticPageUrls(locale, now);
+
+  if (locale === "en") {
+    urls.push(...(await getDestinationAttractionUrls(now)));
   }
 
-  // Tiqets attractions pages (English only for now)
+  urls.push(...(await getDynamicContentUrls(locale, now)));
+
   if (locale === "en") {
-    try {
-      const attractions = await db
-        .select({
-          seoSlug: tiqetsAttractions.seoSlug,
-          updatedAt: tiqetsAttractions.updatedAt,
-        })
-        .from(tiqetsAttractions);
-
-      let addedCount = 0;
-      for (const attraction of attractions) {
-        if (attraction.seoSlug) {
-          const attractionPath = `/attractions/${attraction.seoSlug}`;
-          const lastmod = attraction.updatedAt
-            ? new Date(attraction.updatedAt).toISOString().split("T")[0]
-            : now;
-
-          urls.push({
-            loc: `${BASE_URL}${attractionPath}`,
-            lastmod,
-            changefreq: "weekly",
-            priority: 0.6,
-          });
-          addedCount++;
-        }
-      }
-    } catch (error) {
-      sitemapLog.error({ err: error }, "Sitemap generation error");
-    }
+    urls.push(...(await getTiqetsAttractionUrls(now)));
   }
 
   return urls;

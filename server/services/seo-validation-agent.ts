@@ -281,20 +281,15 @@ export class SEOValidationAgent {
   // TIER 1: Critical - blocks publishing
   // ============================================================================
 
-  private validateTier1Critical(content: ContentData, pageType: PageType): SEOCheck[] {
-    const checks: SEOCheck[] = [];
-
-    // 1. Meta Title (50-60 chars, includes primary keyword)
+  private checkMetaTitle(content: ContentData, primaryKeyword: string): SEOCheck {
     const metaTitle = content.metaTitle || content.title || "";
-    const primaryKeyword = content.primaryKeyword || "";
-
     const titleLen = metaTitle.length;
     const titleHasKeyword = primaryKeyword
       ? metaTitle.toLowerCase().includes(primaryKeyword.toLowerCase())
       : true;
     const titleValid = titleLen >= 50 && titleLen <= 60 && titleHasKeyword;
 
-    checks.push({
+    return {
       name: "meta_title",
       tier: "tier1_critical",
       passed: titleValid,
@@ -303,14 +298,15 @@ export class SEOValidationAgent {
       requiredValue: "50-60 chars with primary keyword",
       autoFixable: true,
       fixSuggestion: titleValid ? undefined : this.generateMetaTitle(content),
-    });
+    };
+  }
 
-    // 2. Meta Description (150-160 chars)
+  private checkMetaDescription(content: ContentData): SEOCheck {
     const metaDesc = content.metaDescription || "";
     const descLen = metaDesc.length;
     const descValid = descLen >= 150 && descLen <= 160;
 
-    checks.push({
+    return {
       name: "meta_description",
       tier: "tier1_critical",
       passed: descValid,
@@ -319,7 +315,48 @@ export class SEOValidationAgent {
       requiredValue: "150-160 chars with CTA",
       autoFixable: true,
       fixSuggestion: descValid ? undefined : this.generateMetaDescription(content),
+    };
+  }
+
+  private checkImageAltTexts(content: ContentData): SEOCheck[] {
+    const checks: SEOCheck[] = [];
+
+    const heroImage = content.heroImage || content.image;
+    const heroAlt = typeof heroImage === "object" ? heroImage?.altText || heroImage?.alt : "";
+    const hasHeroWithAlt = !!heroImage && !!heroAlt && heroAlt.length >= 20;
+
+    checks.push({
+      name: "hero_image_alt",
+      tier: "tier1_critical",
+      passed: hasHeroWithAlt,
+      message: `Hero Image Alt Text: ${heroAlt ? heroAlt.substring(0, 40) + "..." : "MISSING"}`,
+      autoFixable: true,
+      fixSuggestion: hasHeroWithAlt ? undefined : this.generateAltText(content),
     });
+
+    const images = content.images || [];
+    const imagesWithoutAlt = images.filter((img: any) => !img.altText && !img.alt);
+
+    checks.push({
+      name: "all_images_alt_text",
+      tier: "tier1_critical",
+      passed: imagesWithoutAlt.length === 0 || images.length === 0,
+      message:
+        imagesWithoutAlt.length > 0
+          ? `${imagesWithoutAlt.length} image(s) missing Alt Text`
+          : "All images have Alt Text",
+      autoFixable: imagesWithoutAlt.length > 0,
+    });
+
+    return checks;
+  }
+
+  private validateTier1Critical(content: ContentData, pageType: PageType): SEOCheck[] {
+    const primaryKeyword = content.primaryKeyword || "";
+    const checks: SEOCheck[] = [];
+
+    checks.push(this.checkMetaTitle(content, primaryKeyword));
+    checks.push(this.checkMetaDescription(content));
 
     // 3. Primary Keyword defined
     const hasPrimaryKeyword = !!content.primaryKeyword && content.primaryKeyword.length > 2;
@@ -365,7 +402,6 @@ export class SEOValidationAgent {
     const fullContent = this.getFullText(content);
     const wordCount = this.countWords(fullContent);
     const minWords = MIN_WORD_COUNTS[pageType] || 1500;
-
     checks.push({
       name: "minimum_word_count",
       tier: "tier1_critical",
@@ -389,35 +425,8 @@ export class SEOValidationAgent {
       autoFixable: false,
     });
 
-    // 8. Hero Image with Alt Text
-    const heroImage = content.heroImage || content.image;
-    const heroAlt = typeof heroImage === "object" ? heroImage?.altText || heroImage?.alt : "";
-    const hasHeroWithAlt = !!heroImage && !!heroAlt && heroAlt.length >= 20;
-
-    checks.push({
-      name: "hero_image_alt",
-      tier: "tier1_critical",
-      passed: hasHeroWithAlt,
-      message: `Hero Image Alt Text: ${heroAlt ? heroAlt.substring(0, 40) + "..." : "MISSING"}`,
-      autoFixable: true,
-      fixSuggestion: hasHeroWithAlt ? undefined : this.generateAltText(content),
-    });
-
-    // 9. All Images have Alt Text
-    const images = content.images || [];
-    const imagesWithoutAlt = images.filter((img: any) => !img.altText && !img.alt);
-    const allImagesHaveAlt = imagesWithoutAlt.length === 0;
-
-    checks.push({
-      name: "all_images_alt_text",
-      tier: "tier1_critical",
-      passed: allImagesHaveAlt || images.length === 0,
-      message:
-        imagesWithoutAlt.length > 0
-          ? `${imagesWithoutAlt.length} image(s) missing Alt Text`
-          : "All images have Alt Text",
-      autoFixable: imagesWithoutAlt.length > 0,
-    });
+    // 8-9. Image checks
+    checks.push(...this.checkImageAltTexts(content));
 
     return checks;
   }
@@ -694,6 +703,47 @@ export class SEOValidationAgent {
     return Math.round((passed / checks.length) * 100);
   }
 
+  private collectBlockText(blocks: ContentData["blocks"]): string[] {
+    if (!blocks) return [];
+    const parts: string[] = [];
+    for (const block of blocks) {
+      if (block.content) parts.push(block.content);
+      if (block.text) parts.push(block.text);
+      if (block.items) parts.push(block.items.join(" "));
+    }
+    return parts;
+  }
+
+  private collectSectionText(sections: ContentData["mainSections"]): string[] {
+    if (!sections) return [];
+    const parts: string[] = [];
+    for (const section of sections) {
+      if (section.content) parts.push(section.content);
+      if (section.text) parts.push(section.text);
+    }
+    return parts;
+  }
+
+  private collectFaqText(faq: ContentData["faq"]): string[] {
+    if (!faq) return [];
+    const parts: string[] = [];
+    for (const f of faq) {
+      parts.push(f.question || "", f.answer || "");
+    }
+    return parts;
+  }
+
+  private collectTipsText(content: ContentData): string[] {
+    const parts: string[] = [];
+    if (content.proTips) parts.push(content.proTips.join(" "));
+    if (content.tips) {
+      parts.push(
+        content.tips.map((t: any) => (typeof t === "string" ? t : t.text || "")).join(" ")
+      );
+    }
+    return parts;
+  }
+
   private getFullText(content: ContentData): string {
     const parts: string[] = [
       content.title || "",
@@ -701,49 +751,12 @@ export class SEOValidationAgent {
       content.content || "",
     ];
 
-    // Add blocks content
-    if (content.blocks) {
-      for (const block of content.blocks) {
-        if (block.content) parts.push(block.content);
-        if (block.text) parts.push(block.text);
-        if (block.items) parts.push(block.items.join(" "));
-      }
-    }
-
-    // Add quick facts
-    if (content.quickFacts) {
-      parts.push(content.quickFacts.join(" "));
-    }
-
-    // Add main sections
-    if (content.mainSections) {
-      for (const section of content.mainSections) {
-        if (section.content) parts.push(section.content);
-        if (section.text) parts.push(section.text);
-      }
-    }
-
-    // Add FAQ
-    if (content.faq) {
-      for (const faq of content.faq) {
-        parts.push(faq.question || "", faq.answer || "");
-      }
-    }
-
-    // Add tips
-    if (content.proTips) {
-      parts.push(content.proTips.join(" "));
-    }
-    if (content.tips) {
-      parts.push(
-        content.tips.map((t: any) => (typeof t === "string" ? t : t.text || "")).join(" ")
-      );
-    }
-
-    // Add conclusion
-    if (content.conclusion) {
-      parts.push(content.conclusion);
-    }
+    parts.push(...this.collectBlockText(content.blocks));
+    if (content.quickFacts) parts.push(content.quickFacts.join(" "));
+    parts.push(...this.collectSectionText(content.mainSections));
+    parts.push(...this.collectFaqText(content.faq));
+    parts.push(...this.collectTipsText(content));
+    if (content.conclusion) parts.push(content.conclusion);
 
     return parts.filter(Boolean).join(" ");
   }

@@ -271,174 +271,47 @@ export const importService = {
 
     const data = exportData.data;
 
+    // Define import steps in order: [resultKey, table, dataKey, idField, skipCondition]
+    const importSteps: Array<{
+      key: string;
+      table: any;
+      records: any[] | undefined;
+      idField: string;
+      skip?: boolean;
+    }> = [
+      { key: "tags", table: tags, records: data.tags, idField: "id" },
+      { key: "clusters", table: contentClusters, records: data.clusters, idField: "id" },
+      { key: "teams", table: teams, records: data.teams, idField: "id" },
+      { key: "users", table: users, records: data.users, idField: "id", skip: skipUsers },
+      { key: "teamMembers", table: teamMembers, records: data.teamMembers, idField: "id" },
+      { key: "contents", table: contents, records: data.contents, idField: "id" },
+      { key: "translations", table: translations, records: data.translations, idField: "id" },
+      { key: "contentTags", table: contentTags, records: data.contentTags, idField: "id" },
+      { key: "clusterMembers", table: clusterMembers, records: data.clusterMembers, idField: "id" },
+      {
+        key: "settings",
+        table: siteSettings,
+        records: data.settings,
+        idField: "key",
+        skip: skipSettings,
+      },
+      { key: "affiliateLinks", table: affiliateLinks, records: data.affiliateLinks, idField: "id" },
+      { key: "rssFeeds", table: rssFeeds, records: data.rssFeeds, idField: "id" },
+      { key: "mediaFiles", table: mediaFiles, records: data.mediaFiles, idField: "id" },
+    ];
+
     try {
-      // Import tags first (they might be referenced by content)
-      if (data.tags && data.tags.length > 0) {
+      for (const step of importSteps) {
+        if (step.skip || !step.records || step.records.length === 0) continue;
         const [imported, skipped] = await this.importRecords(
-          tags,
-          data.tags,
-          "id",
+          step.table,
+          step.records,
+          step.idField,
           overwriteExisting,
           dryRun
         );
-        result.imported.tags = imported;
-        result.skipped.tags = skipped;
-      }
-
-      // Import clusters
-      if (data.clusters && data.clusters.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          contentClusters,
-          data.clusters,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.clusters = imported;
-        result.skipped.clusters = skipped;
-      }
-
-      // Import teams
-      if (data.teams && data.teams.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          teams,
-          data.teams,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.teams = imported;
-        result.skipped.teams = skipped;
-      }
-
-      // Import users (if not skipped)
-      if (!skipUsers && data.users && data.users.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          users,
-          data.users,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.users = imported;
-        result.skipped.users = skipped;
-      }
-
-      // Import team members
-      if (data.teamMembers && data.teamMembers.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          teamMembers,
-          data.teamMembers,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.teamMembers = imported;
-        result.skipped.teamMembers = skipped;
-      }
-
-      // Import contents
-      if (data.contents && data.contents.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          contents,
-          data.contents,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.contents = imported;
-        result.skipped.contents = skipped;
-      }
-
-      // Import translations
-      if (data.translations && data.translations.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          translations,
-          data.translations,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.translations = imported;
-        result.skipped.translations = skipped;
-      }
-
-      // Import content-tag associations
-      if (data.contentTags && data.contentTags.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          contentTags,
-          data.contentTags,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.contentTags = imported;
-        result.skipped.contentTags = skipped;
-      }
-
-      // Import cluster members
-      if (data.clusterMembers && data.clusterMembers.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          clusterMembers,
-          data.clusterMembers,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.clusterMembers = imported;
-        result.skipped.clusterMembers = skipped;
-      }
-
-      // Import settings (if not skipped)
-      if (!skipSettings && data.settings && data.settings.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          siteSettings,
-          data.settings,
-          "key",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.settings = imported;
-        result.skipped.settings = skipped;
-      }
-
-      // Import affiliate links
-      if (data.affiliateLinks && data.affiliateLinks.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          affiliateLinks,
-          data.affiliateLinks,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.affiliateLinks = imported;
-        result.skipped.affiliateLinks = skipped;
-      }
-
-      // Import RSS feeds
-      if (data.rssFeeds && data.rssFeeds.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          rssFeeds,
-          data.rssFeeds,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.rssFeeds = imported;
-        result.skipped.rssFeeds = skipped;
-      }
-
-      // Import media file metadata
-      if (data.mediaFiles && data.mediaFiles.length > 0) {
-        const [imported, skipped] = await this.importRecords(
-          mediaFiles,
-          data.mediaFiles,
-          "id",
-          overwriteExisting,
-          dryRun
-        );
-        result.imported.mediaFiles = imported;
-        result.skipped.mediaFiles = skipped;
+        result.imported[step.key] = imported;
+        result.skipped[step.key] = skipped;
       }
     } catch (error) {
       result.success = false;

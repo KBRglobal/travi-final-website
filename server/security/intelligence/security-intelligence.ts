@@ -484,88 +484,101 @@ const threatScorer = new ThreatScorer();
 class CorrelationEngine {
   private readonly detectedAnomalies: SecurityAnomaly[] = [];
 
-  processEvent(event: BufferedEvent): SecurityAnomaly[] {
-    const anomalies: SecurityAnomaly[] = [];
-
-    // Add to buffer
-    eventBuffer.add(event);
-
-    // Check against correlation rules
+  private checkCorrelationRules(event: BufferedEvent, anomalies: SecurityAnomaly[]): void {
     for (const rule of CORRELATION_RULES) {
       const matched = this.checkRule(rule, event);
-      if (matched) {
-        const anomaly = this.createAnomaly(rule, event, matched);
-        anomalies.push(anomaly);
-        this.detectedAnomalies.push(anomaly);
+      if (!matched) continue;
 
-        // Update threat score
-        if (event.userId) {
-          threatScorer.updateScore(event.userId, anomaly);
-        }
-      }
-    }
+      const anomaly = this.createAnomaly(rule, event, matched);
+      anomalies.push(anomaly);
+      this.detectedAnomalies.push(anomaly);
 
-    // Check behavioral deviation
-    if (event.userId) {
-      const deviations = baselineManager.checkDeviation(event.userId, event);
-      if (deviations.length >= 2) {
-        // Multiple deviations = potential insider threat
-        const anomaly: SecurityAnomaly = {
-          id: `insider_${Date.now()}`,
-          type: "insider_threat",
-          severity: deviations.length >= 3 ? "high" : "medium",
-          confidence: Math.min(1, deviations.length * 0.25),
-          timestamp: new Date(),
-          userId: event.userId,
-          description: "Multiple behavioral deviations detected",
-          relatedEvents: [event.id],
-          indicators: deviations,
-          suggestedActions: [
-            "Review user's recent activity",
-            "Verify user identity through secondary channel",
-          ],
-        };
-        anomalies.push(anomaly);
+      if (event.userId) {
         threatScorer.updateScore(event.userId, anomaly);
       }
     }
+  }
 
-    // Check for impossible travel
-    if (event.userId && event.ipAddress) {
-      const impossibleTravel = this.checkImpossibleTravel(event);
-      if (impossibleTravel) {
-        anomalies.push(impossibleTravel);
-        threatScorer.updateScore(event.userId, impossibleTravel);
-      }
-    }
+  private checkBehavioralDeviation(event: BufferedEvent, anomalies: SecurityAnomaly[]): void {
+    if (!event.userId) return;
+
+    const deviations = baselineManager.checkDeviation(event.userId, event);
+    if (deviations.length < 2) return;
+
+    const anomaly: SecurityAnomaly = {
+      id: `insider_${Date.now()}`,
+      type: "insider_threat",
+      severity: deviations.length >= 3 ? "high" : "medium",
+      confidence: Math.min(1, deviations.length * 0.25),
+      timestamp: new Date(),
+      userId: event.userId,
+      description: "Multiple behavioral deviations detected",
+      relatedEvents: [event.id],
+      indicators: deviations,
+      suggestedActions: [
+        "Review user's recent activity",
+        "Verify user identity through secondary channel",
+      ],
+    };
+    anomalies.push(anomaly);
+    threatScorer.updateScore(event.userId, anomaly);
+  }
+
+  private checkTravelAnomaly(event: BufferedEvent, anomalies: SecurityAnomaly[]): void {
+    if (!event.userId || !event.ipAddress) return;
+
+    const impossibleTravel = this.checkImpossibleTravel(event);
+    if (!impossibleTravel) return;
+
+    anomalies.push(impossibleTravel);
+    threatScorer.updateScore(event.userId!, impossibleTravel);
+  }
+
+  processEvent(event: BufferedEvent): SecurityAnomaly[] {
+    const anomalies: SecurityAnomaly[] = [];
+
+    eventBuffer.add(event);
+    this.checkCorrelationRules(event, anomalies);
+    this.checkBehavioralDeviation(event, anomalies);
+    this.checkTravelAnomaly(event, anomalies);
 
     return anomalies;
   }
 
+  private getEventsForPattern(
+    pattern: EventPattern,
+    triggerEvent: BufferedEvent,
+    timeWindowMs: number
+  ): BufferedEvent[] {
+    if (pattern.sameUser && triggerEvent.userId) {
+      return eventBuffer.getEventsByUser(triggerEvent.userId, timeWindowMs);
+    }
+    if (pattern.sameIP && triggerEvent.ipAddress) {
+      return eventBuffer.getEventsByIP(triggerEvent.ipAddress, timeWindowMs);
+    }
+    return eventBuffer.getEvents({ since: new Date(Date.now() - timeWindowMs) });
+  }
+
+  private doesCountMatch(operator: string, actual: number, expected: number): boolean {
+    const countChecks: Record<string, boolean> = {
+      gte: actual >= expected,
+      lte: actual <= expected,
+      eq: actual === expected,
+    };
+    return countChecks[operator] ?? false;
+  }
+
   private checkRule(rule: CorrelationRule, triggerEvent: BufferedEvent): BufferedEvent[] | null {
-    const since = new Date(Date.now() - rule.timeWindowMs);
     const matchedEvents: BufferedEvent[] = [];
 
     for (const pattern of rule.pattern) {
-      let events: BufferedEvent[];
-
-      if (pattern.sameUser && triggerEvent.userId) {
-        events = eventBuffer.getEventsByUser(triggerEvent.userId, rule.timeWindowMs);
-      } else if (pattern.sameIP && triggerEvent.ipAddress) {
-        events = eventBuffer.getEventsByIP(triggerEvent.ipAddress, rule.timeWindowMs);
-      } else {
-        events = eventBuffer.getEvents({ since });
-      }
-
+      const events = this.getEventsForPattern(pattern, triggerEvent, rule.timeWindowMs);
       const typeMatches = events.filter(e => e.type === pattern.eventType);
 
       if (pattern.count && pattern.operator) {
-        const countMatch =
-          (pattern.operator === "gte" && typeMatches.length >= pattern.count) ||
-          (pattern.operator === "lte" && typeMatches.length <= pattern.count) ||
-          (pattern.operator === "eq" && typeMatches.length === pattern.count);
-
-        if (!countMatch) return null;
+        if (!this.doesCountMatch(pattern.operator, typeMatches.length, pattern.count)) {
+          return null;
+        }
       }
 
       matchedEvents.push(...typeMatches);

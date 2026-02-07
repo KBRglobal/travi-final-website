@@ -257,27 +257,20 @@ export function registerContentCrudRoutes(app: Express): void {
 
       const { generateAllSchemas, schemasToJsonLd } = await import("../lib/schema-generator");
 
-      // Get type-specific data
-      let typeData: Record<string, unknown> = {};
+      // Get type-specific data using lookup
+      const typeDataMap: Record<string, unknown> = {
+        attraction: content.attraction,
+        hotel: content.hotel,
+        article: content.article,
+        event: content.event,
+        dining: content.dining,
+        district: content.district,
+        transport: content.transport,
+        itinerary: content.itinerary,
+      };
+      const typeData: Record<string, unknown> =
+        (typeDataMap[content.type] as Record<string, unknown>) || {};
       let authorName: string | undefined;
-
-      if (content.type === "attraction" && content.attraction) {
-        typeData = content.attraction;
-      } else if (content.type === "hotel" && content.hotel) {
-        typeData = content.hotel;
-      } else if (content.type === "article" && content.article) {
-        typeData = content.article;
-      } else if (content.type === "event" && content.event) {
-        typeData = content.event;
-      } else if (content.type === "dining" && content.dining) {
-        typeData = content.dining;
-      } else if (content.type === "district" && content.district) {
-        typeData = content.district;
-      } else if (content.type === "transport" && content.transport) {
-        typeData = content.transport;
-      } else if (content.type === "itinerary" && content.itinerary) {
-        typeData = content.itinerary;
-      }
 
       // Get author name if available
       if (content.authorId) {

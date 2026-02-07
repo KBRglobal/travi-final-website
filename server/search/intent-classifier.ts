@@ -179,6 +179,26 @@ const OCCASION_PATTERNS: Record<string, RegExp> = {
   budget: /budget|cheap|affordable|low-cost|backpack/i,
 };
 
+/** Match the best intent from patterns */
+function matchBestIntent(normalizedQuery: string): { intent: IntentType; confidence: number } {
+  let bestIntent: IntentType = "general";
+  let bestConfidence = 0.4;
+
+  for (const [intentName, patterns] of Object.entries(INTENT_PATTERNS)) {
+    if (intentName === "general") continue;
+    for (const pattern of patterns) {
+      if (!pattern.test(normalizedQuery)) continue;
+      const confidence = 0.75 + (patterns.indexOf(pattern) === 0 ? 0.15 : 0.05);
+      if (confidence > bestConfidence) {
+        bestIntent = intentName as IntentType;
+        bestConfidence = confidence;
+      }
+    }
+  }
+
+  return { intent: bestIntent, confidence: bestConfidence };
+}
+
 export const intentClassifier = {
   /**
    * Classify query intent with entity extraction
@@ -186,40 +206,17 @@ export const intentClassifier = {
   async classify(query: string, locale?: string): Promise<Intent> {
     const normalizedQuery = query.toLowerCase().trim();
 
-    // Find best matching intent
-    let bestIntent: IntentType = "general";
-    let bestConfidence = 0.4; // Base confidence for general
-
-    for (const [intentName, patterns] of Object.entries(INTENT_PATTERNS)) {
-      if (intentName === "general") continue;
-
-      for (const pattern of patterns) {
-        if (pattern.test(normalizedQuery)) {
-          const confidence = 0.75 + (patterns.indexOf(pattern) === 0 ? 0.15 : 0.05);
-          if (confidence > bestConfidence) {
-            bestIntent = intentName as IntentType;
-            bestConfidence = confidence;
-          }
-        }
-      }
-    }
-
-    // Extract entities (now async)
+    const { intent: bestIntent, confidence: baseConfidence } = matchBestIntent(normalizedQuery);
     const entities = await this.extractEntities(normalizedQuery);
 
-    // If entities found, boost confidence
-    if (Object.keys(entities).length > 0) {
-      bestConfidence = Math.min(bestConfidence + 0.1, 1);
-    }
-
-    // Suggest filters based on intent
-    const suggestedFilters = this.buildFilters(bestIntent, entities);
+    const confidenceBoost = Object.keys(entities).length > 0 ? 0.1 : 0;
+    const bestConfidence = Math.min(baseConfidence + confidenceBoost, 1);
 
     return {
       primary: bestIntent,
       confidence: bestConfidence,
       entities,
-      suggestedFilters,
+      suggestedFilters: this.buildFilters(bestIntent, entities),
     };
   },
 

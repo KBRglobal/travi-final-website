@@ -145,6 +145,36 @@ export function generateSafeFilename(originalFilename: string, fileType: string)
 }
 
 /**
+ * Check file size against type-specific limits and collect errors
+ */
+function checkTypeSizeLimits(
+  mime: string,
+  bufferLength: number,
+  errors: string[]
+): { isImageType: boolean; isDocumentType: boolean } {
+  const isImageType = ALLOWED_FILE_TYPES.images.mimeTypes.includes(mime);
+  const isDocumentType = ALLOWED_FILE_TYPES.documents.mimeTypes.includes(mime);
+
+  if (!isImageType && !isDocumentType) {
+    errors.push(`File type ${mime} is not allowed`);
+  }
+
+  if (isImageType && bufferLength > ALLOWED_FILE_TYPES.images.maxSize) {
+    errors.push(
+      `Image file size exceeds maximum allowed size of ${ALLOWED_FILE_TYPES.images.maxSize / 1024 / 1024}MB`
+    );
+  }
+
+  if (isDocumentType && bufferLength > ALLOWED_FILE_TYPES.documents.maxSize) {
+    errors.push(
+      `Document file size exceeds maximum allowed size of ${ALLOWED_FILE_TYPES.documents.maxSize / 1024 / 1024}MB`
+    );
+  }
+
+  return { isImageType, isDocumentType };
+}
+
+/**
  * Validate uploaded file
  */
 export async function validateUploadedFile(
@@ -155,25 +185,19 @@ export async function validateUploadedFile(
 ): Promise<FileValidationResult> {
   const errors: string[] = [];
 
-  // Check if buffer is empty
   if (!buffer || buffer.length === 0) {
-    errors.push("File is empty");
-    return { valid: false, errors };
+    return { valid: false, errors: ["File is empty"] };
   }
 
-  // Check file size
   if (maxSize && buffer.length > maxSize) {
     errors.push(
       `File size (${Math.round(buffer.length / 1024 / 1024)}MB) exceeds maximum allowed size (${Math.round(maxSize / 1024 / 1024)}MB)`
     );
   }
 
-  // Detect actual file type using magic bytes
   const magicBytesResult = validateMagicBytes(buffer);
-
   if (!magicBytesResult) {
-    errors.push("Unable to determine file type or unsupported file format");
-    return { valid: false, errors };
+    return { valid: false, errors: ["Unable to determine file type or unsupported file format"] };
   }
 
   // Use file-type library for additional validation
@@ -184,46 +208,23 @@ export async function validateUploadedFile(
     /* ignored */
   }
 
-  // Verify MIME type matches detected type
   if (fileTypeResult && fileTypeResult.mime !== magicBytesResult.mime) {
     errors.push(
       `File type mismatch: declared as ${declaredMimeType}, but detected as ${fileTypeResult.mime}`
     );
   }
 
-  // Check if file type is allowed
-  const isImageType = ALLOWED_FILE_TYPES.images.mimeTypes.includes(magicBytesResult.mime);
-  const isDocumentType = ALLOWED_FILE_TYPES.documents.mimeTypes.includes(magicBytesResult.mime);
+  const { isImageType } = checkTypeSizeLimits(magicBytesResult.mime, buffer.length, errors);
 
-  if (!isImageType && !isDocumentType) {
-    errors.push(`File type ${magicBytesResult.mime} is not allowed`);
-  }
-
-  // Check file size against type-specific limits
-  if (isImageType && buffer.length > ALLOWED_FILE_TYPES.images.maxSize) {
-    errors.push(
-      `Image file size exceeds maximum allowed size of ${ALLOWED_FILE_TYPES.images.maxSize / 1024 / 1024}MB`
-    );
-  }
-
-  if (isDocumentType && buffer.length > ALLOWED_FILE_TYPES.documents.maxSize) {
-    errors.push(
-      `Document file size exceeds maximum allowed size of ${ALLOWED_FILE_TYPES.documents.maxSize / 1024 / 1024}MB`
-    );
-  }
-
-  // Check for malicious content
   if (isImageType && detectMaliciousContent(buffer)) {
     errors.push("File contains potentially malicious content");
   }
 
-  // Check for double extensions (e.g., image.jpg.exe)
   const extensionCount = (originalFilename.match(/\./g) || []).length;
   if (extensionCount > 1) {
     errors.push("Files with multiple extensions are not allowed");
   }
 
-  // Generate safe filename
   const safeFilename = generateSafeFilename(originalFilename, magicBytesResult.ext);
 
   return {

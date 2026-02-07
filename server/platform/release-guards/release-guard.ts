@@ -40,63 +40,34 @@ class ReleaseGuard {
   }
 
   /**
-   * Run all safety checks
+   * Collect a check result into the appropriate lists
    */
-  async runChecks(): Promise<SafetyReport> {
-    const checks: GuardCheckResult[] = [];
-    const blockingIssues: string[] = [];
-    const warnings: string[] = [];
-
-    // Check required environment variables
-    for (const envVar of this.config.requiredEnvVars) {
-      const result = this.checkEnvVar(envVar);
-      checks.push(result);
-      if (result.severity === "block") {
-        blockingIssues.push(result.message);
-      } else if (result.severity === "warn") {
-        warnings.push(result.message);
-      }
+  private collectResult(
+    result: GuardCheckResult,
+    checks: GuardCheckResult[],
+    blockingIssues: string[],
+    warnings: string[]
+  ): void {
+    checks.push(result);
+    if (result.severity === "block") {
+      blockingIssues.push(result.message);
+    } else if (result.severity === "warn") {
+      warnings.push(result.message);
     }
+  }
 
-    // Check incompatible flag combinations
-    for (const combo of this.config.incompatibleFlags) {
-      const result = this.checkFlagCombo(combo.flags, combo.reason);
-      checks.push(result);
-      if (result.severity === "block") {
-        blockingIssues.push(result.message);
-      }
-    }
-
-    // Check database tables
-    for (const table of this.config.requiredTables) {
-      const result = await this.checkDatabaseTable(table);
-      checks.push(result);
-      if (result.severity === "block") {
-        blockingIssues.push(result.message);
-      } else if (result.severity === "warn") {
-        warnings.push(result.message);
-      }
-    }
-
-    // Check kill switches in production
-    if (this.config.warnOnDisabledKillSwitches && process.env.NODE_ENV === "production") {
-      const result = await this.checkKillSwitches();
-      checks.push(result);
-      if (result.severity === "warn") {
-        warnings.push(result.message);
-      }
-    }
-
-    // Run custom validators
+  /**
+   * Run custom validators and collect results
+   */
+  private async runCustomValidators(
+    checks: GuardCheckResult[],
+    blockingIssues: string[],
+    warnings: string[]
+  ): Promise<void> {
     for (const validator of this.config.customValidators) {
       try {
         const result = await validator.validate();
-        checks.push(result);
-        if (result.severity === "block") {
-          blockingIssues.push(result.message);
-        } else if (result.severity === "warn") {
-          warnings.push(result.message);
-        }
+        this.collectResult(result, checks, blockingIssues, warnings);
       } catch (err) {
         checks.push({
           name: validator.name,
@@ -107,8 +78,55 @@ class ReleaseGuard {
         });
       }
     }
+  }
 
-    // Determine overall severity
+  /**
+   * Log the final report summary
+   */
+  private logReportSummary(blockingIssues: string[], warnings: string[]): void {
+    if (blockingIssues.length > 0) {
+      logger.error("Release safety checks FAILED", {
+        blockingIssues,
+        warningCount: warnings.length,
+      });
+    } else if (warnings.length > 0) {
+      logger.warn("Release safety checks passed with warnings", { warnings });
+    } else {
+      logger.info("All release safety checks passed");
+    }
+  }
+
+  /**
+   * Run all safety checks
+   */
+  async runChecks(): Promise<SafetyReport> {
+    const checks: GuardCheckResult[] = [];
+    const blockingIssues: string[] = [];
+    const warnings: string[] = [];
+
+    for (const envVar of this.config.requiredEnvVars) {
+      this.collectResult(this.checkEnvVar(envVar), checks, blockingIssues, warnings);
+    }
+
+    for (const combo of this.config.incompatibleFlags) {
+      this.collectResult(
+        this.checkFlagCombo(combo.flags, combo.reason),
+        checks,
+        blockingIssues,
+        warnings
+      );
+    }
+
+    for (const table of this.config.requiredTables) {
+      this.collectResult(await this.checkDatabaseTable(table), checks, blockingIssues, warnings);
+    }
+
+    if (this.config.warnOnDisabledKillSwitches && process.env.NODE_ENV === "production") {
+      this.collectResult(await this.checkKillSwitches(), checks, blockingIssues, warnings);
+    }
+
+    await this.runCustomValidators(checks, blockingIssues, warnings);
+
     let overallSeverity: GuardSeverity = "ok";
     if (warnings.length > 0) overallSeverity = "warn";
     if (blockingIssues.length > 0) overallSeverity = "block";
@@ -124,19 +142,7 @@ class ReleaseGuard {
     };
 
     this.lastReport = report;
-
-    if (blockingIssues.length > 0) {
-      logger.error("Release safety checks FAILED", {
-        blockingIssues,
-        warningCount: warnings.length,
-      });
-    } else if (warnings.length > 0) {
-      logger.warn("Release safety checks passed with warnings", {
-        warnings,
-      });
-    } else {
-      logger.info("All release safety checks passed");
-    }
+    this.logReportSummary(blockingIssues, warnings);
 
     return report;
   }

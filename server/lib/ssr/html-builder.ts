@@ -70,116 +70,78 @@ export function renderFooter(locale: Locale): string {
 /**
  * Render content blocks to semantic HTML
  */
+function renderCaptionHtml(data: any): string {
+  return data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : "";
+}
+
+function renderBlock(block: ContentBlock): string {
+  const data = block.data || {};
+
+  switch (block.type) {
+    case "hero":
+      return `<figure>${data.imageUrl ? `<img src="${escapeHtml(String(data.imageUrl))}" alt="${escapeHtml(String(data.title || data.alt || ""))}" loading="lazy">` : ""}${renderCaptionHtml(data)}</figure>`;
+
+    case "heading": {
+      const level = Math.min(Math.max(Number(data.level) || 2, 1), 6);
+      return `<h${level}>${escapeHtml(String(data.text || ""))}</h${level}>`;
+    }
+
+    case "text":
+    case "paragraph":
+      return `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`;
+
+    case "image":
+      return `<figure><img src="${escapeHtml(String(data.src || data.url || ""))}" alt="${escapeHtml(String(data.alt || ""))}" loading="lazy">${renderCaptionHtml(data)}</figure>`;
+
+    case "gallery":
+      return renderGalleryBlock(data);
+
+    case "FAQ":
+    case "faq":
+      return renderFAQBlock(data);
+
+    case "list":
+      return renderListBlock(data);
+
+    case "quote":
+    case "blockquote":
+      return `<blockquote><p>${escapeHtml(String(data.text || data.quote || ""))}</p>${data.author ? `<cite>${escapeHtml(String(data.author))}</cite>` : ""}</blockquote>`;
+
+    case "divider":
+      return `<hr>`;
+
+    default:
+      return data.text || data.content
+        ? `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`
+        : "";
+  }
+}
+
+function renderGalleryBlock(data: any): string {
+  const images = Array.isArray(data.images) ? data.images : [];
+  if (images.length === 0) return "";
+  return `<figure>${images.map((img: any) => `<img src="${escapeHtml(String(img.src || img.url || ""))}" alt="${escapeHtml(String(img.alt || ""))}" loading="lazy">`).join("")}${renderCaptionHtml(data)}</figure>`;
+}
+
+function renderFAQBlock(data: any): string {
+  const items = Array.isArray(data.items) ? data.items : Array.isArray(data.faqs) ? data.faqs : [];
+  if (items.length === 0) return "";
+  return `<section aria-labelledby="faq-heading"><h2 id="faq-heading">Frequently Asked Questions</h2><dl>${items.map((item: any) => `<dt>${escapeHtml(String(item.question || ""))}</dt><dd>${escapeHtml(String(item.answer || ""))}</dd>`).join("")}</dl></section>`;
+}
+
+function renderListBlock(data: any): string {
+  const listItems = Array.isArray(data.items) ? data.items : [];
+  const tag = data.ordered === true ? "ol" : "ul";
+  return `<${tag}>${listItems.map((item: any) => `<li>${escapeHtml(String(item.text || item || ""))}</li>`).join("")}</${tag}>`;
+}
+
 export function renderContentBlocks(blocks: ContentBlock[], locale: Locale): string {
   if (!blocks || !Array.isArray(blocks)) return "";
 
   const sortedBlocks = [...blocks].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return sortedBlocks
-    .map(block => {
-      const data = block.data || {};
-
-      switch (block.type) {
-        case "hero":
-          return `
-          <figure>
-            ${data.imageUrl ? `<img src="${escapeHtml(String(data.imageUrl))}" alt="${escapeHtml(String(data.title || data.alt || ""))}" loading="lazy">` : ""}
-            ${data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : ""}
-          </figure>
-        `;
-
-        case "heading": {
-          const level = Math.min(Math.max(Number(data.level) || 2, 1), 6);
-          return `<h${level}>${escapeHtml(String(data.text || ""))}</h${level}>`;
-        }
-
-        case "text":
-        case "paragraph":
-          return `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`;
-
-        case "image":
-          return `
-          <figure>
-            <img src="${escapeHtml(String(data.src || data.url || ""))}" alt="${escapeHtml(String(data.alt || ""))}" loading="lazy">
-            ${data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : ""}
-          </figure>
-        `;
-
-        case "gallery": {
-          const images = Array.isArray(data.images) ? data.images : [];
-          if (images.length === 0) return "";
-          return `
-          <figure>
-            ${images
-              .map(
-                (img: any) => `
-              <img src="${escapeHtml(String(img.src || img.url || ""))}" alt="${escapeHtml(String(img.alt || ""))}" loading="lazy">
-            `
-              )
-              .join("")}
-            ${data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : ""}
-          </figure>
-        `;
-        }
-
-        case "FAQ":
-        case "faq": {
-          let items: any[];
-          if (Array.isArray(data.items)) {
-            items = data.items;
-          } else if (Array.isArray(data.faqs)) {
-            items = data.faqs;
-          } else {
-            items = [];
-          }
-          if (items.length === 0) return "";
-          return `
-          <section aria-labelledby="faq-heading">
-            <h2 id="faq-heading">Frequently Asked Questions</h2>
-            <dl>
-              ${items
-                .map(
-                  (item: any) => `
-                <dt>${escapeHtml(String(item.question || ""))}</dt>
-                <dd>${escapeHtml(String(item.answer || ""))}</dd>
-              `
-                )
-                .join("")}
-            </dl>
-          </section>
-        `;
-        }
-
-        case "list": {
-          const listItems = Array.isArray(data.items) ? data.items : [];
-          const ordered = data.ordered === true;
-          const tag = ordered ? "ol" : "ul";
-          return `
-          <${tag}>
-            ${listItems.map((item: any) => `<li>${escapeHtml(String(item.text || item || ""))}</li>`).join("")}
-          </${tag}>
-        `;
-        }
-
-        case "quote":
-        case "blockquote":
-          return `
-          <blockquote>
-            <p>${escapeHtml(String(data.text || data.quote || ""))}</p>
-            ${data.author ? `<cite>${escapeHtml(String(data.author))}</cite>` : ""}
-          </blockquote>
-        `;
-
-        case "divider":
-          return `<hr>`;
-
-        default:
-          if (data.text || data.content) {
-            return `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`;
-          }
-          return "";
-      }
-    })
+    .map(block => renderBlock(block))
     .filter(Boolean)
     .join("\n");
 }

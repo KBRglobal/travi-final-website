@@ -103,6 +103,44 @@ export async function createOverride(
 /**
  * Check for active override
  */
+function toEnforcementOverride(stored: StoredOverride): EnforcementOverride {
+  return {
+    id: stored.id,
+    targetKey: stored.targetKey,
+    feature: stored.feature as GuardedFeature,
+    reason: stored.reason,
+    createdBy: stored.createdBy,
+    createdAt: stored.createdAt,
+    expiresAt: stored.expiresAt,
+    active: true,
+  };
+}
+
+function evictCacheIfNeeded(): void {
+  if (overrideCache.size >= MAX_CACHE_SIZE) {
+    const firstKey = overrideCache.keys().next().value;
+    if (firstKey) overrideCache.delete(firstKey);
+  }
+}
+
+function findStoredOverride(
+  targetKey: string,
+  feature: GuardedFeature
+): StoredOverride | undefined {
+  const now = new Date();
+  for (const stored of overrideStore.values()) {
+    if (
+      stored.targetKey === targetKey &&
+      stored.feature === feature &&
+      stored.expiresAt > now &&
+      !stored.revokedAt
+    ) {
+      return stored;
+    }
+  }
+  return undefined;
+}
+
 export async function getActiveOverride(
   targetKey: string,
   feature: GuardedFeature
@@ -120,37 +158,14 @@ export async function getActiveOverride(
   }
 
   // Check store
-  const now = new Date();
-  for (const stored of overrideStore.values()) {
-    if (
-      stored.targetKey === targetKey &&
-      stored.feature === feature &&
-      stored.expiresAt > now &&
-      !stored.revokedAt
-    ) {
-      const override: EnforcementOverride = {
-        id: stored.id,
-        targetKey: stored.targetKey,
-        feature: stored.feature as GuardedFeature,
-        reason: stored.reason,
-        createdBy: stored.createdBy,
-        createdAt: stored.createdAt,
-        expiresAt: stored.expiresAt,
-        active: true,
-      };
+  const stored = findStoredOverride(targetKey, feature);
+  if (!stored) return null;
 
-      // Update cache
-      if (overrideCache.size >= MAX_CACHE_SIZE) {
-        const firstKey = overrideCache.keys().next().value;
-        if (firstKey) overrideCache.delete(firstKey);
-      }
-      overrideCache.set(cacheKey, { override, expiresAt: Date.now() + CACHE_TTL_MS });
+  const override = toEnforcementOverride(stored);
+  evictCacheIfNeeded();
+  overrideCache.set(cacheKey, { override, expiresAt: Date.now() + CACHE_TTL_MS });
 
-      return override;
-    }
-  }
-
-  return null;
+  return override;
 }
 
 /**

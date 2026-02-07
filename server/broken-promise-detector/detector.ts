@@ -33,6 +33,38 @@ function recommendationByStatus(
   return keptMsg;
 }
 
+/** Check patterns against a text source and collect detected promises */
+function checkPatterns(
+  patterns: typeof PROMISE_PATTERNS,
+  filterType: PromiseType,
+  sourceText: string,
+  body: string,
+  contentId: string,
+  promises: BrokenPromise[]
+): void {
+  for (const pattern of patterns.filter(p => p.type === filterType)) {
+    const match = sourceText.match(pattern.pattern);
+    if (!match) continue;
+    const promise = detectPromise(pattern, match, sourceText, body);
+    if (promise) {
+      promises.push({ ...promise, id: `${contentId}-${promises.length}`, contentId });
+    }
+  }
+}
+
+/** Check H1 patterns (extracts H1 from body first) */
+function checkH1Patterns(
+  patterns: typeof PROMISE_PATTERNS,
+  body: string,
+  contentId: string,
+  promises: BrokenPromise[]
+): void {
+  const h1Match = body.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+  if (!h1Match) return;
+  const h1Text = h1Match[1];
+  checkPatterns(patterns, "h1", h1Text, body, contentId, promises);
+}
+
 /**
  * Analyze content for broken promises
  */
@@ -48,77 +80,25 @@ export async function analyzeContent(contentId: string): Promise<PromiseAnalysis
   const metaDescription = contentItem.metaDescription || "";
   const body = (contentItem as any).body || "";
 
-  // Check title promises
-  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === "title")) {
-    const match = title.match(pattern.pattern);
-    if (match) {
-      const promise = detectPromise(pattern, match, title, body);
-      if (promise) {
-        promises.push({
-          ...promise,
-          id: `${contentId}-${promises.length}`,
-          contentId,
-        });
-      }
-    }
-  }
+  checkPatterns(PROMISE_PATTERNS, "title", title, body, contentId, promises);
+  checkPatterns(PROMISE_PATTERNS, "meta_description", metaDescription, body, contentId, promises);
+  checkH1Patterns(PROMISE_PATTERNS, body, contentId, promises);
 
-  // Check meta description promises
-  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === "meta_description")) {
-    const match = metaDescription.match(pattern.pattern);
-    if (match) {
-      const promise = detectPromise(pattern, match, metaDescription, body);
-      if (promise) {
-        promises.push({
-          ...promise,
-          id: `${contentId}-${promises.length}`,
-          contentId,
-        });
-      }
-    }
-  }
-
-  // Check H1 promises (if different from title)
-  for (const pattern of PROMISE_PATTERNS.filter(p => p.type === "h1")) {
-    const h1Match = body.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-    if (h1Match) {
-      const h1Text = h1Match[1];
-      const patternMatch = h1Text.match(pattern.pattern);
-      if (patternMatch) {
-        const promise = detectPromise(pattern, patternMatch, h1Text, body);
-        if (promise) {
-          promises.push({
-            ...promise,
-            id: `${contentId}-${promises.length}`,
-            contentId,
-          });
-        }
-      }
-    }
-  }
-
-  const brokenCount = promises.filter(p => p.status === "broken").length;
-  const partialCount = promises.filter(p => p.status === "partial").length;
-  const keptCount = promises.filter(p => p.status === "kept").length;
-
-  // Calculate trust score
   const trustScore = calculateTrustScore(promises);
 
   const analysis: PromiseAnalysis = {
     contentId,
     contentTitle: title,
     totalPromises: promises.length,
-    brokenPromises: brokenCount,
-    partialPromises: partialCount,
-    keptPromises: keptCount,
+    brokenPromises: promises.filter(p => p.status === "broken").length,
+    partialPromises: promises.filter(p => p.status === "partial").length,
+    keptPromises: promises.filter(p => p.status === "kept").length,
     trustScore,
     promises,
     analyzedAt: new Date(),
   };
 
-  // Cache the result
   analysisCache.set(contentId, analysis);
-
   return analysis;
 }
 

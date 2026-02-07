@@ -423,22 +423,14 @@ function buildHighlights(
   return highlights;
 }
 
-function buildFeatureSummaries(
+function aggregateOutcomesByFeature(
   outcomes: Array<{
     feature: GuardedFeature;
     decision: string;
     metadata?: Record<string, unknown>;
-  }>,
-  audience: ExplanationAudience
-): FeatureSummary[] {
-  const byFeature = new Map<
-    GuardedFeature,
-    {
-      total: number;
-      blocked: number;
-      cost: number;
-    }
-  >();
+  }>
+): Map<GuardedFeature, { total: number; blocked: number; cost: number }> {
+  const byFeature = new Map<GuardedFeature, { total: number; blocked: number; cost: number }>();
 
   for (const o of outcomes) {
     const stats = byFeature.get(o.feature) || { total: 0, blocked: 0, cost: 0 };
@@ -448,61 +440,115 @@ function buildFeatureSummaries(
     byFeature.set(o.feature, stats);
   }
 
+  return byFeature;
+}
+
+function determineFeatureStatus(blockRate: number): FeatureSummary["status"] {
+  if (blockRate > 0.3) return "critical";
+  if (blockRate > 0.1) return "attention_needed";
+  return "healthy";
+}
+
+const EXECUTIVE_STATUS_MESSAGES: Record<FeatureSummary["status"], (name: string) => string> = {
+  healthy: name => `${name} is operating normally.`,
+  attention_needed: name => `${name} has some blocked requests that may need review.`,
+  critical: name => `${name} has significant blocks - immediate attention recommended.`,
+};
+
+function buildFeatureSummary(
+  feature: GuardedFeature,
+  stats: { total: number; blocked: number; cost: number },
+  audience: ExplanationAudience
+): FeatureSummary {
+  const blockRate = stats.total > 0 ? stats.blocked / stats.total : 0;
+  const status = determineFeatureStatus(blockRate);
+  const displayName = FEATURE_DISPLAY_NAMES[feature] || feature;
+
+  const summary =
+    audience === "executive"
+      ? EXECUTIVE_STATUS_MESSAGES[status](displayName)
+      : `${stats.total} requests, ${stats.blocked} blocked (${(blockRate * 100).toFixed(1)}%)`;
+
+  const issues: string[] = [];
+  if (blockRate > 0.2) {
+    issues.push(
+      audience === "executive" ? "High block rate" : `Block rate: ${(blockRate * 100).toFixed(1)}%`
+    );
+  }
+
+  return {
+    feature,
+    displayName,
+    summary,
+    metrics: {
+      requests: stats.total.toLocaleString(),
+      blocked: `${stats.blocked} (${(blockRate * 100).toFixed(1)}%)`,
+      cost: `${(stats.cost / 100).toFixed(2)} USD`,
+    },
+    status,
+    issues: issues.length > 0 ? issues : undefined,
+  };
+}
+
+function buildFeatureSummaries(
+  outcomes: Array<{
+    feature: GuardedFeature;
+    decision: string;
+    metadata?: Record<string, unknown>;
+  }>,
+  audience: ExplanationAudience
+): FeatureSummary[] {
+  const byFeature = aggregateOutcomesByFeature(outcomes);
   const summaries: FeatureSummary[] = [];
 
   for (const [feature, stats] of byFeature) {
-    const blockRate = stats.total > 0 ? stats.blocked / stats.total : 0;
-    let status: FeatureSummary["status"];
-    if (blockRate > 0.3) {
-      status = "critical";
-    } else if (blockRate > 0.1) {
-      status = "attention_needed";
-    } else {
-      status = "healthy";
-    }
-
-    const displayName = FEATURE_DISPLAY_NAMES[feature] || feature;
-
-    let summary: string;
-    if (audience === "executive") {
-      if (status === "healthy") {
-        summary = `${displayName} is operating normally.`;
-      } else if (status === "attention_needed") {
-        summary = `${displayName} has some blocked requests that may need review.`;
-      } else {
-        summary = `${displayName} has significant blocks - immediate attention recommended.`;
-      }
-    } else {
-      summary = `${stats.total} requests, ${stats.blocked} blocked (${(blockRate * 100).toFixed(1)}%)`;
-    }
-
-    const issues: string[] = [];
-    if (blockRate > 0.2) {
-      issues.push(
-        audience === "executive"
-          ? "High block rate"
-          : `Block rate: ${(blockRate * 100).toFixed(1)}%`
-      );
-    }
-
-    summaries.push({
-      feature,
-      displayName,
-      summary,
-      metrics: {
-        requests: stats.total.toLocaleString(),
-        blocked: `${stats.blocked} (${(blockRate * 100).toFixed(1)}%)`,
-        cost: `${(stats.cost / 100).toFixed(2)} USD`,
-      },
-      status,
-      issues: issues.length > 0 ? issues : undefined,
-    });
+    summaries.push(buildFeatureSummary(feature, stats, audience));
   }
 
-  return summaries.sort((a, b) => {
-    const statusOrder = { critical: 0, attention_needed: 1, healthy: 2 };
-    return statusOrder[a.status] - statusOrder[b.status];
-  });
+  const statusOrder: Record<FeatureSummary["status"], number> = {
+    critical: 0,
+    attention_needed: 1,
+    healthy: 2,
+  };
+  return summaries.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+}
+
+function categorizeSignal(signalType: string): "budget" | "incident" | "policy" {
+  if (signalType.includes("budget")) return "budget";
+  if (signalType.includes("incident")) return "incident";
+  return "policy";
+}
+
+function signalToActionItem(
+  signal: {
+    severity: string;
+    feature?: GuardedFeature;
+    type: string;
+    recommendation?: { reason: string };
+  },
+  audience: ExplanationAudience
+): ActionItem {
+  const priority = signal.severity === "critical" || signal.severity === "high" ? "high" : "medium";
+  const category = categorizeSignal(signal.type);
+
+  if (audience === "executive") {
+    return {
+      priority,
+      category,
+      title: `Review ${FEATURE_DISPLAY_NAMES[signal.feature!] || signal.feature}`,
+      description: signal.recommendation?.reason || "Attention needed based on system analysis.",
+      feature: signal.feature,
+    };
+  }
+
+  return {
+    priority,
+    category,
+    title: `${signal.type.replace("_", " ")} detected`,
+    description: signal.recommendation?.reason || "Review recommended.",
+    suggestedAction: `Investigate ${signal.type} for ${signal.feature}`,
+    feature: signal.feature,
+  };
 }
 
 function buildActionItems(
@@ -515,43 +561,10 @@ function buildActionItems(
   metrics: { accuracy: number },
   audience: ExplanationAudience
 ): ActionItem[] {
-  const items: ActionItem[] = [];
+  const items: ActionItem[] = signals
+    .slice(0, 5)
+    .map(signal => signalToActionItem(signal, audience));
 
-  // Add action items from drift signals
-  for (const signal of signals.slice(0, 5)) {
-    const priority =
-      signal.severity === "critical" || signal.severity === "high" ? "high" : "medium";
-
-    let category: "budget" | "incident" | "policy";
-    if (signal.type.includes("budget")) {
-      category = "budget";
-    } else if (signal.type.includes("incident")) {
-      category = "incident";
-    } else {
-      category = "policy";
-    }
-
-    if (audience === "executive") {
-      items.push({
-        priority,
-        category,
-        title: `Review ${FEATURE_DISPLAY_NAMES[signal.feature!] || signal.feature}`,
-        description: signal.recommendation?.reason || "Attention needed based on system analysis.",
-        feature: signal.feature,
-      });
-    } else {
-      items.push({
-        priority,
-        category,
-        title: `${signal.type.replace("_", " ")} detected`,
-        description: signal.recommendation?.reason || "Review recommended.",
-        suggestedAction: `Investigate ${signal.type} for ${signal.feature}`,
-        feature: signal.feature,
-      });
-    }
-  }
-
-  // Add accuracy-based action item
   if (metrics.accuracy < 0.85) {
     items.push({
       priority: "medium",

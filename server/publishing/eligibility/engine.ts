@@ -23,6 +23,117 @@ import {
 import { calculateFullQuality108 } from "../../services/seo/unified-quality-scorer";
 import { internalLinkingAnalyzer } from "../../services/seo/internal-linking-analyzer";
 
+/** Mutable context shared across rule checks */
+interface EligibilityContext {
+  blockingReasons: string[];
+  warnings: string[];
+  score: number;
+}
+
+/** Add a blocking reason and subtract from score */
+function block(ctx: EligibilityContext, reason: string, penalty: number): void {
+  ctx.blockingReasons.push(reason);
+  ctx.score -= penalty;
+}
+
+/** Add a warning and subtract from score */
+function warn(ctx: EligibilityContext, message: string, penalty: number): void {
+  ctx.warnings.push(message);
+  ctx.score -= penalty;
+}
+
+/** Check body/blocks presence */
+function checkBlocks(content: { blocks: unknown }, ctx: EligibilityContext): void {
+  const blocks = content.blocks as unknown[] | null;
+  if (!blocks || blocks.length === 0) {
+    block(ctx, "Content has no body/blocks", 30);
+  } else if (blocks.length < 2) {
+    warn(ctx, "Content has minimal body (less than 2 blocks)", 10);
+  }
+}
+
+/** Check AEO capsule requirement */
+function checkAeo(
+  content: { answerCapsule: unknown; aeoScore: number | null },
+  options: EligibilityOptions,
+  ctx: EligibilityContext
+): void {
+  if (!isAeoRequired() || options.skipAeoCheck) return;
+  if (!content.answerCapsule) {
+    block(ctx, "Content missing AEO capsule", 25);
+  } else if (content.aeoScore && content.aeoScore < 50) {
+    warn(ctx, `AEO score is low (${content.aeoScore}/100)`, 10);
+  }
+}
+
+/** Check Quality 108 requirement */
+async function checkQuality108(
+  contentId: string,
+  content: { seoScore: number | null; aeoScore: number | null },
+  options: EligibilityOptions,
+  ctx: EligibilityContext
+): Promise<void> {
+  if (!isQuality108Required() || options.skipQuality108Check) return;
+  try {
+    const quality108 = await calculateFullQuality108(contentId, {
+      contentScore: 60,
+      seoScore: content.seoScore || 0,
+      aeoScore: content.aeoScore || 0,
+    });
+    const seoGates = getSEOGates();
+    if (quality108.totalScore < seoGates.quality108Minimum) {
+      block(
+        ctx,
+        `Quality 108 score too low: ${quality108.totalScore}/${seoGates.quality108Minimum} minimum`,
+        25
+      );
+    }
+    if (quality108.criticalIssues.length > 0) {
+      block(ctx, `Quality 108 critical issues: ${quality108.criticalIssues.join(", ")}`, 15);
+    }
+    if (quality108.categories.internalLinking.metrics.orphanStatus && seoGates.noOrphanPages) {
+      block(ctx, "Content is orphaned (no inbound links)", 20);
+    }
+  } catch {
+    warn(ctx, "Could not evaluate Quality 108 score", 0);
+  }
+}
+
+/** Check internal linking requirement */
+async function checkInternalLinking(
+  contentId: string,
+  options: EligibilityOptions,
+  ctx: EligibilityContext
+): Promise<void> {
+  if (!isInternalLinkingRequired() || options.skipInternalLinkingCheck) return;
+  try {
+    const seoGates = getSEOGates();
+    const linkSuggestions = await internalLinkingAnalyzer.suggestLinksForContent(contentId);
+    if (linkSuggestions.length >= seoGates.minInternalLinks) {
+      warn(ctx, `Consider adding ${Math.min(3, linkSuggestions.length)} more internal links`, 5);
+    }
+  } catch {
+    warn(ctx, "Could not evaluate internal linking", 0);
+  }
+}
+
+/** Check FAQ requirement */
+function checkFaq(
+  content: { blocks: unknown },
+  options: EligibilityOptions,
+  ctx: EligibilityContext
+): void {
+  if (!isFaqRequired() || options.skipFaqCheck) return;
+  const seoGates = getSEOGates();
+  const blocks = content.blocks as any[] | null;
+  const hasFaq = blocks?.some(
+    b => b.type === "faq" || b.type === "accordion" || b.data?.type === "faq"
+  );
+  if (!hasFaq && seoGates.mustHaveFAQ) {
+    warn(ctx, "Content has no FAQ section (recommended for SEO/AEO)", 10);
+  }
+}
+
 /**
  * Evaluate publishing eligibility for a content item
  */
@@ -31,12 +142,9 @@ export async function evaluateEligibility(
   options: EligibilityOptions = {}
 ): Promise<EligibilityResult> {
   const evaluatedAt = new Date();
-  const blockingReasons: string[] = [];
-  const warnings: string[] = [];
-  let score = 100;
+  const ctx: EligibilityContext = { blockingReasons: [], warnings: [], score: 100 };
 
   try {
-    // Fetch content
     const [content] = await db
       .select({
         id: contents.id,
@@ -53,7 +161,6 @@ export async function evaluateEligibility(
       .from(contents)
       .where(eq(contents.id, contentId));
 
-    // Rule 1: Content must exist
     if (!content) {
       return {
         contentId,
@@ -65,149 +172,48 @@ export async function evaluateEligibility(
       };
     }
 
-    // Rule 2: Content must not be deleted
     if (content.deletedAt) {
-      blockingReasons.push("Content is deleted");
-      score -= 100;
+      block(ctx, "Content is deleted", 100);
     }
 
-    // Rule 3: Content must have blocks/body
-    const blocks = content.blocks as unknown[] | null;
-    if (!blocks || blocks.length === 0) {
-      blockingReasons.push("Content has no body/blocks");
-      score -= 30;
-    } else if (blocks.length < 2) {
-      warnings.push("Content has minimal body (less than 2 blocks)");
-      score -= 10;
+    checkBlocks(content, ctx);
+
+    if (isEntityRequired() && !options.skipEntityCheck && !content.answerCapsule) {
+      block(ctx, "Content has no extracted entities (missing answer capsule)", 25);
     }
 
-    // Rule 4: Entity requirement (if enabled)
-    if (isEntityRequired() && !options.skipEntityCheck) {
-      // Use answerCapsule as proxy for entity extraction
-      if (!content.answerCapsule) {
-        blockingReasons.push("Content has no extracted entities (missing answer capsule)");
-        score -= 25;
-      }
-    }
+    checkAeo(content, options, ctx);
 
-    // Rule 5: AEO capsule requirement (if enabled)
-    if (isAeoRequired() && !options.skipAeoCheck) {
-      if (!content.answerCapsule) {
-        blockingReasons.push("Content missing AEO capsule");
-        score -= 25;
-      } else if (content.aeoScore && content.aeoScore < 50) {
-        warnings.push(`AEO score is low (${content.aeoScore}/100)`);
-        score -= 10;
-      }
-    }
-
-    // Rule 6: Intelligence coverage requirement (if enabled)
     if (isIntelligenceCoverageRequired() && !options.skipIntelligenceCheck) {
-      // Check if content is in search index
       const [indexed] = await db
         .select({ contentId: searchIndex.contentId })
         .from(searchIndex)
         .where(eq(searchIndex.contentId, contentId));
-
       if (!indexed) {
-        warnings.push("Content not yet indexed for search");
-        score -= 5;
+        warn(ctx, "Content not yet indexed for search", 5);
       }
     }
 
-    // Rule 7: Scheduled for future (unless forcePublish)
-    if (content.scheduledAt && !options.forcePublish) {
-      const now = new Date();
-      if (content.scheduledAt > now) {
-        blockingReasons.push(`Content scheduled for future: ${content.scheduledAt.toISOString()}`);
-        score -= 20;
-      }
+    if (content.scheduledAt && !options.forcePublish && content.scheduledAt > new Date()) {
+      block(ctx, `Content scheduled for future: ${content.scheduledAt.toISOString()}`, 20);
     }
 
-    // Rule 8: SEO score warning
     if (content.seoScore && content.seoScore < 40) {
-      warnings.push(`SEO score is low (${content.seoScore}/100)`);
-      score -= 5;
+      warn(ctx, `SEO score is low (${content.seoScore}/100)`, 5);
     }
 
-    // Rule 9: Quality 108 check (if enabled)
-    if (isQuality108Required() && !options.skipQuality108Check) {
-      try {
-        const quality108 = await calculateFullQuality108(contentId, {
-          contentScore: 60, // placeholder - would come from actual scoring
-          seoScore: content.seoScore || 0,
-          aeoScore: content.aeoScore || 0,
-        });
+    await checkQuality108(contentId, content, options, ctx);
+    await checkInternalLinking(contentId, options, ctx);
+    checkFaq(content, options, ctx);
 
-        const seoGates = getSEOGates();
-
-        if (quality108.totalScore < seoGates.quality108Minimum) {
-          blockingReasons.push(
-            `Quality 108 score too low: ${quality108.totalScore}/${seoGates.quality108Minimum} minimum`
-          );
-          score -= 25;
-        }
-
-        if (quality108.criticalIssues.length > 0) {
-          blockingReasons.push(
-            `Quality 108 critical issues: ${quality108.criticalIssues.join(", ")}`
-          );
-          score -= 15;
-        }
-
-        if (quality108.categories.internalLinking.metrics.orphanStatus && seoGates.noOrphanPages) {
-          blockingReasons.push("Content is orphaned (no inbound links)");
-          score -= 20;
-        }
-      } catch (error) {
-        warnings.push("Could not evaluate Quality 108 score");
-      }
-    }
-
-    // Rule 10: Internal linking check (if enabled)
-    if (isInternalLinkingRequired() && !options.skipInternalLinkingCheck) {
-      try {
-        const seoGates = getSEOGates();
-        const linkSuggestions = await internalLinkingAnalyzer.suggestLinksForContent(contentId);
-
-        // Check for minimum outbound links (using suggestions as indicator)
-        if (linkSuggestions.length >= seoGates.minInternalLinks) {
-          warnings.push(
-            `Consider adding ${Math.min(3, linkSuggestions.length)} more internal links`
-          );
-          score -= 5;
-        }
-      } catch (error) {
-        // Non-blocking warning
-        warnings.push("Could not evaluate internal linking");
-      }
-    }
-
-    // Rule 11: FAQ requirement check (if enabled)
-    if (isFaqRequired() && !options.skipFaqCheck) {
-      const seoGates = getSEOGates();
-      const blocks = content.blocks as any[] | null;
-
-      // Simple check for FAQ presence in blocks
-      const hasFaq = blocks?.some(
-        b => b.type === "faq" || b.type === "accordion" || b.data?.type === "faq"
-      );
-
-      if (!hasFaq && seoGates.mustHaveFAQ) {
-        warnings.push("Content has no FAQ section (recommended for SEO/AEO)");
-        score -= 10;
-      }
-    }
-
-    // Ensure score is within bounds
-    score = Math.max(0, Math.min(100, score));
+    ctx.score = Math.max(0, Math.min(100, ctx.score));
 
     return {
       contentId,
-      allowed: blockingReasons.length === 0,
-      blockingReasons,
-      warnings,
-      score,
+      allowed: ctx.blockingReasons.length === 0,
+      blockingReasons: ctx.blockingReasons,
+      warnings: ctx.warnings,
+      score: ctx.score,
       evaluatedAt,
     };
   } catch (error) {

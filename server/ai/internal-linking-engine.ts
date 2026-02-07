@@ -517,38 +517,80 @@ export function getLinkableContent(): {
  * Fetches destinations and published content to use as link targets
  * Results are cached for 10 minutes to reduce database load
  */
+const CONTENT_TYPE_SLUG_PREFIX: Record<string, string> = {
+  hotel: "/hotels/",
+  attraction: "/attractions/",
+  dining: "/dining/",
+  article: "/articles/",
+};
+
+function buildContentSlug(rawSlug: string, contentType: string): string {
+  if (rawSlug.startsWith("/")) return rawSlug;
+  const prefix = CONTENT_TYPE_SLUG_PREFIX[contentType] || "/";
+  return `${prefix}${rawSlug}`;
+}
+
+function mapDestinationsToLinkable(
+  dbDestinations: Array<{ id: number; slug: string; name: string }>
+): LinkableContent[] {
+  return dbDestinations.map(dest => ({
+    id: String(dest.id),
+    type: "destination" as const,
+    slug: `/destinations/${dest.slug}`,
+    title: `${dest.name} Travel Guide`,
+    destination: dest.name,
+    keywords: [dest.name.toLowerCase(), dest.slug.toLowerCase()],
+  }));
+}
+
+function mapContentToLinkable(
+  publishedContent: Array<{
+    id: string;
+    type: string;
+    slug: string | null;
+    title: string;
+    primaryKeyword: string | null;
+  }>
+): LinkableContent[] {
+  return publishedContent
+    .filter(c => c.slug)
+    .map(content => {
+      const keywords: string[] = [content.title.toLowerCase()];
+      if (content.primaryKeyword) keywords.push(content.primaryKeyword.toLowerCase());
+      return {
+        id: content.id,
+        type: content.type as ContentType,
+        slug: buildContentSlug(content.slug!, content.type),
+        title: content.title,
+        keywords,
+      };
+    });
+}
+
+function mapCategoriesToLinkable(
+  categories: Array<{ id: string; slug: string; name: string }>
+): LinkableContent[] {
+  return categories.map(cat => ({
+    id: cat.id,
+    type: "landing" as const,
+    slug: cat.slug.startsWith("/") ? cat.slug : `/${cat.slug}`,
+    title: cat.name,
+    keywords: [cat.name.toLowerCase()],
+    category: cat.name,
+  }));
+}
+
 export async function loadLinkableContentFromDB(): Promise<LinkableContent[]> {
   const now = Date.now();
 
-  // Return cached data if still fresh
   if (dbLinksCache.length > 0 && now - dbLinksCacheTime < DB_LINKS_CACHE_TTL) {
     return dbLinksCache;
   }
 
   try {
-    const linkableContent: LinkableContent[] = [];
-
-    // Load destinations
     const dbDestinations = await db
-      .select({
-        id: destinations.id,
-        slug: destinations.slug,
-        name: destinations.name,
-      })
+      .select({ id: destinations.id, slug: destinations.slug, name: destinations.name })
       .from(destinations);
-
-    for (const dest of dbDestinations) {
-      linkableContent.push({
-        id: String(dest.id),
-        type: "destination",
-        slug: `/destinations/${dest.slug}`,
-        title: `${dest.name} Travel Guide`,
-        destination: dest.name,
-        keywords: [dest.name.toLowerCase(), dest.slug.toLowerCase()],
-      });
-    }
-
-    // Load published content (hotels, attractions, articles)
     const publishedContent = await db
       .select({
         id: contents.id,
@@ -559,47 +601,7 @@ export async function loadLinkableContentFromDB(): Promise<LinkableContent[]> {
       })
       .from(contents)
       .where(and(eq(contents.status, "published" as any), isNotNull(contents.slug)))
-      .limit(500); // Limit to prevent memory issues
-
-    for (const content of publishedContent) {
-      if (!content.slug) continue;
-
-      const keywords: string[] = [content.title.toLowerCase()];
-      if (content.primaryKeyword) {
-        keywords.push(content.primaryKeyword.toLowerCase());
-      }
-
-      let slug = content.slug;
-      if (!slug.startsWith("/")) {
-        // Build proper URL based on content type
-        switch (content.type) {
-          case "hotel":
-            slug = `/hotels/${slug}`;
-            break;
-          case "attraction":
-            slug = `/attractions/${slug}`;
-            break;
-          case "dining":
-            slug = `/dining/${slug}`;
-            break;
-          case "article":
-            slug = `/articles/${slug}`;
-            break;
-          default:
-            slug = `/${slug}`;
-        }
-      }
-
-      linkableContent.push({
-        id: content.id,
-        type: content.type as ContentType,
-        slug,
-        title: content.title,
-        keywords,
-      });
-    }
-
-    // Load category pages
+      .limit(500);
     const categories = await db
       .select({
         id: categoryPages.id,
@@ -609,18 +611,12 @@ export async function loadLinkableContentFromDB(): Promise<LinkableContent[]> {
       })
       .from(categoryPages);
 
-    for (const cat of categories) {
-      linkableContent.push({
-        id: cat.id,
-        type: "landing",
-        slug: cat.slug.startsWith("/") ? cat.slug : `/${cat.slug}`,
-        title: cat.name,
-        keywords: [cat.name.toLowerCase()],
-        category: cat.name,
-      });
-    }
+    const linkableContent: LinkableContent[] = [
+      ...mapDestinationsToLinkable(dbDestinations),
+      ...mapContentToLinkable(publishedContent),
+      ...mapCategoriesToLinkable(categories),
+    ];
 
-    // Update cache
     dbLinksCache = linkableContent;
     dbLinksCacheTime = now;
 
@@ -635,7 +631,7 @@ export async function loadLinkableContentFromDB(): Promise<LinkableContent[]> {
     (logger as any).error("Failed to load linkable content from database", {
       error: error instanceof Error ? error.message : "Unknown error",
     });
-    return dbLinksCache; // Return stale cache if available
+    return dbLinksCache;
   }
 }
 

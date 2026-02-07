@@ -240,17 +240,7 @@ class RSSReader {
         }
 
         // Parse published date
-        let publishedDate: Date | null = null;
-        if (item.pubDate || item.isoDate) {
-          try {
-            publishedDate = new Date(item.pubDate || item.isoDate!);
-            if (Number.isNaN(publishedDate.getTime())) {
-              publishedDate = null;
-            }
-          } catch {
-            publishedDate = null;
-          }
-        }
+        const publishedDate = this.parsePublishedDate(item.pubDate, item.isoDate);
 
         // Get summary text
         const summary = this.extractSummary(item);
@@ -290,6 +280,19 @@ class RSSReader {
     }
 
     return result;
+  }
+
+  /**
+   * Parse published date from feed item
+   */
+  private parsePublishedDate(pubDate?: string, isoDate?: string): Date | null {
+    if (!pubDate && !isoDate) return null;
+    try {
+      const date = new Date(pubDate || isoDate!);
+      return Number.isNaN(date.getTime()) ? null : date;
+    } catch {
+      return null;
+    }
   }
 
   /**

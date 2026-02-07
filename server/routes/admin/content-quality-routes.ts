@@ -113,6 +113,17 @@ export function registerAdminContentQualityRoutes(app: Express): void {
   // GET /api/admin/api-keys/detected - Get which API key env vars are detected (no values exposed)
   app.get("/api/admin/api-keys/detected", requireAuth, async (req, res) => {
     try {
+      // Helper: check for env var presence and add to list
+      const checkEnvKey = (list: string[], key: string) => {
+        if (process.env[key]) list.push(key);
+      };
+      // Helper: check numbered env vars (KEY_1 through KEY_20)
+      const checkNumberedKeys = (list: string[], prefix: string) => {
+        for (let i = 1; i <= 20; i++) {
+          checkEnvKey(list, `${prefix}_${i}`);
+        }
+      };
+
       const detected: Record<string, string[]> = {
         anthropic: [],
         helicone: [],
@@ -124,38 +135,25 @@ export function registerAdminContentQualityRoutes(app: Express): void {
         deepseek: [],
       };
 
-      if (process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY)
-        detected.anthropic.push("AI_INTEGRATIONS_ANTHROPIC_API_KEY");
-      if (process.env.ANTHROPIC_API_KEY) detected.anthropic.push("ANTHROPIC_API_KEY");
-      for (let i = 1; i <= 20; i++) {
-        if (process.env[`ANTHROPIC_API_KEY_${i}`])
-          detected.anthropic.push(`ANTHROPIC_API_KEY_${i}`);
-      }
+      checkEnvKey(detected.anthropic, "AI_INTEGRATIONS_ANTHROPIC_API_KEY");
+      checkEnvKey(detected.anthropic, "ANTHROPIC_API_KEY");
+      checkNumberedKeys(detected.anthropic, "ANTHROPIC_API_KEY");
 
-      if (process.env.HELICONE_API_KEY) detected.helicone.push("HELICONE_API_KEY");
-      for (let i = 1; i <= 20; i++) {
-        if (process.env[`HELICONE_API_KEY_${i}`]) detected.helicone.push(`HELICONE_API_KEY_${i}`);
-      }
+      checkEnvKey(detected.helicone, "HELICONE_API_KEY");
+      checkNumberedKeys(detected.helicone, "HELICONE_API_KEY");
 
-      if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY)
-        detected.openai.push("AI_INTEGRATIONS_OPENAI_API_KEY");
-      if (process.env.OPENAI_API_KEY) detected.openai.push("OPENAI_API_KEY");
-      for (let i = 1; i <= 20; i++) {
-        if (process.env[`OPENAI_API_KEY_${i}`]) detected.openai.push(`OPENAI_API_KEY_${i}`);
-      }
+      checkEnvKey(detected.openai, "AI_INTEGRATIONS_OPENAI_API_KEY");
+      checkEnvKey(detected.openai, "OPENAI_API_KEY");
+      checkNumberedKeys(detected.openai, "OPENAI_API_KEY");
 
-      if (process.env.OPENROUTER_API_KEY) detected.openrouter.push("OPENROUTER_API_KEY");
-      for (let i = 1; i <= 20; i++) {
-        if (process.env[`OPENROUTER_API_KEY_${i}`])
-          detected.openrouter.push(`OPENROUTER_API_KEY_${i}`);
-      }
+      checkEnvKey(detected.openrouter, "OPENROUTER_API_KEY");
+      checkNumberedKeys(detected.openrouter, "OPENROUTER_API_KEY");
 
-      if (process.env.AI_INTEGRATIONS_GEMINI_API_KEY)
-        detected.gemini.push("AI_INTEGRATIONS_GEMINI_API_KEY");
-      if (process.env.GEMINI_API_KEY) detected.gemini.push("GEMINI_API_KEY");
-      if (process.env.GROQ_API_KEY) detected.groq.push("GROQ_API_KEY");
-      if (process.env.MISTRAL_API_KEY) detected.mistral.push("MISTRAL_API_KEY");
-      if (process.env.DEEPSEEK_API_KEY) detected.deepseek.push("DEEPSEEK_API_KEY");
+      checkEnvKey(detected.gemini, "AI_INTEGRATIONS_GEMINI_API_KEY");
+      checkEnvKey(detected.gemini, "GEMINI_API_KEY");
+      checkEnvKey(detected.groq, "GROQ_API_KEY");
+      checkEnvKey(detected.mistral, "MISTRAL_API_KEY");
+      checkEnvKey(detected.deepseek, "DEEPSEEK_API_KEY");
 
       const total = Object.values(detected).reduce((sum, arr) => sum + arr.length, 0);
       res.json({ detected, total });

@@ -200,221 +200,181 @@ function generateBreadcrumbSchema(content: any, siteUrl: string): any {
  * Generate type-specific schema
  */
 async function generateTypeSpecificSchema(content: any, siteUrl: string): Promise<any> {
-  const contentId = content.id;
+  const schemaGenerators: Record<string, (c: any, url: string) => Promise<any>> = {
+    attraction: generateAttractionSchema,
+    hotel: generateHotelSchema,
+    dining: generateDiningSchema,
+    district: generateDistrictSchema,
+    event: generateEventSchema,
+    article: generateArticleSchema,
+  };
 
-  switch (content.type) {
-    case "attraction": {
-      const attraction = await db.query.attractions.findFirst({
-        where: eq(attractions.contentId, contentId),
-      });
-      if (!attraction) return null;
+  const generator = schemaGenerators[content.type];
+  if (!generator) return null;
+  return generator(content, siteUrl);
+}
 
-      return {
-        "@type": "TouristAttraction",
-        "@id": `${siteUrl}/attractions/${content.slug}#attraction`,
-        name: content.title,
-        description: content.metaDescription,
-        image: content.heroImage,
-        url: `${siteUrl}/attractions/${content.slug}`,
-        address: attraction.location
-          ? {
-              "@type": "PostalAddress",
-              addressLocality: attraction.location,
-            }
-          : undefined,
-        ...(attraction.priceFrom && {
-          priceRange: attraction.priceFrom,
-        }),
-        ...(attraction.duration && {
-          timeRequired: attraction.duration,
-        }),
-        touristType: attraction.targetAudience || [],
-        publicAccess: true,
-        isAccessibleForFree: false,
-      };
-    }
+async function generateAttractionSchema(content: any, siteUrl: string): Promise<any> {
+  const attraction = await db.query.attractions.findFirst({
+    where: eq(attractions.contentId, content.id),
+  });
+  if (!attraction) return null;
 
-    case "hotel": {
-      const hotel = await db.query.hotels.findFirst({
-        where: eq(hotels.contentId, contentId),
-      });
-      if (!hotel) return null;
+  return {
+    "@type": "TouristAttraction",
+    "@id": `${siteUrl}/attractions/${content.slug}#attraction`,
+    name: content.title,
+    description: content.metaDescription,
+    image: content.heroImage,
+    url: `${siteUrl}/attractions/${content.slug}`,
+    address: attraction.location
+      ? { "@type": "PostalAddress", addressLocality: attraction.location }
+      : undefined,
+    ...(attraction.priceFrom && { priceRange: attraction.priceFrom }),
+    ...(attraction.duration && { timeRequired: attraction.duration }),
+    touristType: attraction.targetAudience || [],
+    publicAccess: true,
+    isAccessibleForFree: false,
+  };
+}
 
-      return {
-        "@type": "Hotel",
-        "@id": `${siteUrl}/hotels/${content.slug}#hotel`,
-        name: content.title,
-        description: content.metaDescription,
-        image: content.heroImage,
-        url: `${siteUrl}/hotels/${content.slug}`,
-        address: hotel.location
-          ? {
-              "@type": "PostalAddress",
-              addressLocality: hotel.location,
-            }
-          : undefined,
-        ...(hotel.starRating && {
-          starRating: {
-            "@type": "Rating",
-            ratingValue: hotel.starRating,
-            bestRating: 5,
-          },
-        }),
-        amenityFeature: (hotel.amenities || []).map((amenity: string) => ({
-          "@type": "LocationFeatureSpecification",
-          name: amenity,
-          value: true,
-        })),
-        ...(hotel.numberOfRooms && {
-          numberOfRooms: hotel.numberOfRooms,
-        }),
-      };
-    }
+async function generateHotelSchema(content: any, siteUrl: string): Promise<any> {
+  const hotel = await db.query.hotels.findFirst({
+    where: eq(hotels.contentId, content.id),
+  });
+  if (!hotel) return null;
 
-    case "dining": {
-      const restaurant = await db.query.dining.findFirst({
-        where: eq(dining.contentId, contentId),
-      });
-      if (!restaurant) return null;
+  return {
+    "@type": "Hotel",
+    "@id": `${siteUrl}/hotels/${content.slug}#hotel`,
+    name: content.title,
+    description: content.metaDescription,
+    image: content.heroImage,
+    url: `${siteUrl}/hotels/${content.slug}`,
+    address: hotel.location
+      ? { "@type": "PostalAddress", addressLocality: hotel.location }
+      : undefined,
+    ...(hotel.starRating && {
+      starRating: { "@type": "Rating", ratingValue: hotel.starRating, bestRating: 5 },
+    }),
+    amenityFeature: (hotel.amenities || []).map((amenity: string) => ({
+      "@type": "LocationFeatureSpecification",
+      name: amenity,
+      value: true,
+    })),
+    ...(hotel.numberOfRooms && { numberOfRooms: hotel.numberOfRooms }),
+  };
+}
 
-      return {
-        "@type": "Restaurant",
-        "@id": `${siteUrl}/dining/${content.slug}#restaurant`,
-        name: content.title,
-        description: content.metaDescription,
-        image: content.heroImage,
-        url: `${siteUrl}/dining/${content.slug}`,
-        address: restaurant.location
-          ? {
-              "@type": "PostalAddress",
-              addressLocality: restaurant.location,
-            }
-          : undefined,
-        ...(restaurant.cuisineType && {
-          servesCuisine: restaurant.cuisineType,
-        }),
-        ...(restaurant.priceRange && {
-          priceRange: restaurant.priceRange,
-        }),
-      };
-    }
+async function generateDiningSchema(content: any, siteUrl: string): Promise<any> {
+  const restaurant = await db.query.dining.findFirst({
+    where: eq(dining.contentId, content.id),
+  });
+  if (!restaurant) return null;
 
-    case "district": {
-      const district = await db.query.districts.findFirst({
-        where: eq(districts.contentId, contentId),
-      });
-      if (!district) return null;
+  return {
+    "@type": "Restaurant",
+    "@id": `${siteUrl}/dining/${content.slug}#restaurant`,
+    name: content.title,
+    description: content.metaDescription,
+    image: content.heroImage,
+    url: `${siteUrl}/dining/${content.slug}`,
+    address: restaurant.location
+      ? { "@type": "PostalAddress", addressLocality: restaurant.location }
+      : undefined,
+    ...(restaurant.cuisineType && { servesCuisine: restaurant.cuisineType }),
+    ...(restaurant.priceRange && { priceRange: restaurant.priceRange }),
+  };
+}
 
-      // Get country from destination if available (destination-agnostic)
-      let countryCode: string | undefined;
-      if (district.destinationId) {
-        const dest = await db.query.destinations.findFirst({
-          where: eq(destinations.id, Number(district.destinationId)),
-        });
-        countryCode = dest?.country;
-      }
+async function generateDistrictSchema(content: any, siteUrl: string): Promise<any> {
+  const district = await db.query.districts.findFirst({
+    where: eq(districts.contentId, content.id),
+  });
+  if (!district) return null;
 
-      return {
-        "@type": ["Place", "TouristDestination"],
-        "@id": `${siteUrl}/districts/${content.slug}#district`,
-        name: content.title,
-        description: content.metaDescription,
-        image: content.heroImage,
-        url: `${siteUrl}/districts/${content.slug}`,
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: district.neighborhood || district.location,
-          // Only include country if known (destination-agnostic)
-          ...(countryCode && { addressCountry: countryCode }),
-        },
-        touristType: district.targetAudience || [],
-      };
-    }
-
-    case "event": {
-      const event = await db.query.events.findFirst({
-        where: eq(events.contentId, contentId),
-      });
-      if (!event) return null;
-
-      // Try to infer currency from venue location (destination-agnostic)
-      const venueLower = (event.venue || "").toLowerCase();
-      const currency = getCurrencyForCity(venueLower);
-
-      return {
-        "@type": "Event",
-        "@id": `${siteUrl}/events/${content.slug}#event`,
-        name: content.title,
-        description: content.metaDescription,
-        image: content.heroImage,
-        url: `${siteUrl}/events/${content.slug}`,
-        startDate: event.eventDate?.toISOString(),
-        endDate: event.endDate?.toISOString(),
-        location: event.venue
-          ? {
-              "@type": "Place",
-              name: event.venue,
-              address: event.venueAddress,
-            }
-          : undefined,
-        ...(event.ticketUrl && {
-          offers: {
-            "@type": "Offer",
-            url: event.ticketUrl,
-            ...(event.ticketPrice && { price: event.ticketPrice }),
-            // Only include currency if we can determine it (destination-agnostic)
-            ...(currency && { priceCurrency: currency }),
-            availability: "https://schema.org/InStock",
-          },
-        }),
-        ...(event.organizer && {
-          organizer: {
-            "@type": "Organization",
-            name: event.organizer,
-          },
-        }),
-      };
-    }
-
-    case "article": {
-      const article = await db.query.articles.findFirst({
-        where: eq(articles.contentId, contentId),
-      });
-
-      return {
-        "@type": "Article",
-        "@id": `${siteUrl}/articles/${content.slug}#article`,
-        headline: content.title,
-        description: content.metaDescription,
-        image: content.heroImage,
-        url: `${siteUrl}/articles/${content.slug}`,
-        datePublished: content.publishedAt?.toISOString() || content.createdAt?.toISOString(),
-        dateModified: content.updatedAt?.toISOString(),
-        author: {
-          "@type": "Organization",
-          name: "TRAVI",
-          url: siteUrl,
-        },
-        publisher: {
-          "@type": "Organization",
-          name: "TRAVI",
-          logo: {
-            "@type": "ImageObject",
-            url: `${siteUrl}/logo.png`,
-          },
-        },
-        ...(article?.category && {
-          articleSection: article.category,
-        }),
-        ...(content.wordCount && {
-          wordCount: content.wordCount,
-        }),
-      };
-    }
-
-    default:
-      return null;
+  let countryCode: string | undefined;
+  if (district.destinationId) {
+    const dest = await db.query.destinations.findFirst({
+      where: eq(destinations.id, Number(district.destinationId)),
+    });
+    countryCode = dest?.country;
   }
+
+  return {
+    "@type": ["Place", "TouristDestination"],
+    "@id": `${siteUrl}/districts/${content.slug}#district`,
+    name: content.title,
+    description: content.metaDescription,
+    image: content.heroImage,
+    url: `${siteUrl}/districts/${content.slug}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: district.neighborhood || district.location,
+      ...(countryCode && { addressCountry: countryCode }),
+    },
+    touristType: district.targetAudience || [],
+  };
+}
+
+async function generateEventSchema(content: any, siteUrl: string): Promise<any> {
+  const event = await db.query.events.findFirst({
+    where: eq(events.contentId, content.id),
+  });
+  if (!event) return null;
+
+  const currency = getCurrencyForCity((event.venue || "").toLowerCase());
+
+  return {
+    "@type": "Event",
+    "@id": `${siteUrl}/events/${content.slug}#event`,
+    name: content.title,
+    description: content.metaDescription,
+    image: content.heroImage,
+    url: `${siteUrl}/events/${content.slug}`,
+    startDate: event.eventDate?.toISOString(),
+    endDate: event.endDate?.toISOString(),
+    location: event.venue
+      ? { "@type": "Place", name: event.venue, address: event.venueAddress }
+      : undefined,
+    ...(event.ticketUrl && {
+      offers: {
+        "@type": "Offer",
+        url: event.ticketUrl,
+        ...(event.ticketPrice && { price: event.ticketPrice }),
+        ...(currency && { priceCurrency: currency }),
+        availability: "https://schema.org/InStock",
+      },
+    }),
+    ...(event.organizer && {
+      organizer: { "@type": "Organization", name: event.organizer },
+    }),
+  };
+}
+
+async function generateArticleSchema(content: any, siteUrl: string): Promise<any> {
+  const article = await db.query.articles.findFirst({
+    where: eq(articles.contentId, content.id),
+  });
+
+  return {
+    "@type": "Article",
+    "@id": `${siteUrl}/articles/${content.slug}#article`,
+    headline: content.title,
+    description: content.metaDescription,
+    image: content.heroImage,
+    url: `${siteUrl}/articles/${content.slug}`,
+    datePublished: content.publishedAt?.toISOString() || content.createdAt?.toISOString(),
+    dateModified: content.updatedAt?.toISOString(),
+    author: { "@type": "Organization", name: "TRAVI", url: siteUrl },
+    publisher: {
+      "@type": "Organization",
+      name: "TRAVI",
+      logo: { "@type": "ImageObject", url: `${siteUrl}/logo.png` },
+    },
+    ...(article?.category && { articleSection: article.category }),
+    ...(content.wordCount && { wordCount: content.wordCount }),
+  };
 }
 
 /**

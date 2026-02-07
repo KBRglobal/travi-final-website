@@ -12,6 +12,27 @@ import {
   type InsertSurveyResponse,
 } from "./base";
 
+/** Analyze responses for a single question */
+function analyzeQuestionResponses(
+  questionId: string,
+  responses: SurveyResponse[]
+): { totalAnswers: number; answerDistribution: Record<string, number> } {
+  const answerDistribution: Record<string, number> = {};
+  let totalAnswers = 0;
+
+  for (const response of responses) {
+    const answer = response.answers[questionId];
+    if (answer === undefined || answer === null || answer === "") continue;
+    totalAnswers++;
+    const answers = Array.isArray(answer) ? answer : [answer];
+    for (const a of answers) {
+      answerDistribution[a] = (answerDistribution[a] || 0) + 1;
+    }
+  }
+
+  return { totalAnswers, answerDistribution };
+}
+
 export class SurveysStorage {
   async getSurveys(filters?: { status?: string }): Promise<Survey[]> {
     const conditions = [];
@@ -131,45 +152,22 @@ export class SurveysStorage {
     const responses = await this.getSurveyResponses(surveyId);
     const survey = await this.getSurvey(surveyId);
 
-    const analytics = {
-      totalResponses: responses.length,
-      completedResponses: responses.filter(r => r.isComplete).length,
-      questionAnalytics: {} as Record<
-        string,
-        { totalAnswers: number; answerDistribution: Record<string, number> }
-      >,
-    };
+    const questionAnalytics: Record<
+      string,
+      { totalAnswers: number; answerDistribution: Record<string, number> }
+    > = {};
 
-    // Process each question's answers
     if (survey?.definition?.questions) {
       for (const question of survey.definition.questions) {
-        const questionId = question.id;
-        const answerDistribution: Record<string, number> = {};
-        let totalAnswers = 0;
-
-        for (const response of responses) {
-          const answer = response.answers[questionId];
-          if (answer !== undefined && answer !== null && answer !== "") {
-            totalAnswers++;
-            if (Array.isArray(answer)) {
-              // Checkbox (multiple answers)
-              for (const a of answer) {
-                answerDistribution[a] = (answerDistribution[a] || 0) + 1;
-              }
-            } else {
-              answerDistribution[answer] = (answerDistribution[answer] || 0) + 1;
-            }
-          }
-        }
-
-        analytics.questionAnalytics[questionId] = {
-          totalAnswers,
-          answerDistribution,
-        };
+        questionAnalytics[question.id] = analyzeQuestionResponses(question.id, responses);
       }
     }
 
-    return analytics;
+    return {
+      totalResponses: responses.length,
+      completedResponses: responses.filter(r => r.isComplete).length,
+      questionAnalytics,
+    };
   }
 }
 

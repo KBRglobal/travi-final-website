@@ -32,6 +32,178 @@ function getConfig(): DriftDetectorConfig {
 /**
  * Analyze a single feature for drift
  */
+type CurrentMetrics = ReturnType<typeof computeCurrentMetrics>;
+
+function computeRelativeChange(currentValue: number, baselineValue: number): number {
+  if (baselineValue > 0) return (currentValue - baselineValue) / baselineValue;
+  if (currentValue > 0) return 1;
+  return 0;
+}
+
+function detectBudgetDrifts(
+  currentMetrics: CurrentMetrics,
+  config: DriftDetectorConfig,
+  feature: GuardedFeature,
+  dataPoints: number
+): DriftSignal[] {
+  const drifts: DriftSignal[] = [];
+  const windowHours = config.analysisWindowHours;
+
+  if (currentMetrics.exhaustionRate > config.thresholds.budgetExhaustionRate) {
+    const threshold = config.thresholds.budgetExhaustionRate;
+    drifts.push(
+      createDriftSignal(
+        "budget_exhaustion",
+        feature,
+        {
+          metric: "exhaustionRate",
+          currentValue: currentMetrics.exhaustionRate,
+          expectedValue: threshold,
+          deviation: ((currentMetrics.exhaustionRate - threshold) / threshold) * 100,
+          trend: "increasing",
+          windowHours,
+        },
+        dataPoints
+      )
+    );
+  }
+
+  const underutilThreshold = 1 - config.thresholds.budgetUnderutilizationRate;
+  if (currentMetrics.budgetUtilization < underutilThreshold) {
+    drifts.push(
+      createDriftSignal(
+        "budget_underutilization",
+        feature,
+        {
+          metric: "budgetUtilization",
+          currentValue: currentMetrics.budgetUtilization,
+          expectedValue: underutilThreshold,
+          deviation:
+            ((underutilThreshold - currentMetrics.budgetUtilization) / underutilThreshold) * 100,
+          trend: "decreasing",
+          windowHours,
+        },
+        dataPoints
+      )
+    );
+  }
+
+  return drifts;
+}
+
+function detectBaselineDrifts(
+  currentMetrics: CurrentMetrics,
+  baselineMetrics: CurrentMetrics,
+  config: DriftDetectorConfig,
+  feature: GuardedFeature,
+  dataPoints: number
+): DriftSignal[] {
+  const drifts: DriftSignal[] = [];
+  const windowHours = config.analysisWindowHours;
+
+  // Override spike
+  const overrideChange = computeRelativeChange(
+    currentMetrics.overrideRate,
+    baselineMetrics.overrideRate
+  );
+  if (overrideChange > config.thresholds.overrideSpikeThreshold) {
+    drifts.push(
+      createDriftSignal(
+        "override_spike",
+        feature,
+        {
+          metric: "overrideRate",
+          currentValue: currentMetrics.overrideRate,
+          expectedValue: baselineMetrics.overrideRate,
+          deviation: overrideChange * 100,
+          trend: "increasing",
+          windowHours,
+        },
+        dataPoints,
+        baselineMetrics.overrideRate
+      )
+    );
+  }
+
+  // Incident spike
+  const incidentChange = computeRelativeChange(
+    currentMetrics.incidentRate,
+    baselineMetrics.incidentRate
+  );
+  if (incidentChange > config.thresholds.incidentSpikeThreshold) {
+    drifts.push(
+      createDriftSignal(
+        "incident_spike",
+        feature,
+        {
+          metric: "incidentRate",
+          currentValue: currentMetrics.incidentRate,
+          expectedValue: baselineMetrics.incidentRate,
+          deviation: incidentChange * 100,
+          trend: "increasing",
+          windowHours,
+        },
+        dataPoints,
+        baselineMetrics.incidentRate
+      )
+    );
+  }
+
+  // Cost drift
+  const costChange =
+    baselineMetrics.avgCostPerAction > 0
+      ? Math.abs(currentMetrics.avgCostPerAction - baselineMetrics.avgCostPerAction) /
+        baselineMetrics.avgCostPerAction
+      : 0;
+  if (costChange > config.thresholds.costDriftThreshold) {
+    drifts.push(
+      createDriftSignal(
+        "cost_drift",
+        feature,
+        {
+          metric: "avgCostPerAction",
+          currentValue: currentMetrics.avgCostPerAction,
+          expectedValue: baselineMetrics.avgCostPerAction,
+          deviation: costChange * 100,
+          trend:
+            currentMetrics.avgCostPerAction > baselineMetrics.avgCostPerAction
+              ? "increasing"
+              : "decreasing",
+          windowHours,
+        },
+        dataPoints,
+        baselineMetrics.avgCostPerAction
+      )
+    );
+  }
+
+  // Latency degradation
+  const latencyChange =
+    baselineMetrics.avgLatencyMs > 0
+      ? (currentMetrics.avgLatencyMs - baselineMetrics.avgLatencyMs) / baselineMetrics.avgLatencyMs
+      : 0;
+  if (latencyChange > config.thresholds.latencyDegradationThreshold) {
+    drifts.push(
+      createDriftSignal(
+        "latency_degradation",
+        feature,
+        {
+          metric: "avgLatencyMs",
+          currentValue: currentMetrics.avgLatencyMs,
+          expectedValue: baselineMetrics.avgLatencyMs,
+          deviation: latencyChange * 100,
+          trend: "increasing",
+          windowHours,
+        },
+        dataPoints,
+        baselineMetrics.avgLatencyMs
+      )
+    );
+  }
+
+  return drifts;
+}
+
 export function analyzeFeatureForDrift(
   feature: GuardedFeature,
   config: DriftDetectorConfig = getConfig()
@@ -42,199 +214,35 @@ export function analyzeFeatureForDrift(
     analysisStart.getTime() - config.baselineWindowHours * 60 * 60 * 1000
   );
 
-  // Get current period outcomes
-  const currentOutcomes = getOutcomes({
-    feature,
-    since: analysisStart,
-    until: now,
-  } as any);
-
-  // Get baseline period outcomes
+  const currentOutcomes = getOutcomes({ feature, since: analysisStart, until: now } as any);
   const baselineOutcomes = getOutcomes({
     feature,
     since: baselineStart,
     until: analysisStart,
   } as any);
 
-  // Compute current metrics
   const currentMetrics = computeCurrentMetrics(currentOutcomes);
   const baselineMetrics =
     baselineOutcomes.length >= config.minDataPointsForAnalysis
       ? computeCurrentMetrics(baselineOutcomes)
       : undefined;
 
-  // Detect drifts
-  const drifts: DriftSignal[] = [];
+  let drifts: DriftSignal[] = [];
 
   if (currentOutcomes.length >= config.minDataPointsForAnalysis) {
-    // Budget exhaustion detection
-    if (currentMetrics.exhaustionRate > config.thresholds.budgetExhaustionRate) {
-      drifts.push(
-        createDriftSignal(
-          "budget_exhaustion",
-          feature,
-          {
-            metric: "exhaustionRate",
-            currentValue: currentMetrics.exhaustionRate,
-            expectedValue: config.thresholds.budgetExhaustionRate,
-            deviation:
-              ((currentMetrics.exhaustionRate - config.thresholds.budgetExhaustionRate) /
-                config.thresholds.budgetExhaustionRate) *
-              100,
-            trend: "increasing",
-            windowHours: config.analysisWindowHours,
-          },
-          currentOutcomes.length
-        )
-      );
-    }
-
-    // Budget underutilization detection
-    if (currentMetrics.budgetUtilization < 1 - config.thresholds.budgetUnderutilizationRate) {
-      drifts.push(
-        createDriftSignal(
-          "budget_underutilization",
-          feature,
-          {
-            metric: "budgetUtilization",
-            currentValue: currentMetrics.budgetUtilization,
-            expectedValue: 1 - config.thresholds.budgetUnderutilizationRate,
-            deviation:
-              ((1 -
-                config.thresholds.budgetUnderutilizationRate -
-                currentMetrics.budgetUtilization) /
-                (1 - config.thresholds.budgetUnderutilizationRate)) *
-              100,
-            trend: "decreasing",
-            windowHours: config.analysisWindowHours,
-          },
-          currentOutcomes.length
-        )
-      );
-    }
-
-    // Override spike detection (compare to baseline)
+    drifts = detectBudgetDrifts(currentMetrics, config, feature, currentOutcomes.length);
     if (baselineMetrics) {
-      let overrideChange: number;
-      if (baselineMetrics.overrideRate > 0) {
-        overrideChange =
-          (currentMetrics.overrideRate - baselineMetrics.overrideRate) /
-          baselineMetrics.overrideRate;
-      } else if (currentMetrics.overrideRate > 0) {
-        overrideChange = 1;
-      } else {
-        overrideChange = 0;
-      }
-
-      if (overrideChange > config.thresholds.overrideSpikeThreshold) {
-        drifts.push(
-          createDriftSignal(
-            "override_spike",
-            feature,
-            {
-              metric: "overrideRate",
-              currentValue: currentMetrics.overrideRate,
-              expectedValue: baselineMetrics.overrideRate,
-              deviation: overrideChange * 100,
-              trend: "increasing",
-              windowHours: config.analysisWindowHours,
-            },
-            currentOutcomes.length,
-            baselineMetrics.overrideRate
-          )
-        );
-      }
-
-      // Incident spike detection
-      let incidentChange: number;
-      if (baselineMetrics.incidentRate > 0) {
-        incidentChange =
-          (currentMetrics.incidentRate - baselineMetrics.incidentRate) /
-          baselineMetrics.incidentRate;
-      } else if (currentMetrics.incidentRate > 0) {
-        incidentChange = 1;
-      } else {
-        incidentChange = 0;
-      }
-
-      if (incidentChange > config.thresholds.incidentSpikeThreshold) {
-        drifts.push(
-          createDriftSignal(
-            "incident_spike",
-            feature,
-            {
-              metric: "incidentRate",
-              currentValue: currentMetrics.incidentRate,
-              expectedValue: baselineMetrics.incidentRate,
-              deviation: incidentChange * 100,
-              trend: "increasing",
-              windowHours: config.analysisWindowHours,
-            },
-            currentOutcomes.length,
-            baselineMetrics.incidentRate
-          )
-        );
-      }
-
-      // Cost drift detection
-      const costChange =
-        baselineMetrics.avgCostPerAction > 0
-          ? Math.abs(currentMetrics.avgCostPerAction - baselineMetrics.avgCostPerAction) /
-            baselineMetrics.avgCostPerAction
-          : 0;
-
-      if (costChange > config.thresholds.costDriftThreshold) {
-        drifts.push(
-          createDriftSignal(
-            "cost_drift",
-            feature,
-            {
-              metric: "avgCostPerAction",
-              currentValue: currentMetrics.avgCostPerAction,
-              expectedValue: baselineMetrics.avgCostPerAction,
-              deviation: costChange * 100,
-              trend:
-                currentMetrics.avgCostPerAction > baselineMetrics.avgCostPerAction
-                  ? "increasing"
-                  : "decreasing",
-              windowHours: config.analysisWindowHours,
-            },
-            currentOutcomes.length,
-            baselineMetrics.avgCostPerAction
-          )
-        );
-      }
-
-      // Latency degradation detection
-      const latencyChange =
-        baselineMetrics.avgLatencyMs > 0
-          ? (currentMetrics.avgLatencyMs - baselineMetrics.avgLatencyMs) /
-            baselineMetrics.avgLatencyMs
-          : 0;
-
-      if (latencyChange > config.thresholds.latencyDegradationThreshold) {
-        drifts.push(
-          createDriftSignal(
-            "latency_degradation",
-            feature,
-            {
-              metric: "avgLatencyMs",
-              currentValue: currentMetrics.avgLatencyMs,
-              expectedValue: baselineMetrics.avgLatencyMs,
-              deviation: latencyChange * 100,
-              trend: "increasing",
-              windowHours: config.analysisWindowHours,
-            },
-            currentOutcomes.length,
-            baselineMetrics.avgLatencyMs
-          )
-        );
-      }
+      drifts.push(
+        ...detectBaselineDrifts(
+          currentMetrics,
+          baselineMetrics,
+          config,
+          feature,
+          currentOutcomes.length
+        )
+      );
     }
   }
-
-  // Calculate health score
-  const healthScore = calculateHealthScore(currentMetrics, drifts);
 
   return {
     feature,
@@ -253,7 +261,7 @@ export function analyzeFeatureForDrift(
         }
       : undefined,
     drifts,
-    healthScore,
+    healthScore: calculateHealthScore(currentMetrics, drifts),
   };
 }
 

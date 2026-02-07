@@ -532,6 +532,46 @@ const RSS_FEEDS: RssFeedSeed[] = [
 ];
 
 // =============================================================================
+// HELPERS
+// =============================================================================
+
+async function seedSingleFeed(
+  feed: RssFeedSeed,
+  destinationMap: Map<string, string>,
+  skipExisting: boolean,
+  dryRun: boolean
+): Promise<"skipped" | "created"> {
+  // Check if feed already exists
+  if (skipExisting) {
+    const [existing] = await db
+      .select({ id: rssFeeds.id })
+      .from(rssFeeds)
+      .where(eq(rssFeeds.url, feed.url));
+    if (existing) {
+      return "skipped";
+    }
+  }
+
+  const destinationId = feed.destinationSlug
+    ? destinationMap.get(feed.destinationSlug) || null
+    : null;
+
+  if (!dryRun) {
+    await db.insert(rssFeeds).values({
+      name: feed.name,
+      url: feed.url,
+      category: feed.category,
+      destinationId,
+      language: feed.language,
+      isActive: true,
+    } as any);
+  }
+
+  console.info(`   ${dryRun ? "[DRY] " : ""}+ ${feed.name} (${feed.category})`);
+  return "created";
+}
+
+// =============================================================================
 // SEED FUNCTION
 // =============================================================================
 
@@ -571,44 +611,12 @@ export async function seedRssFeeds(
 
   for (const feed of RSS_FEEDS) {
     try {
-      // Check if feed already exists
-      const existing = await db.select().from(rssFeeds).where(eq(rssFeeds.url, feed.url)).limit(1);
-
-      if (existing.length > 0) {
-        if (skipExisting) {
-          console.info(`   ⏭️  Skipping existing: ${feed.name}`);
-          results.skipped++;
-          continue;
-        }
-      }
-
-      // Get destination ID
-      let destinationId: string | null = null;
-      if (feed.destinationSlug) {
-        destinationId = destinationMap.get(feed.destinationSlug) || null;
-        if (!destinationId) {
-          console.warn(`   ⚠️  Destination not found: ${feed.destinationSlug}`);
-        }
-      }
-
-      if (!dryRun) {
-        await db.insert(rssFeeds).values({
-          name: feed.name,
-          url: feed.url,
-          category: feed.category,
-          destinationId,
-          language: feed.language,
-          region: feed.region,
-          isActive: true,
-          fetchIntervalMinutes: 60,
-        } as any);
-      }
-
-      console.info(`   ✅ ${dryRun ? "[DRY] " : ""}Created: ${feed.name}`);
-      results.created++;
+      const seedResult = await seedSingleFeed(feed, destinationMap, skipExisting, dryRun);
+      if (seedResult === "skipped") results.skipped++;
+      else if (seedResult === "created") results.created++;
     } catch (error) {
       const errorMsg = `Failed to create ${feed.name}: ${error}`;
-      console.error(`   ❌ ${errorMsg}`);
+      console.error(`   ${errorMsg}`);
       results.errors.push(errorMsg);
     }
   }

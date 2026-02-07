@@ -71,6 +71,29 @@ async function persistImageToStorage(imageUrl: string, filename: string): Promis
   }
 }
 
+// Helper: generate and persist a hero image, returning the URL or null
+async function generateAndPersistHeroImage(
+  title: string,
+  description: string
+): Promise<string | null> {
+  try {
+    const batchImages = await generateContentImages({
+      contentType: "article",
+      title,
+      description,
+      generateHero: true,
+      generateContentImages: false,
+    });
+    const heroImage = batchImages.find(img => img.type === "hero");
+    if (!heroImage) return null;
+    const persistedUrl = await persistImageToStorage(heroImage.url, heroImage.filename);
+    return persistedUrl || heroImage.url;
+  } catch (imageError) {
+    console.error(imageError);
+    return null;
+  }
+}
+
 // Create default blocks for when validation fails
 function createDefaultBlocks(title: string): ContentBlock[] {
   const timestamp = Date.now();
@@ -128,112 +151,180 @@ function createDefaultBlocks(title: string): ContentBlock[] {
   ];
 }
 
+// Helper: normalize highlights block data
+function normalizeHighlightsData(data: Record<string, unknown>): Record<string, unknown> {
+  const items = (data as any).items || (data as any).highlights;
+  if (Array.isArray(items) && items.length > 0) {
+    const content = items
+      .map((item: unknown) => {
+        if (typeof item === "string") return item;
+        if (typeof item === "object" && item && (item as any).title) {
+          const t = item as { title?: string; description?: string };
+          return t.description ? `${t.title}: ${t.description}` : t.title;
+        }
+        return String(item);
+      })
+      .join("\n");
+    return { ...data, content };
+  }
+  if (typeof (data as any).content === "string" && (data as any).content.length > 0) return data;
+  return {
+    ...data,
+    content:
+      "Key attraction feature\nUnique experience offered\nMust-see element\nPopular activity",
+  };
+}
+
+// Helper: normalize tips block data
+function normalizeTipsData(data: Record<string, unknown>): Record<string, unknown> {
+  const tipsArray = (data as any).tips || (data as any).items;
+  if (Array.isArray(tipsArray) && tipsArray.length > 0) {
+    return { ...data, content: tipsArray.map((tip: unknown) => String(tip)).join("\n") };
+  }
+  if (typeof (data as any).content === "string" && (data as any).content.length > 0) return data;
+  return {
+    ...data,
+    content:
+      "Visit during off-peak hours\nBook in advance\nWear comfortable clothing\nStay hydrated\nCheck local customs",
+  };
+}
+
+// Helper: normalize FAQ block data
+function normalizeFaqData(data: Record<string, unknown>): Record<string, unknown> {
+  if (typeof (data as any).question === "string" && (data as any).question.length > 0) return data;
+  const faqsArray = (data as any).faqs || (data as any).items || (data as any).questions;
+  if (Array.isArray(faqsArray) && faqsArray.length > 0) {
+    const firstFaq = faqsArray[0];
+    if (typeof firstFaq === "object" && firstFaq) {
+      const q = firstFaq.question || firstFaq.q || "Question?";
+      const a = (firstFaq as any).answer || (firstFaq as any).a || "Answer pending.";
+      return { question: q, answer: a, _remainingFaqs: faqsArray.slice(1) };
+    }
+  }
+  return {
+    question: "What are the opening hours?",
+    answer: "Check the official website for current timings.",
+  };
+}
+
+const PASSTHROUGH_BLOCK_TYPES = new Set([
+  "hero",
+  "text",
+  "cta",
+  "image",
+  "gallery",
+  "info_grid",
+  "quote",
+  "banner",
+  "recommendations",
+  "related_articles",
+  "room_cards",
+]);
+
 // Normalize a single block
 function normalizeBlock(
   type: string,
   data: Record<string, unknown>
 ): Omit<ContentBlock, "id" | "order"> | null {
-  switch (type) {
-    case "hero":
-      return { type: "hero" as const, data };
+  if (PASSTHROUGH_BLOCK_TYPES.has(type)) {
+    return { type: type as ContentBlock["type"], data };
+  }
+  if (type === "highlights") {
+    return { type: "highlights" as const, data: normalizeHighlightsData(data) };
+  }
+  if (type === "tips") {
+    return { type: "tips" as const, data: normalizeTipsData(data) };
+  }
+  if (type === "faq") {
+    return { type: "faq" as const, data: normalizeFaqData(data) };
+  }
+  return null;
+}
 
-    case "text":
-      return { type: "text" as const, data };
+// Helper: expand remaining FAQs from a normalized FAQ block
+function expandRemainingFaqs(
+  normalized: Omit<ContentBlock, "id" | "order">,
+  blocks: Omit<ContentBlock, "id" | "order">[]
+) {
+  if (normalized.type !== "faq" || !(normalized.data as any)._remainingFaqs) return;
+  const remainingFaqs = (normalized.data as any)._remainingFaqs as Array<{
+    question?: string;
+    answer?: string;
+    q?: string;
+    a?: string;
+  }>;
+  delete (normalized.data as any)._remainingFaqs;
+  for (const faq of remainingFaqs) {
+    blocks.push({
+      type: "faq" as const,
+      data: {
+        question: faq.question || faq.q || "Question?",
+        answer: faq.answer || faq.a || "Answer pending.",
+      },
+    });
+  }
+}
 
-    case "highlights": {
-      let highlightItems = (data as any).items || (data as any).highlights;
-      if (Array.isArray(highlightItems) && highlightItems.length > 0) {
-        const highlightContent = highlightItems
-          .map((item: unknown) => {
-            if (typeof item === "string") return item;
-            if (typeof item === "object" && item && (item as any).title) {
-              const t = item as { title?: string; description?: string };
-              return t.description ? `${t.title}: ${t.description}` : t.title;
-            }
-            return String(item);
-          })
-          .join("\n");
-        return { type: "highlights" as const, data: { ...data, content: highlightContent } };
-      }
-      if (typeof (data as any).content === "string" && (data as any).content.length > 0) {
-        return { type: "highlights" as const, data };
-      }
-      return {
-        type: "highlights" as const,
-        data: {
-          ...data,
-          content:
-            "Key attraction feature\nUnique experience offered\nMust-see element\nPopular activity",
-        },
-      };
+// Helper: add default blocks for missing required types
+function addMissingDefaultBlocks(
+  blocks: Omit<ContentBlock, "id" | "order">[],
+  blockTypes: Set<string>,
+  title: string
+) {
+  if (!blockTypes.has("hero")) {
+    blocks.unshift({
+      type: "hero",
+      data: { title, subtitle: "Discover Travel Destinations", overlayText: "" },
+    });
+  }
+  if (!blockTypes.has("highlights")) {
+    blocks.push({
+      type: "highlights",
+      data: {
+        content:
+          "Key attraction feature\nUnique experience offered\nMust-see element\nPopular activity\nEssential stop\nNotable landmark",
+      },
+    });
+  }
+  if (!blockTypes.has("tips")) {
+    blocks.push({
+      type: "tips",
+      data: {
+        content:
+          "Plan your visit during cooler months\nBook tickets in advance\nArrive early to avoid crowds\nBring comfortable walking shoes\nStay hydrated\nCheck dress codes beforehand\nConsider guided tours for insights",
+      },
+    });
+  }
+  if (!blockTypes.has("faq")) {
+    const defaultFaqs = [
+      {
+        question: "What are the opening hours?",
+        answer: "Opening hours vary by season. Check the official website for current timings.",
+      },
+      {
+        question: "How much does entry cost?",
+        answer:
+          "Pricing varies depending on the package selected. Visit the official website for current rates.",
+      },
+      {
+        question: "Is parking available?",
+        answer: "Yes, parking is available on-site for visitors.",
+      },
+    ];
+    for (const faq of defaultFaqs) {
+      blocks.push({ type: "faq", data: { question: faq.question, answer: faq.answer } });
     }
-
-    case "tips": {
-      let tipsArray = (data as any).tips || (data as any).items;
-      if (Array.isArray(tipsArray) && tipsArray.length > 0) {
-        const tipsContent = tipsArray.map((tip: unknown) => String(tip)).join("\n");
-        return { type: "tips" as const, data: { ...data, content: tipsContent } };
-      }
-      if (typeof (data as any).content === "string" && (data as any).content.length > 0) {
-        return { type: "tips" as const, data };
-      }
-      return {
-        type: "tips" as const,
-        data: {
-          ...data,
-          content:
-            "Visit during off-peak hours\nBook in advance\nWear comfortable clothing\nStay hydrated\nCheck local customs",
-        },
-      };
-    }
-
-    case "faq": {
-      if (typeof (data as any).question === "string" && (data as any).question.length > 0) {
-        return { type: "faq" as const, data };
-      }
-      let faqsArray = (data as any).faqs || (data as any).items || (data as any).questions;
-      if (Array.isArray(faqsArray) && faqsArray.length > 0) {
-        const firstFaq = faqsArray[0];
-        if (typeof firstFaq === "object" && firstFaq) {
-          const q = firstFaq.question || firstFaq.q || "Question?";
-          const a = (firstFaq as any).answer || (firstFaq as any).a || "Answer pending.";
-          return {
-            type: "faq" as const,
-            data: { question: q, answer: a, _remainingFaqs: faqsArray.slice(1) },
-          };
-        }
-      }
-      return {
-        type: "faq" as const,
-        data: {
-          question: "What are the opening hours?",
-          answer: "Check the official website for current timings.",
-        },
-      };
-    }
-
-    case "cta":
-      return { type: "cta" as const, data };
-
-    case "image":
-      return { type: "image" as const, data };
-    case "gallery":
-      return { type: "gallery" as const, data };
-    case "info_grid":
-      return { type: "info_grid" as const, data };
-    case "quote":
-      return { type: "quote" as const, data };
-    case "banner":
-      return { type: "banner" as const, data };
-    case "recommendations":
-      return { type: "recommendations" as const, data };
-    case "related_articles":
-      return { type: "related_articles" as const, data };
-    case "room_cards":
-      return { type: "room_cards" as const, data };
-
-    default:
-      return null;
+  }
+  if (!blockTypes.has("cta")) {
+    blocks.push({
+      type: "cta",
+      data: {
+        title: "Plan Your Visit",
+        content: "Ready to experience this amazing destination? Book your trip today!",
+        buttonText: "Book Now",
+        buttonLink: "#",
+      },
+    });
   }
 }
 
@@ -252,93 +343,13 @@ function validateAndNormalizeBlocks(blocks: unknown[], title: string): ContentBl
     if (typeof b.type !== "string" || !b.data) continue;
 
     const normalized = normalizeBlock(b.type, b.data as Record<string, unknown>);
-    if (normalized) {
-      normalizedBlocks.push(normalized);
-      blockTypes.add(normalized.type);
-
-      if (normalized.type === "faq" && (normalized.data as any)._remainingFaqs) {
-        const remainingFaqs = (normalized.data as any)._remainingFaqs as Array<{
-          question?: string;
-          answer?: string;
-          q?: string;
-          a?: string;
-        }>;
-        delete (normalized.data as any)._remainingFaqs;
-
-        for (const faq of remainingFaqs) {
-          const q = faq.question || faq.q || "Question?";
-          const a = faq.answer || faq.a || "Answer pending.";
-          normalizedBlocks.push({
-            type: "faq" as const,
-            data: { question: q, answer: a },
-          });
-        }
-      }
-    }
+    if (!normalized) continue;
+    normalizedBlocks.push(normalized);
+    blockTypes.add(normalized.type);
+    expandRemainingFaqs(normalized, normalizedBlocks);
   }
 
-  if (!blockTypes.has("hero")) {
-    normalizedBlocks.unshift({
-      type: "hero",
-      data: { title, subtitle: "Discover Travel Destinations", overlayText: "" },
-    });
-  }
-
-  if (!blockTypes.has("highlights")) {
-    normalizedBlocks.push({
-      type: "highlights",
-      data: {
-        content:
-          "Key attraction feature\nUnique experience offered\nMust-see element\nPopular activity\nEssential stop\nNotable landmark",
-      },
-    });
-  }
-
-  if (!blockTypes.has("tips")) {
-    normalizedBlocks.push({
-      type: "tips",
-      data: {
-        content:
-          "Plan your visit during cooler months\nBook tickets in advance\nArrive early to avoid crowds\nBring comfortable walking shoes\nStay hydrated\nCheck dress codes beforehand\nConsider guided tours for insights",
-      },
-    });
-  }
-
-  if (!blockTypes.has("faq")) {
-    const defaultFaqs = [
-      {
-        question: "What are the opening hours?",
-        answer: "Opening hours vary by season. Check the official website for current timings.",
-      },
-      {
-        question: "How much does entry cost?",
-        answer:
-          "Pricing varies depending on the package selected. Visit the official website for current rates.",
-      },
-      {
-        question: "Is parking available?",
-        answer: "Yes, parking is available on-site for visitors.",
-      },
-    ];
-    for (const faq of defaultFaqs) {
-      normalizedBlocks.push({
-        type: "faq",
-        data: { question: faq.question, answer: faq.answer },
-      });
-    }
-  }
-
-  if (!blockTypes.has("cta")) {
-    normalizedBlocks.push({
-      type: "cta",
-      data: {
-        title: "Plan Your Visit",
-        content: "Ready to experience this amazing destination? Book your trip today!",
-        buttonText: "Book Now",
-        buttonLink: "#",
-      },
-    });
-  }
+  addMissingDefaultBlocks(normalizedBlocks, blockTypes, title);
 
   return normalizedBlocks.map((block, index) => ({
     ...block,
@@ -1016,27 +1027,10 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
           );
 
           // Generate hero image for the article and persist to storage
-          let heroImageUrl = null;
-          try {
-            const batchImages = await generateContentImages({
-              contentType: "article",
-              title: generated.title || topic.title,
-              description: generated.metaDescription || topic.title,
-              generateHero: true,
-              generateContentImages: false,
-            });
-
-            if (batchImages.length > 0) {
-              const heroImage = batchImages.find(img => img.type === "hero");
-              if (heroImage) {
-                // Persist to object storage (DALL-E URLs expire in ~1 hour)
-                const persistedUrl = await persistImageToStorage(heroImage.url, heroImage.filename);
-                heroImageUrl = persistedUrl || heroImage.url;
-              }
-            }
-          } catch (imageError) {
-            console.error(imageError);
-          }
+          const heroImageUrl = await generateAndPersistHeroImage(
+            generated.title || topic.title,
+            generated.metaDescription || topic.title
+          );
 
           const content = await storage.createContent({
             title: generated.title || topic.title,

@@ -554,6 +554,27 @@ export function registerSecurityRoutes(app: Express): void {
   const MAX_RECOVERY_ATTEMPTS = 3;
   const RECOVERY_LOCKOUT_MS = 30 * 60 * 1000; // 30 minutes
 
+  // Helper: check recovery rate limiting, returns lockout response data or null
+  function checkRecoveryRateLimit(
+    userId: string
+  ): { remainingMs: number; remainingMin: number } | null {
+    const now = Date.now();
+    const attempts = recoveryAttempts.get(userId);
+    if (!attempts) return null;
+
+    if (now - attempts.lastAttempt >= RECOVERY_LOCKOUT_MS) {
+      recoveryAttempts.delete(userId);
+      return null;
+    }
+
+    if (attempts.count >= MAX_RECOVERY_ATTEMPTS) {
+      const remainingMs = RECOVERY_LOCKOUT_MS - (now - attempts.lastAttempt);
+      return { remainingMs, remainingMin: Math.ceil(remainingMs / 60000) };
+    }
+
+    return null;
+  }
+
   // Validate recovery code (alternative to TOTP code) - supports preAuthToken flow
   app.post("/api/totp/validate-recovery", async (req: Request, res: Response) => {
     try {
@@ -580,23 +601,12 @@ export function registerSecurityRoutes(app: Express): void {
       const userId = preAuthContext.userId;
 
       // Rate limiting check
-      const now = Date.now();
-      const attempts = recoveryAttempts.get(userId);
-      if (attempts) {
-        if (
-          now - attempts.lastAttempt < RECOVERY_LOCKOUT_MS &&
-          attempts.count >= MAX_RECOVERY_ATTEMPTS
-        ) {
-          const remainingMs = RECOVERY_LOCKOUT_MS - (now - attempts.lastAttempt);
-          const remainingMin = Math.ceil(remainingMs / 60000);
-          return res.status(429).json({
-            error: `Too many failed attempts. Try again in ${remainingMin} minutes.`,
-            retryAfterMs: remainingMs,
-          });
-        }
-        if (now - attempts.lastAttempt >= RECOVERY_LOCKOUT_MS) {
-          recoveryAttempts.delete(userId);
-        }
+      const lockout = checkRecoveryRateLimit(userId);
+      if (lockout) {
+        return res.status(429).json({
+          error: `Too many failed attempts. Try again in ${lockout.remainingMin} minutes.`,
+          retryAfterMs: lockout.remainingMs,
+        });
       }
 
       const user = await storage.getUser(userId);
@@ -623,6 +633,7 @@ export function registerSecurityRoutes(app: Express): void {
 
       if (codeIndex === -1) {
         // Track failed attempt
+        const now = Date.now();
         const current = recoveryAttempts.get(userId) || { count: 0, lastAttempt: now };
         recoveryAttempts.set(userId, { count: current.count + 1, lastAttempt: now });
         const remaining = MAX_RECOVERY_ATTEMPTS - current.count - 1;

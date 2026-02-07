@@ -113,6 +113,20 @@ const AUTHORITATIVE_DOMAINS = [
 /**
  * Validate content through the quality gateway
  */
+function addCheckAndBlocker(
+  check: QualityCheck,
+  checks: QualityCheck[],
+  blockers: QualityBlocker[],
+  blockerType: QualityBlocker["type"],
+  severity: QualityBlocker["severity"] | ((check: QualityCheck) => QualityBlocker["severity"])
+): void {
+  checks.push(check);
+  if (!check.passed) {
+    const resolvedSeverity = typeof severity === "function" ? severity(check) : severity;
+    blockers.push({ type: blockerType, message: check.details, severity: resolvedSeverity });
+  }
+}
+
 export function validateContent(content: GeneratedContent): QualityCheckResult {
   logger.info(`Validating content through quality gateway: "${content.title}"`);
 
@@ -123,101 +137,44 @@ export function validateContent(content: GeneratedContent): QualityCheckResult {
   const plainText = extractPlainText(content.htmlContent);
 
   // Run all quality checks
-  const wordCountCheck = checkWordCount(plainText);
-  checks.push(wordCountCheck);
-  if (!wordCountCheck.passed) {
-    blockers.push({
-      type: "content",
-      message: wordCountCheck.details,
-      severity: "critical",
-    });
-  }
-
-  const headingCheck = checkHeadingStructure(content.htmlContent);
-  checks.push(headingCheck);
-  if (!headingCheck.passed) {
-    blockers.push({
-      type: "structure",
-      message: headingCheck.details,
-      severity: headingCheck.score < 50 ? "critical" : "major",
-    });
-  }
-
-  const linkCheck = checkLinkQuotas(content.htmlContent);
-  checks.push(linkCheck);
-  if (!linkCheck.passed) {
-    blockers.push({
-      type: "structure",
-      message: linkCheck.details,
-      severity: "major",
-    });
-  }
-
-  const imageCheck = checkImageRequirements(content.htmlContent, content.images);
-  checks.push(imageCheck);
-  if (!imageCheck.passed) {
-    blockers.push({
-      type: "content",
-      message: imageCheck.details,
-      severity: "major",
-    });
-  }
-
-  const seoCheck = checkSEOCompliance({
-    title: content.metaTitle,
-    description: content.metaDescription,
-  });
-  checks.push(seoCheck);
-  if (!seoCheck.passed) {
-    blockers.push({
-      type: "seo",
-      message: seoCheck.details,
-      severity: "critical",
-    });
-  }
-
-  const bannedCheck = checkBannedPhrases(plainText);
-  checks.push(bannedCheck);
-  if (!bannedCheck.passed) {
-    blockers.push({
-      type: "compliance",
-      message: bannedCheck.details,
-      severity: "critical",
-    });
-  }
-
-  const toneCheck = checkProfessionalTone(content.htmlContent);
-  checks.push(toneCheck);
-  if (!toneCheck.passed) {
-    blockers.push({
-      type: "compliance",
-      message: toneCheck.details,
-      severity: toneCheck.score < 50 ? "major" : "minor",
-    });
-  }
+  addCheckAndBlocker(checkWordCount(plainText), checks, blockers, "content", "critical");
+  addCheckAndBlocker(
+    checkHeadingStructure(content.htmlContent),
+    checks,
+    blockers,
+    "structure",
+    c => (c.score < 50 ? "critical" : "major")
+  );
+  addCheckAndBlocker(checkLinkQuotas(content.htmlContent), checks, blockers, "structure", "major");
+  addCheckAndBlocker(
+    checkImageRequirements(content.htmlContent, content.images),
+    checks,
+    blockers,
+    "content",
+    "major"
+  );
+  addCheckAndBlocker(
+    checkSEOCompliance({ title: content.metaTitle, description: content.metaDescription }),
+    checks,
+    blockers,
+    "seo",
+    "critical"
+  );
+  addCheckAndBlocker(checkBannedPhrases(plainText), checks, blockers, "compliance", "critical");
+  addCheckAndBlocker(
+    checkProfessionalTone(content.htmlContent),
+    checks,
+    blockers,
+    "compliance",
+    c => (c.score < 50 ? "major" : "minor")
+  );
 
   if (content.schema) {
-    const schemaCheck = checkSchemaValidity(content.schema);
-    checks.push(schemaCheck);
-    if (!schemaCheck.passed) {
-      blockers.push({
-        type: "seo",
-        message: schemaCheck.details,
-        severity: "major",
-      });
-    }
+    addCheckAndBlocker(checkSchemaValidity(content.schema), checks, blockers, "seo", "major");
   }
 
   if (content.images && content.images.length > 0) {
-    const altTextCheck = checkAltText(content.images);
-    checks.push(altTextCheck);
-    if (!altTextCheck.passed) {
-      blockers.push({
-        type: "seo",
-        message: altTextCheck.details,
-        severity: "major",
-      });
-    }
+    addCheckAndBlocker(checkAltText(content.images), checks, blockers, "seo", "major");
   }
 
   const readability = calculateReadability(plainText);
@@ -230,14 +187,7 @@ export function validateContent(content: GeneratedContent): QualityCheckResult {
         ? `Flesch reading ease: ${readability.score.toFixed(1)} (${readability.grade})`
         : `Readability too low: ${readability.score.toFixed(1)} (${readability.grade}). Target: >= 50`,
   };
-  checks.push(readabilityCheck);
-  if (!readabilityCheck.passed) {
-    blockers.push({
-      type: "content",
-      message: readabilityCheck.details,
-      severity: "minor",
-    });
-  }
+  addCheckAndBlocker(readabilityCheck, checks, blockers, "content", "minor");
 
   // Calculate weighted score
   const score = calculateWeightedScore(checks, blockers);
@@ -348,53 +298,63 @@ export function checkHeadingStructure(html: string): QualityCheck {
 /**
  * Check link quotas: 5-8 internal, 2-3 external authoritative
  */
-export function checkLinkQuotas(html: string): QualityCheck {
+function classifyLinks(html: string): {
+  internal: number;
+  external: number;
+  authoritative: number;
+} {
   const allLinks = html.match(/<a[^>]*href=["']([^"']+)["'][^>]*>/gi) || [];
-
-  let internalCount = 0;
-  let externalCount = 0;
-  let authoritativeCount = 0;
+  let internal = 0;
+  let external = 0;
+  let authoritative = 0;
 
   for (const link of allLinks) {
     const hrefMatch = /href=["']([^"']+)["']/i.exec(link);
     if (!hrefMatch) continue;
-
     const href = hrefMatch[1];
 
     if (href.startsWith("/") || href.includes("travi.world") || href.includes("localhost")) {
-      internalCount++;
+      internal++;
     } else if (href.startsWith("http://") || href.startsWith("https://")) {
-      externalCount++;
+      external++;
       if (AUTHORITATIVE_DOMAINS.some(domain => href.includes(domain))) {
-        authoritativeCount++;
+        authoritative++;
       }
     }
   }
+  return { internal, external, authoritative };
+}
 
+export function checkLinkQuotas(html: string): QualityCheck {
+  const counts = classifyLinks(html);
   const issues: string[] = [];
   let score = 100;
 
-  if (internalCount < LINK_QUOTAS.internal.min) {
+  if (counts.internal < LINK_QUOTAS.internal.min) {
     issues.push(
-      `Not enough internal links: ${internalCount} (minimum: ${LINK_QUOTAS.internal.min})`
+      `Not enough internal links: ${counts.internal} (minimum: ${LINK_QUOTAS.internal.min})`
     );
     score -= 15;
-  } else if (internalCount > LINK_QUOTAS.internal.max) {
-    issues.push(`Too many internal links: ${internalCount} (maximum: ${LINK_QUOTAS.internal.max})`);
+  } else if (counts.internal > LINK_QUOTAS.internal.max) {
+    issues.push(
+      `Too many internal links: ${counts.internal} (maximum: ${LINK_QUOTAS.internal.max})`
+    );
     score -= 5;
   }
 
-  if (externalCount < LINK_QUOTAS.external.min) {
+  if (counts.external < LINK_QUOTAS.external.min) {
     issues.push(
-      `Not enough external links: ${externalCount} (minimum: ${LINK_QUOTAS.external.min})`
+      `Not enough external links: ${counts.external} (minimum: ${LINK_QUOTAS.external.min})`
     );
     score -= 10;
-  } else if (externalCount > LINK_QUOTAS.external.max) {
-    issues.push(`Too many external links: ${externalCount} (maximum: ${LINK_QUOTAS.external.max})`);
+  } else if (counts.external > LINK_QUOTAS.external.max) {
+    issues.push(
+      `Too many external links: ${counts.external} (maximum: ${LINK_QUOTAS.external.max})`
+    );
     score -= 5;
   }
 
-  if (authoritativeCount === 0 && externalCount > 0) {
+  if (counts.authoritative === 0 && counts.external > 0) {
     issues.push("No links to authoritative sources");
     score -= 10;
   }
@@ -402,7 +362,7 @@ export function checkLinkQuotas(html: string): QualityCheck {
   score = Math.max(0, score);
   const passed = issues.length === 0;
   const details = passed
-    ? `Links valid: ${internalCount} internal, ${externalCount} external (${authoritativeCount} authoritative)`
+    ? `Links valid: ${counts.internal} internal, ${counts.external} external (${counts.authoritative} authoritative)`
     : issues.join(". ");
 
   return { name: "Link Quotas", passed, score, details };
@@ -570,57 +530,71 @@ export function checkProfessionalTone(html: string): QualityCheck {
 /**
  * Check schema validity: JSON-LD must be valid
  */
+function validateSchemaRequiredFields(
+  schemaObj: Record<string, unknown>,
+  issues: string[]
+): number {
+  let penalty = 0;
+  if (!schemaObj["@context"]) {
+    issues.push("Missing @context in schema");
+    penalty += 20;
+  } else if (schemaObj["@context"] !== "https://schema.org") {
+    issues.push('@context should be "https://schema.org"');
+    penalty += 10;
+  }
+  if (!schemaObj["@type"]) {
+    issues.push("Missing @type in schema");
+    penalty += 30;
+  }
+  return penalty;
+}
+
+const SCHEMA_TYPE_REQUIRED_FIELDS: Record<string, { fields: string[]; penalty: number }> = {
+  Article: { fields: ["headline", "author", "datePublished"], penalty: 10 },
+  NewsArticle: { fields: ["headline", "author", "datePublished"], penalty: 10 },
+  BlogPosting: { fields: ["headline", "author", "datePublished"], penalty: 10 },
+  TouristAttraction: { fields: ["name"], penalty: 15 },
+  Place: { fields: ["name"], penalty: 15 },
+};
+
+function validateSchemaTypeFields(schemaObj: Record<string, unknown>, issues: string[]): number {
+  const schemaType = schemaObj["@type"] as string;
+  const config = SCHEMA_TYPE_REQUIRED_FIELDS[schemaType];
+
+  if (config) {
+    let penalty = 0;
+    for (const field of config.fields) {
+      if (!schemaObj[field]) {
+        issues.push(`Missing required field for ${schemaType}: ${field}`);
+        penalty += config.penalty;
+      }
+    }
+    return penalty;
+  }
+
+  if (
+    schemaType === "FAQPage" &&
+    (!schemaObj["mainEntity"] || !Array.isArray(schemaObj["mainEntity"]))
+  ) {
+    issues.push("FAQPage requires mainEntity array");
+    return 20;
+  }
+
+  return 0;
+}
+
 export function checkSchemaValidity(schema: object): QualityCheck {
   const issues: string[] = [];
   let score = 100;
 
   try {
-    // Check if it's valid JSON (already an object, so this is satisfied)
     if (!schema || typeof schema !== "object") {
       issues.push("Schema is not a valid object");
       score = 0;
     } else {
       const schemaObj = schema as Record<string, unknown>;
-
-      // Check required JSON-LD fields
-      if (!schemaObj["@context"]) {
-        issues.push("Missing @context in schema");
-        score -= 20;
-      } else if (schemaObj["@context"] !== "https://schema.org") {
-        issues.push('@context should be "https://schema.org"');
-        score -= 10;
-      }
-
-      if (!schemaObj["@type"]) {
-        issues.push("Missing @type in schema");
-        score -= 30;
-      }
-
-      // Check for common schema types and their required properties
-      const schemaType = schemaObj["@type"] as string;
-      if (
-        schemaType === "Article" ||
-        schemaType === "NewsArticle" ||
-        schemaType === "BlogPosting"
-      ) {
-        const requiredFields = ["headline", "author", "datePublished"];
-        for (const field of requiredFields) {
-          if (!schemaObj[field]) {
-            issues.push(`Missing required field for ${schemaType}: ${field}`);
-            score -= 10;
-          }
-        }
-      } else if (schemaType === "TouristAttraction" || schemaType === "Place") {
-        if (!schemaObj["name"]) {
-          issues.push("Missing name for TouristAttraction/Place");
-          score -= 15;
-        }
-      } else if (schemaType === "FAQPage") {
-        if (!schemaObj["mainEntity"] || !Array.isArray(schemaObj["mainEntity"])) {
-          issues.push("FAQPage requires mainEntity array");
-          score -= 20;
-        }
-      }
+      score -= validateSchemaRequiredFields(schemaObj, issues);
+      score -= validateSchemaTypeFields(schemaObj, issues);
     }
   } catch {
     issues.push("Schema parsing error");
@@ -968,6 +942,15 @@ export interface ContentMetrics {
 /**
  * Legacy function for backwards compatibility
  */
+function determineTier(result: QualityCheckResult): QualityGateResult["tier"] {
+  if (result.blockers.some(b => b.severity === "critical")) return "rejected";
+  if (result.score >= QUALITY_THRESHOLDS.autoApprove) return "auto_approve";
+  if (result.score >= QUALITY_THRESHOLDS.publish) return "publish";
+  if (result.score >= QUALITY_THRESHOLDS.review) return "review";
+  if (result.score >= QUALITY_THRESHOLDS.draft) return "draft";
+  return "rejected";
+}
+
 export function validateThroughGateway(content: ContentForValidation): QualityGateResult {
   const generatedContent: GeneratedContent = {
     title: content.title,
@@ -984,43 +967,9 @@ export function validateThroughGateway(content: ContentForValidation): QualityGa
   const plainText = extractPlainText(content.content);
   const words = plainText.split(/\s+/).filter(w => w.length > 0);
   const h2Count = (content.content.match(/<h2[^>]*>/gi) || []).length;
-
-  const allLinks = content.content.match(/<a[^>]*href=["']([^"']+)["'][^>]*>/gi) || [];
-  let internalLinks = 0;
-  let externalLinks = 0;
-  let authoritativeLinks = 0;
-
-  for (const link of allLinks) {
-    const hrefMatch = /href=["']([^"']+)["']/i.exec(link);
-    if (!hrefMatch) continue;
-    const href = hrefMatch[1];
-    if (href.startsWith("/") || href.includes("travi")) {
-      internalLinks++;
-    } else if (href.startsWith("http")) {
-      externalLinks++;
-      if (AUTHORITATIVE_DOMAINS.some(d => href.includes(d))) {
-        authoritativeLinks++;
-      }
-    }
-  }
-
+  const linkCounts = classifyLinks(content.content);
   const bannedResult = checkBannedPhrases(plainText);
-
-  // Determine tier
-  let tier: QualityGateResult["tier"];
-  if (result.blockers.some(b => b.severity === "critical")) {
-    tier = "rejected";
-  } else if (result.score >= QUALITY_THRESHOLDS.autoApprove) {
-    tier = "auto_approve";
-  } else if (result.score >= QUALITY_THRESHOLDS.publish) {
-    tier = "publish";
-  } else if (result.score >= QUALITY_THRESHOLDS.review) {
-    tier = "review";
-  } else if (result.score >= QUALITY_THRESHOLDS.draft) {
-    tier = "draft";
-  } else {
-    tier = "rejected";
-  }
+  const tier = determineTier(result);
 
   return {
     passed: result.passed,
@@ -1048,9 +997,9 @@ export function validateThroughGateway(content: ContentForValidation): QualityGa
     metrics: {
       wordCount: words.length,
       h2Count,
-      internalLinks,
-      externalLinks,
-      authoritativeLinks,
+      internalLinks: linkCounts.internal,
+      externalLinks: linkCounts.external,
+      authoritativeLinks: linkCounts.authoritative,
       bannedPhrasesCount: bannedResult.passed ? 0 : 1,
       keywordDensity: 0,
       metaTitleLength: content.metaTitle.length,

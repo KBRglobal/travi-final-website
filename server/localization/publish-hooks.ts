@@ -115,40 +115,36 @@ async function generateAeoForContent(contentId: string): Promise<void> {
  * Enqueue native content generation for all locales (tier-prioritized)
  * Uses the actual locale tiers from cultural-contexts/types.ts
  */
+// All supported locales organized by tier (from cultural-contexts/types.ts)
+const LOCALE_TIERS: Record<number, string[]> = {
+  1: ["en", "ar", "hi"],
+  2: ["zh", "ru", "ur", "fr", "id"],
+  3: ["de", "fa", "bn", "fil", "th", "vi", "ms"],
+  4: ["es", "tr", "it", "ja", "ko", "he", "pt"],
+  5: ["nl", "pl", "sv", "el", "cs", "ro", "uk", "hu"],
+};
+
+/** Map tier to job priority */
+function tierToPriority(tier: number): number {
+  if (tier <= 2) return 2;
+  if (tier <= 3) return 5;
+  return 8;
+}
+
 async function enqueueNativeContentForAllLocales(content: Content): Promise<void> {
   const { jobQueue } = await import("../job-queue");
-
-  // All supported locales organized by tier (from cultural-contexts/types.ts)
-  const LOCALE_TIERS: Record<number, string[]> = {
-    1: ["en", "ar", "hi"],
-    2: ["zh", "ru", "ur", "fr", "id"],
-    3: ["de", "fa", "bn", "fil", "th", "vi", "ms"],
-    4: ["es", "tr", "it", "ja", "ko", "he", "pt"],
-    5: ["nl", "pl", "sv", "el", "cs", "ro", "uk", "hu"],
-  };
-
   let queuedCount = 0;
 
   for (const [tierStr, locales] of Object.entries(LOCALE_TIERS)) {
     const tier = Number.parseInt(tierStr, 10);
-    // Higher tier = higher priority number = processed later
-    let priority: number;
-    if (tier <= 2) priority = 2;
-    else if (tier <= 3) priority = 5;
-    else priority = 8;
+    const priority = tierToPriority(tier);
 
     for (const locale of locales) {
-      if (locale === "en") continue; // Skip English - it's the source
-
+      if (locale === "en") continue;
       try {
         await jobQueue.addJob(
           "native_content_generate" as any,
-          {
-            contentId: content.id,
-            locale,
-            tier,
-            entityType: content.type || "article",
-          },
+          { contentId: content.id, locale, tier, entityType: content.type || "article" },
           { priority }
         );
         queuedCount++;
@@ -266,35 +262,30 @@ export async function updateSearchIndex(content: Content, locale: string): Promi
 /**
  * Extract searchable text from content blocks
  */
+/** Extract text fields from a single block's data object */
+function extractBlockTexts(data: Record<string, unknown>): string[] {
+  const texts: string[] = [];
+  if (typeof data.content === "string") texts.push(data.content);
+  if (typeof data.text === "string") texts.push(data.text);
+  if (Array.isArray(data.items)) {
+    for (const item of data.items) {
+      if (typeof item === "string") texts.push(item);
+    }
+  }
+  return texts;
+}
+
 function extractSearchableText(blocks: unknown[]): string {
   if (!blocks || !Array.isArray(blocks)) return "";
 
   const texts: string[] = [];
-
   for (const block of blocks) {
     if (!block || typeof block !== "object") continue;
-
     const b = block as Record<string, unknown>;
-
-    // Extract text from data field
     if (b.data && typeof b.data === "object") {
-      const data = b.data as Record<string, unknown>;
-      if (typeof data.content === "string") {
-        texts.push(data.content);
-      }
-      if (typeof data.text === "string") {
-        texts.push(data.text);
-      }
-      if (Array.isArray(data.items)) {
-        for (const item of data.items) {
-          if (typeof item === "string") {
-            texts.push(item);
-          }
-        }
-      }
+      texts.push(...extractBlockTexts(b.data as Record<string, unknown>));
     }
   }
-
   return texts.join(" ");
 }
 

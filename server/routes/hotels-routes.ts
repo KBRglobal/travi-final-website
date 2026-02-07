@@ -174,20 +174,26 @@ export function registerHotelsRoutes(app: Express): void {
       const allHotels = data.result?.list || [];
       const totalFromApi = data.result?.total_count || allHotels.length;
 
+      const ALLOWED_ACCOMMODATION_TYPES = ["hotel", "resort", "boutique hotel", "luxury hotel"];
+
+      const isValidAccommodationType = (type: string): boolean => {
+        const lower = type.toLowerCase();
+        return lower === "" || ALLOWED_ACCOMMODATION_TYPES.some(t => lower.includes(t));
+      };
+
+      const matchesStarFilter = (rating: number, filter: string | null): boolean => {
+        if (!filter) return true;
+        if (filter === "5") return rating >= 4.5;
+        if (filter === "4") return rating >= 3.5 && rating < 4.5;
+        return true;
+      };
+
       let hotels = allHotels
         .filter((hotel: any) => {
-          const accommodationType = (hotel.accommodation_type || "").toLowerCase();
-          if (
-            !["hotel", "resort", "boutique hotel", "luxury hotel"].some(
-              t => accommodationType.includes(t) || accommodationType === ""
-            )
-          ) {
-            return false;
-          }
+          const accommodationType = hotel.accommodation_type || "";
+          if (!isValidAccommodationType(accommodationType)) return false;
           const rating = hotel.review_summary?.rating || 0;
-          if (starsFilter === "5" && rating < 4.5) return false;
-          if (starsFilter === "4" && (rating < 3.5 || rating >= 4.5)) return false;
-          return true;
+          return matchesStarFilter(rating, starsFilter);
         })
         .map((hotel: any) => {
           const hotelKey = hotel.key || "";

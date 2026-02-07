@@ -13,6 +13,7 @@ import {
   DEFAULT_LEARNING_CONFIG,
   LearningConfig,
   AggregationWindow,
+  RecommendationType,
 } from "./types";
 import { GuardedFeature } from "../enforcement/types";
 import { PolicyDecision } from "../policy/types";
@@ -85,6 +86,60 @@ export function getOutcomes(filter?: {
 /**
  * Compute learning metrics for a time window
  */
+interface ConfusionMatrix {
+  tp: number;
+  tn: number;
+  fp: number;
+  fn: number;
+  overrides: number;
+  degradedRecoveries: number;
+  degradedTotal: number;
+}
+
+function computeConfusionMatrix(outcomes: OutcomeRecord[]): ConfusionMatrix {
+  const matrix: ConfusionMatrix = {
+    tp: 0,
+    tn: 0,
+    fp: 0,
+    fn: 0,
+    overrides: 0,
+    degradedRecoveries: 0,
+    degradedTotal: 0,
+  };
+
+  for (const o of outcomes) {
+    switch (o.outcome) {
+      case "confirmed_correct":
+        if (o.decision === "BLOCK") matrix.tp++;
+        else matrix.tn++;
+        break;
+      case "override_applied":
+        matrix.fp++;
+        matrix.overrides++;
+        break;
+      case "incident_after_allow":
+        matrix.fn++;
+        break;
+      case "recovery_success":
+        matrix.degradedRecoveries++;
+        matrix.degradedTotal++;
+        matrix.tn++;
+        break;
+      case "recovery_failed":
+        matrix.degradedTotal++;
+        matrix.fn++;
+        break;
+    }
+  }
+
+  return matrix;
+}
+
+function safeDiv(numerator: number, denominator: number, fallback: number = 1): number {
+  const result = numerator / (denominator || 1);
+  return Number.isNaN(result) ? fallback : result;
+}
+
 export function computeMetrics(
   window: AggregationWindow,
   feature?: GuardedFeature
@@ -100,63 +155,29 @@ export function computeMetrics(
     since: window.start,
   }).filter(o => o.decisionAt <= window.end);
 
-  // Calculate confusion matrix
-  let tp = 0,
-    tn = 0,
-    fp = 0,
-    fn = 0;
-  let overrides = 0,
-    degradedRecoveries = 0,
-    degradedTotal = 0;
-
-  for (const o of outcomes) {
-    switch (o.outcome) {
-      case "confirmed_correct":
-        if (o.decision === "BLOCK") tp++;
-        else tn++;
-        break;
-      case "override_applied":
-        fp++; // Block was wrong
-        overrides++;
-        break;
-      case "incident_after_allow":
-        fn++; // Allow was wrong
-        break;
-      case "recovery_success":
-        degradedRecoveries++;
-        degradedTotal++;
-        tn++;
-        break;
-      case "recovery_failed":
-        degradedTotal++;
-        fn++;
-        break;
-    }
-  }
-
+  const m = computeConfusionMatrix(outcomes);
   const total = outcomes.length || 1;
-  const tptn = tp + tn;
 
-  const accuracy = tptn / total;
-  const precision = tp / (tp + fp || 1);
-  const recall = tp / (tp + fn || 1);
-  const f1Score = (2 * (precision * recall)) / (precision + recall || 1);
+  const accuracy = safeDiv(m.tp + m.tn, total);
+  const precision = safeDiv(m.tp, m.tp + m.fp);
+  const recall = safeDiv(m.tp, m.tp + m.fn);
+  const f1Score = safeDiv(2 * (precision * recall), precision + recall);
 
   const metrics: LearningMetrics = {
     period: { start: window.start, end: window.end },
     totalDecisions: outcomes.length,
-    truePositives: tp,
-    trueNegatives: tn,
-    falsePositives: fp,
-    falseNegatives: fn,
-    accuracy: Number.isNaN(accuracy) ? 1 : accuracy,
-    precision: Number.isNaN(precision) ? 1 : precision,
-    recall: Number.isNaN(recall) ? 1 : recall,
-    f1Score: Number.isNaN(f1Score) ? 1 : f1Score,
-    overBlockingRate: fp / total,
-    incidentRate: fn / total,
-    overrideRate: overrides / total,
-    degradedRecoveryRate: degradedTotal > 0 ? degradedRecoveries / degradedTotal : 1,
+    truePositives: m.tp,
+    trueNegatives: m.tn,
+    falsePositives: m.fp,
+    falseNegatives: m.fn,
+    accuracy,
+    precision,
+    recall,
+    f1Score,
+    overBlockingRate: m.fp / total,
+    incidentRate: m.fn / total,
+    overrideRate: m.overrides / total,
+    degradedRecoveryRate: m.degradedTotal > 0 ? m.degradedRecoveries / m.degradedTotal : 1,
   };
 
   // Cache
@@ -222,110 +243,137 @@ export function detectPatterns(
 /**
  * Generate recommendations based on patterns and metrics
  */
-export function generateRecommendations(
+function makeRecommendation(
+  id: string,
+  type: RecommendationType,
+  priority: "critical" | "high" | "medium" | "low",
+  confidence: number,
+  description: string,
+  rationale: string,
+  suggestedChange: LearningRecommendation["suggestedChange"],
+  estimatedImpact: LearningRecommendation["estimatedImpact"],
+  now: Date
+): LearningRecommendation {
+  return {
+    id,
+    type,
+    priority,
+    confidence,
+    description,
+    rationale,
+    suggestedChange,
+    estimatedImpact,
+    createdAt: now,
+    expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+    status: "pending",
+  };
+}
+
+function buildLoosenRecommendation(
   feature: GuardedFeature,
   metrics: LearningMetrics,
-  patterns: LearningPattern[]
-): LearningRecommendation[] {
-  const config = getConfig();
-  const recommendations: LearningRecommendation[] = [];
-  const now = new Date();
+  threshold: number,
+  now: Date
+): LearningRecommendation | null {
+  if (metrics.falsePositives === 0 || metrics.overBlockingRate <= 0.1) return null;
+  const confidence = Math.min(0.95, 0.5 + metrics.overBlockingRate);
+  if (confidence < threshold) return null;
 
-  // High false positive rate → loosen budget
-  if (metrics.falsePositives > 0 && metrics.overBlockingRate > 0.1) {
-    const confidence = Math.min(0.95, 0.5 + metrics.overBlockingRate);
-    if (confidence >= config.recommendationConfidenceThreshold) {
-      recommendations.push({
-        id: `rec-loosen-${feature}-${now.getTime()}`,
-        type: "loosen_budget",
-        priority: metrics.overBlockingRate > 0.3 ? "high" : "medium",
-        confidence,
-        description: `Consider loosening budget for ${feature}`,
-        rationale: `${(metrics.overBlockingRate * 100).toFixed(1)}% of blocks were overridden, suggesting over-blocking`,
-        suggestedChange: {
-          targetFeature: feature,
-          field: "budgetLimits.maxActions",
-          currentValue: 100,
-          suggestedValue: Math.round(100 * (1 + metrics.overBlockingRate)),
-          delta: metrics.overBlockingRate,
-        },
-        estimatedImpact: {
-          blocksChange: -metrics.overBlockingRate * 100,
-          incidentsChange: 5,
-          costChange: 10,
-          overridesChange: -50,
-          confidence: confidence * 0.8,
-        },
-        createdAt: now,
-        expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
-        status: "pending",
-      });
-    }
-  }
+  return makeRecommendation(
+    `rec-loosen-${feature}-${now.getTime()}`,
+    "loosen_budget",
+    metrics.overBlockingRate > 0.3 ? "high" : "medium",
+    confidence,
+    `Consider loosening budget for ${feature}`,
+    `${(metrics.overBlockingRate * 100).toFixed(1)}% of blocks were overridden, suggesting over-blocking`,
+    {
+      targetFeature: feature,
+      field: "budgetLimits.maxActions",
+      currentValue: 100,
+      suggestedValue: Math.round(100 * (1 + metrics.overBlockingRate)),
+      delta: metrics.overBlockingRate,
+    },
+    {
+      blocksChange: -metrics.overBlockingRate * 100,
+      incidentsChange: 5,
+      costChange: 10,
+      overridesChange: -50,
+      confidence: confidence * 0.8,
+    },
+    now
+  );
+}
 
-  // High false negative rate → tighten budget
-  if (metrics.falseNegatives > 0 && metrics.incidentRate > 0.05) {
-    const confidence = Math.min(0.95, 0.6 + metrics.incidentRate * 2);
-    if (confidence >= config.recommendationConfidenceThreshold) {
-      recommendations.push({
-        id: `rec-tighten-${feature}-${now.getTime()}`,
-        type: "tighten_budget",
-        priority: metrics.incidentRate > 0.15 ? "critical" : "high",
-        confidence,
-        description: `Consider tightening budget for ${feature}`,
-        rationale: `${(metrics.incidentRate * 100).toFixed(1)}% of allowed operations caused incidents`,
-        suggestedChange: {
-          targetFeature: feature,
-          field: "budgetLimits.maxActions",
-          currentValue: 100,
-          suggestedValue: Math.round(100 * (1 - metrics.incidentRate)),
-          delta: -metrics.incidentRate,
-        },
-        estimatedImpact: {
-          blocksChange: 20,
-          incidentsChange: -metrics.incidentRate * 100,
-          costChange: -15,
-          overridesChange: 10,
-          confidence: confidence * 0.85,
-        },
-        createdAt: now,
-        expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
-        status: "pending",
-      });
-    }
-  }
+function buildTightenRecommendation(
+  feature: GuardedFeature,
+  metrics: LearningMetrics,
+  threshold: number,
+  now: Date
+): LearningRecommendation | null {
+  if (metrics.falseNegatives === 0 || metrics.incidentRate <= 0.05) return null;
+  const confidence = Math.min(0.95, 0.6 + metrics.incidentRate * 2);
+  if (confidence < threshold) return null;
 
-  // Time cluster pattern → adjust time window
+  return makeRecommendation(
+    `rec-tighten-${feature}-${now.getTime()}`,
+    "tighten_budget",
+    metrics.incidentRate > 0.15 ? "critical" : "high",
+    confidence,
+    `Consider tightening budget for ${feature}`,
+    `${(metrics.incidentRate * 100).toFixed(1)}% of allowed operations caused incidents`,
+    {
+      targetFeature: feature,
+      field: "budgetLimits.maxActions",
+      currentValue: 100,
+      suggestedValue: Math.round(100 * (1 - metrics.incidentRate)),
+      delta: -metrics.incidentRate,
+    },
+    {
+      blocksChange: 20,
+      incidentsChange: -metrics.incidentRate * 100,
+      costChange: -15,
+      overridesChange: 10,
+      confidence: confidence * 0.85,
+    },
+    now
+  );
+}
+
+function buildTimeWindowRecommendation(
+  feature: GuardedFeature,
+  patterns: LearningPattern[],
+  threshold: number,
+  now: Date
+): LearningRecommendation | null {
   const timePattern = patterns.find(p => p.type === "time_cluster");
-  if (timePattern && timePattern.confidence >= config.recommendationConfidenceThreshold) {
-    recommendations.push({
-      id: `rec-window-${feature}-${now.getTime()}`,
-      type: "shorten_window",
-      priority: "medium",
-      confidence: timePattern.confidence,
-      description: `Adjust time window for ${feature}`,
-      rationale: timePattern.description,
-      suggestedChange: {
-        targetFeature: feature,
-        field: "allowedHours",
-        currentValue: { startHour: 0, endHour: 24 },
-        suggestedValue: { startHour: 9, endHour: 18 },
-      },
-      estimatedImpact: {
-        blocksChange: -10,
-        incidentsChange: 0,
-        costChange: -20,
-        overridesChange: -15,
-        confidence: timePattern.confidence * 0.7,
-      },
-      createdAt: now,
-      expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
-      status: "pending",
-    });
-  }
+  if (!timePattern || timePattern.confidence < threshold) return null;
 
-  // Store recommendations (bounded)
-  for (const rec of recommendations.slice(0, config.maxRecommendationsPerFeature)) {
+  return makeRecommendation(
+    `rec-window-${feature}-${now.getTime()}`,
+    "shorten_window",
+    "medium",
+    timePattern.confidence,
+    `Adjust time window for ${feature}`,
+    timePattern.description,
+    {
+      targetFeature: feature,
+      field: "allowedHours",
+      currentValue: { startHour: 0, endHour: 24 },
+      suggestedValue: { startHour: 9, endHour: 18 },
+    },
+    {
+      blocksChange: -10,
+      incidentsChange: 0,
+      costChange: -20,
+      overridesChange: -15,
+      confidence: timePattern.confidence * 0.7,
+    },
+    now
+  );
+}
+
+function storeRecommendations(recommendations: LearningRecommendation[], max: number): void {
+  for (const rec of recommendations.slice(0, max)) {
     if (recommendationStore.size >= MAX_RECOMMENDATIONS) {
       const oldest = Array.from(recommendationStore.entries()).sort(
         ([, a], [, b]) => a.createdAt.getTime() - b.createdAt.getTime()
@@ -334,6 +382,29 @@ export function generateRecommendations(
     }
     recommendationStore.set(rec.id, rec);
   }
+}
+
+export function generateRecommendations(
+  feature: GuardedFeature,
+  metrics: LearningMetrics,
+  patterns: LearningPattern[]
+): LearningRecommendation[] {
+  const config = getConfig();
+  const now = new Date();
+  const threshold = config.recommendationConfidenceThreshold;
+
+  const recommendations: LearningRecommendation[] = [];
+
+  const loosen = buildLoosenRecommendation(feature, metrics, threshold, now);
+  if (loosen) recommendations.push(loosen);
+
+  const tighten = buildTightenRecommendation(feature, metrics, threshold, now);
+  if (tighten) recommendations.push(tighten);
+
+  const timeWindow = buildTimeWindowRecommendation(feature, patterns, threshold, now);
+  if (timeWindow) recommendations.push(timeWindow);
+
+  storeRecommendations(recommendations, config.maxRecommendationsPerFeature);
 
   return recommendations;
 }

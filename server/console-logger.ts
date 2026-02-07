@@ -69,165 +69,150 @@ class ConsoleLogger extends EventEmitter {
   }
 
   private translateMessage(raw: string): { category: string; humanMessage: string } {
-    // AutoPilot patterns
+    return (
+      this.translateAutoPilot(raw) ??
+      this.translateRss(raw) ??
+      this.translateExpress(raw) ??
+      this.translateAuth(raw) ??
+      this.translateAi(raw) ??
+      this.translateSimpleCategory(raw) ?? {
+        category: "system",
+        humanMessage: raw.length > 200 ? raw.substring(0, 200) + "..." : raw,
+      }
+    );
+  }
+
+  private translateAutoPilot(raw: string): { category: string; humanMessage: string } | null {
     if (raw.includes("[AutoPilot Scheduler]")) {
-      if (raw.includes("Running hourly")) {
+      if (raw.includes("Running hourly"))
         return {
           category: "autopilot",
           humanMessage: "AutoPilot: Starting scheduled hourly tasks",
         };
-      }
-      if (raw.includes("completed")) {
+      if (raw.includes("completed"))
         return {
           category: "autopilot",
           humanMessage: "AutoPilot: Scheduled tasks completed successfully",
         };
-      }
       return {
         category: "autopilot",
         humanMessage: raw.replace("[AutoPilot Scheduler]", "AutoPilot:").trim(),
       };
     }
-
     if (raw.includes("[AutoPilot]")) {
-      if (raw.includes("Running hourly")) {
+      if (raw.includes("Running hourly"))
         return {
           category: "autopilot",
           humanMessage: "AutoPilot: Processing hourly automation tasks",
         };
-      }
-      if (raw.includes("completed")) {
+      if (raw.includes("completed"))
         return { category: "autopilot", humanMessage: "AutoPilot: All tasks finished" };
-      }
       return {
         category: "autopilot",
         humanMessage: raw.replace("[AutoPilot]", "AutoPilot:").trim(),
       };
     }
+    return null;
+  }
 
-    // RSS patterns
-    if (raw.includes("[RSS Auto-Process]") || raw.includes("[rss]")) {
-      const feedMatch = /Feed "([^"]+)" returned (\d+) items?/.exec(raw);
-      if (feedMatch) {
-        const [, feedName, count] = feedMatch;
-        if (count === "0") {
-          return { category: "rss", humanMessage: `RSS: Checked "${feedName}" - no new articles` };
-        }
-        return {
-          category: "rss",
-          humanMessage: `RSS: Found ${count} new article(s) from "${feedName}"`,
-        };
-      }
-      if (raw.includes("Running initial")) {
-        return {
-          category: "rss",
-          humanMessage: "RSS: Starting to check all feeds for new articles",
-        };
-      }
-      if (raw.includes("Processing")) {
-        const countMatch = /Processing (\d+) active feeds/.exec(raw);
-        if (countMatch) {
-          return {
+  private translateRss(raw: string): { category: string; humanMessage: string } | null {
+    if (!raw.includes("[RSS Auto-Process]") && !raw.includes("[rss]")) return null;
+
+    const feedMatch = /Feed "([^"]+)" returned (\d+) items?/.exec(raw);
+    if (feedMatch) {
+      const [, feedName, count] = feedMatch;
+      return count === "0"
+        ? { category: "rss", humanMessage: `RSS: Checked "${feedName}" - no new articles` }
+        : {
             category: "rss",
-            humanMessage: `RSS: Checking ${countMatch[1]} active news feeds`,
+            humanMessage: `RSS: Found ${count} new article(s) from "${feedName}"`,
           };
-        }
-      }
-      return { category: "rss", humanMessage: raw.replace(/\[RSS[^\]]*\]/, "RSS:").trim() };
     }
+    if (raw.includes("Running initial"))
+      return { category: "rss", humanMessage: "RSS: Starting to check all feeds for new articles" };
+    const countMatch = /Processing (\d+) active feeds/.exec(raw);
+    if (countMatch)
+      return { category: "rss", humanMessage: `RSS: Checking ${countMatch[1]} active news feeds` };
+    return { category: "rss", humanMessage: raw.replace(/\[RSS[^\]]*\]/, "RSS:").trim() };
+  }
 
-    // Express HTTP patterns
+  private translateExpress(raw: string): { category: string; humanMessage: string } | null {
     const expressMatch = /\[express\]\s+(\w+)\s+([^\s]+)\s+(\d+)\s+in\s+(\d+)ms/.exec(raw);
-    if (expressMatch) {
-      const [, method, path, status, time] = expressMatch;
-      const statusNum = Number.parseInt(status);
-      let statusText = "OK";
-      if (statusNum >= 400 && statusNum < 500) statusText = "Client Error";
+    if (!expressMatch) return null;
+
+    const [, method, reqPath, status, time] = expressMatch;
+    const statusNum = Number.parseInt(status);
+    const STATUS_MAP: Record<number, string> = {
+      304: "Not Modified",
+      401: "Not Logged In",
+      404: "Not Found",
+    };
+    let statusText = STATUS_MAP[statusNum] ?? "OK";
+    if (!(statusNum in STATUS_MAP)) {
       if (statusNum >= 500) statusText = "Server Error";
-      if (statusNum === 304) statusText = "Not Modified";
-      if (statusNum === 401) statusText = "Not Logged In";
-      if (statusNum === 404) statusText = "Not Found";
-
-      // Simplify path for readability
-      let simplePath = path;
-      if (path.startsWith("/api/admin/")) simplePath = "Admin: " + path.replace("/api/admin/", "");
-      else if (path.startsWith("/api/public/"))
-        simplePath = "Public: " + path.replace("/api/public/", "");
-      else if (path.startsWith("/api/")) simplePath = path.replace("/api/", "");
-
-      return {
-        category: "http",
-        humanMessage: `HTTP ${method} ${simplePath} → ${status} ${statusText} (${time}ms)`,
-      };
+      else if (statusNum >= 400) statusText = "Client Error";
     }
 
-    // Auth patterns
-    if (raw.includes("login") || raw.includes("Login") || raw.includes("authenticated")) {
-      if (raw.includes("success") || raw.includes("Success")) {
-        return { category: "auth", humanMessage: "Auth: User logged in successfully" };
-      }
-      if (raw.includes("failed") || raw.includes("Failed") || raw.includes("invalid")) {
-        return { category: "auth", humanMessage: "Auth: Login attempt failed" };
-      }
-      return { category: "auth", humanMessage: raw };
-    }
+    let simplePath = reqPath;
+    if (reqPath.startsWith("/api/admin/"))
+      simplePath = "Admin: " + reqPath.replace("/api/admin/", "");
+    else if (reqPath.startsWith("/api/public/"))
+      simplePath = "Public: " + reqPath.replace("/api/public/", "");
+    else if (reqPath.startsWith("/api/")) simplePath = reqPath.replace("/api/", "");
 
-    // AI Generation patterns
-    if (
+    return {
+      category: "http",
+      humanMessage: `HTTP ${method} ${simplePath} → ${status} ${statusText} (${time}ms)`,
+    };
+  }
+
+  private translateAuth(raw: string): { category: string; humanMessage: string } | null {
+    if (!raw.includes("login") && !raw.includes("Login") && !raw.includes("authenticated"))
+      return null;
+    if (raw.includes("success") || raw.includes("Success"))
+      return { category: "auth", humanMessage: "Auth: User logged in successfully" };
+    if (raw.includes("failed") || raw.includes("Failed") || raw.includes("invalid"))
+      return { category: "auth", humanMessage: "Auth: Login attempt failed" };
+    return { category: "auth", humanMessage: raw };
+  }
+
+  private translateAi(raw: string): { category: string; humanMessage: string } | null {
+    const isAi =
       raw.includes("[AI]") ||
       raw.includes("OpenAI") ||
       raw.includes("Anthropic") ||
       raw.includes("generating") ||
-      raw.includes("Generated")
-    ) {
-      if (raw.includes("success") || raw.includes("completed")) {
-        return { category: "ai", humanMessage: "AI: Content generated successfully" };
-      }
-      if (raw.includes("error") || raw.includes("failed") || raw.includes("Error")) {
-        return { category: "ai", humanMessage: "AI: Generation failed - " + raw.substring(0, 100) };
-      }
-      if (raw.includes("starting") || raw.includes("Starting")) {
-        return { category: "ai", humanMessage: "AI: Starting content generation" };
-      }
-      return { category: "ai", humanMessage: raw.substring(0, 150) };
-    }
+      raw.includes("Generated");
+    if (!isAi) return null;
+    if (raw.includes("success") || raw.includes("completed"))
+      return { category: "ai", humanMessage: "AI: Content generated successfully" };
+    if (raw.includes("error") || raw.includes("failed") || raw.includes("Error"))
+      return { category: "ai", humanMessage: "AI: Generation failed - " + raw.substring(0, 100) };
+    if (raw.includes("starting") || raw.includes("Starting"))
+      return { category: "ai", humanMessage: "AI: Starting content generation" };
+    return { category: "ai", humanMessage: raw.substring(0, 150) };
+  }
 
-    // Image patterns
-    if (raw.includes("[Image]") || raw.includes("upload") || raw.includes("Upload")) {
+  private translateSimpleCategory(raw: string): { category: string; humanMessage: string } | null {
+    if (raw.includes("[Image]") || raw.includes("upload") || raw.includes("Upload"))
       return { category: "images", humanMessage: raw.substring(0, 150) };
-    }
-
-    // Database patterns
     if (
       raw.includes("[db]") ||
       raw.includes("database") ||
       raw.includes("Database") ||
       raw.includes("query")
-    ) {
+    )
       return { category: "database", humanMessage: raw.substring(0, 150) };
-    }
-
-    // Vite HMR patterns (development)
     if (raw.includes("[vite]")) {
-      if (raw.includes("hmr update")) {
+      if (raw.includes("hmr update"))
         return { category: "dev", humanMessage: "Dev: Files updated (hot reload)" };
-      }
-      if (raw.includes("invalidate")) {
+      if (raw.includes("invalidate"))
         return { category: "dev", humanMessage: "Dev: Page refresh required" };
-      }
       return { category: "dev", humanMessage: raw.replace("[vite]", "Dev:").trim() };
     }
-
-    // Server startup
-    if (raw.includes("listening") || raw.includes("started") || raw.includes("Server")) {
+    if (raw.includes("listening") || raw.includes("started") || raw.includes("Server"))
       return { category: "server", humanMessage: raw };
-    }
-
-    // Default - keep original but truncate if too long
-    return {
-      category: "system",
-      humanMessage: raw.length > 200 ? raw.substring(0, 200) + "..." : raw,
-    };
+    return null;
   }
 
   getLogs(limit = 200): ConsoleLogEntry[] {

@@ -180,6 +180,100 @@ async function downloadAndUploadImage(
 /**
  * Generate hero image and section images for a destination
  */
+function detectProvider(imageUrl: string, promptLength: number): string {
+  return imageUrl.includes("replicate") || promptLength > 500 ? "flux" : "dalle3";
+}
+
+function getProviderCost(providerName: string): number {
+  return IMAGE_COSTS[providerName as keyof typeof IMAGE_COSTS] || IMAGE_COSTS.dalle3;
+}
+
+async function generateAndStoreHeroImage(
+  destination: Destination,
+  destinationId: string
+): Promise<{ heroUrl: string; provider: string; cost: number } | null> {
+  logger.info({ destinationId }, "Generating hero image");
+
+  const heroPrompt = await generateImagePrompt({
+    contentType: "destination" as any,
+    title: `${destination.name} Travel Guide`,
+    description: `Hero banner image for ${destination.name}, ${destination.country} travel destination page`,
+    location: destination.name,
+    style: "photorealistic",
+    generateHero: true,
+  });
+  if (!heroPrompt) return null;
+
+  const imageUrl = await generateImage(heroPrompt, {
+    size: "1792x1024",
+    quality: "hd",
+    style: "natural",
+    imageType: "hero",
+  });
+  if (!imageUrl) return null;
+
+  const provider = detectProvider(imageUrl, heroPrompt.length);
+  const cost = getProviderCost(provider);
+  const storedUrl = await downloadAndUploadImage(imageUrl, destinationId, "hero");
+  if (!storedUrl) return null;
+
+  const heroAlt = generateAltText(destination.name, destination.country, "hero");
+  await db
+    .update(destinations)
+    .set({
+      heroImage: storedUrl,
+      heroImageAlt: heroAlt,
+      updatedAt: new Date(),
+    } as any)
+    .where(eq(destinations.id, Number(destinationId)));
+
+  logger.info({ destinationId, heroUrl: storedUrl }, "Hero image generated and saved");
+  return { heroUrl: storedUrl, provider, cost };
+}
+
+async function generateSectionImage(
+  destination: Destination,
+  destinationId: string,
+  section: string
+): Promise<{ image: DestinationImage; cost: number } | null> {
+  const sectionPrompt = await generateImagePrompt({
+    contentType: "destination" as any,
+    title: `${destination.name} ${section}`,
+    description: `${section} section image for ${destination.name}, ${destination.country}`,
+    location: destination.name,
+    style: "photorealistic",
+    generateHero: false,
+  });
+  if (!sectionPrompt) return null;
+
+  const imageUrl = await generateImage(sectionPrompt, {
+    size: "1024x1024",
+    quality: "standard",
+    style: "natural",
+    imageType: "content",
+  });
+  if (!imageUrl) return null;
+
+  const sectionProvider = imageUrl.includes("replicate") ? "flux" : "dalle3";
+  const sectionCost = getProviderCost(sectionProvider);
+  const storedUrl = await downloadAndUploadImage(imageUrl, destinationId, "section", section);
+  if (!storedUrl) return null;
+
+  const alt = generateAltText(destination.name, destination.country, "section", section);
+  const newImage: DestinationImage = {
+    url: storedUrl,
+    alt,
+    caption: `${section.charAt(0).toUpperCase() + section.slice(1)} in ${destination.name}`,
+    section,
+    generatedAt: new Date().toISOString(),
+    provider: sectionProvider,
+    cost: sectionCost,
+  };
+
+  logger.info({ destinationId, section, url: storedUrl }, "Section image generated");
+  return { image: newImage, cost: sectionCost };
+}
+
 export async function generateDestinationImages(
   destinationId: string,
   config: AutoImageConfig = defaultAutoImageConfig
@@ -195,10 +289,7 @@ export async function generateDestinationImages(
       .select()
       .from(destinations)
       .where(eq(destinations.id, Number(destinationId)));
-
-    if (!destination) {
-      throw new Error(`Destination not found: ${destinationId}`);
-    }
+    if (!destination) throw new Error(`Destination not found: ${destinationId}`);
 
     const result: ImageGenerationResult = {
       destinationId,
@@ -213,15 +304,14 @@ export async function generateDestinationImages(
 
     const existingImages = (destination.images || []) as DestinationImage[];
     const needsHero = !destination.heroImage;
-    const existingSectionCount = existingImages.length;
-    const neededSections = Math.max(0, config.requiredSectionImages - existingSectionCount);
+    const neededSections = Math.max(0, config.requiredSectionImages - existingImages.length);
 
     logger.info(
       {
         destinationId,
         name: destination.name,
         needsHero,
-        existingSectionCount,
+        existingSectionCount: existingImages.length,
         neededSections,
       },
       "Image requirements assessed"
@@ -229,49 +319,12 @@ export async function generateDestinationImages(
 
     // Generate hero image if needed
     if (needsHero) {
-      logger.info({ destinationId }, "Generating hero image");
-
-      const heroPrompt = await generateImagePrompt({
-        contentType: "destination" as any,
-        title: `${destination.name} Travel Guide`,
-        description: `Hero banner image for ${destination.name}, ${destination.country} travel destination page`,
-        location: destination.name,
-        style: "photorealistic",
-        generateHero: true,
-      });
-
-      if (heroPrompt) {
-        const imageUrl = await generateImage(heroPrompt, {
-          size: "1792x1024",
-          quality: "hd",
-          style: "natural",
-          imageType: "hero",
-        });
-
-        if (imageUrl) {
-          provider = imageUrl.includes("replicate") || heroPrompt.length > 500 ? "flux" : "dalle3";
-          totalCost += IMAGE_COSTS[provider as keyof typeof IMAGE_COSTS] || IMAGE_COSTS.dalle3;
-
-          const storedUrl = await downloadAndUploadImage(imageUrl, destinationId, "hero");
-
-          if (storedUrl) {
-            const heroAlt = generateAltText(destination.name, destination.country, "hero");
-
-            await db
-              .update(destinations)
-              .set({
-                heroImage: storedUrl,
-                heroImageAlt: heroAlt,
-                updatedAt: new Date(),
-              } as any)
-              .where(eq(destinations.id, Number(destinationId)));
-
-            result.heroGenerated = true;
-            result.heroUrl = storedUrl;
-
-            logger.info({ destinationId, heroUrl: storedUrl }, "Hero image generated and saved");
-          }
-        }
+      const heroResult = await generateAndStoreHeroImage(destination, destinationId);
+      if (heroResult) {
+        provider = heroResult.provider;
+        totalCost += heroResult.cost;
+        result.heroGenerated = true;
+        result.heroUrl = heroResult.heroUrl;
       }
     }
 
@@ -279,100 +332,40 @@ export async function generateDestinationImages(
     if (neededSections > 0) {
       const sectionTypes = ["attractions", "hotels", "restaurants", "districts"];
       const sectionsToGenerate = sectionTypes.slice(0, neededSections);
-
       logger.info({ destinationId, sections: sectionsToGenerate }, "Generating section images");
 
       const newImages: DestinationImage[] = [];
-
       for (const section of sectionsToGenerate) {
-        const sectionPrompt = await generateImagePrompt({
-          contentType: "destination" as any,
-          title: `${destination.name} ${section}`,
-          description: `${section} section image for ${destination.name}, ${destination.country}`,
-          location: destination.name,
-          style: "photorealistic",
-          generateHero: false,
-        });
-
-        if (sectionPrompt) {
-          const imageUrl = await generateImage(sectionPrompt, {
-            size: "1024x1024",
-            quality: "standard",
-            style: "natural",
-            imageType: "content",
-          });
-
-          if (imageUrl) {
-            const sectionProvider = imageUrl.includes("replicate") ? "flux" : "dalle3";
-            const sectionCost =
-              IMAGE_COSTS[sectionProvider as keyof typeof IMAGE_COSTS] || IMAGE_COSTS.dalle3;
-            totalCost += sectionCost;
-
-            const storedUrl = await downloadAndUploadImage(
-              imageUrl,
-              destinationId,
-              "section",
-              section
-            );
-
-            if (storedUrl) {
-              const alt = generateAltText(
-                destination.name,
-                destination.country,
-                "section",
-                section
-              );
-
-              const newImage: DestinationImage = {
-                url: storedUrl,
-                alt,
-                caption: `${section.charAt(0).toUpperCase() + section.slice(1)} in ${destination.name}`,
-                section,
-                generatedAt: new Date().toISOString(),
-                provider: sectionProvider,
-                cost: sectionCost,
-              };
-
-              newImages.push(newImage);
-              result.sectionImagesGenerated++;
-
-              logger.info({ destinationId, section, url: storedUrl }, "Section image generated");
-            }
-          }
+        const sectionResult = await generateSectionImage(destination, destinationId, section);
+        if (sectionResult) {
+          totalCost += sectionResult.cost;
+          newImages.push(sectionResult.image);
+          result.sectionImagesGenerated++;
         }
       }
 
-      // Update destination with new images
       if (newImages.length > 0) {
-        const allImages = [...existingImages, ...newImages];
-
         await db
           .update(destinations)
           .set({
-            images: allImages,
+            images: [...existingImages, ...newImages],
             lastImageGenerated: new Date(),
             updatedAt: new Date(),
           } as any)
           .where(eq(destinations.id, Number(destinationId)));
-
         result.sectionImages = newImages;
       }
     }
 
-    // Update last image generated timestamp
     await db
       .update(destinations)
-      .set({
-        lastImageGenerated: new Date(),
-        updatedAt: new Date(),
-      } as any)
+      .set({ lastImageGenerated: new Date(), updatedAt: new Date() } as any)
       .where(eq(destinations.id, Number(destinationId)));
 
     result.totalCost = totalCost;
     result.provider = provider;
     result.duration = Date.now() - startTime;
 
-    // Log successful generation
     await db.insert(aiGenerationLogs).values({
       targetType: "destination_images",
       targetId: destinationId,
@@ -393,19 +386,16 @@ export async function generateDestinationImages(
       },
       "Image generation completed for destination"
     );
-
     return result;
   } catch (error) {
     const duration = Date.now() - startTime;
     const errorMessage = error instanceof Error ? error.message : String(error);
-
     logger.error({ error: errorMessage, destinationId, duration }, "Image generation failed");
 
-    // Log failed generation
     await db.insert(aiGenerationLogs).values({
       targetType: "destination_images",
       targetId: destinationId,
-      provider: provider,
+      provider,
       model: "unknown",
       prompt: "Image generation attempt",
       success: false,
@@ -432,6 +422,29 @@ export async function generateDestinationImages(
  * Main entry point for auto-pilot system
  * Generates images for up to maxDestinationsPerDay destinations
  */
+async function processDestination(
+  destination: Destination,
+  config: AutoImageConfig,
+  result: DailyImageGenerationResult
+): Promise<number> {
+  logger.info({ destinationId: destination.id, name: destination.name }, "Processing destination");
+
+  const genResult = await generateDestinationImages(String(destination.id), config);
+  result.results.push(genResult);
+  result.destinationsProcessed++;
+  result.totalCost += genResult.totalCost;
+
+  const imagesFromThisDestination =
+    (genResult.heroGenerated ? 1 : 0) + genResult.sectionImagesGenerated;
+  result.totalImagesGenerated += imagesFromThisDestination;
+
+  if (genResult.error) {
+    result.errors.push({ destinationId: String(destination.id), error: genResult.error });
+  }
+
+  return imagesFromThisDestination;
+}
+
 export async function runDailyImageGeneration(
   config: AutoImageConfig = defaultAutoImageConfig
 ): Promise<DailyImageGenerationResult> {
@@ -456,14 +469,12 @@ export async function runDailyImageGeneration(
 
   try {
     const destinationsToProcess = await findDestinationsNeedingImages(config);
-
     if (destinationsToProcess.length === 0) {
       logger.info("No destinations need images");
       return result;
     }
 
     let imagesGenerated = 0;
-
     for (const destination of destinationsToProcess) {
       if (imagesGenerated >= config.maxImagesPerDay) {
         logger.info({ maxReached: config.maxImagesPerDay }, "Daily image limit reached");
@@ -471,43 +482,16 @@ export async function runDailyImageGeneration(
       }
 
       try {
-        logger.info(
-          { destinationId: destination.id, name: destination.name },
-          "Processing destination"
-        );
-
-        const genResult = await generateDestinationImages(String(destination.id), config);
-
-        result.results.push(genResult);
-        result.destinationsProcessed++;
-        result.totalCost += genResult.totalCost;
-
-        const imagesFromThisDestination =
-          (genResult.heroGenerated ? 1 : 0) + genResult.sectionImagesGenerated;
-        result.totalImagesGenerated += imagesFromThisDestination;
-        imagesGenerated += imagesFromThisDestination;
-
-        if (genResult.error) {
-          result.errors.push({
-            destinationId: String(destination.id),
-            error: genResult.error,
-          });
-        }
+        imagesGenerated += await processDestination(destination, config, result);
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logger.error(
           { error: errorMessage, destinationId: destination.id },
           "Failed to process destination"
         );
-
-        result.errors.push({
-          destinationId: String(destination.id),
-          error: errorMessage,
-        });
+        result.errors.push({ destinationId: String(destination.id), error: errorMessage });
       }
     }
-
-    const duration = Date.now() - startTime;
 
     logger.info(
       {
@@ -516,16 +500,17 @@ export async function runDailyImageGeneration(
         totalImagesGenerated: result.totalImagesGenerated,
         totalCost: result.totalCost,
         errors: result.errors.length,
-        duration,
+        duration: Date.now() - startTime,
       },
       "Daily image generation completed"
     );
 
     return result;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logger.error({ error: errorMessage }, "Daily image generation failed");
-
+    logger.error(
+      { error: error instanceof Error ? error.message : String(error) },
+      "Daily image generation failed"
+    );
     return result;
   }
 }

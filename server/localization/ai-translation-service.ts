@@ -371,6 +371,53 @@ export class AITranslationService {
   /**
    * Translate content using the optimal AI provider for the target language
    */
+  /** Create a passthrough result for no-op translations */
+  private createPassthroughResult(
+    text: string,
+    sourceLanguage: string,
+    targetLanguage: string,
+    provider: string
+  ): TranslationResult {
+    return {
+      translatedText: text,
+      sourceLanguage,
+      targetLanguage,
+      provider,
+      model: "none",
+      latencyMs: 0,
+    };
+  }
+
+  /** Store a result in the cache, evicting oldest if needed */
+  private cacheResult(cacheKey: string, result: TranslationResult): void {
+    if (!this.cacheEnabled) return;
+    if (this.translationCache.size >= this.cacheMaxSize) {
+      const firstKey = this.translationCache.keys().next().value;
+      if (firstKey) {
+        this.translationCache.delete(firstKey);
+      }
+    }
+    this.translationCache.set(cacheKey, result);
+  }
+
+  /** Attempt a single translation call and return the result */
+  private async attemptTranslation(
+    prompt: string,
+    sourceLanguage: string,
+    targetLanguage: string
+  ): Promise<TranslationResult> {
+    const result = await this.translateWithProvider(prompt, targetLanguage);
+    return {
+      translatedText: result.content.trim(),
+      sourceLanguage,
+      targetLanguage,
+      provider: result.provider,
+      model: result.model,
+      latencyMs: result.latencyMs,
+      tokensUsed: result.tokensUsed,
+    };
+  }
+
   async translateContent(
     text: string,
     sourceLanguage: string,
@@ -378,25 +425,11 @@ export class AITranslationService {
     options: TranslationOptions = {}
   ): Promise<TranslationResult> {
     if (!text || text.trim().length === 0) {
-      return {
-        translatedText: text,
-        sourceLanguage,
-        targetLanguage,
-        provider: "none",
-        model: "none",
-        latencyMs: 0,
-      };
+      return this.createPassthroughResult(text, sourceLanguage, targetLanguage, "none");
     }
 
     if (sourceLanguage === targetLanguage) {
-      return {
-        translatedText: text,
-        sourceLanguage,
-        targetLanguage,
-        provider: "passthrough",
-        model: "none",
-        latencyMs: 0,
-      };
+      return this.createPassthroughResult(text, sourceLanguage, targetLanguage, "passthrough");
     }
 
     const cacheKey = this.getCacheKey(text, sourceLanguage, targetLanguage);
@@ -408,8 +441,7 @@ export class AITranslationService {
       }
     }
 
-    const languageConfig = SUPPORTED_LANGUAGES[targetLanguage];
-    if (!languageConfig) {
+    if (!SUPPORTED_LANGUAGES[targetLanguage]) {
       logger.warn({ targetLanguage }, "Unsupported target language, using default provider chain");
     }
 
@@ -424,35 +456,20 @@ export class AITranslationService {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        const result = await this.translateWithProvider(prompt, targetLanguage);
-
-        const translationResult: TranslationResult = {
-          translatedText: result.content.trim(),
+        const translationResult = await this.attemptTranslation(
+          prompt,
           sourceLanguage,
-          targetLanguage,
-          provider: result.provider,
-          model: result.model,
-          latencyMs: result.latencyMs,
-          tokensUsed: result.tokensUsed,
-        };
-
-        if (this.cacheEnabled) {
-          if (this.translationCache.size >= this.cacheMaxSize) {
-            const firstKey = this.translationCache.keys().next().value;
-            if (firstKey) {
-              this.translationCache.delete(firstKey);
-            }
-          }
-          this.translationCache.set(cacheKey, translationResult);
-        }
+          targetLanguage
+        );
+        this.cacheResult(cacheKey, translationResult);
 
         logger.info(
           {
             sourceLanguage,
             targetLanguage,
-            provider: result.provider,
-            model: result.model,
-            latencyMs: result.latencyMs,
+            provider: translationResult.provider,
+            model: translationResult.model,
+            latencyMs: translationResult.latencyMs,
             textLength: text.length,
           },
           "Translation completed successfully"
@@ -462,12 +479,7 @@ export class AITranslationService {
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         logger.warn(
-          {
-            attempt,
-            maxRetries,
-            error: lastError.message,
-            targetLanguage,
-          },
+          { attempt, maxRetries, error: lastError.message, targetLanguage },
           `Translation attempt ${attempt} failed`
         );
 

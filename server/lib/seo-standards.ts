@@ -479,6 +479,130 @@ export function calculateKeywordDensity(content: string, keyword: string): numbe
  * Full SEO validation for content
  * NOTE: Validation is disabled when SEO_VALIDATION_ENABLED is false
  */
+interface ValidationAccumulator {
+  errors: SEOError[];
+  warnings: SEOWarning[];
+  suggestions: string[];
+  score: number;
+}
+
+function validateSEOMetaFields(
+  content: { metaTitle: string; metaDescription: string; htmlContent: string },
+  contentType: ContentType,
+  acc: ValidationAccumulator
+): void {
+  const metaTitleResult = validateMetaTitle(content.metaTitle);
+  if (!metaTitleResult.valid) {
+    acc.errors.push({
+      code: "META_TITLE",
+      field: "metaTitle",
+      message: metaTitleResult.error!,
+      severity: "critical",
+    });
+    acc.score -= 15;
+  }
+
+  const metaDescResult = validateMetaDescription(content.metaDescription);
+  if (!metaDescResult.valid) {
+    acc.errors.push({
+      code: "META_DESC",
+      field: "metaDescription",
+      message: metaDescResult.error!,
+      severity: "critical",
+    });
+    acc.score -= 15;
+  }
+
+  const wordCountResult = validateWordCount(
+    content.htmlContent.replace(/<[^>]+>/g, " "),
+    contentType
+  );
+  if (!wordCountResult.valid) {
+    acc.errors.push({
+      code: "WORD_COUNT",
+      field: "content",
+      message: wordCountResult.error!,
+      severity: "error",
+    });
+    acc.score -= 10;
+  }
+}
+
+function validateSEOStructure(
+  htmlContent: string,
+  requirements: (typeof CONTENT_TYPE_REQUIREMENTS)[ContentType],
+  acc: ValidationAccumulator
+): void {
+  const h2Count = countH2Headers(htmlContent);
+  if (h2Count < requirements.h2Count.min) {
+    acc.errors.push({
+      code: "H2_COUNT",
+      field: "headers",
+      message: `Not enough H2 headers (${h2Count}). Minimum: ${requirements.h2Count.min}`,
+      severity: "error",
+    });
+    acc.score -= 10;
+  } else if (h2Count > requirements.h2Count.max) {
+    acc.warnings.push({
+      code: "H2_COUNT",
+      field: "headers",
+      message: `Too many H2 headers (${h2Count}). Maximum: ${requirements.h2Count.max}`,
+    });
+    acc.score -= 5;
+  }
+
+  const internalLinkCount = countInternalLinks(htmlContent);
+  if (internalLinkCount < requirements.internalLinks.min) {
+    acc.errors.push({
+      code: "INTERNAL_LINKS",
+      field: "links",
+      message: `Not enough internal links (${internalLinkCount}). Minimum: ${requirements.internalLinks.min}`,
+      severity: "error",
+    });
+    acc.score -= 10;
+    acc.suggestions.push(
+      `Add ${requirements.internalLinks.min - internalLinkCount} more internal links to related Travi pages`
+    );
+  }
+
+  const externalLinks = analyzeExternalLinks(htmlContent);
+  if (externalLinks.count < requirements.externalLinks.min) {
+    acc.warnings.push({
+      code: "EXTERNAL_LINKS",
+      field: "links",
+      message: `Not enough external links (${externalLinks.count}). Minimum: ${requirements.externalLinks.min}`,
+      suggestion: "Add links to authoritative sources like official tourism sites",
+    });
+    acc.score -= 5;
+  }
+  if (externalLinks.authoritative === 0 && externalLinks.count > 0) {
+    acc.warnings.push({
+      code: "AUTHORITATIVE_LINKS",
+      field: "links",
+      message: "No links to authoritative sources found",
+      suggestion: "Include links to official tourism websites or trusted travel sources",
+    });
+    acc.score -= 3;
+  }
+}
+
+function validateSEOBannedPhrases(htmlContent: string, acc: ValidationAccumulator): void {
+  const bannedPhrases = detectBannedPhrases(htmlContent);
+  for (const phrase of bannedPhrases.found) {
+    const alternatives = bannedPhrases.suggestions.get(phrase);
+    acc.errors.push({
+      code: "BANNED_PHRASE",
+      field: "content",
+      message: `Banned phrase detected: "${phrase}"`,
+      severity: "error",
+    });
+    if (alternatives) {
+      acc.suggestions.push(`Replace "${phrase}" with: ${alternatives.join(", ")}`);
+    }
+  }
+  acc.score -= bannedPhrases.found.length * 3;
+}
+
 export function validateContent(
   content: {
     title: string;
@@ -490,147 +614,28 @@ export function validateContent(
   },
   contentType: ContentType
 ): SEOValidationResult {
-  // Return always-valid result when validation is disabled
   if (!SEO_VALIDATION_ENABLED) {
-    return {
-      isValid: true,
-      score: 100,
-      errors: [],
-      warnings: [],
-      suggestions: [],
-    };
+    return { isValid: true, score: 100, errors: [], warnings: [], suggestions: [] };
   }
 
-  const errors: SEOError[] = [];
-  const warnings: SEOWarning[] = [];
-  const suggestions: string[] = [];
-  let score = 100;
-
+  const acc: ValidationAccumulator = { errors: [], warnings: [], suggestions: [], score: 100 };
   const requirements = CONTENT_TYPE_REQUIREMENTS[contentType];
 
-  // Validate meta title
-  const metaTitleResult = validateMetaTitle(content.metaTitle);
-  if (!metaTitleResult.valid) {
-    errors.push({
-      code: "META_TITLE",
-      field: "metaTitle",
-      message: metaTitleResult.error!,
-      severity: "critical",
-    });
-    score -= 15;
-  }
-
-  // Validate meta description
-  const metaDescResult = validateMetaDescription(content.metaDescription);
-  if (!metaDescResult.valid) {
-    errors.push({
-      code: "META_DESC",
-      field: "metaDescription",
-      message: metaDescResult.error!,
-      severity: "critical",
-    });
-    score -= 15;
-  }
-
-  // Validate word count
-  const wordCountResult = validateWordCount(
-    content.htmlContent.replace(/<[^>]+>/g, " "),
-    contentType
-  );
-  if (!wordCountResult.valid) {
-    errors.push({
-      code: "WORD_COUNT",
-      field: "content",
-      message: wordCountResult.error!,
-      severity: "error",
-    });
-    score -= 10;
-  }
-
-  // Check H2 headers
-  const h2Count = countH2Headers(content.htmlContent);
-  if (h2Count < requirements.h2Count.min) {
-    errors.push({
-      code: "H2_COUNT",
-      field: "headers",
-      message: `Not enough H2 headers (${h2Count}). Minimum: ${requirements.h2Count.min}`,
-      severity: "error",
-    });
-    score -= 10;
-  } else if (h2Count > requirements.h2Count.max) {
-    warnings.push({
-      code: "H2_COUNT",
-      field: "headers",
-      message: `Too many H2 headers (${h2Count}). Maximum: ${requirements.h2Count.max}`,
-    });
-    score -= 5;
-  }
-
-  // Check internal links
-  const internalLinkCount = countInternalLinks(content.htmlContent);
-  if (internalLinkCount < requirements.internalLinks.min) {
-    errors.push({
-      code: "INTERNAL_LINKS",
-      field: "links",
-      message: `Not enough internal links (${internalLinkCount}). Minimum: ${requirements.internalLinks.min}`,
-      severity: "error",
-    });
-    score -= 10;
-    suggestions.push(
-      `Add ${requirements.internalLinks.min - internalLinkCount} more internal links to related Travi pages`
-    );
-  }
-
-  // Check external links
-  const externalLinks = analyzeExternalLinks(content.htmlContent);
-  if (externalLinks.count < requirements.externalLinks.min) {
-    warnings.push({
-      code: "EXTERNAL_LINKS",
-      field: "links",
-      message: `Not enough external links (${externalLinks.count}). Minimum: ${requirements.externalLinks.min}`,
-      suggestion: "Add links to authoritative sources like official tourism sites",
-    });
-    score -= 5;
-  }
-  if (externalLinks.authoritative === 0 && externalLinks.count > 0) {
-    warnings.push({
-      code: "AUTHORITATIVE_LINKS",
-      field: "links",
-      message: "No links to authoritative sources found",
-      suggestion: "Include links to official tourism websites or trusted travel sources",
-    });
-    score -= 3;
-  }
-
-  // Check for banned phrases
-  const bannedPhrases = detectBannedPhrases(content.htmlContent);
-  if (bannedPhrases.found.length > 0) {
-    for (const phrase of bannedPhrases.found) {
-      const alternatives = bannedPhrases.suggestions.get(phrase);
-      errors.push({
-        code: "BANNED_PHRASE",
-        field: "content",
-        message: `Banned phrase detected: "${phrase}"`,
-        severity: "error",
-      });
-      if (alternatives) {
-        suggestions.push(`Replace "${phrase}" with: ${alternatives.join(", ")}`);
-      }
-    }
-    score -= bannedPhrases.found.length * 3;
-  }
+  validateSEOMetaFields(content, contentType, acc);
+  validateSEOStructure(content.htmlContent, requirements, acc);
+  validateSEOBannedPhrases(content.htmlContent, acc);
 
   // Validate alt texts
   if (content.altTexts) {
     for (let i = 0; i < content.altTexts.length; i++) {
       const altResult = validateAltText(content.altTexts[i]);
       if (!altResult.valid) {
-        warnings.push({
+        acc.warnings.push({
           code: "ALT_TEXT",
           field: `image_${i}`,
           message: altResult.errors.join("; "),
         });
-        score -= 2;
+        acc.score -= 2;
       }
     }
   }
@@ -642,31 +647,30 @@ export function validateContent(
       content.primaryKeyword
     );
     if (density < SEO_REQUIREMENTS.keywordDensity.primary.min) {
-      warnings.push({
+      acc.warnings.push({
         code: "KEYWORD_DENSITY",
         field: "keyword",
         message: `Primary keyword density too low (${density.toFixed(2)}%). Target: 1-2%`,
       });
-      score -= 5;
+      acc.score -= 5;
     } else if (density > SEO_REQUIREMENTS.keywordDensity.primary.max) {
-      warnings.push({
+      acc.warnings.push({
         code: "KEYWORD_STUFFING",
         field: "keyword",
         message: `Primary keyword density too high (${density.toFixed(2)}%). Maximum: 2%`,
       });
-      score -= 5;
+      acc.score -= 5;
     }
   }
 
-  // Ensure score doesn't go below 0
-  score = Math.max(0, score);
+  acc.score = Math.max(0, acc.score);
 
   return {
-    isValid: errors.filter(e => e.severity === "critical").length === 0 && score >= 80,
-    score,
-    errors,
-    warnings,
-    suggestions,
+    isValid: acc.errors.filter(e => e.severity === "critical").length === 0 && acc.score >= 80,
+    score: acc.score,
+    errors: acc.errors,
+    warnings: acc.warnings,
+    suggestions: acc.suggestions,
   };
 }
 

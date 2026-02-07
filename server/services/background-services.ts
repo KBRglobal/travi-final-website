@@ -464,6 +464,42 @@ export async function stopBackgroundServices(): Promise<void> {
 /**
  * Get status of all background services
  */
+async function fetchRssSchedulerStatus(): Promise<any> {
+  try {
+    const { getRSSSchedulerStatus } = await import("../octypo/rss-scheduler");
+    return getRSSSchedulerStatus();
+  } catch (error) {
+    console.error(error);
+    return { running: false };
+  }
+}
+
+async function fetchTranslationQueueStatus(): Promise<string> {
+  try {
+    const { getQueueStatus } = await import("../localization/translation-queue");
+    const qStatus = await getQueueStatus();
+    if (qStatus.isRunning) return "running";
+    if (qStatus.isPaused) return "paused";
+    return "idle";
+  } catch (error) {
+    console.error(error);
+    return "not_started";
+  }
+}
+
+async function fetchSeoAutopilotStatus(config: BackgroundServicesConfig): Promise<string> {
+  if (!config.enableSEOAutopilot || !seoAutopilotInterval) return "stopped";
+  try {
+    const { getAutopilot } = await import("../seo-engine/autopilot");
+    const autopilot = getAutopilot();
+    const status = autopilot.getStatus();
+    return status.mode !== "off" ? "running" : "paused";
+  } catch (error) {
+    console.error(error);
+    return "stopped";
+  }
+}
+
 export async function getBackgroundServicesStatus(): Promise<{
   started: boolean;
   config: BackgroundServicesConfig;
@@ -480,39 +516,11 @@ export async function getBackgroundServicesStatus(): Promise<{
 }> {
   const config = getConfig();
 
-  let rssSchedulerStatus: any = { running: false };
-  try {
-    const { getRSSSchedulerStatus } = await import("../octypo/rss-scheduler");
-    rssSchedulerStatus = getRSSSchedulerStatus();
-  } catch (error) {
-    // Scheduler not available
-    console.error(error);
-  }
-
-  let translationQueueStatus = "not_started";
-  try {
-    const { getQueueStatus } = await import("../localization/translation-queue");
-    const qStatus = await getQueueStatus();
-    if (qStatus.isRunning) translationQueueStatus = "running";
-    else if (qStatus.isPaused) translationQueueStatus = "paused";
-    else translationQueueStatus = "idle";
-  } catch (error) {
-    // Queue not available
-    console.error(error);
-  }
-
-  let seoAutopilotStatus = "stopped";
-  try {
-    if (config.enableSEOAutopilot && seoAutopilotInterval) {
-      const { getAutopilot } = await import("../seo-engine/autopilot");
-      const autopilot = getAutopilot();
-      const status = autopilot.getStatus();
-      seoAutopilotStatus = status.mode !== "off" ? "running" : "paused";
-    }
-  } catch (error) {
-    // Autopilot not available
-    console.error(error);
-  }
+  const [rssSchedulerStatus, translationQueueStatus, seoAutopilotStatus] = await Promise.all([
+    fetchRssSchedulerStatus(),
+    fetchTranslationQueueStatus(),
+    fetchSeoAutopilotStatus(config),
+  ]);
 
   return {
     started: servicesStarted,

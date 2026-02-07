@@ -376,6 +376,81 @@ export const contextualAuth = {
   },
 
   /**
+   * Assess device risk
+   */
+  _assessDeviceRisk(
+    userId: string,
+    fingerprint: DeviceFingerprint
+  ): { score: number; factor?: string } {
+    const isKnown = deviceFingerprint.isKnownDevice(userId, fingerprint);
+    if (!isKnown) return { score: 30, factor: "new_device" };
+    if (!deviceFingerprint.isDeviceTrusted(userId, fingerprint))
+      return { score: 10, factor: "untrusted_device" };
+    return { score: 0 };
+  },
+
+  /**
+   * Assess geo risk
+   */
+  _assessGeoRisk(
+    geo: GeoLocation | undefined,
+    policy: UserAccessPolicy
+  ): { score: number; factor?: string } {
+    if (!geo || !policy.allowedCountries || policy.allowedCountries.length === 0)
+      return { score: 0 };
+    if (!policy.allowedCountries.includes(geo.countryCode || ""))
+      return { score: 40, factor: "geo_blocked" };
+    return { score: 0 };
+  },
+
+  /**
+   * Assess time-based risk
+   */
+  _assessTimeRisk(policy: UserAccessPolicy): { score: number; factors: string[] } {
+    const factors: string[] = [];
+    let score = 0;
+    const now = new Date();
+    const currentHour = now.getUTCHours();
+    const currentDay = now.getUTCDay();
+
+    if (policy.allowedTimeWindow) {
+      const { start, end } = policy.allowedTimeWindow;
+      const outsideWindow =
+        start <= end
+          ? currentHour < start || currentHour >= end
+          : currentHour < start && currentHour >= end;
+      if (outsideWindow) {
+        score += 20;
+        factors.push("outside_time_window");
+      }
+    }
+
+    if (policy.allowedDaysOfWeek && !policy.allowedDaysOfWeek.includes(currentDay)) {
+      score += 15;
+      factors.push("outside_allowed_days");
+    }
+
+    return { score, factors };
+  },
+
+  /**
+   * Assess IP risk
+   */
+  _assessIpRisk(ip: string, policy: UserAccessPolicy): { score: number; factors: string[] } {
+    const factors: string[] = [];
+    let score = 0;
+    if (policy.ipBlacklist?.includes(ip)) {
+      score += 50;
+      factors.push("ip_blacklisted");
+    }
+    if (policy.ipWhitelist && policy.ipWhitelist.length > 0 && !policy.ipWhitelist.includes(ip)) {
+      score += 25;
+      factors.push("ip_not_whitelisted");
+    }
+    return { score, factors };
+  },
+
+  /**
    * Evaluate authentication context and calculate risk
    */
   async evaluateContext(
@@ -388,65 +463,24 @@ export const contextualAuth = {
     const riskFactors: string[] = [];
     let riskScore = 0;
 
-    // 1. Device Check
+    const deviceRisk = this._assessDeviceRisk(userId, fingerprint);
+    riskScore += deviceRisk.score;
+    if (deviceRisk.factor) riskFactors.push(deviceRisk.factor);
+
+    const geoRisk = this._assessGeoRisk(geo, policy);
+    riskScore += geoRisk.score;
+    if (geoRisk.factor) riskFactors.push(geoRisk.factor);
+
+    const timeRisk = this._assessTimeRisk(policy);
+    riskScore += timeRisk.score;
+    riskFactors.push(...timeRisk.factors);
+
+    const ipRisk = this._assessIpRisk(ip, policy);
+    riskScore += ipRisk.score;
+    riskFactors.push(...ipRisk.factors);
+
     const isKnownDevice = deviceFingerprint.isKnownDevice(userId, fingerprint);
     const isTrustedDevice = deviceFingerprint.isDeviceTrusted(userId, fingerprint);
-
-    if (!isKnownDevice) {
-      riskScore += 30;
-      riskFactors.push("new_device");
-    } else if (!isTrustedDevice) {
-      riskScore += 10;
-      riskFactors.push("untrusted_device");
-    }
-
-    // 2. Geo Check
-    if (geo && policy.allowedCountries && policy.allowedCountries.length > 0) {
-      if (!policy.allowedCountries.includes(geo.countryCode || "")) {
-        riskScore += 40;
-        riskFactors.push("geo_blocked");
-      }
-    }
-
-    // Impossible travel detection deferred - requires session history storage
-    // for previous login location/timestamp and geo distance vs time elapsed comparison
-
-    // 3. Time-based Check
-    const now = new Date();
-    const currentHour = now.getUTCHours();
-    const currentDay = now.getUTCDay();
-
-    if (policy.allowedTimeWindow) {
-      const { start, end } = policy.allowedTimeWindow;
-      if (start <= end) {
-        if (currentHour < start || currentHour >= end) {
-          riskScore += 20;
-          riskFactors.push("outside_time_window");
-        }
-      } else if (currentHour < start && currentHour >= end) {
-        // Overnight window (e.g., 22:00 - 06:00)
-        riskScore += 20;
-        riskFactors.push("outside_time_window");
-      }
-    }
-
-    if (policy.allowedDaysOfWeek && !policy.allowedDaysOfWeek.includes(currentDay)) {
-      riskScore += 15;
-      riskFactors.push("outside_allowed_days");
-    }
-
-    // 4. IP Check
-    if (policy.ipBlacklist?.includes(ip)) {
-      riskScore += 50;
-      riskFactors.push("ip_blacklisted");
-    }
-
-    if (policy.ipWhitelist && policy.ipWhitelist.length > 0 && !policy.ipWhitelist.includes(ip)) {
-      riskScore += 25;
-      riskFactors.push("ip_not_whitelisted");
-    }
-
-    // Calculate final decision
     const requiresMfa =
       riskScore >= 20 ||
       (policy.requireMfaForNewDevice === true && !isKnownDevice) ||
@@ -455,7 +489,6 @@ export const contextualAuth = {
     const requiresVerification = riskScore >= 50;
     const allowed = riskScore < 70 && !riskFactors.includes("geo_blocked");
 
-    // Log high-risk attempts
     if (riskScore >= 30) {
       await auditLogger.log({
         action: "security:high_risk_login_attempt",
@@ -466,13 +499,7 @@ export const contextualAuth = {
       });
     }
 
-    return {
-      allowed,
-      riskScore,
-      riskFactors,
-      requiresMfa,
-      requiresVerification,
-    };
+    return { allowed, riskScore, riskFactors, requiresMfa, requiresVerification };
   },
 };
 
@@ -936,68 +963,98 @@ export const passwordSecurity = {
   },
 
   /**
-   * Check password strength
+   * Score password length
    */
-  checkStrength(password: string): PasswordStrengthResult {
+  _scorePwdLength(len: number): { score: number; feedback?: string } {
+    let score = 0;
+    if (len >= 8) score += 10;
+    if (len >= 12) score += 15;
+    if (len >= 16) score += 10;
+    return { score, feedback: len < 8 ? "Password should be at least 8 characters" : undefined };
+  },
+
+  /**
+   * Score character variety in password
+   */
+  _scorePwdVariety(password: string): { score: number; feedback: string[] } {
     const feedback: string[] = [];
     let score = 0;
+    const checks: Array<{ regex: RegExp; points: number; msg: string }> = [
+      { regex: /[a-z]/, points: 10, msg: "Add lowercase letters" },
+      { regex: /[A-Z]/, points: 10, msg: "Add uppercase letters" },
+      { regex: /\d/, points: 10, msg: "Add numbers" },
+      { regex: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/, points: 15, msg: "Add special characters" },
+    ];
+    for (const check of checks) {
+      if (check.regex.test(password)) {
+        score += check.points;
+      } else {
+        feedback.push(check.msg);
+      }
+    }
+    return { score, feedback };
+  },
 
-    // Length check
-    if (password.length >= 8) score += 10;
-    if (password.length >= 12) score += 15;
-    if (password.length >= 16) score += 10;
-    if (password.length < 8) feedback.push("Password should be at least 8 characters");
-
-    // Character variety
-    if (/[a-z]/.test(password)) score += 10;
-    else feedback.push("Add lowercase letters");
-
-    if (/[A-Z]/.test(password)) score += 10;
-    else feedback.push("Add uppercase letters");
-
-    if (/\d/.test(password)) score += 10;
-    else feedback.push("Add numbers");
-
-    if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) score += 15;
-    else feedback.push("Add special characters");
-
-    // Pattern checks (deductions)
+  /**
+   * Score password patterns (deductions)
+   */
+  _scorePwdPatterns(password: string): { score: number; feedback: string[] } {
+    const feedback: string[] = [];
+    let score = 0;
     if (/(.)\1{2,}/.test(password)) {
       score -= 10;
       feedback.push("Avoid repeating characters");
     }
-
     if (/^[a-zA-Z]+\d+$/.test(password) || /^\d+[a-zA-Z]+$/.test(password)) {
       score -= 10;
       feedback.push("Use a more complex pattern");
     }
-
-    // Common patterns
     const commonPatterns = ["123456", "password", "qwerty", "abc123", "letmein"];
     if (commonPatterns.some(p => password.toLowerCase().includes(p))) {
       score -= 20;
       feedback.push("Avoid common password patterns");
     }
+    return { score, feedback };
+  },
 
-    // Normalize score
+  /**
+   * Get strength label from score
+   */
+  _scoreToStrength(score: number): PasswordStrengthResult["strength"] {
+    if (score < 20) return "very_weak";
+    if (score < 40) return "weak";
+    if (score < 60) return "fair";
+    if (score < 80) return "strong";
+    return "very_strong";
+  },
+
+  /**
+   * Check password strength
+   */
+  checkStrength(password: string): PasswordStrengthResult {
+    const feedback: string[] = [];
+
+    const lenResult = this._scorePwdLength(password.length);
+    let score = lenResult.score;
+    if (lenResult.feedback) feedback.push(lenResult.feedback);
+
+    const variety = this._scorePwdVariety(password);
+    score += variety.score;
+    feedback.push(...variety.feedback);
+
+    const patterns = this._scorePwdPatterns(password);
+    score += patterns.score;
+    feedback.push(...patterns.feedback);
+
     score = Math.max(0, Math.min(100, score));
 
-    // Determine strength
-    let strength: PasswordStrengthResult["strength"];
-    if (score < 20) strength = "very_weak";
-    else if (score < 40) strength = "weak";
-    else if (score < 60) strength = "fair";
-    else if (score < 80) strength = "strong";
-    else strength = "very_strong";
-
-    // Check minimum requirements
     const meetsRequirements =
       password.length >= 8 &&
       /[a-z]/.test(password) &&
       /[A-Z]/.test(password) &&
       /\d/.test(password);
 
-    return { score, strength, feedback, meetsRequirements };
+    return { score, strength: this._scoreToStrength(score), feedback, meetsRequirements };
   },
 
   /**
@@ -1271,6 +1328,59 @@ export const threatIntelligence = {
   },
 
   /**
+   * Get risk score for a severity level
+   */
+  _severityToRisk(severity: string): number {
+    const riskMap: Record<string, number> = { critical: 50, high: 35, medium: 20, low: 10 };
+    return riskMap[severity] ?? 10;
+  },
+
+  /**
+   * Check for suspicious user agent patterns
+   */
+  _checkUserAgent(userAgent: string): ThreatIndicator | null {
+    const suspiciousAgents = ["sqlmap", "nikto", "nmap", "masscan", "zgrab"];
+    if (suspiciousAgents.some(agent => userAgent.toLowerCase().includes(agent))) {
+      return {
+        type: "pattern",
+        value: "suspicious_user_agent",
+        severity: "high",
+        description: `Suspicious user agent: ${userAgent.substring(0, 50)}`,
+        detectedAt: new Date(),
+      };
+    }
+    return null;
+  },
+
+  /**
+   * Check for attack patterns in URL
+   */
+  _checkAttackPatterns(fullUrl: string): ThreatIndicator[] {
+    const attackPatterns = [
+      { pattern: /\.\.\//, severity: "high" as const, desc: "Path traversal attempt" },
+      { pattern: /<script/i, severity: "high" as const, desc: "XSS attempt" },
+      { pattern: /union\s+select/i, severity: "critical" as const, desc: "SQL injection attempt" },
+      { pattern: /etc\/passwd/, severity: "critical" as const, desc: "LFI attempt" },
+      { pattern: /\.git\//i, severity: "medium" as const, desc: "Git exposure attempt" },
+      { pattern: /\.env/i, severity: "high" as const, desc: "Env file access attempt" },
+    ];
+
+    const found: ThreatIndicator[] = [];
+    for (const { pattern, severity, desc } of attackPatterns) {
+      if (pattern.test(fullUrl)) {
+        found.push({
+          type: "pattern",
+          value: pattern.source,
+          severity,
+          description: desc,
+          detectedAt: new Date(),
+        });
+      }
+    }
+    return found;
+  },
+
+  /**
    * Analyze request for threat patterns
    */
   analyzeRequest(req: Request): {
@@ -1283,65 +1393,31 @@ export const threatIntelligence = {
 
     const ip = req.ip || req.socket?.remoteAddress || "";
     const userAgent = req.headers["user-agent"] || "";
-    const path = req.path;
 
     // Check IP threats
     const ipThreat = this.checkIp(ip);
     if (ipThreat) {
       indicators.push(ipThreat);
-      if (ipThreat.severity === "critical") riskScore += 50;
-      else if (ipThreat.severity === "high") riskScore += 35;
-      else if (ipThreat.severity === "medium") riskScore += 20;
-      else riskScore += 10;
+      riskScore += this._severityToRisk(ipThreat.severity);
     }
 
-    // Check for suspicious user agents
-    const suspiciousAgents = ["sqlmap", "nikto", "nmap", "masscan", "zgrab"];
-    if (suspiciousAgents.some(agent => userAgent.toLowerCase().includes(agent))) {
-      const indicator: ThreatIndicator = {
-        type: "pattern",
-        value: "suspicious_user_agent",
-        severity: "high",
-        description: `Suspicious user agent: ${userAgent.substring(0, 50)}`,
-        detectedAt: new Date(),
-      };
-      indicators.push(indicator);
-      riskScore += 40;
+    // Check user agent
+    const uaIndicator = this._checkUserAgent(userAgent);
+    if (uaIndicator) {
+      indicators.push(uaIndicator);
+      riskScore += this._severityToRisk(uaIndicator.severity);
     }
 
-    // Check for common attack patterns in path
-    const attackPatterns = [
-      { pattern: /\.\.\//, severity: "high" as const, desc: "Path traversal attempt" },
-      { pattern: /<script/i, severity: "high" as const, desc: "XSS attempt" },
-      { pattern: /union\s+select/i, severity: "critical" as const, desc: "SQL injection attempt" },
-      { pattern: /etc\/passwd/, severity: "critical" as const, desc: "LFI attempt" },
-      { pattern: /\.git\//i, severity: "medium" as const, desc: "Git exposure attempt" },
-      { pattern: /\.env/i, severity: "high" as const, desc: "Env file access attempt" },
-    ];
-
+    // Check attack patterns
     const fullUrl =
-      path + (req.query ? "?" + new URLSearchParams(req.query as any).toString() : "");
-
-    for (const { pattern, severity, desc } of attackPatterns) {
-      if (pattern.test(fullUrl)) {
-        indicators.push({
-          type: "pattern",
-          value: pattern.source,
-          severity,
-          description: desc,
-          detectedAt: new Date(),
-        });
-        if (severity === "critical") riskScore += 50;
-        else if (severity === "high") riskScore += 35;
-        else riskScore += 20;
-      }
+      req.path + (req.query ? "?" + new URLSearchParams(req.query as any).toString() : "");
+    const patternIndicators = this._checkAttackPatterns(fullUrl);
+    for (const ind of patternIndicators) {
+      indicators.push(ind);
+      riskScore += this._severityToRisk(ind.severity);
     }
 
-    return {
-      isThreat: riskScore >= 40,
-      indicators,
-      riskScore: Math.min(100, riskScore),
-    };
+    return { isThreat: riskScore >= 40, indicators, riskScore: Math.min(100, riskScore) };
   },
 
   /**

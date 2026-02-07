@@ -109,20 +109,18 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
         const newClusters: { clusterId: string; topic: string }[] = [];
         const skippedDuplicates: string[] = [];
 
-        for (const item of items) {
-          // Check if this exact article was already processed (fingerprint check)
+        // Helper: process a single RSS item into a cluster
+        const processItem = async (item: (typeof items)[number]) => {
           const fingerprint = generateFingerprint(item.title, item.link);
           const existingFp = await storage.getContentFingerprintByHash(fingerprint);
           if (existingFp) {
             skippedDuplicates.push(item.title);
-            continue;
+            return;
           }
 
-          // Find or create a topic cluster for this article
           let cluster = await storage.findSimilarCluster(item.title);
 
           if (!cluster) {
-            // Create new cluster
             cluster = await storage.createTopicCluster({
               topic: item.title,
               status: "pending",
@@ -131,7 +129,6 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
             newClusters.push({ clusterId: cluster.id, topic: cluster.topic });
           }
 
-          // Add item to cluster
           await storage.createTopicClusterItem({
             clusterId: cluster.id,
             sourceTitle: item.title,
@@ -141,7 +138,6 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
             pubDate: item.pubDate ? new Date(item.pubDate) : null,
           });
 
-          // Record fingerprint immediately to prevent re-adding the same item
           try {
             await storage.createContentFingerprint({
               contentId: null,
@@ -154,7 +150,6 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
             // Fingerprint might already exist in rare edge case
           }
 
-          // Update cluster article count
           const clusterItems = await storage.getTopicClusterItems(cluster.id);
           await storage.updateTopicCluster(cluster.id, {
             articleCount: clusterItems.length,
@@ -168,6 +163,10 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
           } else {
             clustered.push({ clusterId: cluster.id, topic: cluster.topic, itemCount: 1 });
           }
+        };
+
+        for (const item of items) {
+          await processItem(item);
         }
 
         res.status(201).json({

@@ -82,32 +82,18 @@ export function registerSettingsRoutes(app: Express): void {
         // Dangerous keys that could cause prototype pollution
         const dangerousKeys = new Set(["__proto__", "constructor", "prototype"]);
 
+        const isSafeKey = (k: string) =>
+          !dangerousKeys.has(k) && typeof k === "string" && k.trim() !== "";
+        const isPrimitiveValue = (v: unknown) =>
+          v === null || typeof v === "string" || typeof v === "number" || typeof v === "boolean";
+        const isValidValuesObj = (v: unknown): v is Record<string, unknown> =>
+          typeof v === "object" && v !== null && !Array.isArray(v);
+
         for (const [category, values] of Object.entries(settings)) {
-          // Skip dangerous keys to prevent prototype pollution
-          if (dangerousKeys.has(category)) {
-            continue;
-          }
-          if (typeof values !== "object" || values === null || Array.isArray(values)) {
-            continue;
-          }
-          for (const [key, value] of Object.entries(values as Record<string, unknown>)) {
-            // Skip dangerous keys to prevent prototype pollution
-            if (dangerousKeys.has(key)) {
-              continue;
-            }
-            // Validate key is a non-empty string
-            if (typeof key !== "string" || key.trim() === "") {
-              continue;
-            }
-            // Validate value is a primitive (string, number, boolean) or null
-            if (
-              value !== null &&
-              typeof value !== "string" &&
-              typeof value !== "number" &&
-              typeof value !== "boolean"
-            ) {
-              continue;
-            }
+          if (!isSafeKey(category) || !isValidValuesObj(values)) continue;
+
+          for (const [key, value] of Object.entries(values)) {
+            if (!isSafeKey(key) || !isPrimitiveValue(value)) continue;
             const setting = await storage.upsertSetting(key.trim(), value, category, userId);
             updated.push(setting);
           }

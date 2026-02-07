@@ -312,78 +312,56 @@ async function runWatchdog(): Promise<void> {
 /**
  * Main background task - runs every 30 seconds
  */
-async function runBackgroundTask(): Promise<void> {
-  if (isRunning) {
-    return;
+async function processPendingQueue(
+  pending: number,
+  queueStatus: { active: boolean; staleCount: number }
+): Promise<void> {
+  if (pending <= 0 || queueStatus.active) return;
+  const triggered = await triggerParallelGeneration();
+  if (triggered) {
+    health.consecutiveErrors = 0;
+  } else {
+    health.consecutiveErrors++;
+    health.lastError = "Failed to trigger parallel generation";
   }
+}
+
+async function resetFailedIfNeeded(failed: number): Promise<void> {
+  if (failed <= 0) return;
+  if (failed <= 20 && Math.random() >= 0.2) return;
+  const toReset = Math.min(failed, 30);
+  await resetFailedContent(toReset);
+}
+
+async function processOctypoQueue(): Promise<void> {
+  const octypoPending = await getOctypoPendingCount();
+  octypoState.checkAndResetStale();
+  if (octypoPending > 0 && !octypoState.isRunning()) {
+    await triggerOctypoGeneration();
+  }
+}
+
+async function runBackgroundTask(): Promise<void> {
+  if (isRunning) return;
 
   isRunning = true;
   const startTime = Date.now();
   health.lastRun = new Date();
 
   try {
-    // Get current status counts
     const counts = await getStatusCounts();
     const pending = counts.pending || 0;
     const ready = counts.ready || 0;
     const failed = counts.failed || 0;
-    const inProgress = (counts.in_progress || 0) + (counts.generating || 0);
 
-    // Approve any ready content
     if (ready > 0) {
-      const approved = await approveReadyContent();
-      if (approved > 0) {
-        // empty
-      }
+      await approveReadyContent();
     }
 
-    // Check queue status with fresh lock detection
     const queueStatus = await isQueueActiveWithFreshLocks();
-
-    // Log stale locks if any
-    if (queueStatus.staleCount > 0) {
-      // empty
-    }
-
-    // If there are pending items and queue is NOT actively processing fresh jobs
-    if (pending > 0 && !queueStatus.active) {
-      const triggered = await triggerParallelGeneration();
-      if (triggered) {
-        health.consecutiveErrors = 0;
-      } else {
-        health.consecutiveErrors++;
-        health.lastError = "Failed to trigger parallel generation";
-      }
-    } else if (pending > 0 && queueStatus.active) {
-      /* Queue already active - no additional trigger needed */
-    } else if (pending === 0 && failed === 0 && inProgress === 0) {
-      /* All items processed - queue idle */
-    }
-
-    // Reset failed items periodically (every 5th run or when many failed)
-    if (failed > 0 && (failed > 20 || Math.random() < 0.2)) {
-      const toReset = Math.min(failed, 30);
-      const reset = await resetFailedContent(toReset);
-      if (reset > 0) {
-        /* Failed items reset for retry */
-      }
-    }
-
-    // V2 (Octypo) High-Quality Content Generation - runs alongside V1
-    // Triggers if there are attractions needing 85+ quality score content
-    const octypoPending = await getOctypoPendingCount();
-
-    // Check and reset stale running state (>10 min no activity)
-    const wasStale = octypoState.checkAndResetStale();
-    if (wasStale) {
-      // empty
-    }
-
-    if (octypoPending > 0 && !octypoState.isRunning()) {
-      await triggerOctypoGeneration();
-    } else if (octypoPending > 0 && octypoState.isRunning()) {
-      // empty
-    }
+    await processPendingQueue(pending, queueStatus);
+    await resetFailedIfNeeded(failed);
+    await processOctypoQueue();
 
     health.consecutiveErrors = 0;
   } catch (error) {
@@ -391,10 +369,6 @@ async function runBackgroundTask(): Promise<void> {
     health.lastError = error instanceof Error ? error.message : String(error);
   } finally {
     isRunning = false;
-    const duration = Date.now() - startTime;
-    if (duration > 5000) {
-      // empty
-    }
   }
 }
 

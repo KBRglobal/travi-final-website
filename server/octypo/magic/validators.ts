@@ -165,6 +165,25 @@ export function validateMetaTitle(
 // Meta Description Validator
 // ============================================================================
 
+function truncateAtBoundary(text: string, maxLen: number): string {
+  const truncated = text.substring(0, maxLen).trim();
+  const lastPeriod = truncated.lastIndexOf(".");
+  const lastSpace = truncated.lastIndexOf(" ");
+  if (lastPeriod > 100) return truncated.substring(0, lastPeriod + 1);
+  if (lastSpace > 100) return truncated.substring(0, lastSpace) + "...";
+  return truncated + "...";
+}
+
+function checkDescriptionLength(length: number, warnings: string[]): void {
+  if (length < 120) {
+    warnings.push(
+      `Meta description is short (${length} chars). Aim for 150-160 for better visibility.`
+    );
+  } else if (length > 140 && length < 150) {
+    warnings.push("Meta description slightly short. Adding a few more words could improve CTR.");
+  }
+}
+
 /**
  * Validate meta description for SEO best practices
  * - Optimal length: 150-160 characters
@@ -189,30 +208,10 @@ export function validateMetaDescription(
     errors.push(
       `Meta description exceeds 160 characters (${sanitized.length}). Will be truncated.`
     );
-    // Auto-truncate at sentence or word boundary
-    const truncated = sanitized.substring(0, 157).trim();
-    const lastPeriod = truncated.lastIndexOf(".");
-    const lastSpace = truncated.lastIndexOf(" ");
-    if (lastPeriod > 100) {
-      sanitized = truncated.substring(0, lastPeriod + 1);
-    } else if (lastSpace > 100) {
-      sanitized = truncated.substring(0, lastSpace) + "...";
-    } else {
-      sanitized = truncated + "...";
-    }
+    sanitized = truncateAtBoundary(sanitized, 157);
   }
 
-  if (sanitized.length < 120) {
-    warnings.push(
-      `Meta description is short (${sanitized.length} chars). Aim for 150-160 for better visibility.`
-    );
-  }
-
-  if (sanitized.length >= 150 && sanitized.length <= 160) {
-    // Perfect length - no warning needed
-  } else if (sanitized.length > 140 && sanitized.length < 150) {
-    warnings.push("Meta description slightly short. Adding a few more words could improve CTR.");
-  }
+  checkDescriptionLength(sanitized.length, warnings);
 
   // Check for banned phrases
   const bannedFound = BANNED_PHRASES.filter(phrase =>
@@ -258,6 +257,19 @@ export function validateMetaDescription(
 // ============================================================================
 // Slug Validator
 // ============================================================================
+
+function truncateSlug(slug: string, maxLen: number): string {
+  const parts = slug.split("-");
+  let truncated = "";
+  for (const part of parts) {
+    if (truncated.length + part.length + 1 <= maxLen) {
+      truncated = truncated ? `${truncated}-${part}` : part;
+    } else {
+      break;
+    }
+  }
+  return truncated || slug.substring(0, maxLen);
+}
 
 /**
  * Validate URL slug for SEO best practices
@@ -309,17 +321,7 @@ export function validateSlug(slug: string): ValidationResult {
 
   if (sanitized.length > 60) {
     errors.push(`Slug too long (${sanitized.length} chars). Keep under 60 for better URLs.`);
-    // Truncate at word boundary
-    const parts = sanitized.split("-");
-    let truncated = "";
-    for (const part of parts) {
-      if (truncated.length + part.length + 1 <= 60) {
-        truncated = truncated ? `${truncated}-${part}` : part;
-      } else {
-        break;
-      }
-    }
-    sanitized = truncated || sanitized.substring(0, 60);
+    sanitized = truncateSlug(sanitized, 60);
   }
 
   // Check for stop words (optional warning)
@@ -352,6 +354,29 @@ export function validateSlug(slug: string): ValidationResult {
  * - Questions should end with ?
  * - Answers should be substantive (min 20 chars)
  */
+function validateSingleFAQ(faq: any, minAnswerLength: number): string[] {
+  const issues: string[] = [];
+  if (!faq || typeof faq !== "object") {
+    issues.push("Invalid FAQ object");
+    return issues;
+  }
+  // Check question
+  if (!faq.question || typeof faq.question !== "string") {
+    issues.push("Missing or invalid question");
+  } else if (faq.question.trim().length < 10) {
+    issues.push("Question too short");
+  } else if (!faq.question.trim().endsWith("?")) {
+    faq.question = faq.question.trim() + "?";
+  }
+  // Check answer
+  if (!faq.answer || typeof faq.answer !== "string") {
+    issues.push("Missing or invalid answer");
+  } else if (faq.answer.trim().length < minAnswerLength) {
+    issues.push(`Answer too short (min ${minAnswerLength} chars)`);
+  }
+  return issues;
+}
+
 export function validateFAQs(
   faqs: Array<{ question: string; answer: string }>,
   options?: { minCount?: number; maxCount?: number; minAnswerLength?: number }
@@ -373,29 +398,7 @@ export function validateFAQs(
 
   // Validate each FAQ
   for (const faq of faqs) {
-    const issues: string[] = [];
-
-    // Check structure
-    if (!faq || typeof faq !== "object") {
-      issues.push("Invalid FAQ object");
-    } else {
-      // Check question
-      if (!faq.question || typeof faq.question !== "string") {
-        issues.push("Missing or invalid question");
-      } else if (faq.question.trim().length < 10) {
-        issues.push("Question too short");
-      } else if (!faq.question.trim().endsWith("?")) {
-        // Auto-fix: add question mark
-        faq.question = faq.question.trim() + "?";
-      }
-
-      // Check answer
-      if (!faq.answer || typeof faq.answer !== "string") {
-        issues.push("Missing or invalid answer");
-      } else if (faq.answer.trim().length < minAnswerLength) {
-        issues.push(`Answer too short (min ${minAnswerLength} chars)`);
-      }
-    }
+    const issues = validateSingleFAQ(faq, minAnswerLength);
 
     if (issues.length > 0) {
       invalidFaqs.push({

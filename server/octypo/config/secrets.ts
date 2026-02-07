@@ -209,70 +209,30 @@ export function loadSecretsToEnv(password?: string): boolean {
     return false;
   }
 
-  // Map secrets to environment variables
-  if (secrets.anthropic?.apiKey) {
-    process.env.ANTHROPIC_API_KEY = secrets.anthropic.apiKey;
-  }
-  if (secrets.anthropic?.apiKeys) {
-    secrets.anthropic.apiKeys.forEach((key, i) => {
-      process.env[`ANTHROPIC_API_KEY_${i + 1}`] = key;
-    });
-  }
+  // Provider name to env var prefix mapping
+  const providerEnvMap: Array<{ provider: string; envPrefix: string }> = [
+    { provider: "anthropic", envPrefix: "ANTHROPIC" },
+    { provider: "openai", envPrefix: "OPENAI" },
+    { provider: "openrouter", envPrefix: "OPENROUTER" },
+    { provider: "gemini", envPrefix: "GEMINI" },
+    { provider: "groq", envPrefix: "GROQ" },
+    { provider: "mistral", envPrefix: "MISTRAL" },
+    { provider: "deepseek", envPrefix: "DEEPSEEK" },
+    { provider: "together", envPrefix: "TOGETHER" },
+    { provider: "perplexity", envPrefix: "PERPLEXITY" },
+    { provider: "helicone", envPrefix: "HELICONE" },
+  ];
 
-  if (secrets.openai?.apiKey) {
-    process.env.OPENAI_API_KEY = secrets.openai.apiKey;
-  }
-  if (secrets.openai?.apiKeys) {
-    secrets.openai.apiKeys.forEach((key, i) => {
-      process.env[`OPENAI_API_KEY_${i + 1}`] = key;
-    });
-  }
-
-  if (secrets.openrouter?.apiKey) {
-    process.env.OPENROUTER_API_KEY = secrets.openrouter.apiKey;
-  }
-  if (secrets.openrouter?.apiKeys) {
-    secrets.openrouter.apiKeys.forEach((key, i) => {
-      process.env[`OPENROUTER_API_KEY_${i + 1}`] = key;
-    });
-  }
-
-  if (secrets.gemini?.apiKey) {
-    process.env.GEMINI_API_KEY = secrets.gemini.apiKey;
-  }
-  if (secrets.gemini?.apiKeys) {
-    secrets.gemini.apiKeys.forEach((key, i) => {
-      process.env[`GEMINI_API_KEY_${i + 1}`] = key;
-    });
-  }
-
-  if (secrets.groq?.apiKey) {
-    process.env.GROQ_API_KEY = secrets.groq.apiKey;
-  }
-
-  if (secrets.mistral?.apiKey) {
-    process.env.MISTRAL_API_KEY = secrets.mistral.apiKey;
-  }
-
-  if (secrets.deepseek?.apiKey) {
-    process.env.DEEPSEEK_API_KEY = secrets.deepseek.apiKey;
-  }
-
-  if (secrets.together?.apiKey) {
-    process.env.TOGETHER_API_KEY = secrets.together.apiKey;
-  }
-
-  if (secrets.perplexity?.apiKey) {
-    process.env.PERPLEXITY_API_KEY = secrets.perplexity.apiKey;
-  }
-
-  if (secrets.helicone?.apiKey) {
-    process.env.HELICONE_API_KEY = secrets.helicone.apiKey;
-  }
-  if (secrets.helicone?.apiKeys) {
-    secrets.helicone.apiKeys.forEach((key, i) => {
-      process.env[`HELICONE_API_KEY_${i + 1}`] = key;
-    });
+  for (const { provider, envPrefix } of providerEnvMap) {
+    const providerSecrets = (secrets as any)[provider];
+    if (providerSecrets?.apiKey) {
+      process.env[`${envPrefix}_API_KEY`] = providerSecrets.apiKey;
+    }
+    if (providerSecrets?.apiKeys) {
+      providerSecrets.apiKeys.forEach((key: string, i: number) => {
+        process.env[`${envPrefix}_API_KEY_${i + 1}`] = key;
+      });
+    }
   }
 
   return true;
@@ -360,87 +320,58 @@ async function interactiveSetup(): Promise<void> {
 
   console.info("Enter API keys (leave empty to skip):\n");
 
-  // Anthropic
-  const anthropicKey = await question(
-    `Anthropic API Key [${secrets.anthropic?.apiKey ? "****" + secrets.anthropic.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (anthropicKey) {
-    secrets.anthropic = { ...secrets.anthropic, apiKey: anthropicKey };
-  }
+  // Collect API keys for all providers
+  const providers = [
+    "anthropic",
+    "openai",
+    "openrouter",
+    "gemini",
+    "groq",
+    "mistral",
+    "deepseek",
+    "together",
+    "perplexity",
+    "helicone",
+  ];
 
-  // OpenAI
-  const openaiKey = await question(
-    `OpenAI API Key [${secrets.openai?.apiKey ? "****" + secrets.openai.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (openaiKey) {
-    secrets.openai = { ...secrets.openai, apiKey: openaiKey };
-  }
-
-  // OpenRouter
-  const openrouterKey = await question(
-    `OpenRouter API Key [${secrets.openrouter?.apiKey ? "****" + secrets.openrouter.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (openrouterKey) {
-    secrets.openrouter = { ...secrets.openrouter, apiKey: openrouterKey };
-  }
-
-  // Gemini
-  const geminiKey = await question(
-    `Gemini API Key [${secrets.gemini?.apiKey ? "****" + secrets.gemini.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (geminiKey) {
-    secrets.gemini = { ...secrets.gemini, apiKey: geminiKey };
-  }
-
-  // Groq
-  const groqKey = await question(
-    `Groq API Key [${secrets.groq?.apiKey ? "****" + secrets.groq.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (groqKey) {
-    secrets.groq = { apiKey: groqKey };
-  }
-
-  // Mistral
-  const mistralKey = await question(
-    `Mistral API Key [${secrets.mistral?.apiKey ? "****" + secrets.mistral.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (mistralKey) {
-    secrets.mistral = { apiKey: mistralKey };
-  }
-
-  // DeepSeek
-  const deepseekKey = await question(
-    `DeepSeek API Key [${secrets.deepseek?.apiKey ? "****" + secrets.deepseek.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (deepseekKey) {
-    secrets.deepseek = { apiKey: deepseekKey };
-  }
-
-  // Together
-  const togetherKey = await question(
-    `Together API Key [${secrets.together?.apiKey ? "****" + secrets.together.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (togetherKey) {
-    secrets.together = { apiKey: togetherKey };
-  }
-
-  // Perplexity
-  const perplexityKey = await question(
-    `Perplexity API Key [${secrets.perplexity?.apiKey ? "****" + secrets.perplexity.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (perplexityKey) {
-    secrets.perplexity = { apiKey: perplexityKey };
-  }
-
-  // Helicone (monitoring)
-  const heliconeKey = await question(
-    `Helicone API Key [${secrets.helicone?.apiKey ? "****" + secrets.helicone.apiKey.slice(-4) : "not set"}]: `
-  );
-  if (heliconeKey) {
-    secrets.helicone = { ...secrets.helicone, apiKey: heliconeKey };
+  for (const provider of providers) {
+    const existing = (secrets as any)[provider]?.apiKey;
+    const display = existing ? "****" + existing.slice(-4) : "not set";
+    const label = provider.charAt(0).toUpperCase() + provider.slice(1);
+    const key = await question(`${label} API Key [${display}]: `);
+    if (key) {
+      (secrets as any)[provider] = { ...(secrets as any)[provider], apiKey: key };
+    }
   }
 
   // Optimization settings
+  await collectOptimizationSettings(secrets, question);
+
+  // Save
+  saveSecrets(secrets, password);
+
+  // Print summary
+  printSetupSummary(secrets, providers);
+
+  rl.close();
+}
+
+function printSetupSummary(secrets: OctypoSecrets, providers: string[]): void {
+  console.info("\n📋 Summary:");
+  for (const provider of providers) {
+    const label = provider.charAt(0).toUpperCase() + provider.slice(1);
+    const hasKey = !!(secrets as any)[provider]?.apiKey;
+    console.info(`   ${label}: ${hasKey ? "✅" : "❌"}`);
+  }
+  console.info("\n🚀 To use in production:");
+  console.info('   export OCTYPO_SECRETS_PASSWORD="your-password"');
+  console.info("\n✅ Setup complete!\n");
+}
+
+async function collectOptimizationSettings(
+  secrets: OctypoSecrets,
+  question: (prompt: string) => Promise<string>
+): Promise<void> {
   console.info("\n⚙️  Optimization Settings:\n");
 
   const preferredProvider = await question(
@@ -459,27 +390,6 @@ async function interactiveSetup(): Promise<void> {
     timeoutMs: secrets.optimization?.timeoutMs || 30000,
     rateLimitBuffer: secrets.optimization?.rateLimitBuffer || 10,
   };
-
-  // Save
-  saveSecrets(secrets, password);
-
-  console.info("\n📋 Summary:");
-  console.info(`   Anthropic: ${secrets.anthropic?.apiKey ? "✅" : "❌"}`);
-  console.info(`   OpenAI: ${secrets.openai?.apiKey ? "✅" : "❌"}`);
-  console.info(`   OpenRouter: ${secrets.openrouter?.apiKey ? "✅" : "❌"}`);
-  console.info(`   Gemini: ${secrets.gemini?.apiKey ? "✅" : "❌"}`);
-  console.info(`   Groq: ${secrets.groq?.apiKey ? "✅" : "❌"}`);
-  console.info(`   Mistral: ${secrets.mistral?.apiKey ? "✅" : "❌"}`);
-  console.info(`   DeepSeek: ${secrets.deepseek?.apiKey ? "✅" : "❌"}`);
-  console.info(`   Together: ${secrets.together?.apiKey ? "✅" : "❌"}`);
-  console.info(`   Perplexity: ${secrets.perplexity?.apiKey ? "✅" : "❌"}`);
-  console.info(`   Helicone: ${secrets.helicone?.apiKey ? "✅" : "❌"}`);
-
-  console.info("\n🚀 To use in production:");
-  console.info('   export OCTYPO_SECRETS_PASSWORD="your-password"');
-  console.info("\n✅ Setup complete!\n");
-
-  rl.close();
 }
 
 // CLI entry point - check if running directly

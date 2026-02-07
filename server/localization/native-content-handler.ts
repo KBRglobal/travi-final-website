@@ -69,31 +69,22 @@ const COST_PER_GENERATION_USD = 0.03;
 // Main handler
 // ---------------------------------------------------------------------------
 
-async function handleNativeContentJob(
-  data: NativeContentJobData
-): Promise<{ success: boolean; result: Record<string, unknown> }> {
-  logger.info("Processing native content job", {
-    contentId: data.contentId,
-    locale: data.locale,
-    tier: data.tier,
-  });
+type JobResult = { success: boolean; result: Record<string, unknown> };
 
-  // Budget guard
+/** Check budget and concurrency guards before processing */
+async function checkGuards(data: NativeContentJobData): Promise<JobResult | null> {
   resetDailyCostIfNeeded();
-  if (dailyCostUsd >= DAILY_BUDGET_USD) {
-    if (data.tier > 2) {
-      logger.warn("Daily LLM budget exceeded, low-tier locale paused", {
-        locale: data.locale,
-        tier: data.tier,
-      });
-      return {
-        success: false,
-        result: { error: "Daily LLM budget exceeded, low-tier locale paused" },
-      };
-    }
+  if (dailyCostUsd >= DAILY_BUDGET_USD && data.tier > 2) {
+    logger.warn("Daily LLM budget exceeded, low-tier locale paused", {
+      locale: data.locale,
+      tier: data.tier,
+    });
+    return {
+      success: false,
+      result: { error: "Daily LLM budget exceeded, low-tier locale paused" },
+    };
   }
 
-  // Concurrency guard – re-queue if too many active
   if (activeGenerations >= MAX_CONCURRENT) {
     await jobQueue.addJob("native_content_generate" as JobType, data as any, {
       priority: data.tier <= 2 ? 3 : 7,
@@ -102,17 +93,132 @@ async function handleNativeContentJob(
     return { success: true, result: { requeued: true } };
   }
 
+  return null;
+}
+
+/** Validate locale purity of generated content */
+async function validatePurity(
+  generated: GeneratedAttractionContent,
+  locale: string
+): Promise<{ score: number; failed: boolean; errorMsg?: string }> {
+  try {
+    const { validateLocalePurity } = await import("./validators/locale-purity");
+    const purityResult = validateLocalePurity(
+      {
+        introduction: generated.introduction,
+        whatToExpect: generated.whatToExpect,
+        visitorTips: generated.visitorTips,
+        howToGetThere: generated.howToGetThere,
+        metaTitle: generated.metaTitle,
+        metaDescription: generated.metaDescription,
+        answerCapsule: generated.answerCapsule,
+        faqs: generated.faqs as any,
+      },
+      locale
+    );
+    if (!purityResult.passed) {
+      return {
+        score: purityResult.score,
+        failed: true,
+        errorMsg: `Locale purity ${(purityResult.score * 100).toFixed(1)}% below threshold ${(purityResult.threshold * 100).toFixed(0)}%`,
+      };
+    }
+    return { score: purityResult.score, failed: false };
+  } catch (err) {
+    logger.warn("Locale purity validation skipped", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return { score: 1, failed: false };
+  }
+}
+
+/** Run quality gates (log-only, non-blocking) */
+async function runQualityGatesForGenerated(
+  generated: GeneratedAttractionContent,
+  locale: string,
+  localePurityScore: number
+): Promise<void> {
+  try {
+    const { runQualityGates } = await import("./validators/quality-gates");
+    const qualityResult = runQualityGates(
+      {
+        introduction: generated.introduction,
+        whatToExpect: generated.whatToExpect,
+        visitorTips: generated.visitorTips,
+        howToGetThere: generated.howToGetThere,
+        answerCapsule: generated.answerCapsule,
+        metaTitle: generated.metaTitle,
+        metaDescription: generated.metaDescription,
+        faq: generated.faqs as any,
+        localePurityScore,
+      },
+      locale
+    );
+    logger.info("Quality gates result", {
+      locale,
+      passed: qualityResult.passed,
+      failedCount: qualityResult.summary.failedCount,
+    });
+  } catch {
+    // Non-critical
+  }
+}
+
+/** Build the DB row for native localized content */
+function buildNativeContentRow(
+  data: NativeContentJobData,
+  content: any,
+  generated: GeneratedAttractionContent,
+  destination: string,
+  writerId: string,
+  localePurityScore: number,
+  sourceHash: string,
+  result: any
+) {
+  return {
+    entityType: (data.entityType || "attraction") as any,
+    entityId: data.contentId,
+    destination,
+    locale: data.locale,
+    tier: data.tier,
+    title: generated.metaTitle || generated.title || content.title,
+    introduction: generated.introduction || null,
+    whatToExpect: generated.whatToExpect || null,
+    visitorTips: generated.visitorTips || null,
+    howToGetThere: generated.howToGetThere || null,
+    highlights: generated.keywords || null,
+    faq: generated.faqs || null,
+    answerCapsule: generated.answerCapsule || null,
+    metaTitle: generated.metaTitle || null,
+    metaDescription: generated.metaDescription || null,
+    localePurityScore,
+    sourceHash,
+    status: "published" as const,
+    writerAgent: writerId,
+    engineUsed: result.engineUsed,
+    generationTimeMs: result.generationTimeMs,
+    updatedAt: new Date(),
+  };
+}
+
+async function handleNativeContentJob(data: NativeContentJobData): Promise<JobResult> {
+  logger.info("Processing native content job", {
+    contentId: data.contentId,
+    locale: data.locale,
+    tier: data.tier,
+  });
+
+  const guardResult = await checkGuards(data);
+  if (guardResult) return guardResult;
+
   activeGenerations++;
 
   try {
-    // 1. Fetch source content
     const [content] = await db.select().from(contents).where(eq(contents.id, data.contentId));
-
     if (!content) {
       return { success: false, result: { error: "Content not found" } };
     }
 
-    // 2. Idempotency – skip if source unchanged (hash comparison)
     const sourceHash = computeSourceHash({
       title: content.title,
       metaTitle: content.metaTitle,
@@ -132,33 +238,20 @@ async function handleNativeContentJob(
       );
 
     if (existing?.status === "published" && existing.sourceHash === sourceHash) {
-      // Source unchanged and already published – skip regeneration
       logger.info("Native content unchanged (hash match), skipping", {
         contentId: data.contentId,
         locale: data.locale,
-        sourceHash,
       });
       return { success: true, result: { skipped: true, reason: "Source unchanged" } };
     }
 
-    if (existing?.status === "published" && existing.sourceHash !== sourceHash) {
-      logger.info("Source content changed, regenerating native content", {
-        contentId: data.contentId,
-        locale: data.locale,
-        oldHash: existing.sourceHash,
-        newHash: sourceHash,
-      });
-    }
-
-    // 3. Generate native content via Octypo orchestrator
     const { getOctypoOrchestrator } = await import("../octypo/orchestration/orchestrator");
     const orchestrator = getOctypoOrchestrator();
-
     const destination = data.destination || "global";
     const writerId =
       getBestWriterForLocale(data.locale, content.type || undefined) || "writer-sarah";
 
-    const attractionData = {
+    const result = await orchestrator.generateAttractionContent({
       id: data.entityId || data.contentId,
       name: content.title,
       title: content.title,
@@ -166,102 +259,28 @@ async function handleNativeContentJob(
       destination,
       primaryCategory: content.type || "article",
       locale: data.locale,
-    };
-
-    const result = await orchestrator.generateAttractionContent(attractionData as any);
+    } as any);
 
     if (!result.success || !result.content) {
       const errorMsg = result.error || "Generation failed";
-      logger.error("Orchestrator generation failed", {
-        contentId: data.contentId,
-        locale: data.locale,
-        error: errorMsg,
-      });
-
-      // Mark as failed in DB if row exists
       if (existing) {
         await db
           .update(nativeLocalizedContent)
-          .set({
-            status: "failed",
-            failureReason: errorMsg,
-            updatedAt: new Date(),
-          } as any)
+          .set({ status: "failed", failureReason: errorMsg, updatedAt: new Date() } as any)
           .where(eq(nativeLocalizedContent.id, existing.id));
       }
-
       return { success: false, result: { error: errorMsg } };
     }
 
-    // Cast to GeneratedAttractionContent for attraction-specific fields
     const generated = result.content as GeneratedAttractionContent;
 
-    // 4. Locale purity validation
-    let localePurityScore = 1;
-    try {
-      const { validateLocalePurity } = await import("./validators/locale-purity");
-      const purityResult = validateLocalePurity(
-        {
-          introduction: generated.introduction,
-          whatToExpect: generated.whatToExpect,
-          visitorTips: generated.visitorTips,
-          howToGetThere: generated.howToGetThere,
-          metaTitle: generated.metaTitle,
-          metaDescription: generated.metaDescription,
-          answerCapsule: generated.answerCapsule,
-          faqs: generated.faqs as any,
-        },
-        data.locale
-      );
-      localePurityScore = purityResult.score;
-
-      if (!purityResult.passed) {
-        logger.warn("Locale purity below threshold", {
-          locale: data.locale,
-          score: purityResult.score,
-          threshold: purityResult.threshold,
-        });
-        return {
-          success: false,
-          result: {
-            error: `Locale purity ${(purityResult.score * 100).toFixed(1)}% below threshold ${(purityResult.threshold * 100).toFixed(0)}%`,
-          },
-        };
-      }
-    } catch (err) {
-      // Validator may not be fully wired yet – continue with warning
-      logger.warn("Locale purity validation skipped", {
-        error: err instanceof Error ? err.message : String(err),
-      });
+    const purity = await validatePurity(generated, data.locale);
+    if (purity.failed) {
+      return { success: false, result: { error: purity.errorMsg! } };
     }
 
-    // 5. Quality gates (log-only, non-blocking)
-    try {
-      const { runQualityGates } = await import("./validators/quality-gates");
-      const qualityResult = runQualityGates(
-        {
-          introduction: generated.introduction,
-          whatToExpect: generated.whatToExpect,
-          visitorTips: generated.visitorTips,
-          howToGetThere: generated.howToGetThere,
-          answerCapsule: generated.answerCapsule,
-          metaTitle: generated.metaTitle,
-          metaDescription: generated.metaDescription,
-          faq: generated.faqs as any,
-          localePurityScore,
-        },
-        data.locale
-      );
-      logger.info("Quality gates result", {
-        locale: data.locale,
-        passed: qualityResult.passed,
-        failedCount: qualityResult.summary.failedCount,
-      });
-    } catch (err) {
-      // Non-critical
-    }
+    await runQualityGatesForGenerated(generated, data.locale, purity.score);
 
-    // 6. Compute word count
     const allText = [
       generated.introduction,
       generated.whatToExpect,
@@ -274,33 +293,16 @@ async function handleNativeContentJob(
       .join(" ");
     const wordCount = allText.split(/\s+/).filter((w: string) => w.length > 0).length;
 
-    // 7. Upsert into nativeLocalizedContent
-    const entityType = (data.entityType || "attraction") as any;
-
-    const row = {
-      entityType,
-      entityId: data.contentId,
+    const row = buildNativeContentRow(
+      data,
+      content,
+      generated,
       destination,
-      locale: data.locale,
-      tier: data.tier,
-      title: generated.metaTitle || generated.title || content.title,
-      introduction: generated.introduction || null,
-      whatToExpect: generated.whatToExpect || null,
-      visitorTips: generated.visitorTips || null,
-      howToGetThere: generated.howToGetThere || null,
-      highlights: generated.keywords || null,
-      faq: generated.faqs || null,
-      answerCapsule: generated.answerCapsule || null,
-      metaTitle: generated.metaTitle || null,
-      metaDescription: generated.metaDescription || null,
-      localePurityScore,
+      writerId,
+      purity.score,
       sourceHash,
-      status: "published" as const,
-      writerAgent: writerId,
-      engineUsed: result.engineUsed,
-      generationTimeMs: result.generationTimeMs,
-      updatedAt: new Date(),
-    };
+      result
+    );
 
     if (existing) {
       await db
@@ -311,14 +313,12 @@ async function handleNativeContentJob(
       await db.insert(nativeLocalizedContent).values(row as any);
     }
 
-    // 8. Track cost
     dailyCostUsd += COST_PER_GENERATION_USD;
 
-    // 9. Update search index for this locale (non-critical)
     try {
       const { updateSearchIndex } = await import("./publish-hooks");
       await updateSearchIndex(content, data.locale);
-    } catch (err) {
+    } catch {
       // Non-critical
     }
 
@@ -326,16 +326,15 @@ async function handleNativeContentJob(
       contentId: data.contentId,
       locale: data.locale,
       wordCount,
-      purityScore: localePurityScore,
+      purityScore: purity.score,
     });
-
     return {
       success: true,
       result: {
         contentId: data.contentId,
         locale: data.locale,
         wordCount,
-        purityScore: localePurityScore,
+        purityScore: purity.score,
         generationTimeMs: result.generationTimeMs,
       },
     };

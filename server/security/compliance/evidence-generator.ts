@@ -410,6 +410,66 @@ class EvidenceGenerator {
   }
 
   /**
+   * Evaluate a single control's evidence requirements
+   */
+  private evaluateControlRequirements(
+    requirements: EvidenceRequirement[],
+    evidence: ComplianceEvidence[]
+  ): { status: ControlStatus["status"]; issues: string[] } {
+    const issues: string[] = [];
+    let status: ControlStatus["status"] = "met";
+
+    for (const req of requirements) {
+      const typeEvidence = evidence.filter(e => e.evidenceType === req.type);
+
+      if (typeEvidence.length < req.minRecords) {
+        issues.push(`Insufficient ${req.type} evidence: ${typeEvidence.length}/${req.minRecords}`);
+        if (status === "met") status = "partial";
+      }
+
+      const validationIssues = this.validateEvidenceSet(typeEvidence, req.validationRules);
+      if (validationIssues.length > 0) {
+        issues.push(...validationIssues);
+        status = "partial";
+      }
+    }
+
+    if (issues.length > 0 && evidence.length === 0) {
+      status = "not_met";
+    }
+
+    return { status, issues };
+  }
+
+  /**
+   * Validate a set of evidence against validation rules
+   */
+  private validateEvidenceSet(evidence: ComplianceEvidence[], rules: string[]): string[] {
+    const issues: string[] = [];
+    for (const ev of evidence) {
+      for (const rule of rules) {
+        if (!this.validateEvidence(ev, rule)) {
+          issues.push(`Evidence ${ev.id} failed validation: ${rule}`);
+        }
+      }
+    }
+    return issues;
+  }
+
+  /**
+   * Calculate overall compliance status from control statuses
+   */
+  private calculateOverallStatus(
+    controlStatuses: ControlStatus[]
+  ): ComplianceReport["overallStatus"] {
+    const notMetCount = controlStatuses.filter(c => c.status === "not_met").length;
+    if (notMetCount > 0) return "non_compliant";
+    const partialCount = controlStatuses.filter(c => c.status === "partial").length;
+    if (partialCount > 0) return "partial";
+    return "compliant";
+  }
+
+  /**
    * Generate compliance report
    */
   generateReport(
@@ -428,35 +488,10 @@ class EvidenceGenerator {
         periodStart,
         periodEnd
       );
-
-      const requirements = control.evidenceRequirements;
-      const issues: string[] = [];
-      let status: ControlStatus["status"] = "met";
-
-      for (const req of requirements) {
-        const typeEvidence = evidence.filter(e => e.evidenceType === req.type);
-
-        if (typeEvidence.length < req.minRecords) {
-          issues.push(
-            `Insufficient ${req.type} evidence: ${typeEvidence.length}/${req.minRecords}`
-          );
-          status = status === "met" ? "partial" : status;
-        }
-
-        // Validate evidence
-        for (const ev of typeEvidence) {
-          for (const rule of req.validationRules) {
-            if (!this.validateEvidence(ev, rule)) {
-              issues.push(`Evidence ${ev.id} failed validation: ${rule}`);
-              status = "partial";
-            }
-          }
-        }
-      }
-
-      if (issues.length > 0 && evidence.length === 0) {
-        status = "not_met";
-      }
+      const { status, issues } = this.evaluateControlRequirements(
+        control.evidenceRequirements,
+        evidence
+      );
 
       controlStatuses.push({
         controlId: control.controlId,
@@ -467,7 +502,6 @@ class EvidenceGenerator {
         issues,
       });
 
-      // Create gaps for non-met controls
       if (status === "not_met" || status === "partial") {
         gaps.push({
           controlId: control.controlId,
@@ -476,17 +510,6 @@ class EvidenceGenerator {
           remediation: `Collect additional ${control.evidenceRequirements.map(r => r.type).join(", ")} evidence`,
         });
       }
-    }
-
-    // Calculate overall status
-    const notMetCount = controlStatuses.filter(c => c.status === "not_met").length;
-    const partialCount = controlStatuses.filter(c => c.status === "partial").length;
-
-    let overallStatus: ComplianceReport["overallStatus"] = "compliant";
-    if (notMetCount > 0) {
-      overallStatus = "non_compliant";
-    } else if (partialCount > 0) {
-      overallStatus = "partial";
     }
 
     const recommendations = this.generateRecommendations(gaps);
@@ -498,14 +521,13 @@ class EvidenceGenerator {
       periodStart,
       periodEnd,
       controls: controlStatuses,
-      overallStatus,
+      overallStatus: this.calculateOverallStatus(controlStatuses),
       gaps,
       recommendations,
       signature: "",
     };
 
     report.signature = this.calculateHash(report);
-
     return report;
   }
 

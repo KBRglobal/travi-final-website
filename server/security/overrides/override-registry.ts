@@ -152,6 +152,119 @@ class OverrideRegistry {
   private readonly alertCallbacks: Set<(override: Override, event: string) => void> = new Set();
 
   /**
+   * Validate override request and return error if invalid
+   */
+  private validateOverrideRequest(
+    request: OverrideRequest,
+    granterId: string,
+    granterRole: string
+  ): OverrideError | null {
+    if (granterId === request.granteeUserId) {
+      return {
+        code: "SELF_APPROVAL",
+        message: "Self-approval is not permitted",
+        details: `User ${granterId} cannot grant an override to themselves. This is a security control to prevent abuse.`,
+        suggestion: "Request another administrator to grant this override on your behalf.",
+      };
+    }
+
+    const allowedGranters = OVERRIDE_GRANTERS[request.type];
+    if (!allowedGranters.includes(granterRole)) {
+      return {
+        code: "INSUFFICIENT_ROLE",
+        message: `Your role cannot grant ${request.type} overrides`,
+        details: `Role '${granterRole}' is not authorized to grant '${request.type}' overrides. Allowed roles: ${allowedGranters.join(", ")}.`,
+        suggestion: `Contact a ${allowedGranters[0]} to request this override.`,
+      };
+    }
+
+    const mode = getSecurityMode();
+    const allowedTypes = OVERRIDABLE_IN_MODE[mode] || [];
+    if (!allowedTypes.includes(request.type)) {
+      return {
+        code: "MODE_RESTRICTED",
+        message: `Override type not allowed in ${mode.toUpperCase()} mode`,
+        details: `The '${request.type}' override cannot be granted while the system is in ${mode.toUpperCase()} mode. Allowed types in this mode: ${allowedTypes.join(", ") || "none"}.`,
+        suggestion:
+          mode === "lockdown"
+            ? "Wait for security incident to be resolved."
+            : "Request a different override type or wait for mode change.",
+      };
+    }
+
+    if (getThreatLevel() === "black") {
+      return {
+        code: "THREAT_LEVEL_BLOCKED",
+        message: "Overrides blocked during critical threat level",
+        details: `The system is currently at BLACK threat level. All override requests are blocked until the threat is mitigated.`,
+        suggestion: "Address the security threat first. Check /api/security/dashboard for details.",
+      };
+    }
+
+    return null;
+  }
+
+  /**
+   * Validate override request details (duration, justification, ticket, role)
+   */
+  private validateOverrideDetails(
+    request: OverrideRequest,
+    granterRole: string
+  ): OverrideError | null {
+    const maxDuration = MAX_DURATIONS[request.type];
+    if (request.durationMinutes > maxDuration) {
+      return {
+        code: "DURATION_EXCEEDED",
+        message: `Override duration exceeds maximum allowed`,
+        details: `Requested ${request.durationMinutes} minutes, but maximum for '${request.type}' is ${maxDuration} minutes.`,
+        suggestion: `Set durationMinutes to ${maxDuration} or less.`,
+      };
+    }
+
+    if (!request.justification || request.justification.length < 20) {
+      return {
+        code: "MISSING_JUSTIFICATION",
+        message: "Justification is required and must be detailed",
+        details: `Justification must be at least 20 characters. Provided: ${request.justification?.length || 0} characters.`,
+        suggestion: "Provide a clear business reason explaining why this override is needed.",
+      };
+    }
+
+    if (!request.ticketReference || request.ticketReference.trim().length === 0) {
+      return {
+        code: "MISSING_TICKET",
+        message: "Ticket reference is required for all overrides",
+        details: `All security overrides must be linked to an approved change ticket (JIRA, ServiceNow, etc.).`,
+        suggestion:
+          "Create a change ticket and provide the reference (e.g., JIRA-1234, CHG0012345).",
+      };
+    }
+
+    const ticketPattern = /^[A-Z]{2,10}[-_]?\d{3,10}$/i;
+    if (!ticketPattern.test(request.ticketReference.trim())) {
+      return {
+        code: "INVALID_TICKET_FORMAT",
+        message: "Invalid ticket reference format",
+        details: `Ticket reference '${request.ticketReference}' does not match expected format.`,
+        suggestion: "Use format like JIRA-1234, SEC-567, CHG0012345, or INC0098765.",
+      };
+    }
+
+    const granterLevel = ROLE_HIERARCHY[granterRole as keyof typeof ROLE_HIERARCHY];
+    const granteeLevel = ROLE_HIERARCHY[request.granteeRole as keyof typeof ROLE_HIERARCHY];
+    if (granteeLevel > granterLevel) {
+      return {
+        code: "ROLE_ESCALATION",
+        message: "Cannot grant override to a higher-privileged role",
+        details: `Your role '${granterRole}' (level ${granterLevel}) cannot grant overrides to '${request.granteeRole}' (level ${granteeLevel}).`,
+        suggestion: "Only users with equal or higher privilege can grant overrides.",
+      };
+    }
+
+    return null;
+  }
+
+  /**
    * Request an override
    */
   async requestOverride(
@@ -159,149 +272,19 @@ class OverrideRegistry {
     granterId: string,
     granterRole: string
   ): Promise<OverrideResponse> {
-    // CRITICAL: Block self-approval (granter cannot grant to self)
-    if (granterId === request.granteeUserId) {
-      return {
-        success: false,
-        error: {
-          code: "SELF_APPROVAL",
-          message: "Self-approval is not permitted",
-          details: `User ${granterId} cannot grant an override to themselves. This is a security control to prevent abuse.`,
-          suggestion: "Request another administrator to grant this override on your behalf.",
-        },
-      };
-    }
+    const policyError = this.validateOverrideRequest(request, granterId, granterRole);
+    if (policyError) return { success: false, error: policyError };
 
-    // Validate granter has permission
-    const allowedGranters = OVERRIDE_GRANTERS[request.type];
-    if (!allowedGranters.includes(granterRole)) {
-      return {
-        success: false,
-        error: {
-          code: "INSUFFICIENT_ROLE",
-          message: `Your role cannot grant ${request.type} overrides`,
-          details: `Role '${granterRole}' is not authorized to grant '${request.type}' overrides. Allowed roles: ${allowedGranters.join(", ")}.`,
-          suggestion: `Contact a ${allowedGranters[0]} to request this override.`,
-        },
-      };
-    }
-
-    // Validate mode allows this override type
-    const mode = getSecurityMode();
-    const allowedTypes = OVERRIDABLE_IN_MODE[mode] || [];
-    if (!allowedTypes.includes(request.type)) {
-      return {
-        success: false,
-        error: {
-          code: "MODE_RESTRICTED",
-          message: `Override type not allowed in ${mode.toUpperCase()} mode`,
-          details: `The '${request.type}' override cannot be granted while the system is in ${mode.toUpperCase()} mode. Allowed types in this mode: ${allowedTypes.join(", ") || "none"}.`,
-          suggestion:
-            mode === "lockdown"
-              ? "Wait for security incident to be resolved."
-              : "Request a different override type or wait for mode change.",
-        },
-      };
-    }
-
-    // Check threat level
-    const threatLevel = getThreatLevel();
-    if (threatLevel === "black") {
-      return {
-        success: false,
-        error: {
-          code: "THREAT_LEVEL_BLOCKED",
-          message: "Overrides blocked during critical threat level",
-          details: `The system is currently at BLACK threat level. All override requests are blocked until the threat is mitigated.`,
-          suggestion:
-            "Address the security threat first. Check /api/security/dashboard for details.",
-        },
-      };
-    }
-
-    // Validate duration
-    const maxDuration = MAX_DURATIONS[request.type];
-    if (request.durationMinutes > maxDuration) {
-      return {
-        success: false,
-        error: {
-          code: "DURATION_EXCEEDED",
-          message: `Override duration exceeds maximum allowed`,
-          details: `Requested ${request.durationMinutes} minutes, but maximum for '${request.type}' is ${maxDuration} minutes.`,
-          suggestion: `Set durationMinutes to ${maxDuration} or less.`,
-        },
-      };
-    }
-
-    // Validate justification
-    if (!request.justification || request.justification.length < 20) {
-      return {
-        success: false,
-        error: {
-          code: "MISSING_JUSTIFICATION",
-          message: "Justification is required and must be detailed",
-          details: `Justification must be at least 20 characters. Provided: ${request.justification?.length || 0} characters.`,
-          suggestion: "Provide a clear business reason explaining why this override is needed.",
-        },
-      };
-    }
-
-    // Validate ticket reference (REQUIRED)
-    if (!request.ticketReference || request.ticketReference.trim().length === 0) {
-      return {
-        success: false,
-        error: {
-          code: "MISSING_TICKET",
-          message: "Ticket reference is required for all overrides",
-          details: `All security overrides must be linked to an approved change ticket (JIRA, ServiceNow, etc.).`,
-          suggestion:
-            "Create a change ticket and provide the reference (e.g., JIRA-1234, CHG0012345).",
-        },
-      };
-    }
-
-    // Validate ticket format (basic check)
-    const ticketPattern = /^[A-Z]{2,10}[-_]?\d{3,10}$/i;
-    if (!ticketPattern.test(request.ticketReference.trim())) {
-      return {
-        success: false,
-        error: {
-          code: "INVALID_TICKET_FORMAT",
-          message: "Invalid ticket reference format",
-          details: `Ticket reference '${request.ticketReference}' does not match expected format.`,
-          suggestion: "Use format like JIRA-1234, SEC-567, CHG0012345, or INC0098765.",
-        },
-      };
-    }
-
-    // Cannot grant to higher role
-    const granterLevel = ROLE_HIERARCHY[granterRole as keyof typeof ROLE_HIERARCHY];
-    const granteeLevel = ROLE_HIERARCHY[request.granteeRole as keyof typeof ROLE_HIERARCHY];
-    if (granteeLevel > granterLevel) {
-      return {
-        success: false,
-        error: {
-          code: "ROLE_ESCALATION",
-          message: "Cannot grant override to a higher-privileged role",
-          details: `Your role '${granterRole}' (level ${granterLevel}) cannot grant overrides to '${request.granteeRole}' (level ${granteeLevel}).`,
-          suggestion: "Only users with equal or higher privilege can grant overrides.",
-        },
-      };
-    }
+    const detailError = this.validateOverrideDetails(request, granterRole);
+    if (detailError) return { success: false, error: detailError };
 
     // Create override
     const override: Override = {
       id: this.generateId(),
       type: request.type,
       scope: request.scope,
-      grantedTo: {
-        userId: request.granteeUserId,
-        role: request.granteeRole,
-      },
-      grantedBy: {
-        userId: granterId,
-        role: granterRole,
-      },
+      grantedTo: { userId: request.granteeUserId, role: request.granteeRole },
+      grantedBy: { userId: granterId, role: granterRole },
       justification: request.justification,
       ticketReference: request.ticketReference.trim().toUpperCase(),
       evidence: request.evidence,
@@ -315,7 +298,6 @@ class OverrideRegistry {
 
     this.overrides.set(override.id, override);
 
-    // Log event
     logAdminEvent(granterId, "OVERRIDE_GRANTED", request.type, override.id, {
       grantee: request.granteeUserId,
       scope: request.scope,
@@ -323,7 +305,6 @@ class OverrideRegistry {
       justification: request.justification,
     });
 
-    // Generate compliance evidence
     generateEvidence(
       "SOC2",
       "CC6.1",
@@ -341,9 +322,7 @@ class OverrideRegistry {
       new Date()
     );
 
-    // Trigger alert
     this.triggerAlert(override, "created");
-
     return { success: true, override };
   }
 

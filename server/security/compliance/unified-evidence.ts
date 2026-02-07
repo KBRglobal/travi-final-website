@@ -525,6 +525,31 @@ class UnifiedEvidenceCollector {
     return Buffer.from(content);
   }
 
+  private calculateComplianceStatus(reports: Record<ComplianceFramework, ComplianceReport>): {
+    avgScore: number;
+    overallStatus: ExecutiveSummary["overallStatus"];
+    gapCount: number;
+  } {
+    let complianceScore = 0;
+    let frameworkCount = 0;
+    let gapCount = 0;
+
+    const statusScores: Record<string, number> = { compliant: 100, partial: 50 };
+    for (const report of Object.values(reports)) {
+      frameworkCount++;
+      complianceScore += statusScores[report.overallStatus] || 0;
+      gapCount += report.gaps.length;
+    }
+
+    const avgScore = frameworkCount > 0 ? complianceScore / frameworkCount : 0;
+    let overallStatus: ExecutiveSummary["overallStatus"] = "compliant";
+    if (avgScore < 50) overallStatus = "non_compliant";
+    else if (avgScore < 70) overallStatus = "partial";
+    else if (avgScore < 90) overallStatus = "mostly_compliant";
+
+    return { avgScore, overallStatus, gapCount };
+  }
+
   private generateExecutiveSummary(
     sections: Record<string, EvidenceSection>,
     reports: Record<ComplianceFramework, ComplianceReport>
@@ -534,59 +559,36 @@ class UnifiedEvidenceCollector {
     const intelSummary = getIntelligenceSummary();
     const driftHistory = getDriftHistory(24);
 
-    // Calculate overall status
-    let complianceScore = 0;
-    let frameworkCount = 0;
-    for (const report of Object.values(reports)) {
-      frameworkCount++;
-      if (report.overallStatus === "compliant") complianceScore += 100;
-      else if (report.overallStatus === "partial") complianceScore += 50;
-    }
-    const avgComplianceScore = frameworkCount > 0 ? complianceScore / frameworkCount : 0;
+    const { avgScore, overallStatus, gapCount } = this.calculateComplianceStatus(reports);
 
-    let overallStatus: ExecutiveSummary["overallStatus"] = "compliant";
-    if (avgComplianceScore < 50) overallStatus = "non_compliant";
-    else if (avgComplianceScore < 70) overallStatus = "partial";
-    else if (avgComplianceScore < 90) overallStatus = "mostly_compliant";
-
-    // Security score (0-100)
-    let securityScore = 100;
-    if (gateStats.blocked > gateStats.allowed * 0.5) securityScore -= 20;
-    if (intelSummary.highRiskUsers > 5) securityScore -= 15;
-    if (driftHistory.some(d => d.severity === "critical")) securityScore -= 15;
-    if (overrideStats.active > 10) securityScore -= 10;
-    securityScore = Math.max(0, securityScore);
+    // Security score deductions
+    const deductions: Array<{ condition: boolean; amount: number }> = [
+      { condition: gateStats.blocked > gateStats.allowed * 0.5, amount: 20 },
+      { condition: intelSummary.highRiskUsers > 5, amount: 15 },
+      { condition: driftHistory.some(d => d.severity === "critical"), amount: 15 },
+      { condition: overrideStats.active > 10, amount: 10 },
+    ];
+    const securityScore = Math.max(
+      0,
+      deductions.reduce((score, d) => (d.condition ? score - d.amount : score), 100)
+    );
 
     // Key findings
-    const keyFindings: string[] = [];
-    keyFindings.push(`Security gate processed ${gateStats.totalRequests} requests`);
-    if (gateStats.blocked > 0) {
+    const keyFindings = [`Security gate processed ${gateStats.totalRequests} requests`];
+    if (gateStats.blocked > 0)
       keyFindings.push(`Blocked ${gateStats.blocked} unauthorized actions`);
-    }
-    if (intelSummary.anomaliesLast24h > 0) {
+    if (intelSummary.anomaliesLast24h > 0)
       keyFindings.push(`Detected ${intelSummary.anomaliesLast24h} security anomalies`);
-    }
-    if (overrideStats.total > 0) {
+    if (overrideStats.total > 0)
       keyFindings.push(`${overrideStats.total} security overrides issued`);
-    }
 
     // Recommendations
     const recommendations: string[] = [];
-    if (intelSummary.highRiskUsers > 0) {
+    if (intelSummary.highRiskUsers > 0)
       recommendations.push(`Review ${intelSummary.highRiskUsers} high-risk users`);
-    }
-    if (overrideStats.active > 5) {
+    if (overrideStats.active > 5)
       recommendations.push("Review active security overrides for necessity");
-    }
-    if (avgComplianceScore < 90) {
-      recommendations.push("Address compliance gaps to improve score");
-    }
-
-    // Compile gaps
-    let complianceGaps = 0;
-    for (const report of Object.values(reports)) {
-      complianceGaps += report.gaps.length;
-    }
+    if (avgScore < 90) recommendations.push("Address compliance gaps to improve score");
 
     return {
       overallStatus,
@@ -599,13 +601,9 @@ class UnifiedEvidenceCollector {
         overridesGranted: overrideStats.total,
         anomaliesDetected: intelSummary.anomaliesLast24h,
         driftEvents: driftHistory.length,
-        complianceGaps,
+        complianceGaps: gapCount,
       },
-      trends: {
-        securityScore: "stable",
-        threatLevel: "stable",
-        compliance: "stable",
-      },
+      trends: { securityScore: "stable", threatLevel: "stable", compliance: "stable" },
     };
   }
 

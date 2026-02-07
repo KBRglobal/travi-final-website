@@ -208,6 +208,125 @@ class ExfiltrationGuard {
   }
 
   /**
+   * Check per-request, hourly, daily, and rate limits
+   */
+  private checkLimits(
+    userId: string,
+    resourceType: string,
+    requestedRecords: number,
+    estimatedBytes: number,
+    rule: ExfiltrationRule
+  ): { limits: DataLimit[]; recommendations: string[]; riskScore: number; blocked: boolean } {
+    const limits: DataLimit[] = [];
+    const recommendations: string[] = [];
+    let riskScore = 0;
+
+    const limitChecks: Array<{ exceeded: boolean; risk: number; msg: string; limit?: DataLimit }> =
+      [
+        {
+          exceeded: requestedRecords > rule.maxRecordsPerRequest,
+          risk: 30,
+          msg: `Reduce request size to ${rule.maxRecordsPerRequest} records or less`,
+          limit: {
+            type: "records",
+            current: requestedRecords,
+            limit: rule.maxRecordsPerRequest,
+            exceeded: requestedRecords > rule.maxRecordsPerRequest,
+          },
+        },
+        {
+          exceeded: estimatedBytes > rule.maxBytesPerRequest,
+          risk: 20,
+          msg: "Reduce data size or use pagination",
+          limit: {
+            type: "bytes",
+            current: estimatedBytes,
+            limit: rule.maxBytesPerRequest,
+            exceeded: estimatedBytes > rule.maxBytesPerRequest,
+          },
+        },
+      ];
+
+    const recordsThisHour = accessTracker.getRecordCount(userId, resourceType, 1);
+    const hourlyExceeded = recordsThisHour + requestedRecords > rule.maxRecordsPerHour;
+    limitChecks.push({
+      exceeded: hourlyExceeded,
+      risk: 40,
+      msg: `Wait until hourly limit resets (${rule.maxRecordsPerHour - recordsThisHour} records remaining)`,
+    });
+
+    const recordsToday = accessTracker.getRecordCount(userId, resourceType, 24);
+    const dailyExceeded = recordsToday + requestedRecords > rule.maxRecordsPerDay;
+    limitChecks.push({ exceeded: dailyExceeded, risk: 50, msg: "Daily data access limit reached" });
+
+    const requestsThisMinute = accessTracker.getRequestCount(userId, resourceType, 1);
+    const rateExceeded = requestsThisMinute >= rule.maxRequestsPerMinute;
+    limitChecks.push({
+      exceeded: rateExceeded,
+      risk: 30,
+      msg: "Slow down request rate",
+      limit: {
+        type: "requests",
+        current: requestsThisMinute,
+        limit: rule.maxRequestsPerMinute,
+        exceeded: rateExceeded,
+      },
+    });
+
+    let blocked = false;
+    for (const check of limitChecks) {
+      if (check.limit) limits.push(check.limit);
+      if (check.exceeded) {
+        riskScore += check.risk;
+        recommendations.push(check.msg);
+        blocked = true;
+      }
+    }
+
+    return { limits, recommendations, riskScore, blocked };
+  }
+
+  /**
+   * Get sensitivity risk score
+   */
+  private getSensitivityRisk(level: string): number {
+    const riskMap: Record<string, number> = {
+      restricted: 20,
+      confidential: 15,
+      internal: 5,
+      public: 0,
+    };
+    return riskMap[level] ?? 0;
+  }
+
+  /**
+   * Get block reason based on limit violations
+   */
+  private getBlockReason(
+    userId: string,
+    resourceType: string,
+    rule: ExfiltrationRule,
+    requestedRecords: number,
+    estimatedBytes: number
+  ): string | undefined {
+    const recordsThisMinute = accessTracker.getRequestCount(userId, resourceType, 1);
+    if (recordsThisMinute >= rule.maxRequestsPerMinute) return "Rate limit exceeded";
+
+    const recordsToday = accessTracker.getRecordCount(userId, resourceType, 24);
+    if (recordsToday + requestedRecords > rule.maxRecordsPerDay)
+      return "Daily data access limit exceeded";
+
+    const recordsThisHour = accessTracker.getRecordCount(userId, resourceType, 1);
+    if (recordsThisHour + requestedRecords > rule.maxRecordsPerHour)
+      return "Hourly data access limit exceeded";
+
+    if (requestedRecords > rule.maxRecordsPerRequest) return "Request exceeds maximum record limit";
+    if (estimatedBytes > rule.maxBytesPerRequest) return "Request exceeds maximum data size";
+
+    return undefined;
+  }
+
+  /**
    * Check if data access should be allowed
    */
   async checkAccess(
@@ -219,12 +338,8 @@ class ExfiltrationGuard {
     estimatedBytes: number
   ): Promise<ExfiltrationCheck> {
     const rule = this.rules.get(resourceType);
-    const limits: DataLimit[] = [];
-    const recommendations: string[] = [];
-    let riskScore = 0;
 
     if (!rule) {
-      // No rule = allow with warning
       return {
         allowed: true,
         blocked: false,
@@ -234,7 +349,6 @@ class ExfiltrationGuard {
       };
     }
 
-    // Check role authorization
     if (!rule.allowedRoles.includes(userRole)) {
       return {
         allowed: false,
@@ -246,113 +360,23 @@ class ExfiltrationGuard {
       };
     }
 
-    // Check per-request limits
-    const recordLimitExceeded = requestedRecords > rule.maxRecordsPerRequest;
-    limits.push({
-      type: "records",
-      current: requestedRecords,
-      limit: rule.maxRecordsPerRequest,
-      exceeded: recordLimitExceeded,
-    });
+    const {
+      limits,
+      recommendations,
+      riskScore: limitRisk,
+      blocked,
+    } = this.checkLimits(userId, resourceType, requestedRecords, estimatedBytes, rule);
 
-    if (recordLimitExceeded) {
-      riskScore += 30;
-      recommendations.push(`Reduce request size to ${rule.maxRecordsPerRequest} records or less`);
-    }
-
-    const byteLimitExceeded = estimatedBytes > rule.maxBytesPerRequest;
-    limits.push({
-      type: "bytes",
-      current: estimatedBytes,
-      limit: rule.maxBytesPerRequest,
-      exceeded: byteLimitExceeded,
-    });
-
-    if (byteLimitExceeded) {
-      riskScore += 20;
-      recommendations.push("Reduce data size or use pagination");
-    }
-
-    // Check hourly limits
-    const recordsThisHour = accessTracker.getRecordCount(userId, resourceType, 1);
-    const hourlyRecordExceeded = recordsThisHour + requestedRecords > rule.maxRecordsPerHour;
-
-    if (hourlyRecordExceeded) {
-      riskScore += 40;
-      recommendations.push(
-        `Wait until hourly limit resets (${rule.maxRecordsPerHour - recordsThisHour} records remaining)`
-      );
-    }
-
-    // Check daily limits
-    const recordsToday = accessTracker.getRecordCount(userId, resourceType, 24);
-    const dailyRecordExceeded = recordsToday + requestedRecords > rule.maxRecordsPerDay;
-
-    if (dailyRecordExceeded) {
-      riskScore += 50;
-      recommendations.push("Daily data access limit reached");
-    }
-
-    // Check rate limits
-    const requestsThisMinute = accessTracker.getRequestCount(userId, resourceType, 1);
-    const rateLimitExceeded = requestsThisMinute >= rule.maxRequestsPerMinute;
-
-    limits.push({
-      type: "requests",
-      current: requestsThisMinute,
-      limit: rule.maxRequestsPerMinute,
-      exceeded: rateLimitExceeded,
-    });
-
-    if (rateLimitExceeded) {
-      riskScore += 30;
-      recommendations.push("Slow down request rate");
-    }
-
-    // Add sensitivity risk
-    switch (rule.sensitivityLevel) {
-      case "restricted":
-        riskScore += 20;
-        break;
-      case "confidential":
-        riskScore += 15;
-        break;
-      case "internal":
-        riskScore += 5;
-        break;
-    }
-
-    // Export operations are riskier
+    let riskScore = limitRisk + this.getSensitivityRisk(rule.sensitivityLevel);
     if (operation === "export" || operation === "download") {
       riskScore += 15;
     }
 
-    // Determine if blocked
-    const blocked =
-      recordLimitExceeded ||
-      byteLimitExceeded ||
-      hourlyRecordExceeded ||
-      dailyRecordExceeded ||
-      rateLimitExceeded;
-
     const requiresApproval = rule.requiresApproval && operation === "export";
 
-    // Generate reason
     let reason: string | undefined;
     if (blocked) {
-      if (rateLimitExceeded) {
-        reason = "Rate limit exceeded";
-      } else if (dailyRecordExceeded) {
-        reason = "Daily data access limit exceeded";
-      } else if (hourlyRecordExceeded) {
-        reason = "Hourly data access limit exceeded";
-      } else if (recordLimitExceeded) {
-        reason = "Request exceeds maximum record limit";
-      } else if (byteLimitExceeded) {
-        reason = "Request exceeds maximum data size";
-      }
-
-      // Track blocked attempt
+      reason = this.getBlockReason(userId, resourceType, rule, requestedRecords, estimatedBytes);
       const key = `${userId}:${resourceType}`;
       this.blockedAttempts.set(key, (this.blockedAttempts.get(key) || 0) + 1);
     }

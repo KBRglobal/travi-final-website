@@ -24,6 +24,37 @@ interface TiqetsAttractionRow {
   tiqets_review_count: number | null;
 }
 
+// Helper: calculate health score from metrics
+function calculateHealthScore(
+  health: { consecutiveErrors: number },
+  queueStats: { inProgress: number; completed: number },
+  failureStats: { total: number }
+): number {
+  let score = 100;
+
+  // Penalize for consecutive errors
+  if (health.consecutiveErrors > 0) {
+    score -= Math.min(30, health.consecutiveErrors * 10);
+  }
+
+  // Penalize for stale locks
+  const staleInProgress = queueStats.inProgress;
+  if (staleInProgress > 5) {
+    score -= 20;
+  } else if (staleInProgress > 0) {
+    score -= staleInProgress * 2;
+  }
+
+  // Penalize for high failure rate
+  if (failureStats.total > 0 && queueStats.completed > 0) {
+    const failureRate = failureStats.total / (failureStats.total + queueStats.completed);
+    if (failureRate > 0.1) score -= 20;
+    else if (failureRate > 0.05) score -= 10;
+  }
+
+  return score;
+}
+
 export function registerAdminTiqetsRoutes(app: Express): void {
   // GET /api/admin/tiqets/cities - Get all Tiqets cities
   app.get("/api/admin/tiqets/cities", requireAuth, async (req, res) => {
@@ -1308,28 +1339,7 @@ Return as valid JSON.`,
       ]);
 
       // Calculate health score (0-100)
-      let healthScore = 100;
-
-      // Penalize for consecutive errors
-      if (health.consecutiveErrors > 0) {
-        healthScore -= Math.min(30, health.consecutiveErrors * 10);
-      }
-
-      // Penalize for stale locks
-      const staleInProgress = queueStats.inProgress;
-      if (staleInProgress > 5) {
-        healthScore -= 20;
-      } else if (staleInProgress > 0) {
-        healthScore -= staleInProgress * 2;
-      }
-
-      // Penalize for high failure rate
-      if (failureStats.total > 0 && queueStats.completed > 0) {
-        const failureRate = failureStats.total / (failureStats.total + queueStats.completed);
-        if (failureRate > 0.1) healthScore -= 20;
-        else if (failureRate > 0.05) healthScore -= 10;
-      }
-
+      const healthScore = calculateHealthScore(health, queueStats, failureStats);
       const status = healthScore >= 80 ? "healthy" : healthScore >= 50 ? "degraded" : "unhealthy";
 
       res.json({
@@ -1348,7 +1358,7 @@ Return as valid JSON.`,
         queue: queueStats,
         failures: failureStats,
         recommendations: [
-          ...(staleInProgress > 5
+          ...(queueStats.inProgress > 5
             ? ["High number of stale in-progress items - watchdog should clean these up"]
             : []),
           ...(health.consecutiveErrors > 3

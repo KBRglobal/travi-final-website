@@ -95,146 +95,131 @@ export const plagiarismDetector = {
   /**
    * Check content for plagiarism against existing content
    */
+  extractTextFromBlocks(title: string, blocks: unknown): string {
+    let text = title + "\n";
+    if (!blocks || !Array.isArray(blocks)) return text;
+
+    for (const block of blocks as Array<{ type: string; content?: string; text?: string }>) {
+      if (block.type === "paragraph" || block.type === "text") {
+        text += (block.content || block.text || "") + "\n";
+      }
+    }
+    return text;
+  },
+
+  compareEmbeddingSets(
+    sentenceEmbeddings: (number[] | null)[],
+    otherEmbeddings: (number[] | null)[],
+    sentences: string[],
+    otherSentences: string[],
+    threshold: number
+  ): { matchedSentences: SimilarityResult["matchedSentences"]; avgSimilarity: number } {
+    const matchedSentences: SimilarityResult["matchedSentences"] = [];
+    let totalSimilarity = 0;
+    let comparisons = 0;
+
+    for (let i = 0; i < sentenceEmbeddings.length; i++) {
+      const embedding1 = sentenceEmbeddings[i];
+      if (!embedding1) continue;
+
+      for (let j = 0; j < otherEmbeddings.length; j++) {
+        const embedding2 = otherEmbeddings[j];
+        if (!embedding2) continue;
+
+        const similarity = this.cosineSimilarity(embedding1, embedding2);
+        totalSimilarity += similarity;
+        comparisons++;
+
+        if (similarity >= threshold) {
+          matchedSentences.push({
+            original: sentences[i],
+            similar: otherSentences[j],
+            score: similarity,
+          });
+        }
+      }
+    }
+
+    return {
+      matchedSentences,
+      avgSimilarity: comparisons > 0 ? totalSimilarity / comparisons : 0,
+    };
+  },
+
   async checkPlagiarism(
     contentId: string,
     threshold: number = 0.85
   ): Promise<PlagiarismCheckResult> {
-    try {
-      if (!openai) {
-        throw new Error("OpenAI API key not configured");
-      }
+    const emptyResult: PlagiarismCheckResult = {
+      isPlagiarized: false,
+      overallSimilarity: 0,
+      similarContent: [],
+      checkedAgainst: 0,
+    };
 
-      // Fetch target content
+    try {
+      if (!openai) throw new Error("OpenAI API key not configured");
+
       const targetContent = await db
         .select()
         .from(contents)
         .where(eq(contents.id, contentId))
         .limit(1);
-
-      if (targetContent.length === 0) {
-        throw new Error("Content not found");
-      }
+      if (targetContent.length === 0) throw new Error("Content not found");
 
       const content = targetContent[0];
-
-      // Extract text from content
-      let contentText = content.title + "\n";
-      if (content.blocks && Array.isArray(content.blocks)) {
-        for (const block of content.blocks as Array<{
-          type: string;
-          content?: string;
-          text?: string;
-        }>) {
-          if (block.type === "paragraph" || block.type === "text") {
-            contentText += (block.content || block.text || "") + "\n";
-          }
-        }
-      }
-
-      // Split into sentences
+      const contentText = this.extractTextFromBlocks(content.title, content.blocks);
       const sentences = this.splitIntoSentences(contentText);
+      if (sentences.length === 0) return emptyResult;
 
-      if (sentences.length === 0) {
-        return {
-          isPlagiarized: false,
-          overallSimilarity: 0,
-          similarContent: [],
-          checkedAgainst: 0,
-        };
-      }
-
-      // Generate embeddings for sentences
       const sentenceEmbeddings = await Promise.all(
-        sentences.slice(0, 10).map(s => this.generateEmbedding(s)) // Limit to first 10 sentences
+        sentences.slice(0, 10).map(s => this.generateEmbedding(s))
       );
 
-      // Fetch other published content
       const otherContent = await db
         .select()
         .from(contents)
         .where(ne(contents.id, contentId))
-        .limit(50); // Check against 50 most recent items
-
+        .limit(50);
       const similarContent: SimilarityResult[] = [];
 
-      // Check each content item
       for (const other of otherContent) {
-        let otherText = other.title + "\n";
-        if (other.blocks && Array.isArray(other.blocks)) {
-          for (const block of other.blocks as Array<{
-            type: string;
-            content?: string;
-            text?: string;
-          }>) {
-            if (block.type === "paragraph" || block.type === "text") {
-              otherText += (block.content || block.text || "") + "\n";
-            }
-          }
-        }
-
+        const otherText = this.extractTextFromBlocks(other.title, other.blocks);
         const otherSentences = this.splitIntoSentences(otherText);
         const otherEmbeddings = await Promise.all(
           otherSentences.slice(0, 10).map(s => this.generateEmbedding(s))
         );
 
-        const matchedSentences: SimilarityResult["matchedSentences"] = [];
-        let totalSimilarity = 0;
-        let comparisons = 0;
-
-        // Compare embeddings
-        for (let i = 0; i < sentenceEmbeddings.length; i++) {
-          const embedding1 = sentenceEmbeddings[i];
-          if (!embedding1) continue;
-
-          for (let j = 0; j < otherEmbeddings.length; j++) {
-            const embedding2 = otherEmbeddings[j];
-            if (!embedding2) continue;
-
-            const similarity = this.cosineSimilarity(embedding1, embedding2);
-            totalSimilarity += similarity;
-            comparisons++;
-
-            if (similarity >= threshold) {
-              matchedSentences.push({
-                original: sentences[i],
-                similar: otherSentences[j],
-                score: similarity,
-              });
-            }
-          }
-        }
-
-        const avgSimilarity = comparisons > 0 ? totalSimilarity / comparisons : 0;
+        const { matchedSentences, avgSimilarity } = this.compareEmbeddingSets(
+          sentenceEmbeddings,
+          otherEmbeddings,
+          sentences,
+          otherSentences,
+          threshold
+        );
 
         if (avgSimilarity >= threshold * 0.7 || matchedSentences.length > 0) {
           similarContent.push({
             contentId: other.id,
             title: other.title,
             similarity: avgSimilarity,
-            matchedSentences: matchedSentences.slice(0, 5), // Top 5 matches
+            matchedSentences: matchedSentences.slice(0, 5),
           });
         }
       }
 
-      // Sort by similarity
       similarContent.sort((a, b) => b.similarity - a.similarity);
-
       const overallSimilarity = similarContent.length > 0 ? similarContent[0].similarity : 0;
 
       return {
         isPlagiarized: overallSimilarity >= threshold,
         overallSimilarity,
-        similarContent: similarContent.slice(0, 5), // Top 5 similar items
+        similarContent: similarContent.slice(0, 5),
         checkedAgainst: otherContent.length,
       };
     } catch (error) {
       console.error(error);
-      return {
-        isPlagiarized: false,
-        overallSimilarity: 0,
-        similarContent: [],
-        checkedAgainst: 0,
-      };
+      return emptyResult;
     }
   },
 

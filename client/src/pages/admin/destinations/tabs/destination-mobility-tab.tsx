@@ -140,6 +140,48 @@ const emptyMobilityData: MobilityData = {
   sources: [],
 };
 
+/** Apply AI-generated results to the mobility form data */
+function applyMobilityResults(prev: MobilityData, results: Record<string, unknown>): MobilityData {
+  const updated = { ...prev };
+  if (results.transportOverview && updated.publicTransport) {
+    updated.publicTransport.overview = results.transportOverview as string;
+  }
+  if (results.transportModes && updated.publicTransport) {
+    updated.publicTransport.keyModes = results.transportModes as TransportMode[];
+  }
+  if (results.transitCard && updated.publicTransport?.payment) {
+    updated.publicTransport.payment.cardName = results.transitCard as string;
+  }
+  if (results.contactlessPayments !== undefined && updated.publicTransport?.payment) {
+    updated.publicTransport.payment.contactless = results.contactlessPayments as boolean;
+  }
+  if (results.officialApps && updated.publicTransport) {
+    updated.publicTransport.officialApps = results.officialApps as string[];
+  }
+  if (results.taxiApps && updated.taxisRideHailing) {
+    updated.taxisRideHailing.primaryApps = results.taxiApps as string[];
+  }
+  if (results.taxiInfo && updated.taxisRideHailing) {
+    updated.taxisRideHailing.officialTaxiInfo = results.taxiInfo as string;
+  }
+  if (results.airportInfo && updated.airportTransfers) {
+    updated.airportTransfers.airports = results.airportInfo as Airport[];
+  }
+  if (results.bikeShare && updated.micromobility?.bikeShare) {
+    updated.micromobility.bikeShare.name = results.bikeShare as string;
+  }
+  if (results.scootersAvailable !== undefined && updated.micromobility?.scooters) {
+    updated.micromobility.scooters.available = results.scootersAvailable as boolean;
+  }
+  if (results.walkabilitySummary && updated.walkability) {
+    updated.walkability.summary = results.walkabilitySummary as string;
+  }
+  if (results.bestWalkAreas && updated.walkability) {
+    updated.walkability.bestWalkAreas = results.bestWalkAreas as string[];
+  }
+  return updated;
+}
+
 export default function DestinationMobilityTab({
   destinationId,
   destination,
@@ -302,47 +344,7 @@ export default function DestinationMobilityTab({
               "bestWalkAreas",
             ]}
             onResults={results => {
-              setFormData(prev => {
-                const updated = { ...prev };
-                if (results.transportOverview && updated.publicTransport) {
-                  updated.publicTransport.overview = results.transportOverview as string;
-                }
-                if (results.transportModes && updated.publicTransport) {
-                  updated.publicTransport.keyModes = results.transportModes as TransportMode[];
-                }
-                if (results.transitCard && updated.publicTransport?.payment) {
-                  updated.publicTransport.payment.cardName = results.transitCard as string;
-                }
-                if (results.contactlessPayments !== undefined && updated.publicTransport?.payment) {
-                  updated.publicTransport.payment.contactless =
-                    results.contactlessPayments as boolean;
-                }
-                if (results.officialApps && updated.publicTransport) {
-                  updated.publicTransport.officialApps = results.officialApps as string[];
-                }
-                if (results.taxiApps && updated.taxisRideHailing) {
-                  updated.taxisRideHailing.primaryApps = results.taxiApps as string[];
-                }
-                if (results.taxiInfo && updated.taxisRideHailing) {
-                  updated.taxisRideHailing.officialTaxiInfo = results.taxiInfo as string;
-                }
-                if (results.airportInfo && updated.airportTransfers) {
-                  updated.airportTransfers.airports = results.airportInfo as Airport[];
-                }
-                if (results.bikeShare && updated.micromobility?.bikeShare) {
-                  updated.micromobility.bikeShare.name = results.bikeShare as string;
-                }
-                if (results.scootersAvailable !== undefined && updated.micromobility?.scooters) {
-                  updated.micromobility.scooters.available = results.scootersAvailable as boolean;
-                }
-                if (results.walkabilitySummary && updated.walkability) {
-                  updated.walkability.summary = results.walkabilitySummary as string;
-                }
-                if (results.bestWalkAreas && updated.walkability) {
-                  updated.walkability.bestWalkAreas = results.bestWalkAreas as string[];
-                }
-                return updated;
-              });
+              setFormData(prev => applyMobilityResults(prev, results));
             }}
           />
           <Button

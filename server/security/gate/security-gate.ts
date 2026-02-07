@@ -157,15 +157,11 @@ const gateStats: GateStats = {
  * This function MUST be called before any critical action.
  * If it returns blocked: true, the action MUST NOT proceed.
  */
-export async function assertAllowed(request: SecurityGateRequest): Promise<SecurityGateResult> {
-  gateStats.totalRequests++;
-
-  const startTime = Date.now();
+/**
+ * Run kernel security check (Layer 1)
+ */
+function checkKernel(request: SecurityGateRequest): SecurityGateResult | null {
   const { actor, action, resource, context } = request;
-
-  // ============================================================================
-  // LAYER 1: KERNEL CHECK (Fail-closed foundation)
-  // ============================================================================
   const kernelCheck = shouldAllow({
     action: action as any,
     resource: resource as any,
@@ -175,85 +171,73 @@ export async function assertAllowed(request: SecurityGateRequest): Promise<Secur
   } as any);
 
   if (!kernelCheck.allowed) {
-    return recordAndReturn(
-      {
-        allowed: false,
-        blocked: true,
-        reason: kernelCheck.reason,
-        code: "KERNEL_DENY",
-        requiresApproval: false,
-        overridable: false,
-      },
-      request,
-      startTime
-    );
+    return {
+      allowed: false,
+      blocked: true,
+      reason: kernelCheck.reason,
+      code: "KERNEL_DENY",
+      requiresApproval: false,
+      overridable: false,
+    };
   }
+  return null;
+}
 
-  // ============================================================================
-  // LAYER 2: SECURITY MODE CHECK
-  // ============================================================================
+/**
+ * Run security mode check (Layer 2)
+ */
+function checkSecurityMode(action: string): SecurityGateResult | null {
   const mode = getSecurityMode();
-  const modeConfig = getModeConfiguration();
 
-  // Lockdown mode blocks most operations
   if (mode === "lockdown" && LOCKDOWN_BLOCKED.has(action)) {
-    return recordAndReturn(
-      {
-        allowed: false,
-        blocked: true,
-        reason: `Action '${action}' blocked during LOCKDOWN mode`,
-        code: "SYSTEM_LOCKDOWN",
-        requiresApproval: false,
-        overridable: false,
-      },
-      request,
-      startTime
-    );
+    return {
+      allowed: false,
+      blocked: true,
+      reason: `Action '${action}' blocked during LOCKDOWN mode`,
+      code: "SYSTEM_LOCKDOWN",
+      requiresApproval: false,
+      overridable: false,
+    };
   }
 
-  // Check mode-specific restrictions
   const modeCheck = isOperationAllowed(action);
   if (!modeCheck.allowed) {
-    return recordAndReturn(
-      {
-        allowed: false,
-        blocked: true,
-        reason: modeCheck.reason || `Action blocked by security mode: ${mode}`,
-        code: "MODE_DENY",
-        requiresApproval: false,
-        overridable: mode !== "lockdown",
-      },
-      request,
-      startTime
-    );
+    return {
+      allowed: false,
+      blocked: true,
+      reason: modeCheck.reason || `Action blocked by security mode: ${mode}`,
+      code: "MODE_DENY",
+      requiresApproval: false,
+      overridable: mode !== "lockdown",
+    };
   }
 
-  // ============================================================================
-  // LAYER 3: THREAT LEVEL CHECK
-  // ============================================================================
+  return null;
+}
+
+/**
+ * Run threat level check (Layer 3)
+ */
+function checkThreat(actorRole: string): SecurityGateResult | null {
   const threatLevel = getThreatLevel();
-
-  if (threatLevel === "black" || threatLevel === "red") {
-    // Only allow super_admin during critical threat
-    if (actor.role !== "super_admin") {
-      return recordAndReturn(
-        {
-          allowed: false,
-          blocked: true,
-          reason: `Action blocked due to ${threatLevel.toUpperCase()} threat level`,
-          code: "THREAT_DENY",
-          requiresApproval: false,
-          overridable: false,
-        },
-        request,
-        startTime
-      );
-    }
+  if ((threatLevel === "black" || threatLevel === "red") && actorRole !== "super_admin") {
+    return {
+      allowed: false,
+      blocked: true,
+      reason: `Action blocked due to ${threatLevel.toUpperCase()} threat level`,
+      code: "THREAT_DENY",
+      requiresApproval: false,
+      overridable: false,
+    };
   }
+  return null;
+}
 
-  // ============================================================================
-  // LAYER 4: RBAC CHECK
-  // ============================================================================
+/**
+ * Run RBAC check (Layer 4)
+ */
+function checkRbac(request: SecurityGateRequest): SecurityGateResult | null {
+  const { actor, action, resource, context } = request;
   const rbacCheck = checkUserPermission(actor.userId, actor.role, action as any, resource as any, {
     ipAddress: actor.ipAddress,
     sessionId: actor.sessionId,
@@ -261,75 +245,93 @@ export async function assertAllowed(request: SecurityGateRequest): Promise<Secur
   });
 
   if (!rbacCheck.allowed) {
-    return recordAndReturn(
-      {
-        allowed: false,
-        blocked: true,
-        reason: rbacCheck.reason,
-        code: "RBAC_DENY",
-        requiresApproval: false,
-        overridable: false,
-      },
-      request,
-      startTime
-    );
+    return {
+      allowed: false,
+      blocked: true,
+      reason: rbacCheck.reason,
+      code: "RBAC_DENY",
+      requiresApproval: false,
+      overridable: false,
+    };
+  }
+  return null;
+}
+
+/**
+ * Run exfiltration check (Layer 5)
+ */
+async function checkExfiltration(request: SecurityGateRequest): Promise<SecurityGateResult | null> {
+  const { actor, action, resource, context } = request;
+  if (!context?.recordCount && !context?.byteCount) return null;
+
+  const exfilCheck = await checkDataAccess(
+    actor.userId,
+    actor.role,
+    resource,
+    action === "export" ? "export" : "read",
+    context.recordCount || 0,
+    context.byteCount || 0
+  );
+
+  if (exfilCheck.blocked) {
+    return {
+      allowed: false,
+      blocked: true,
+      reason: exfilCheck.reason || "Data access limit exceeded",
+      code: "EXFILTRATION_DENY",
+      requiresApproval: false,
+      overridable: false,
+      recommendations: exfilCheck.recommendations,
+    };
+  }
+  return null;
+}
+
+/**
+ * Run approval requirement check (Layer 6)
+ */
+function checkApproval(
+  action: string,
+  context?: SecurityGateRequest["context"]
+): SecurityGateResult | null {
+  const modeConfig = getModeConfiguration();
+  if (!modeConfig.restrictions.requireApproval || !CRITICAL_ACTIONS.has(action)) return null;
+
+  if (!context?.overrideId || !isOverrideValid(context.overrideId)) {
+    return {
+      allowed: false,
+      blocked: false,
+      reason: "Action requires approval",
+      code: "APPROVAL_REQUIRED",
+      requiresApproval: true,
+      approvalType: getApprovalType(action),
+      overridable: true,
+    };
+  }
+  return null;
+}
+
+export async function assertAllowed(request: SecurityGateRequest): Promise<SecurityGateResult> {
+  gateStats.totalRequests++;
+  const startTime = Date.now();
+
+  const layerChecks: (SecurityGateResult | null)[] = [
+    checkKernel(request),
+    checkSecurityMode(request.action),
+    checkThreat(request.actor.role),
+    checkRbac(request),
+  ];
+
+  for (const result of layerChecks) {
+    if (result) return recordAndReturn(result, request, startTime);
   }
 
-  // ============================================================================
-  // LAYER 5: EXFILTRATION CHECK (for data access)
-  // ============================================================================
-  if (context?.recordCount || context?.byteCount) {
-    const exfilCheck = await checkDataAccess(
-      actor.userId,
-      actor.role,
-      resource,
-      action === "export" ? "export" : "read",
-      context.recordCount || 0,
-      context.byteCount || 0
-    );
+  const exfilResult = await checkExfiltration(request);
+  if (exfilResult) return recordAndReturn(exfilResult, request, startTime);
 
-    if (exfilCheck.blocked) {
-      return recordAndReturn(
-        {
-          allowed: false,
-          blocked: true,
-          reason: exfilCheck.reason || "Data access limit exceeded",
-          code: "EXFILTRATION_DENY",
-          requiresApproval: false,
-          overridable: false,
-          recommendations: exfilCheck.recommendations,
-        },
-        request,
-        startTime
-      );
-    }
-  }
+  const approvalResult = checkApproval(request.action, request.context);
+  if (approvalResult) return recordAndReturn(approvalResult, request, startTime);
 
-  // ============================================================================
-  // LAYER 6: APPROVAL REQUIREMENT CHECK
-  // ============================================================================
-  if (modeConfig.restrictions.requireApproval && CRITICAL_ACTIONS.has(action)) {
-    // Check if already has valid override
-    if (!context?.overrideId || !isOverrideValid(context.overrideId)) {
-      return recordAndReturn(
-        {
-          allowed: false,
-          blocked: false, // Not blocked, just needs approval
-          reason: "Action requires approval",
-          code: "APPROVAL_REQUIRED",
-          requiresApproval: true,
-          approvalType: getApprovalType(action),
-          overridable: true,
-        },
-        request,
-        startTime
-      );
-    }
-  }
-
-  // ============================================================================
-  // ALL CHECKS PASSED
-  // ============================================================================
   return recordAndReturn(
     {
       allowed: true,
