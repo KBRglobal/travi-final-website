@@ -1,11 +1,11 @@
-import { ObjectStorageAdapter } from "./services/storage-adapter";
+import { R2StorageAdapter } from "./services/storage-adapter";
 
 export class StorageManager {
   private static instance: StorageManager | null = null;
-  private adapter: ObjectStorageAdapter;
+  private adapter: R2StorageAdapter;
 
   private constructor() {
-    this.adapter = new ObjectStorageAdapter();
+    this.adapter = new R2StorageAdapter();
   }
 
   static getInstance(): StorageManager {

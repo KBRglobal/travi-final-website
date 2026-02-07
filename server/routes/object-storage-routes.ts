@@ -1,13 +1,15 @@
 /**
  * Object Storage Routes
- * Serves files from object storage with path security and content type handling
+ * Redirects legacy /object-storage/* URLs to CDN (cdn.travi.world)
+ * Falls back to serving from storage manager if CDN is not configured
  */
 
 import type { Express, Request, Response } from "express";
 import { getStorageManager } from "../services/storage-adapter";
 
+const CDN_BASE_URL = process.env.CDN_BASE_URL || process.env.R2_PUBLIC_URL || "";
+
 export function registerObjectStorageRoutes(app: Express): void {
-  // Serve files from Object Storage - handles /object-storage/* requests
   app.get("/object-storage/*", async (req: Request, res: Response) => {
     const key = req.params[0];
 
@@ -17,7 +19,6 @@ export function registerObjectStorageRoutes(app: Express): void {
       return;
     }
 
-    // Sanitize key
     const sanitizedKey = key
       .replace(/^\/+/, "")
       .replace(/[<>:"|?*]/g, "")
@@ -28,6 +29,13 @@ export function registerObjectStorageRoutes(app: Express): void {
       return;
     }
 
+    // Redirect to CDN if configured
+    if (CDN_BASE_URL) {
+      res.redirect(301, `${CDN_BASE_URL}/${sanitizedKey}`);
+      return;
+    }
+
+    // Fallback: serve from storage manager
     try {
       const storageManager = getStorageManager();
       const buffer = await storageManager.download(sanitizedKey);
@@ -37,7 +45,6 @@ export function registerObjectStorageRoutes(app: Express): void {
         return;
       }
 
-      // Determine content type from extension
       const ext = sanitizedKey.split(".").pop()?.toLowerCase() || "";
       const contentTypes: Record<string, string> = {
         jpg: "image/jpeg",
@@ -54,7 +61,7 @@ export function registerObjectStorageRoutes(app: Express): void {
       };
 
       res.set("Content-Type", contentTypes[ext] || "application/octet-stream");
-      res.set("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+      res.set("Cache-Control", "public, max-age=31536000");
       res.send(buffer);
     } catch (error) {
       res.status(404).send("File not found");

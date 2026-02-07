@@ -1,9 +1,15 @@
 /**
  * Storage Adapter - Unified storage abstraction layer
- * Provides consistent interface for Object Storage and Local Filesystem
+ * Provides consistent interface for R2 (Cloudflare) and Local Filesystem
  */
 
-import { Client } from "@replit/object-storage";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand,
+} from "@aws-sdk/client-s3";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -16,33 +22,58 @@ export interface StorageAdapter {
 }
 
 /**
- * Replit Object Storage Adapter
+ * Cloudflare R2 Storage Adapter (S3-compatible)
  */
-export class ObjectStorageAdapter implements StorageAdapter {
-  private client: Client;
+export class R2StorageAdapter implements StorageAdapter {
+  private client: S3Client;
+  private bucket: string;
+  private publicUrl: string;
   private initialized: boolean = false;
   private initPromise: Promise<void> | null = null;
 
   constructor() {
-    this.client = new Client();
+    const endpoint = process.env.R2_ENDPOINT;
+    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+    this.bucket = process.env.R2_BUCKET_NAME || "travi";
+    this.publicUrl = process.env.R2_PUBLIC_URL || "https://cdn.travi.world";
+
+    if (!endpoint || !accessKeyId || !secretAccessKey) {
+      throw new Error(
+        "R2 credentials not configured: R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY required"
+      );
+    }
+
+    this.client = new S3Client({
+      region: "auto",
+      endpoint,
+      credentials: { accessKeyId, secretAccessKey },
+    });
   }
 
-  /**
-   * Lazy initialization - tests that Object Storage actually works
-   */
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
 
     if (!this.initPromise) {
       this.initPromise = (async () => {
-        // Test that Object Storage actually works by doing a small operation
         const testKey = `.storage-test-${Date.now()}`;
         try {
-          await this.client.uploadFromBytes(testKey, Buffer.from("test"));
-          await this.client.delete(testKey);
+          await this.client.send(
+            new PutObjectCommand({
+              Bucket: this.bucket,
+              Key: testKey,
+              Body: Buffer.from("test"),
+            })
+          );
+          await this.client.send(
+            new DeleteObjectCommand({
+              Bucket: this.bucket,
+              Key: testKey,
+            })
+          );
           this.initialized = true;
         } catch (error) {
-          throw new Error(`Object Storage connection test failed: ${error}`);
+          throw new Error(`R2 connection test failed: ${error}`);
         }
       })();
     }
@@ -52,14 +83,39 @@ export class ObjectStorageAdapter implements StorageAdapter {
 
   async upload(key: string, buffer: Buffer): Promise<string> {
     await this.ensureInitialized();
-    await this.client.uploadFromBytes(key, buffer);
+    const ext = key.split(".").pop()?.toLowerCase() || "";
+    const contentTypes: Record<string, string> = {
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      png: "image/png",
+      webp: "image/webp",
+      gif: "image/gif",
+      svg: "image/svg+xml",
+      pdf: "application/pdf",
+      mp4: "video/mp4",
+      webm: "video/webm",
+    };
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: buffer,
+        ContentType: contentTypes[ext] || "application/octet-stream",
+        CacheControl: "public, max-age=31536000",
+      })
+    );
     return this.getUrl(key);
   }
 
   async delete(key: string): Promise<void> {
     try {
       await this.ensureInitialized();
-      await this.client.delete(key);
+      await this.client.send(
+        new DeleteObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+        })
+      );
     } catch (error) {
       console.error(error);
     }
@@ -68,46 +124,51 @@ export class ObjectStorageAdapter implements StorageAdapter {
   async exists(key: string): Promise<boolean> {
     try {
       await this.ensureInitialized();
-      const result = await this.client.downloadAsBytes(key);
-      return result.ok;
-    } catch (error) {
-      console.error(error);
+      await this.client.send(
+        new HeadObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+        })
+      );
+      return true;
+    } catch {
       return false;
     }
   }
 
-  /**
-   * Download file from Object Storage
-   */
   async download(key: string): Promise<Buffer | null> {
     try {
       await this.ensureInitialized();
-      const result = await this.client.downloadAsBytes(key);
-      if (!result.ok) {
-        return null;
+      const response = await this.client.send(
+        new GetObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+        })
+      );
+      if (!response.Body) return null;
+      const chunks: Uint8Array[] = [];
+      for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
+        chunks.push(chunk);
       }
-      // Result is [Buffer] tuple when successful
-      const [buffer] = result.value;
-      return buffer;
-    } catch (error) {
-      console.error(error);
+      return Buffer.concat(chunks);
+    } catch {
       return null;
     }
   }
 
   getUrl(key: string): string {
-    // Object storage files are served via API route
-    if (key.startsWith("public/ai-generated/")) {
-      const filename = key.replace("public/ai-generated/", "");
-      return `/api/ai-images/${filename}`;
-    }
-    return `/object-storage/${key}`;
+    return `${this.publicUrl}/${key}`;
   }
 
   getName(): string {
-    return "object-storage";
+    return "r2";
   }
 }
+
+/**
+ * Legacy alias for backward compatibility
+ */
+export const ObjectStorageAdapter = R2StorageAdapter;
 
 /**
  * Sanitize path to prevent directory traversal attacks
@@ -225,8 +286,12 @@ export class StorageManager {
     // Always have local storage as fallback
     this.fallbackAdapter = new LocalStorageAdapter();
 
-    // Check if Object Storage should be enabled (lazy initialization)
-    this.objectStorageEnabled = !!process.env.DEFAULT_OBJECT_STORAGE_BUCKET_ID;
+    // Check if R2 Object Storage should be enabled (lazy initialization)
+    this.objectStorageEnabled = !!(
+      process.env.R2_ACCESS_KEY_ID &&
+      process.env.R2_SECRET_ACCESS_KEY &&
+      process.env.R2_ENDPOINT
+    );
 
     if (this.objectStorageEnabled) {
     } else {
@@ -321,7 +386,7 @@ export class StorageManager {
 
     const primary = await this.ensurePrimaryAdapter();
     if (primary && "download" in primary) {
-      const data = await (primary as ObjectStorageAdapter).download(sanitizedKey);
+      const data = await (primary as R2StorageAdapter).download(sanitizedKey);
       if (data) return data;
     }
     // Try local fallback with path traversal protection
