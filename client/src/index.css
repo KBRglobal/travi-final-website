@@ -73,7 +73,7 @@
 
   html {
     font-family: "Satoshi";
-    background-color: #d4e6f0;
+    background-color: #f7f3ec;
   }
 
   body {
@@ -98,103 +98,97 @@
   }
 }
 
-/* TRAVI Design System - Light Mode */
+/* TRAVI Design System - Light Mode — Warm, Cinematic, Editorial */
 :root {
-  --button-outline: rgba(36, 16, 62, 0.3);
-  --badge-outline: rgba(36, 16, 62, 0.1);
-  --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(36, 16, 62, 0.06);
-  --elevate-2: rgba(36, 16, 62, 0.12);
+  /* Brand Colors — Warm, Travel, Cinematic */
+  --travi-terracotta: 15 72% 55%; /* #D4704A - warm earth, Moroccan clay */
+  --travi-amber: 36 90% 55%; /* #E8A020 - golden hour, souks */
+  --travi-olive: 150 25% 40%; /* #4D8066 - Mediterranean gardens */
+  --travi-teal: 185 55% 35%; /* #28808C - Aegean sea */
+  --travi-sand: 38 35% 85%; /* #DDD4C4 - desert sand */
+  --travi-cream: 40 40% 95%; /* #F7F3EC - warm off-white */
 
-  /* Official Brand Color Tokens (definition only - controlled usage via CMS) */
-  --color-background-base: 0 0% 100%; /* White for cards */
-  --color-primary: 251 89% 61%;
-  --color-secondary: 48 98% 52%;
-  --color-accent: 251 89% 61%;
+  /* Core Semantic */
+  --background: 40 30% 98%; /* Warm off-white, NOT pure white */
+  --foreground: 25 20% 15%; /* Warm charcoal, NOT pure black */
+  --border: 35 15% 85%; /* Warm gray border */
 
-  /* TRAVI Brand Colors - from brand palette */
-  --travi-purple: 251 89% 61%; /* #6443F4 - Primary brand purple */
-  /* --travi-pink: DEPRECATED - Use --travi-purple instead */
-  --travi-yellow: 44 88% 61%; /* #F4C542 - Warm golden yellow */
-  --travi-green: 153 98% 33%; /* Keep existing green */
+  --card: 40 25% 99%; /* Slightly warm white */
+  --card-foreground: 25 20% 15%;
+  --card-border: 35 15% 88%;
 
-  /* Legacy - mapped to new palette */
-  --travi-orange: 44 88% 61%; /* Now uses yellow */
+  --popover: 40 25% 99%;
+  --popover-foreground: 25 20% 15%;
+  --popover-border: 35 15% 85%;
 
-  /* TRAVI Neutrals */
-  --travi-neutral-black: 270 30% 10%;
-  --travi-neutral-gray-100: 269 61% 15%;
-  --travi-neutral-gray-75: 264 23% 33%;
-  --travi-neutral-gray-50: 270 10% 66%;
-  --travi-neutral-gray-25: 272 11% 83%;
+  /* Primary — Terracotta (main CTA, booking buttons) */
+  --primary: 15 72% 55%; /* Terracotta */
+  --primary-foreground: 40 40% 98%; /* Cream white */
 
-  /* Core Semantic Colors */
-  --background: 0 0% 100%; /* White - sits on top of background image */
-  --foreground: 269 61% 15%;
-  --border: 272 11% 83%;
-
-  /* Card */
-  --card: 0 0% 100%; /* White */
-  --card-foreground: 269 61% 15%;
-  --card-border: 272 11% 88%;
-
-  /* Sidebar */
-  --sidebar: 0 0% 98%;
-  --sidebar-foreground: 269 61% 15%;
-  --sidebar-border: 272 11% 90%;
-  --sidebar-primary: 251 89% 61%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 251 60% 96%;
-  --sidebar-accent-foreground: 269 61% 15%;
-  --sidebar-ring: 251 89% 61%;
-
-  /* Popover */
-  --popover: 0 0% 100%;
-  --popover-foreground: 269 61% 15%;
-  --popover-border: 272 11% 85%;
-
-  /* Primary - TRAVI Purple (Main CTA color #6443F4) */
-  --primary: 251 89% 61%;
-  --primary-foreground: 0 0% 100%;
-
-  /* Brand Purple - for links and secondary elements */
-  --brand-purple: 251 89% 61%;
-  --brand-purple-foreground: 0 0% 100%;
-
-  /* Brand Yellow - for warm accents */
-  --brand-yellow: 44 88% 61%;
-  --brand-yellow-foreground: 269 61% 15%;
-
-  /* Legacy orange - mapped to yellow */
-  --brand-orange: 44 88% 61%;
-  --brand-orange-foreground: 269 61% 15%;
-
-  /* Secondary */
-  --secondary: 270 10% 94%;
-  --secondary-foreground: 269 61% 15%;
+  /* Secondary — Olive (secondary actions) */
+  --secondary: 150 15% 93%; /* Very light olive tint */
+  --secondary-foreground: 150 25% 30%;
 
   /* Muted */
-  --muted: 270 8% 92%;
-  --muted-foreground: 264 23% 40%;
+  --muted: 35 12% 92%; /* Warm light gray */
+  --muted-foreground: 25 10% 45%; /* Warm medium gray */
 
-  /* Accent - Purple tint */
-  --accent: 251 60% 96%;
-  --accent-foreground: 269 61% 15%;
+  /* Accent — Amber (highlights, badges) */
+  --accent: 36 85% 95%; /* Light amber tint */
+  --accent-foreground: 36 70% 30%; /* Deep amber */
 
-  /* Destructive - Red for errors */
-  --destructive: 0 84% 60%;
+  /* Destructive */
+  --destructive: 0 72% 55%;
   --destructive-foreground: 0 0% 100%;
 
   /* Input */
-  --input: 272 11% 75%;
-  --ring: hsl(var(--color-accent));
+  --input: 35 15% 78%;
+  --ring: 15 72% 55%; /* Terracotta ring */
 
-  /* Chart colors using TRAVI palette */
-  --chart-1: 272 38% 47%;
-  --chart-2: 153 98% 40%;
-  --chart-3: 44 88% 55%;
-  --chart-4: 251 89% 61%;
-  --chart-5: 44 88% 65%;
+  /* Chart colors — warm palette */
+  --chart-1: 15 72% 55%; /* Terracotta */
+  --chart-2: 150 25% 40%; /* Olive */
+  --chart-3: 36 90% 55%; /* Amber */
+  --chart-4: 185 55% 35%; /* Teal */
+  --chart-5: 25 60% 65%; /* Warm copper */
+
+  /* Sidebar */
+  --sidebar: 35 20% 97%;
+  --sidebar-foreground: 25 20% 15%;
+  --sidebar-border: 35 15% 90%;
+  --sidebar-primary: 15 72% 55%;
+  --sidebar-primary-foreground: 40 40% 98%;
+  --sidebar-accent: 36 50% 95%;
+  --sidebar-accent-foreground: 25 20% 15%;
+  --sidebar-ring: 15 72% 55%;
+
+  /* Legacy compatibility */
+  --color-primary: 15 72% 55%;
+  --color-secondary: 36 90% 55%;
+  --color-accent: 15 72% 55%;
+  --color-background-base: 40 25% 99%;
+
+  /* Brand colors — mapped for backward compatibility */
+  --brand-purple: 15 72% 55%; /* Now terracotta */
+  --brand-purple-foreground: 40 40% 98%;
+  --brand-yellow: 36 90% 55%; /* Now amber */
+  --brand-yellow-foreground: 25 20% 15%;
+  --brand-orange: 36 90% 55%;
+  --brand-orange-foreground: 25 20% 15%;
+
+  /* Keep these mapped for backward compatibility */
+  --travi-purple: 15 72% 55%; /* Now terracotta */
+  --travi-yellow: 36 90% 55%; /* Now amber */
+  --travi-orange: 36 90% 55%;
+  --travi-green: 150 25% 40%; /* Now olive */
+  --travi-pink: 15 60% 65%; /* Now light terracotta */
+
+  /* Warm neutrals */
+  --travi-neutral-black: 25 20% 10%;
+  --travi-neutral-gray-100: 25 15% 15%;
+  --travi-neutral-gray-75: 25 10% 35%;
+  --travi-neutral-gray-50: 30 8% 60%;
+  --travi-neutral-gray-25: 35 10% 82%;
 
   /* Typography - TRAVI Brand Fonts */
   --font-sans: "Satoshi";
@@ -206,23 +200,28 @@
   --radius-sm: 0.5rem;
   --radius-lg: 1rem;
   --radius-full: 999px;
-
-  /* TRAVI Shadows */
-  --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.06);
-  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.14);
-
-  --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.06);
-  --shadow-sm: 0px 2px 6px rgba(0, 0, 0, 0.08);
-  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.14);
-  --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.18);
-  --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.22);
-
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+
+  /* Warm shadows */
+  --shadow-2xs: 0px 2px 4px rgba(60, 40, 20, 0.04);
+  --shadow-xs: 0px 2px 4px rgba(60, 40, 20, 0.06);
+  --shadow-sm: 0px 2px 6px rgba(60, 40, 20, 0.08);
+  --shadow: 0px 4px 12px rgba(60, 40, 20, 0.08);
+  --shadow-md: 0px 4px 12px rgba(60, 40, 20, 0.1);
+  --shadow-lg: 0px 6px 20px rgba(60, 40, 20, 0.12);
+  --shadow-xl: 0px 8px 28px rgba(60, 40, 20, 0.15);
+  --shadow-2xl: 0px 12px 40px rgba(60, 40, 20, 0.2);
+  --shadow-level-1: 0px 2px 4px rgba(60, 40, 20, 0.06);
+  --shadow-level-2: 0px 4px 12px rgba(60, 40, 20, 0.1);
+  --shadow-level-3: 0px 6px 20px rgba(60, 40, 20, 0.14);
+
+  /* Warm elevation */
+  --elevate-1: rgba(60, 40, 20, 0.05);
+  --elevate-2: rgba(60, 40, 20, 0.1);
+  --button-outline: rgba(60, 40, 20, 0.25);
+  --badge-outline: rgba(60, 40, 20, 0.1);
+  --opaque-button-border-intensity: -8;
 
   /* Border color calculations */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
@@ -234,14 +233,14 @@
   --destructive-border: hsl(var(--destructive));
 
   /* Admin Design System Tokens - Opaque surfaces, 4px grid, 6px radius */
-  --admin-bg: 0 0% 97%;
-  --admin-surface: 0 0% 100%;
-  --admin-surface-elevated: 0 0% 100%;
-  --admin-border: 0 0% 88%;
-  --admin-border-subtle: 0 0% 92%;
-  --admin-text: 0 0% 10%;
-  --admin-text-muted: 0 0% 45%;
-  --admin-text-subtle: 0 0% 60%;
+  --admin-bg: 35 15% 97%;
+  --admin-surface: 40 25% 99%;
+  --admin-surface-elevated: 40 25% 99%;
+  --admin-border: 35 12% 88%;
+  --admin-border-subtle: 35 10% 92%;
+  --admin-text: 25 20% 10%;
+  --admin-text-muted: 25 10% 45%;
+  --admin-text-subtle: 30 8% 60%;
   --admin-radius: 6px;
   --admin-spacing-xs: 4px;
   --admin-spacing-sm: 8px;
@@ -252,80 +251,79 @@
   --admin-sidebar-width: 240px;
 }
 
-/* TRAVI Design System - Dark Mode */
+/* TRAVI Design System - Dark Mode — Warm, Cinematic */
 .dark {
+  --background: 25 25% 8%; /* Warm dark, NOT pure black */
+  --foreground: 35 15% 92%; /* Warm light */
+  --border: 25 15% 18%;
+
+  --card: 25 20% 11%;
+  --card-foreground: 35 15% 92%;
+  --card-border: 25 15% 16%;
+
+  --popover: 25 20% 12%;
+  --popover-foreground: 35 15% 92%;
+  --popover-border: 25 15% 18%;
+
+  --primary: 15 72% 58%; /* Slightly brighter terracotta */
+  --primary-foreground: 40 40% 98%;
+
+  --secondary: 25 15% 18%;
+  --secondary-foreground: 35 15% 90%;
+
+  --muted: 25 15% 15%;
+  --muted-foreground: 30 8% 55%;
+
+  --accent: 36 50% 18%;
+  --accent-foreground: 36 80% 75%;
+
+  --destructive: 0 72% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 25 15% 25%;
+  --ring: 15 72% 58%;
+
+  --chart-1: 15 72% 60%;
+  --chart-2: 150 30% 50%;
+  --chart-3: 36 85% 60%;
+  --chart-4: 185 50% 45%;
+  --chart-5: 25 55% 60%;
+
+  --sidebar: 25 25% 6%;
+  --sidebar-foreground: 35 15% 92%;
+  --sidebar-border: 25 15% 14%;
+  --sidebar-primary: 15 72% 58%;
+  --sidebar-primary-foreground: 40 40% 98%;
+  --sidebar-accent: 36 30% 15%;
+  --sidebar-accent-foreground: 35 15% 90%;
+  --sidebar-ring: 15 72% 58%;
+
+  /* Brand colors — dark mode overrides */
+  --brand-purple: 15 72% 58%;
+  --brand-purple-foreground: 40 40% 98%;
+  --brand-yellow: 36 85% 60%;
+  --brand-yellow-foreground: 25 20% 15%;
+  --brand-orange: 36 85% 60%;
+  --brand-orange-foreground: 40 40% 98%;
+
+  /* Dark warm shadows */
+  --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0px 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.55);
+  --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.65);
+  --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.45);
+
+  --elevate-1: rgba(255, 255, 255, 0.05);
+  --elevate-2: rgba(255, 255, 255, 0.1);
   --button-outline: rgba(255, 255, 255, 0.15);
   --badge-outline: rgba(255, 255, 255, 0.08);
   --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(255, 255, 255, 0.06);
-  --elevate-2: rgba(255, 255, 255, 0.12);
-
-  --background: 269 61% 8%;
-  --foreground: 0 0% 98%;
-  --border: 269 30% 18%;
-
-  --card: 269 50% 10%;
-  --card-foreground: 0 0% 98%;
-  --card-border: 269 30% 14%;
-
-  --sidebar: 269 60% 6%;
-  --sidebar-foreground: 0 0% 98%;
-  --sidebar-border: 269 30% 12%;
-  --sidebar-primary: 251 89% 66%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 251 40% 18%;
-  --sidebar-accent-foreground: 0 0% 98%;
-  --sidebar-ring: 251 89% 66%;
-
-  --popover: 269 50% 12%;
-  --popover-foreground: 0 0% 98%;
-  --popover-border: 269 30% 16%;
-
-  --primary: 251 89% 66%;
-  --primary-foreground: 0 0% 100%;
-
-  --brand-purple: 251 89% 66%;
-  --brand-purple-foreground: 0 0% 100%;
-
-  --brand-yellow: 44 88% 65%;
-  --brand-yellow-foreground: 269 61% 15%;
-
-  --brand-orange: 44 88% 65%;
-  --brand-orange-foreground: 0 0% 100%;
-
-  --secondary: 269 30% 18%;
-  --secondary-foreground: 0 0% 98%;
-
-  --muted: 269 25% 14%;
-  --muted-foreground: 270 10% 66%;
-
-  --accent: 251 40% 20%;
-  --accent-foreground: 0 0% 98%;
-
-  --destructive: 0 84% 65%;
-  --destructive-foreground: 0 0% 100%;
-
-  --input: 269 30% 28%;
-  --ring: hsl(var(--color-accent));
-
-  --chart-1: 272 38% 55%;
-  --chart-2: 153 80% 55%;
-  --chart-3: 44 88% 60%;
-  --chart-4: 251 89% 66%;
-  --chart-5: 44 88% 70%;
-
-  --shadow-level-1: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  --shadow-level-2: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-level-3: 0px 6px 20px rgba(0, 0, 0, 0.4);
-
-  --shadow-2xs: 0px 2px 4px rgba(0, 0, 0, 0.15);
-  --shadow-xs: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  --shadow-sm: 0px 2px 6px rgba(0, 0, 0, 0.25);
-  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0px 6px 20px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0px 8px 28px rgba(0, 0, 0, 0.5);
-  --shadow-2xl: 0px 12px 40px rgba(0, 0, 0, 0.6);
 
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-accent-border: hsl(var(--sidebar-accent));
@@ -336,14 +334,14 @@
   --destructive-border: hsl(var(--destructive));
 
   /* Admin Design System Tokens (Dark Mode) */
-  --admin-bg: 269 40% 6%;
-  --admin-surface: 269 35% 10%;
-  --admin-surface-elevated: 269 30% 14%;
-  --admin-border: 269 25% 18%;
-  --admin-border-subtle: 269 20% 14%;
-  --admin-text: 0 0% 95%;
-  --admin-text-muted: 0 0% 60%;
-  --admin-text-subtle: 0 0% 45%;
+  --admin-bg: 25 20% 6%;
+  --admin-surface: 25 18% 10%;
+  --admin-surface-elevated: 25 15% 14%;
+  --admin-border: 25 12% 18%;
+  --admin-border-subtle: 25 10% 14%;
+  --admin-text: 35 10% 92%;
+  --admin-text-muted: 30 5% 55%;
+  --admin-text-subtle: 30 5% 40%;
 }
 
 @layer base {
