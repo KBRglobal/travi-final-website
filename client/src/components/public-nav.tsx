@@ -113,10 +113,10 @@ export function PublicNav({
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 100);
+      setScrolled(globalThis.scrollY > 100);
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    globalThis.addEventListener("scroll", handleScroll, { passive: true });
+    return () => globalThis.removeEventListener("scroll", handleScroll);
   }, []);
 
   const isTransparent = variant === "transparent";

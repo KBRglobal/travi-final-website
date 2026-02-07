@@ -410,16 +410,18 @@ function buildContentBlocks(content: any): any[] {
   }
 
   if (content.faqs && content.faqs.length > 0) {
-    blocks.push({
-      type: "heading",
-      id: `h-faq-${Date.now()}`,
-      data: { text: "Frequently Asked Questions", level: 2 },
-    });
-    blocks.push({
-      type: "faq",
-      id: `faq-${Date.now()}`,
-      data: { items: content.faqs },
-    });
+    blocks.push(
+      {
+        type: "heading",
+        id: `h-faq-${Date.now()}`,
+        data: { text: "Frequently Asked Questions", level: 2 },
+      },
+      {
+        type: "faq",
+        id: `faq-${Date.now()}`,
+        data: { items: content.faqs },
+      }
+    );
   }
 
   return blocks;

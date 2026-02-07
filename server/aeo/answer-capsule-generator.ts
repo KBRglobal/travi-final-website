@@ -317,7 +317,7 @@ REQUIREMENTS:
 
 4. differentiator: One sentence explaining what makes this unique
 
-${locale !== "en" ? `Generate all content in ${getLocaleName(locale)} language.` : ""}
+${locale === "en" ? "" : `Generate all content in ${getLocaleName(locale)} language.`}
 
 Respond with valid JSON only:
 {

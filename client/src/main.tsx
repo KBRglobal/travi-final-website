@@ -15,14 +15,14 @@ function initPostHog() {
     });
   }
 }
-if (typeof requestIdleCallback !== "undefined") {
-  requestIdleCallback(initPostHog);
-} else {
+if (typeof globalThis.requestIdleCallback === "undefined") {
   setTimeout(initPostHog, 2000);
+} else {
+  globalThis.requestIdleCallback(initPostHog);
 }
 
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
-  window.addEventListener("load", async () => {
+  globalThis.addEventListener("load", async () => {
     const swCleanupKey = "travi_sw_cleanup_v1";
     if (!sessionStorage.getItem(swCleanupKey)) {
       try {

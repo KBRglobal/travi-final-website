@@ -9,10 +9,10 @@ export function TraviMascotHelper() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsVisible(window.scrollY > window.innerHeight * 0.7);
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    const handleScroll = () => setIsVisible(globalThis.scrollY > globalThis.innerHeight * 0.7);
+    globalThis.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => globalThis.removeEventListener("scroll", handleScroll);
   }, []);
 
   if (!isVisible) return null;

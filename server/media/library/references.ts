@@ -5,7 +5,7 @@
  * Resilient to malformed JSON and various URL/path patterns.
  */
 
-import type { ContentBlock } from '@shared/schema';
+import type { ContentBlock } from "@shared/schema";
 
 /** Pattern to match upload paths and URLs */
 const UPLOAD_PATTERNS = [
@@ -19,16 +19,16 @@ const UPLOAD_PATTERNS = [
 
 /** Fields in content blocks that commonly contain image URLs */
 const IMAGE_FIELDS = [
-  'image',
-  'src',
-  'url',
-  'heroImage',
-  'cardImage',
-  'backgroundImage',
-  'thumbnail',
-  'cover',
-  'logo',
-  'icon',
+  "image",
+  "src",
+  "url",
+  "heroImage",
+  "cardImage",
+  "backgroundImage",
+  "thumbnail",
+  "cover",
+  "logo",
+  "icon",
 ];
 
 export interface MediaReference {
@@ -47,20 +47,20 @@ export interface MediaReference {
  * Returns the relative path from project root (e.g., "uploads/image.jpg")
  */
 export function normalizeMediaPath(pathOrUrl: string): string {
-  if (!pathOrUrl || typeof pathOrUrl !== 'string') {
-    return '';
+  if (!pathOrUrl || typeof pathOrUrl !== "string") {
+    return "";
   }
 
   let normalized = pathOrUrl.trim();
 
   // Remove URL protocol and domain
-  normalized = normalized.replace(/^https?:\/\/[^/]+/, '');
+  normalized = normalized.replace(/^https?:\/\/[^/]+/, "");
 
   // Remove leading slash
-  normalized = normalized.replace(/^\/+/, '');
+  normalized = normalized.replace(/^\/+/, "");
 
   // Extract just the uploads or attached_assets path
-  const match = normalized.match(/(uploads|attached_assets)\/[^\s"'<>?#]+/i);
+  const match = /(uploads|attached_assets)\/[^\s"'<>?#]+/i.exec(normalized);
   if (match) {
     return match[0];
   }
@@ -76,7 +76,7 @@ export function extractMediaReferencesFromString(
   source: string,
   contentId?: string
 ): MediaReference[] {
-  if (!content || typeof content !== 'string') {
+  if (!content || typeof content !== "string") {
     return [];
   }
 
@@ -111,7 +111,7 @@ export function extractMediaReferencesFromString(
  * Safely extract value from an object with type checking
  */
 function safeGetValue(obj: unknown, key: string): unknown {
-  if (obj && typeof obj === 'object' && key in obj) {
+  if (obj && typeof obj === "object" && key in obj) {
     return (obj as Record<string, unknown>)[key];
   }
   return undefined;
@@ -133,10 +133,13 @@ function extractFromObject(
 
   const references: MediaReference[] = [];
 
-  if (typeof obj === 'string') {
+  if (typeof obj === "string") {
     // Check if the string itself is a media path
     const normalized = normalizeMediaPath(obj);
-    if (normalized && (normalized.startsWith('uploads/') || normalized.startsWith('attached_assets/'))) {
+    if (
+      normalized &&
+      (normalized.startsWith("uploads/") || normalized.startsWith("attached_assets/"))
+    ) {
       references.push({
         path: obj,
         normalizedPath: normalized,
@@ -154,13 +157,13 @@ function extractFromObject(
     return references;
   }
 
-  if (typeof obj === 'object' && obj !== null) {
+  if (typeof obj === "object" && obj !== null) {
     const record = obj as Record<string, unknown>;
 
     // Check known image fields first
     for (const field of IMAGE_FIELDS) {
       const value = safeGetValue(record, field);
-      if (typeof value === 'string' && value) {
+      if (typeof value === "string" && value) {
         const normalized = normalizeMediaPath(value);
         if (normalized) {
           references.push({
@@ -199,11 +202,11 @@ export function extractMediaReferencesFromBlocks(
 
   for (let i = 0; i < blocks.length; i++) {
     const block = blocks[i];
-    if (!block || typeof block !== 'object') {
+    if (!block || typeof block !== "object") {
       continue;
     }
 
-    const blockType = (block as { type?: string }).type || 'unknown';
+    const blockType = (block as { type?: string }).type || "unknown";
     const source = `blocks[${i}]:${blockType}`;
 
     // Extract from block data
@@ -219,14 +222,12 @@ export function extractMediaReferencesFromBlocks(
 /**
  * Extract media references from content record
  */
-export function extractMediaReferencesFromContent(
-  content: {
-    id: string;
-    heroImage?: string | null;
-    cardImage?: string | null;
-    blocks?: ContentBlock[] | null;
-  }
-): MediaReference[] {
+export function extractMediaReferencesFromContent(content: {
+  id: string;
+  heroImage?: string | null;
+  cardImage?: string | null;
+  blocks?: ContentBlock[] | null;
+}): MediaReference[] {
   const references: MediaReference[] = [];
   const contentId = content.id;
 
@@ -237,7 +238,7 @@ export function extractMediaReferencesFromContent(
       references.push({
         path: content.heroImage,
         normalizedPath: normalized,
-        source: 'heroImage',
+        source: "heroImage",
         contentId,
       });
     }
@@ -250,7 +251,7 @@ export function extractMediaReferencesFromContent(
       references.push({
         path: content.cardImage,
         normalizedPath: normalized,
-        source: 'cardImage',
+        source: "cardImage",
         contentId,
       });
     }

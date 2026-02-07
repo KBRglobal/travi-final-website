@@ -6,13 +6,12 @@
  */
 
 import { useEffect } from "react";
-import { useParams } from "wouter";
+import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { DestinationPageTemplate } from "@/components/destination/DestinationPageTemplate";
 import { getDestinationBySlug } from "@/data/destinations";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
 import { MapPin, ArrowLeft, Loader2 } from "lucide-react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { DestinationPageData, DestinationMood } from "@/types/destination";
@@ -67,7 +66,7 @@ export default function DestinationPage() {
 
   // Scroll to top when navigating to a destination page
   useEffect(() => {
-    window.scrollTo(0, 0);
+    globalThis.scrollTo(0, 0);
   }, [slug]);
 
   // Fetch destination data from API (DATABASE as single source of truth)

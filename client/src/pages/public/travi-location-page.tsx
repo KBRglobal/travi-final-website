@@ -179,7 +179,7 @@ function LocationHero({
             <Button
               size="lg"
               className="bg-[#6443F4] hover:bg-[#5339D9] text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-lg"
-              onClick={() => window.open(affiliateLink, "_blank", "noopener,noreferrer")}
+              onClick={() => globalThis.open(affiliateLink, "_blank", "noopener,noreferrer")}
               data-testid="button-book-tickets-hero"
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
@@ -275,7 +275,7 @@ function QuickInfoSidebar({
         <div className="pt-4">
           <Button
             className="w-full bg-[#6443F4] hover:bg-[#5339D9] text-white"
-            onClick={() => window.open(affiliateLink, "_blank", "noopener,noreferrer")}
+            onClick={() => globalThis.open(affiliateLink, "_blank", "noopener,noreferrer")}
             data-testid="button-book-sidebar"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
@@ -543,7 +543,7 @@ function BookingCTASection({
             size="lg"
             variant="outline"
             className="bg-white text-[#6443F4] hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-xl border-0"
-            onClick={() => window.open(affiliateLink, "_blank", "noopener,noreferrer")}
+            onClick={() => globalThis.open(affiliateLink, "_blank", "noopener,noreferrer")}
             data-testid="button-book-cta"
           >
             <ShoppingCart className="w-5 h-5 mr-2" />

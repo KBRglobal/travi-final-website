@@ -60,7 +60,7 @@ export default function Homepage() {
   useEffect(() => {
     if (location.startsWith("/sv/") || location.startsWith("/bn/")) {
       const cleanPath = location.replace(/^\/(sv|bn)/, "") || "/";
-      window.location.replace(cleanPath);
+      globalThis.location.replace(cleanPath);
     }
   }, [location]);
 

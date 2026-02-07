@@ -402,8 +402,10 @@ export async function debugContentForQuery(
   const reasons: string[] = [];
 
   if (!result) {
-    reasons.push("Content was not returned in search results");
-    reasons.push(`Query "${query}" may not match the content's title or description`);
+    reasons.push(
+      "Content was not returned in search results",
+      `Query "${query}" may not match the content's title or description`
+    );
 
     // Check if content type matches intent filters
     if (debugResult.intentClassification.suggestedFilters.contentTypes) {
@@ -412,8 +414,8 @@ export async function debugContentForQuery(
       );
     }
   } else {
-    reasons.push(`Content ranked #${rank} out of ${debugResult.results.length} results`);
     reasons.push(
+      `Content ranked #${rank} out of ${debugResult.results.length} results`,
       `Adjusted score: ${result.adjustedScore.toFixed(2)} (base: ${result.baseScore.toFixed(2)})`
     );
 

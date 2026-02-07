@@ -837,10 +837,10 @@ function ScrollToTop() {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      setIsVisible(window.scrollY > 500);
+      setIsVisible(globalThis.scrollY > 500);
     };
-    window.addEventListener("scroll", toggleVisibility, { passive: true });
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    globalThis.addEventListener("scroll", toggleVisibility, { passive: true });
+    return () => globalThis.removeEventListener("scroll", toggleVisibility);
   }, []);
 
   if (!isVisible) return null;
@@ -849,7 +849,7 @@ function ScrollToTop() {
     <Button
       size="icon"
       className="fixed bottom-8 right-8 z-50 rounded-full shadow-lg bg-gradient-to-r from-[#6443F4] to-[#E84C9A] hover:opacity-90"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={() => globalThis.scrollTo({ top: 0, behavior: "smooth" })}
       data-testid="scroll-to-top"
     >
       <ChevronUp className="h-5 w-5" />
@@ -936,13 +936,13 @@ export default function GuideDetailPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = totalHeight > 0 ? window.scrollY / totalHeight : 0;
+      const totalHeight = document.documentElement.scrollHeight - globalThis.innerHeight;
+      const progress = totalHeight > 0 ? globalThis.scrollY / totalHeight : 0;
       setScrollProgress(Math.min(1, Math.max(0, progress)));
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    globalThis.addEventListener("scroll", handleScroll, { passive: true });
+    return () => globalThis.removeEventListener("scroll", handleScroll);
   }, []);
 
   const seoTitle = guide?.seo?.metaTitle || guide?.title || `${destinationName} Travel Guide`;

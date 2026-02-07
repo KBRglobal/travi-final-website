@@ -161,7 +161,7 @@ export async function getActiveContentRules(): Promise<typeof DEFAULT_CONTENT_RU
       return cachedRules;
     }
   } catch (error) {
-    
+    // ignored
   }
   return DEFAULT_CONTENT_RULES;
 }

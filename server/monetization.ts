@@ -191,7 +191,7 @@ export const premiumContent = {
    */
   async hasAccess(userId: string, contentId: string): Promise<boolean> {
     const premium = await this.isPremium(contentId);
-    if (!premium || !premium.isPremium) return true;
+    if (!premium?.isPremium) return true;
 
     // Check for purchase in database
     const [purchase] = await db
@@ -303,7 +303,7 @@ export const premiumContent = {
 
     const premium = await this.isPremium(contentId);
 
-    if (!premium || !premium.isPremium) {
+    if (!premium?.isPremium) {
       return {
         content,
         isPremium: false,

@@ -311,7 +311,7 @@ async function translateEntityFaq(
   // Check if this content is a hotel or attraction
   const [hotel] = await db.select().from(hotels).where(eq(hotels.contentId, contentId));
 
-  if (hotel && hotel.faq && hotel.faq.length > 0) {
+  if (hotel?.faq && hotel.faq.length > 0) {
     const translatedFaq = await translateFaq(hotel.faq, sourceLocale, targetLocale);
     // Store translated FAQ in a separate location or JSONB field
     // For now, we'll store in the translation record's blocks as a special block type
@@ -324,7 +324,7 @@ async function translateEntityFaq(
     .from(attractions)
     .where(eq(attractions.contentId, contentId));
 
-  if (attraction && attraction.faq && attraction.faq.length > 0) {
+  if (attraction?.faq && attraction.faq.length > 0) {
     const translatedFaq = await translateFaq(attraction.faq, sourceLocale, targetLocale);
     logger.debug("Attraction FAQ translated", { contentId, items: translatedFaq.length });
   }

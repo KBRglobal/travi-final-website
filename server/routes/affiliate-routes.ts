@@ -143,36 +143,35 @@ export function registerAffiliateRoutes(app: Express): void {
 
       // Check 3: rel="nofollow sponsored" enforced
       const relAttributeEnforced = true;
-      checks.push({
-        name: "rel_nofollow_sponsored_enforced",
-        passed: relAttributeEnforced,
-        details: 'All affiliate links use rel="nofollow sponsored" by default',
-      });
-
-      // Check 4: Forbidden zones enforced
-      checks.push({
-        name: "forbidden_zones_enforced",
-        passed: zoneAudit.forbiddenZonesEnforced,
-        details: `${zoneAudit.forbiddenZones.length} forbidden zones are enforced`,
-      });
-
-      // Check 5: SEO compliance
-      checks.push({
-        name: "seo_compliant",
-        passed: zoneAudit.seoCompliant,
-        details: zoneAudit.seoCompliant
-          ? "All zones are SEO-safe with required disclosures"
-          : "Some zones may have SEO compliance issues",
-      });
-
-      // Check 6: Master switch status
-      checks.push({
-        name: "master_switch_status",
-        passed: true,
-        details: status.enabled
-          ? "Affiliate hooks are ENABLED"
-          : "Affiliate hooks are DISABLED (safe mode)",
-      });
+      checks.push(
+        {
+          name: "rel_nofollow_sponsored_enforced",
+          passed: relAttributeEnforced,
+          details: 'All affiliate links use rel="nofollow sponsored" by default',
+        },
+        // Check 4: Forbidden zones enforced
+        {
+          name: "forbidden_zones_enforced",
+          passed: zoneAudit.forbiddenZonesEnforced,
+          details: `${zoneAudit.forbiddenZones.length} forbidden zones are enforced`,
+        },
+        // Check 5: SEO compliance
+        {
+          name: "seo_compliant",
+          passed: zoneAudit.seoCompliant,
+          details: zoneAudit.seoCompliant
+            ? "All zones are SEO-safe with required disclosures"
+            : "Some zones may have SEO compliance issues",
+        },
+        // Check 6: Master switch status
+        {
+          name: "master_switch_status",
+          passed: true,
+          details: status.enabled
+            ? "Affiliate hooks are ENABLED"
+            : "Affiliate hooks are DISABLED (safe mode)",
+        }
+      );
 
       // Check 7: No forbidden zone violations
       const noViolations = metrics.forbiddenZoneViolationsBlocked === 0;

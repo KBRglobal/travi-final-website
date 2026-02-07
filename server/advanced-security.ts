@@ -325,7 +325,7 @@ export const twoFactorAuth = {
     usedBackupCode?: boolean;
   }> {
     const stored = await this.getStoredSecret(userId);
-    if (!stored || !stored.verified) {
+    if (!stored?.verified) {
       return { success: false };
     }
 
@@ -393,7 +393,7 @@ export const twoFactorAuth = {
    */
   async regenerateBackupCodes(userId: string): Promise<string[] | null> {
     const stored = await this.getStoredSecret(userId);
-    if (!stored || !stored.verified) return null;
+    if (!stored?.verified) return null;
 
     const newCodes = Array.from({ length: 10 }, () =>
       crypto.randomBytes(4).toString("hex").toUpperCase()

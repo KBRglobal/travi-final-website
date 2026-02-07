@@ -378,15 +378,15 @@ function findBestAnchorText(content: string, keyword: string, position: number):
   );
 
   // Check if part of a longer phrase
-  const beforeWord = before.match(/\b(\w+)\s*$/)?.[1] || "";
+  const beforeWord = /\b(\w+)\s*$/.exec(before)?.[1] || "";
   const afterWord = /^\s*(\w+)\b/.exec(after)?.[1] || "";
 
   // Common travel phrase patterns
-  if (beforeWord.match(/^(the|visit|explore|discover)$/i)) {
+  if (/^(the|visit|explore|discover)$/i.exec(beforeWord)) {
     return `${beforeWord} ${actualText}`;
   }
 
-  if (afterWord.match(/^(guide|travel|tour|trip)$/i)) {
+  if (/^(guide|travel|tour|trip)$/i.exec(afterWord)) {
     return `${actualText} ${afterWord}`;
   }
 

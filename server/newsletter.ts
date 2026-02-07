@@ -477,7 +477,7 @@ export const campaigns = {
       .where(eq(newsletterCampaigns.id, campaignId))
       .limit(1);
 
-    if (!existing || existing.status !== "draft") return null;
+    if (existing?.status !== "draft") return null;
 
     const [updated] = await db
       .update(newsletterCampaigns)
@@ -811,7 +811,7 @@ export const automatedSequencesObj = {
       .where(eq(newsletterSubscribers.id, subscriberId))
       .limit(1);
 
-    if (!subscriber || subscriber.status !== "subscribed") return;
+    if (subscriber?.status !== "subscribed") return;
 
     // Find matching sequences
     const allSequences = await db

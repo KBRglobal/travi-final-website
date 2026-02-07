@@ -105,7 +105,7 @@ class ConsoleLogger extends EventEmitter {
 
     // RSS patterns
     if (raw.includes("[RSS Auto-Process]") || raw.includes("[rss]")) {
-      const feedMatch = raw.match(/Feed "([^"]+)" returned (\d+) items?/);
+      const feedMatch = /Feed "([^"]+)" returned (\d+) items?/.exec(raw);
       if (feedMatch) {
         const [, feedName, count] = feedMatch;
         if (count === "0") {
@@ -123,7 +123,7 @@ class ConsoleLogger extends EventEmitter {
         };
       }
       if (raw.includes("Processing")) {
-        const countMatch = raw.match(/Processing (\d+) active feeds/);
+        const countMatch = /Processing (\d+) active feeds/.exec(raw);
         if (countMatch) {
           return {
             category: "rss",
@@ -135,7 +135,7 @@ class ConsoleLogger extends EventEmitter {
     }
 
     // Express HTTP patterns
-    const expressMatch = raw.match(/\[express\]\s+(\w+)\s+([^\s]+)\s+(\d+)\s+in\s+(\d+)ms/);
+    const expressMatch = /\[express\]\s+(\w+)\s+([^\s]+)\s+(\d+)\s+in\s+(\d+)ms/.exec(raw);
     if (expressMatch) {
       const [, method, path, status, time] = expressMatch;
       const statusNum = Number.parseInt(status);

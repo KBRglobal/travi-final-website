@@ -242,19 +242,18 @@ function extractEssentialsFromSections(sections: GuideSection[]): Record<string,
       heading.includes("verstehen") ||
       heading.includes("background")
     ) {
-      const visaMatch = content.match(
-        /visa[s]?\s*(?:are\s*)?(?:required|not required|on arrival|free|exempt)/i
-      );
+      const visaMatch =
+        /visa[s]?\s*(?:are\s*)?(?:required|not required|on arrival|free|exempt)/i.exec(content);
       if (visaMatch) {
         essentials.visa = visaMatch[0];
       }
 
-      const currencyMatch = content.match(/(?:currency|money|währung)[\s:]*([A-Z]{3}|\w+\s+\w+)/i);
+      const currencyMatch = /(?:currency|money|währung)[\s:]*([A-Z]{3}|\w+\s+\w+)/i.exec(content);
       if (currencyMatch) {
         essentials.currency = currencyMatch[1];
       }
 
-      const languageMatch = content.match(/(?:official language|spoken|language)[\s:]*(\w+)/i);
+      const languageMatch = /(?:official language|spoken|language)[\s:]*(\w+)/i.exec(content);
       if (languageMatch) {
         essentials.language = languageMatch[1];
       }
@@ -277,14 +276,13 @@ function extractEssentialsFromSections(sections: GuideSection[]): Record<string,
     }
 
     if (heading.includes("cope") || heading.includes("connect")) {
-      const electricityMatch = content.match(
-        /(?:electricity|voltage|plug|socket)[\s:]*(\d+\s*V|\w+\s+type)/i
-      );
+      const electricityMatch =
+        /(?:electricity|voltage|plug|socket)[\s:]*(\d+\s*V|\w+\s+type)/i.exec(content);
       if (electricityMatch) {
         essentials.electricity = electricityMatch[1];
       }
 
-      const timezoneMatch = content.match(/(?:timezone|time zone|UTC|GMT)[\s:]*([+-]?\d+)/i);
+      const timezoneMatch = /(?:timezone|time zone|UTC|GMT)[\s:]*([+-]?\d+)/i.exec(content);
       if (timezoneMatch) {
         essentials.timezone = `UTC${timezoneMatch[1]}`;
       }

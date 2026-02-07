@@ -709,15 +709,13 @@ export class ImageSEOService {
     // Style based on content type
     promptParts.push(config.promptStyle);
 
-    // Technical requirements
-    promptParts.push("high resolution, 4K quality, sharp focus, professional composition");
-    promptParts.push("realistic photography style, not AI-looking, natural colors");
-
-    // Dubai specific elements
-    promptParts.push("Middle Eastern luxury aesthetic, modern architecture, pristine condition");
-
-    // Avoid problematic elements
-    promptParts.push("no text, no watermarks, no logos, no people's faces clearly visible");
+    // Technical requirements, Dubai specific elements, and avoid problematic elements
+    promptParts.push(
+      "high resolution, 4K quality, sharp focus, professional composition",
+      "realistic photography style, not AI-looking, natural colors",
+      "Middle Eastern luxury aesthetic, modern architecture, pristine condition",
+      "no text, no watermarks, no logos, no people's faces clearly visible"
+    );
 
     return promptParts.filter(Boolean).join(", ");
   }

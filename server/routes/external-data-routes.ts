@@ -172,8 +172,10 @@ router.get("/holidays", async (req: Request, res: Response) => {
     // Filter by year using date range
     const startDate = `${year}-01-01`;
     const endDate = `${year}-12-31`;
-    conditions.push(sql`${update9987PublicHolidays.date} >= ${startDate}`);
-    conditions.push(sql`${update9987PublicHolidays.date} <= ${endDate}`);
+    conditions.push(
+      sql`${update9987PublicHolidays.date} >= ${startDate}`,
+      sql`${update9987PublicHolidays.date} <= ${endDate}`
+    );
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 

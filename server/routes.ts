@@ -130,7 +130,7 @@ import { registerCanonicalManagerRoutes as registerCanonicalRoutes } from "./can
 // Content Experiments / A-B Testing (Feature 5)
 import { registerContentExperimentsRoutes } from "./content-experiments";
 // Entity Quality Scoring (Feature 6)
-import { registerEntityQualityRoutes } from "./entity-quality";
+import { registerEntityQualityRoutes, entityQualityRoutes } from "./entity-quality";
 // Broken Promise Detector (Feature 7)
 import { registerBrokenPromiseRoutes } from "./broken-promise-detector";
 // Knowledge Decay Detection (Feature 8)
@@ -170,7 +170,6 @@ import { registerMagicRoutes } from "./routes/magic-routes";
 // Ops features (Feature-flagged, default OFF)
 import { incidentsRoutes } from "./incidents";
 import { auditV2Routes } from "./audit-v2";
-import { entityQualityRoutes } from "./entity-quality";
 import { exportsRoutes } from "./exports";
 import { goLiveRoutes } from "./go-live";
 // Platform systems (Feature-flagged, default OFF)
@@ -353,7 +352,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   }
 
   // Expose for use in other parts of the app
-  (global as any).addSystemLog = addSystemLog;
+  (globalThis as any).addSystemLog = addSystemLog;
 
   // Admin logs routes moved to routes/admin-logs-routes.ts
   // Object storage routes moved to routes/object-storage-routes.ts

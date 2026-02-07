@@ -78,23 +78,23 @@ const CACHE_STRATEGIES: Record<
  */
 function getContentType(path: string): string {
   if (path === "/" || path === "") return "homepage";
-  if (path.match(/^\/article\//)) return "article";
-  if (path.match(/^\/articles$/)) return "category";
-  if (path.match(/^\/attraction\//)) return "attraction";
-  if (path.match(/^\/attractions($|\/)/)) return "category";
-  if (path.match(/^\/hotel\//)) return "hotel";
-  if (path.match(/^\/hotels($|\/)/)) return "category";
-  if (path.match(/^\/dining\//)) return "dining";
-  if (path.match(/^\/dining$/)) return "category";
-  if (path.match(/^\/events\//)) return "event";
-  if (path.match(/^\/events$/)) return "category";
-  if (path.match(/^\/news\//)) return "news";
-  if (path.match(/^\/news$/)) return "category";
-  if (path.match(/^\/(about|contact|privacy|terms|faq)$/)) return "static";
-  if (path.match(/^\/districts($|\/)/)) return "category";
-  if (path.match(/^\/shopping($|\/)/)) return "category";
-  if (path.match(/^\/guides($|\/)/)) return "category";
-  if (path.match(/^\/destinations($|\/)/)) return "category";
+  if (/^\/article\//.exec(path)) return "article";
+  if (/^\/articles$/.exec(path)) return "category";
+  if (/^\/attraction\//.exec(path)) return "attraction";
+  if (/^\/attractions($|\/)/.exec(path)) return "category";
+  if (/^\/hotel\//.exec(path)) return "hotel";
+  if (/^\/hotels($|\/)/.exec(path)) return "category";
+  if (/^\/dining\//.exec(path)) return "dining";
+  if (/^\/dining$/.exec(path)) return "category";
+  if (/^\/events\//.exec(path)) return "event";
+  if (/^\/events$/.exec(path)) return "category";
+  if (/^\/news\//.exec(path)) return "news";
+  if (/^\/news$/.exec(path)) return "category";
+  if (/^\/(about|contact|privacy|terms|faq)$/.exec(path)) return "static";
+  if (/^\/districts($|\/)/.exec(path)) return "category";
+  if (/^\/shopping($|\/)/.exec(path)) return "category";
+  if (/^\/guides($|\/)/.exec(path)) return "category";
+  if (/^\/destinations($|\/)/.exec(path)) return "category";
   return "default";
 }
 

@@ -900,7 +900,7 @@ export default function PublicNews() {
                     setSelectedDestination(destId);
                     setSelectedRegion("all");
                     setCurrentPage(1);
-                    window.scrollTo({ top: 300, behavior: "smooth" });
+                    globalThis.scrollTo({ top: 300, behavior: "smooth" });
                   }}
                 />
               ))}

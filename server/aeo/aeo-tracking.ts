@@ -63,9 +63,10 @@ export async function logCrawlerVisit(input: CrawlerLogInput): Promise<boolean> 
 
   // Find content ID from path if possible
   let contentId: string | undefined;
-  const pathMatch = input.requestPath.match(
-    /\/(attractions|hotels|dining|districts|articles|events|transport)\/([^\/\?]+)/
-  );
+  const pathMatch =
+    /\/(attractions|hotels|dining|districts|articles|events|transport)\/([^\/\?]+)/.exec(
+      input.requestPath
+    );
   if (pathMatch) {
     const [, type, slug] = pathMatch;
     const content = await db.query.contents.findFirst({
@@ -448,7 +449,7 @@ export async function getCrawlerStats(days: number = 30): Promise<{
   // By path (aggregate to content types)
   const pathCounts = new Map<string, number>();
   for (const log of logs) {
-    const pathMatch = log.requestPath.match(/^\/([^\/]+)/);
+    const pathMatch = /^\/([^\/]+)/.exec(log.requestPath);
     const pathKey = pathMatch ? pathMatch[1] : "other";
     pathCounts.set(pathKey, (pathCounts.get(pathKey) || 0) + 1);
   }

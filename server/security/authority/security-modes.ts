@@ -354,15 +354,21 @@ export function getAutonomyImpact(): AutonomyImpact {
   const recommendations: string[] = [];
 
   if (mode.mode === "lockdown") {
-    recommendations.push("Review threat status before deactivating lockdown");
-    recommendations.push("Ensure all critical issues are resolved");
-    recommendations.push("Consider scheduling return to enforce mode");
+    recommendations.push(
+      "Review threat status before deactivating lockdown",
+      "Ensure all critical issues are resolved",
+      "Consider scheduling return to enforce mode"
+    );
   } else if (mode.mode === "enforce") {
-    recommendations.push("Monitor audit logs for approval requests");
-    recommendations.push("Review override usage periodically");
+    recommendations.push(
+      "Monitor audit logs for approval requests",
+      "Review override usage periodically"
+    );
   } else {
-    recommendations.push("Consider switching to enforce mode for production");
-    recommendations.push("Review security events for potential issues");
+    recommendations.push(
+      "Consider switching to enforce mode for production",
+      "Review security events for potential issues"
+    );
   }
 
   return {

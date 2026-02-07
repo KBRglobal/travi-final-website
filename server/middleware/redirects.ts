@@ -84,7 +84,7 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
   // Preserves query strings (e.g., ?ref=betalist) for tracking/attribution
   if (path === "/") {
     const queryIndex = fullUrl.indexOf("?");
-    const query = queryIndex !== -1 ? fullUrl.substring(queryIndex) : "";
+    const query = queryIndex === -1 ? "" : fullUrl.substring(queryIndex);
     res.redirect(301, `/en${query}`);
     return;
   }

@@ -10,10 +10,10 @@ import {
   RecommendationBatch,
   DEFAULT_RECOMMENDER_CONFIG,
   RecommenderConfig,
-} from './types';
-import { GuardedFeature } from '../enforcement/types';
-import { BudgetPeriod, BudgetLimit } from '../policy/types';
-import { getOutcomes } from '../learning/engine';
+} from "./types";
+import { GuardedFeature } from "../enforcement/types";
+import { BudgetPeriod, BudgetLimit } from "../policy/types";
+import { getOutcomes } from "../learning/engine";
 
 // Bounded storage
 const MAX_RECOMMENDATIONS = 100;
@@ -24,7 +24,7 @@ const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 function getConfig(): RecommenderConfig {
   return {
     ...DEFAULT_RECOMMENDER_CONFIG,
-    enabled: process.env.ENABLE_AUTONOMY_RECOMMENDER === 'true',
+    enabled: process.env.ENABLE_AUTONOMY_RECOMMENDER === "true",
   };
 }
 
@@ -50,13 +50,16 @@ export function computeTrafficMetrics(
   const outcomes = getOutcomes({ feature, since });
 
   // Aggregate by hour for analysis
-  const hourlyData = new Map<string, {
-    requests: number;
-    cost: number;
-    latency: number[];
-    failures: number;
-    overrides: number;
-  }>();
+  const hourlyData = new Map<
+    string,
+    {
+      requests: number;
+      cost: number;
+      latency: number[];
+      failures: number;
+      overrides: number;
+    }
+  >();
 
   for (const o of outcomes) {
     const hourKey = o.decisionAt.toISOString().slice(0, 13);
@@ -71,10 +74,10 @@ export function computeTrafficMetrics(
     existing.requests++;
     existing.cost += (o.metadata?.cost as number) || 0;
     existing.latency.push(o.latencyMs);
-    if (o.outcome === 'incident_after_allow' || o.outcome === 'recovery_failed') {
+    if (o.outcome === "incident_after_allow" || o.outcome === "recovery_failed") {
       existing.failures++;
     }
-    if (o.outcome === 'override_applied') {
+    if (o.outcome === "override_applied") {
       existing.overrides++;
     }
 
@@ -106,12 +109,10 @@ export function computeTrafficMetrics(
     totalAiSpendCents: Math.round(totalCost),
     avgCostPerRequest: totalRequests > 0 ? totalCost / totalRequests : 0,
     peakCostPerHour: Math.max(...hourlyValues.map(h => h.cost), 0),
-    avgLatencyMs: allLatencies.length > 0
-      ? allLatencies.reduce((a, b) => a + b, 0) / allLatencies.length
-      : 0,
-    p95LatencyMs: allLatencies.length > 0
-      ? allLatencies[Math.floor(allLatencies.length * 0.95)]
-      : 0,
+    avgLatencyMs:
+      allLatencies.length > 0 ? allLatencies.reduce((a, b) => a + b, 0) / allLatencies.length : 0,
+    p95LatencyMs:
+      allLatencies.length > 0 ? allLatencies[Math.floor(allLatencies.length * 0.95)] : 0,
     failureRate: totalRequests > 0 ? totalFailures / totalRequests : 0,
     overrideCount: totalOverrides,
     overrideRate: totalRequests > 0 ? totalOverrides / totalRequests : 0,
@@ -135,11 +136,14 @@ export function analyzeTimePatterns(feature: GuardedFeature): TimePattern[] {
   const since = new Date(Date.now() - config.lookbackHours * 60 * 60 * 1000);
   const outcomes = getOutcomes({ feature, since });
 
-  const patterns = new Map<string, {
-    requests: number;
-    cost: number;
-    blocks: number;
-  }>();
+  const patterns = new Map<
+    string,
+    {
+      requests: number;
+      cost: number;
+      blocks: number;
+    }
+  >();
 
   for (const o of outcomes) {
     const hour = o.decisionAt.getHours();
@@ -149,13 +153,13 @@ export function analyzeTimePatterns(feature: GuardedFeature): TimePattern[] {
     const existing = patterns.get(key) || { requests: 0, cost: 0, blocks: 0 };
     existing.requests++;
     existing.cost += (o.metadata?.cost as number) || 0;
-    if (o.decision === 'BLOCK') existing.blocks++;
+    if (o.decision === "BLOCK") existing.blocks++;
 
     patterns.set(key, existing);
   }
 
   return Array.from(patterns.entries()).map(([key, data]) => {
-    const [day, hour] = key.split(':').map(Number);
+    const [day, hour] = key.split(":").map(Number);
     return {
       hour,
       dayOfWeek: day,
@@ -187,22 +191,27 @@ export function recommendBudget(
   let confidence = 0.5;
 
   // Calculate recommended actions based on peak + headroom
-  const peakWithMargin = metrics.peakRequestsPerHour * (1 + config.headroomTarget + config.safetyMargin);
+  const peakWithMargin =
+    metrics.peakRequestsPerHour * (1 + config.headroomTarget + config.safetyMargin);
   let recommendedActions = Math.ceil(peakWithMargin);
 
   // Adjust based on override rate (over-blocking signal)
   if (metrics.overrideRate > 0.1) {
-    const adjustment = 1 + (metrics.overrideRate * 0.5);
+    const adjustment = 1 + metrics.overrideRate * 0.5;
     recommendedActions = Math.ceil(recommendedActions * adjustment);
-    reasoning.push(`+${((adjustment - 1) * 100).toFixed(0)}% to reduce ${(metrics.overrideRate * 100).toFixed(0)}% override rate`);
+    reasoning.push(
+      `+${((adjustment - 1) * 100).toFixed(0)}% to reduce ${(metrics.overrideRate * 100).toFixed(0)}% override rate`
+    );
     confidence += 0.1;
   }
 
   // Adjust based on failure rate (under-blocking signal)
   if (metrics.failureRate > 0.05) {
-    const adjustment = 1 - (metrics.failureRate * 0.3);
+    const adjustment = 1 - metrics.failureRate * 0.3;
     recommendedActions = Math.ceil(recommendedActions * adjustment);
-    reasoning.push(`-${((1 - adjustment) * 100).toFixed(0)}% due to ${(metrics.failureRate * 100).toFixed(0)}% failure rate`);
+    reasoning.push(
+      `-${((1 - adjustment) * 100).toFixed(0)}% due to ${(metrics.failureRate * 100).toFixed(0)}% failure rate`
+    );
     confidence += 0.1;
   }
 
@@ -226,8 +235,10 @@ export function recommendBudget(
     return null;
   }
 
-  reasoning.push(`Based on ${metrics.totalRequests} requests over ${config.lookbackHours}h`);
-  reasoning.push(`Peak: ${metrics.peakRequestsPerHour}/h, Avg: ${metrics.avgRequestsPerHour.toFixed(1)}/h`);
+  reasoning.push(
+    `Based on ${metrics.totalRequests} requests over ${config.lookbackHours}h`,
+    `Peak: ${metrics.peakRequestsPerHour}/h, Avg: ${metrics.avgRequestsPerHour.toFixed(1)}/h`
+  );
 
   const recommendation: BudgetRecommendation = {
     id: `rec-${feature}-${period}-${Date.now()}`,
@@ -242,11 +253,14 @@ export function recommendBudget(
     recommendedBudget: {
       maxActions: recommendedActions,
       maxAiSpendCents: recommendedSpend,
-      maxDbWrites: Math.ceil(currentLimits.maxDbWrites * (recommendedActions / currentLimits.maxActions)),
+      maxDbWrites: Math.ceil(
+        currentLimits.maxDbWrites * (recommendedActions / currentLimits.maxActions)
+      ),
     },
     delta: {
       actionsChange: actionDelta * 100,
-      aiSpendChange: ((recommendedSpend - currentLimits.maxAiSpend) / currentLimits.maxAiSpend) * 100,
+      aiSpendChange:
+        ((recommendedSpend - currentLimits.maxAiSpend) / currentLimits.maxAiSpend) * 100,
       dbWritesChange: actionDelta * 100,
     },
     confidence,
@@ -261,8 +275,9 @@ export function recommendBudget(
 
   // Store (bounded)
   if (recommendationCache.size >= MAX_RECOMMENDATIONS) {
-    const oldest = Array.from(recommendationCache.entries())
-      .sort(([, a], [, b]) => a.createdAt.getTime() - b.createdAt.getTime())[0];
+    const oldest = Array.from(recommendationCache.entries()).sort(
+      ([, a], [, b]) => a.createdAt.getTime() - b.createdAt.getTime()
+    )[0];
     if (oldest) recommendationCache.delete(oldest[0]);
   }
   recommendationCache.set(recommendation.id, recommendation);
@@ -279,7 +294,7 @@ export function generateRecommendationBatch(
 ): RecommendationBatch {
   const config = getConfig();
   const recommendations: BudgetRecommendation[] = [];
-  const periods: BudgetPeriod[] = ['hourly', 'daily'];
+  const periods: BudgetPeriod[] = ["hourly", "daily"];
 
   for (const feature of features) {
     for (const period of periods) {
@@ -306,9 +321,11 @@ export function generateRecommendationBatch(
   const totalSavings = recommendations
     .filter(r => r.predictedImpact.costSavings > 0)
     .reduce((sum, r) => sum + r.predictedImpact.costSavings, 0);
-  const avgHeadroom = recommendations.length > 0
-    ? recommendations.reduce((sum, r) => sum + r.predictedImpact.headroomGain, 0) / recommendations.length
-    : 0;
+  const avgHeadroom =
+    recommendations.length > 0
+      ? recommendations.reduce((sum, r) => sum + r.predictedImpact.headroomGain, 0) /
+        recommendations.length
+      : 0;
 
   return {
     generatedAt: new Date(),

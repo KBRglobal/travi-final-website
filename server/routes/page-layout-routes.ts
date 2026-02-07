@@ -6,10 +6,9 @@
 import type { Express, Request, Response } from "express";
 import { db } from "../db";
 import { eq, and } from "drizzle-orm";
-import { pageLayouts } from "@shared/schema";
+import { pageLayouts, SUPPORTED_LOCALES } from "@shared/schema";
 import { storage } from "../storage";
 import { requireAuth } from "../security";
-import { SUPPORTED_LOCALES } from "@shared/schema";
 
 export function registerPageLayoutRoutes(app: Express): void {
   // ============================================================================

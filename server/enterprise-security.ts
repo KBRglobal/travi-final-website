@@ -66,22 +66,22 @@ function parseUserAgent(ua: string): {
   // Detect browser
   if (ua.includes("Firefox/")) {
     browser = "Firefox";
-    browserVersion = ua.match(/Firefox\/(\d+(?:\.\d+)?)/)?.[1] || "";
+    browserVersion = /Firefox\/(\d+(?:\.\d+)?)/.exec(ua)?.[1] || "";
   } else if (ua.includes("Edg/")) {
     browser = "Edge";
-    browserVersion = ua.match(/Edg\/(\d+(?:\.\d+)?)/)?.[1] || "";
+    browserVersion = /Edg\/(\d+(?:\.\d+)?)/.exec(ua)?.[1] || "";
   } else if (ua.includes("Chrome/")) {
     browser = "Chrome";
-    browserVersion = ua.match(/Chrome\/(\d+(?:\.\d+)?)/)?.[1] || "";
+    browserVersion = /Chrome\/(\d+(?:\.\d+)?)/.exec(ua)?.[1] || "";
   } else if (ua.includes("Safari/") && !ua.includes("Chrome")) {
     browser = "Safari";
-    browserVersion = ua.match(/Version\/(\d+(?:\.\d+)?)/)?.[1] || "";
+    browserVersion = /Version\/(\d+(?:\.\d+)?)/.exec(ua)?.[1] || "";
   }
 
   // Detect OS
   if (ua.includes("Windows")) {
     os = "Windows";
-    osVersion = ua.match(/Windows NT (\d+(?:\.\d+)?)/)?.[1] || "";
+    osVersion = /Windows NT (\d+(?:\.\d+)?)/.exec(ua)?.[1] || "";
   } else if (ua.includes("Mac OS X")) {
     os = "macOS";
     osVersion = /Mac OS X (\d+[._]\d+)/.exec(ua)?.[1]?.replace("_", ".") || "";
@@ -89,7 +89,7 @@ function parseUserAgent(ua: string): {
     os = "Linux";
   } else if (ua.includes("Android")) {
     os = "Android";
-    osVersion = ua.match(/Android (\d+(?:\.\d+)?)/)?.[1] || "";
+    osVersion = /Android (\d+(?:\.\d+)?)/.exec(ua)?.[1] || "";
   } else if (ua.includes("iOS") || ua.includes("iPhone") || ua.includes("iPad")) {
     os = "iOS";
     osVersion = /OS (\d+[._]\d+)/.exec(ua)?.[1]?.replace("_", ".") || "";

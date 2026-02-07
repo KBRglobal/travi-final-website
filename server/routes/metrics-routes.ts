@@ -141,8 +141,7 @@ function formatMetrics(): string {
 
   for (const metric of metrics.values()) {
     // Help and type
-    lines.push(`# HELP ${metric.name} ${metric.help}`);
-    lines.push(`# TYPE ${metric.name} ${metric.type}`);
+    lines.push(`# HELP ${metric.name} ${metric.help}`, `# TYPE ${metric.name} ${metric.type}`);
 
     // Values
     for (const { value, labels } of metric.values) {

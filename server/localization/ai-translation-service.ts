@@ -314,30 +314,25 @@ function buildTranslationPrompt(
   ];
 
   if (options.preserveHtml) {
-    instructions.push("4. Preserve ALL HTML tags and formatting exactly as they appear");
-    instructions.push("5. Do NOT translate text inside HTML attributes");
+    instructions.push(
+      "4. Preserve ALL HTML tags and formatting exactly as they appear",
+      "5. Do NOT translate text inside HTML attributes"
+    );
   }
 
   if (options.seoOptimized) {
     instructions.push(
-      `${options.preserveHtml ? "6" : "4"}. Maintain SEO keywords naturally in ${targetLang}`
-    );
-    instructions.push(
-      `${options.preserveHtml ? "7" : "5"}. Use natural, fluent ${targetLang} that reads well to native speakers`
-    );
-    instructions.push(
+      `${options.preserveHtml ? "6" : "4"}. Maintain SEO keywords naturally in ${targetLang}`,
+      `${options.preserveHtml ? "7" : "5"}. Use natural, fluent ${targetLang} that reads well to native speakers`,
       `${options.preserveHtml ? "8" : "6"}. Preserve the semantic meaning and intent for search engines`
     );
   }
 
   if (options.context) {
-    instructions.push("");
-    instructions.push(`Context: ${options.context}`);
+    instructions.push("", `Context: ${options.context}`);
   }
 
-  instructions.push("");
-  instructions.push("Text to translate:");
-  instructions.push(text);
+  instructions.push("", "Text to translate:", text);
 
   return instructions.join("\n");
 }

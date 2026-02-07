@@ -346,8 +346,10 @@ export async function searchAll(options: SearchIndexQuery): Promise<SearchResult
     searchPromises.push(searchDestinations(normalizedQuery));
   }
   if (!types || types.includes("attraction")) {
-    searchPromises.push(searchAttractions(normalizedQuery));
-    searchPromises.push(searchTiqetsAttractions(normalizedQuery));
+    searchPromises.push(
+      searchAttractions(normalizedQuery),
+      searchTiqetsAttractions(normalizedQuery)
+    );
   }
   if (!types || types.includes("hotel")) {
     searchPromises.push(searchHotels(normalizedQuery));

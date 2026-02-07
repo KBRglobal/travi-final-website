@@ -182,7 +182,7 @@ export async function stopABTest(testId: string): Promise<ABTest> {
   // Analyze results and determine winner
   const results = await getABTestResults(testId);
   test.winningVariant =
-    results.recommendedWinner !== "inconclusive" ? results.recommendedWinner : null;
+    results.recommendedWinner === "inconclusive" ? null : results.recommendedWinner;
 
   abTests.set(testId, test);
   aeoLogger.info("A/B test stopped", { testId, winner: test.winningVariant });

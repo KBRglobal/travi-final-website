@@ -239,8 +239,7 @@ export class SEOValidationAgent {
 
     if (this.requireTier1_100Percent && tier1Score < 100) {
       canPublish = false;
-      publishBlockReasons.push(`Tier 1 Critical: ${tier1Score}% (must be 100%)`);
-      publishBlockReasons.push(...blockingIssues);
+      publishBlockReasons.push(`Tier 1 Critical: ${tier1Score}% (must be 100%)`, ...blockingIssues);
     }
 
     // Collect auto-fixable issues
@@ -727,8 +726,7 @@ export class SEOValidationAgent {
     // Add FAQ
     if (content.faq) {
       for (const faq of content.faq) {
-        parts.push(faq.question || "");
-        parts.push(faq.answer || "");
+        parts.push(faq.question || "", faq.answer || "");
       }
     }
 

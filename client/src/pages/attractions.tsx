@@ -1244,7 +1244,7 @@ export default function Attractions() {
                       setActiveType(type.id);
                       if (type.searchTerm) {
                         setQuery(type.searchTerm);
-                        window.scrollTo({ top: 0, behavior: "smooth" });
+                        globalThis.scrollTo({ top: 0, behavior: "smooth" });
                       } else {
                         setQuery("");
                         setResults([]);

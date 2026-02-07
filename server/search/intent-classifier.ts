@@ -239,14 +239,13 @@ export const intentClassifier = {
     }
 
     // Extract price indicators
-    const priceMatch = query.match(
-      /(?:under|below|less than|up to|أقل من|حتى)\s*(?:AED|aed|₪|\$|درهم)?\s*(\d+)/i
-    );
+    const priceMatch =
+      /(?:under|below|less than|up to|أقل من|حتى)\s*(?:AED|aed|₪|\$|درهم)?\s*(\d+)/i.exec(query);
     if (priceMatch) {
       entities.priceRange = { max: Number.parseInt(priceMatch[1]), currency: "AED" };
     }
-    const priceFromMatch = query.match(
-      /(?:from|starting|minimum|من)\s*(?:AED|aed|₪|\$|درهم)?\s*(\d+)/i
+    const priceFromMatch = /(?:from|starting|minimum|من)\s*(?:AED|aed|₪|\$|درهم)?\s*(\d+)/i.exec(
+      query
     );
     if (priceFromMatch) {
       entities.priceRange = { ...entities.priceRange, min: Number.parseInt(priceFromMatch[1]) };

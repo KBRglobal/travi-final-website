@@ -260,7 +260,7 @@ export function EditorTabBar({ className }: TabBarProps) {
                 onClick={() => {
                   const activeTab = tabs.find(t => t.id === activeTabId);
                   if (activeTab) {
-                    window.open(activeTab.path, "_blank");
+                    globalThis.open(activeTab.path, "_blank");
                   }
                 }}
               >

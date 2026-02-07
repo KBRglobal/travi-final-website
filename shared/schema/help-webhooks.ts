@@ -9,8 +9,7 @@ import {
   index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
-import { relations } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { webhookOutboxStatusEnum } from "./enums";

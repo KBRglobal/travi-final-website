@@ -209,14 +209,14 @@ export function registerAdminTiqetsRoutes(app: Express): void {
     let status: "connected" | "error" | "not_configured" = "not_configured";
     let message = "";
 
-    if (!apiToken) {
-      message = "TIQETS_API_TOKEN environment variable is not set";
-    } else if (!partnerId) {
+    if (apiToken && partnerId) {
+      status = "connected";
+      message = "Tiqets API is configured and ready to use";
+    } else if (apiToken) {
       message = "TIQETS_PARTNER_ID environment variable is not set";
       status = "error";
     } else {
-      status = "connected";
-      message = "Tiqets API is configured and ready to use";
+      message = "TIQETS_API_TOKEN environment variable is not set";
     }
 
     res.json({
@@ -1178,11 +1178,11 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         currentHourlyRate > 0 ? currentHourlyRate : Number.parseFloat(hourlyRate);
       const hoursRemaining = effectiveRate > 0 ? pending / effectiveRate : null;
       const etaText =
-        hoursRemaining !== null
-          ? hoursRemaining < 1
+        hoursRemaining === null
+          ? "Unable to estimate"
+          : hoursRemaining < 1
             ? `${Math.round(hoursRemaining * 60)} minutes`
-            : `${hoursRemaining.toFixed(1)} hours`
-          : "Unable to estimate";
+            : `${hoursRemaining.toFixed(1)} hours`;
 
       res.json({
         lastHour,
@@ -1379,7 +1379,7 @@ Return as valid JSON.`,
           ...(failureStats.total > 10
             ? ["Consider using /api/admin/tiqets/reset-failed to retry failed items"]
             : []),
-          ...(!health.isRunning ? ["Background generator is stopped - use restart to resume"] : []),
+          ...(health.isRunning ? [] : ["Background generator is stopped - use restart to resume"]),
         ],
       });
     } catch (error: any) {

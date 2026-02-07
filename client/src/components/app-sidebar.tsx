@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import {
   Sidebar,
@@ -35,7 +35,6 @@ import {
 } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/hooks/use-auth";
 import { Mascot } from "@/components/logo";

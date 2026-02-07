@@ -865,8 +865,7 @@ export class SEOAutoFixer {
     const faq = article.faq as Array<{ question?: string; answer?: string }> | undefined;
     if (faq) {
       for (const f of faq) {
-        parts.push(f.question || "");
-        parts.push(f.answer || "");
+        parts.push(f.question || "", f.answer || "");
       }
     }
 

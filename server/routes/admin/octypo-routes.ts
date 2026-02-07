@@ -6,7 +6,13 @@
 
 import { Router, type Request, type Response } from "express";
 import { db } from "../../db";
-import { tiqetsAttractions, contents, workflowInstances } from "@shared/schema";
+import {
+  tiqetsAttractions,
+  contents,
+  workflowInstances,
+  contentEntities,
+  autopilotTasks,
+} from "@shared/schema";
 import { eq, isNull, isNotNull, sql, desc, and } from "drizzle-orm";
 import { log } from "../../lib/logger";
 import {
@@ -1962,7 +1968,6 @@ router.post("/rss/generate-from-items", async (req: Request, res: Response) => {
 
 import { getExplosionOrchestrator } from "../../octypo/exploder";
 import { getEntityExtractor } from "../../octypo/exploder/entity-extractor";
-import { contentEntities } from "@shared/schema";
 
 /**
  * POST /api/octypo/exploder/entities/extract/:contentId
@@ -2229,7 +2234,6 @@ router.get("/exploder/entities", async (req: Request, res: Response) => {
 // ============================================================================
 
 import { autopilotAPI, getRealAutopilot, getAutopilotScheduler } from "../../octypo/pilot";
-import { autopilotTasks } from "@shared/schema";
 
 /**
  * GET /api/octypo/real-autopilot/status

@@ -3,8 +3,7 @@
  * Manages where content appears on the site - headlines, featured, secondary, etc.
  */
 
-import { eq, and, desc, or, sql } from "drizzle-orm";
-import { asc, lte, gte, isNull } from "drizzle-orm";
+import { eq, and, desc, or, sql, asc, lte, gte, isNull } from "drizzle-orm";
 import { db } from "../db";
 import {
   editorialPlacements,

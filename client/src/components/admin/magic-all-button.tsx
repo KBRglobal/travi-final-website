@@ -208,7 +208,7 @@ export function MagicAllButton({
 
         toast({
           title: "Generation Complete",
-          description: `Successfully generated ${successCount} field${successCount !== 1 ? "s" : ""}${
+          description: `Successfully generated ${successCount} field${successCount === 1 ? "" : "s"}${
             failedCount > 0 ? `, ${failedCount} failed` : ""
           }`,
         });

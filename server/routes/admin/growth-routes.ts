@@ -12,6 +12,7 @@ import {
   contents,
   aiGenerationLogs,
   SUPPORTED_LOCALES,
+  searchIndex,
 } from "@shared/schema";
 import { eq, desc, and, sql, count, isNotNull, gte } from "drizzle-orm";
 
@@ -22,7 +23,6 @@ import {
   freshnessConfig,
   type DestinationFreshness,
 } from "../../services/content-freshness";
-import { searchIndex } from "@shared/schema";
 
 export function registerGrowthRoutes(app: Express) {
   // ============================================================================

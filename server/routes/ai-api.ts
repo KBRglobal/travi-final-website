@@ -89,8 +89,8 @@ function addSystemLog(
   message: string,
   _details?: Record<string, unknown>
 ) {
-  if (typeof (global as any).addSystemLog === "function") {
-    (global as any).addSystemLog(level, category, message, _details);
+  if (typeof (globalThis as any).addSystemLog === "function") {
+    (globalThis as any).addSystemLog(level, category, message, _details);
   } else {
     // empty
   }

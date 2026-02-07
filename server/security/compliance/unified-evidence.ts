@@ -620,60 +620,63 @@ class UnifiedEvidenceCollector {
   private generatePDFContent(bundle: UnifiedEvidenceBundle): string {
     const lines: string[] = [];
 
-    lines.push("=".repeat(60));
-    lines.push("SECURITY COMPLIANCE EVIDENCE REPORT");
-    lines.push("=".repeat(60));
-    lines.push("");
-    lines.push(`Report ID: ${bundle.id}`);
-    lines.push(`Generated: ${bundle.generatedAt.toISOString()}`);
-    lines.push(`Period: ${bundle.period.start.toISOString()} - ${bundle.period.end.toISOString()}`);
-    lines.push(`Frameworks: ${bundle.frameworks.join(", ")}`);
-    lines.push("");
-    lines.push("-".repeat(60));
-    lines.push("EXECUTIVE SUMMARY");
-    lines.push("-".repeat(60));
-    lines.push("");
-    lines.push(`Overall Status: ${bundle.summary.overallStatus.toUpperCase()}`);
-    lines.push(`Security Score: ${bundle.summary.securityScore}/100`);
-    lines.push("");
+    lines.push(
+      "=".repeat(60),
+      "SECURITY COMPLIANCE EVIDENCE REPORT",
+      "=".repeat(60),
+      "",
+      `Report ID: ${bundle.id}`,
+      `Generated: ${bundle.generatedAt.toISOString()}`,
+      `Period: ${bundle.period.start.toISOString()} - ${bundle.period.end.toISOString()}`,
+      `Frameworks: ${bundle.frameworks.join(", ")}`,
+      "",
+      "-".repeat(60),
+      "EXECUTIVE SUMMARY",
+      "-".repeat(60),
+      "",
+      `Overall Status: ${bundle.summary.overallStatus.toUpperCase()}`,
+      `Security Score: ${bundle.summary.securityScore}/100`,
+      ""
+    );
     lines.push("Key Metrics:");
     for (const [key, value] of Object.entries(bundle.summary.metrics)) {
       lines.push(`  - ${key}: ${value}`);
     }
-    lines.push("");
-    lines.push("Key Findings:");
+    lines.push("", "Key Findings:");
     for (const finding of bundle.summary.keyFindings) {
       lines.push(`  • ${finding}`);
     }
-    lines.push("");
-    lines.push("Recommendations:");
+    lines.push("", "Recommendations:");
     for (const rec of bundle.summary.recommendations) {
       lines.push(`  → ${rec}`);
     }
     lines.push("");
 
     for (const [sectionName, section] of Object.entries(bundle.evidence)) {
-      lines.push("-".repeat(60));
-      lines.push(section.name.toUpperCase());
-      lines.push("-".repeat(60));
-      lines.push(section.description);
-      lines.push("");
-      lines.push("Metrics:");
+      lines.push(
+        "-".repeat(60),
+        section.name.toUpperCase(),
+        "-".repeat(60),
+        section.description,
+        "",
+        "Metrics:"
+      );
       for (const [key, value] of Object.entries(section.metrics)) {
         lines.push(`  - ${key}: ${value}`);
       }
-      lines.push("");
-      lines.push("Highlights:");
+      lines.push("", "Highlights:");
       for (const highlight of section.highlights) {
         lines.push(`  • ${highlight}`);
       }
       lines.push("");
     }
 
-    lines.push("=".repeat(60));
-    lines.push(`Integrity Hash: ${bundle.integrity.hash}`);
-    lines.push(`Evidence Items: ${bundle.integrity.evidenceCount}`);
-    lines.push("=".repeat(60));
+    lines.push(
+      "=".repeat(60),
+      `Integrity Hash: ${bundle.integrity.hash}`,
+      `Evidence Items: ${bundle.integrity.evidenceCount}`,
+      "=".repeat(60)
+    );
 
     return lines.join("\n");
   }

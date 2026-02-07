@@ -474,7 +474,7 @@ export function useCommandPalette() {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    globalThis.addEventListener("keydown", handleKeyDown);
     return () => globalThis.removeEventListener("keydown", handleKeyDown);
   }, []);
 

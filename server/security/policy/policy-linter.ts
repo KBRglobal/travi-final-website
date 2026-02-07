@@ -398,12 +398,14 @@ export function lintPolicies(): LintResult {
   const allIssues: LintIssue[] = [];
 
   // Run all lint rules
-  allIssues.push(...detectConflicts(policies));
-  allIssues.push(...detectShadows(policies));
-  allIssues.push(...detectRedundant(policies));
-  allIssues.push(...detectOverlyPermissive(policies));
-  allIssues.push(...detectNeverTriggers(policies));
-  allIssues.push(...detectMissingDenies(policies));
+  allIssues.push(
+    ...detectConflicts(policies),
+    ...detectShadows(policies),
+    ...detectRedundant(policies),
+    ...detectOverlyPermissive(policies),
+    ...detectNeverTriggers(policies),
+    ...detectMissingDenies(policies)
+  );
 
   // Calculate summary
   const errors = allIssues.filter(i => i.severity === "error").length;

@@ -19,8 +19,8 @@ export default function SubtleSkyBackground({ className }: SubtleSkyBackgroundPr
     let time = 0;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = globalThis.innerWidth;
+      canvas.height = globalThis.innerHeight;
     };
 
     const draw = () => {
@@ -61,11 +61,11 @@ export default function SubtleSkyBackground({ className }: SubtleSkyBackgroundPr
     };
 
     resize();
-    window.addEventListener("resize", resize);
+    globalThis.addEventListener("resize", resize);
     draw();
 
     return () => {
-      window.removeEventListener("resize", resize);
+      globalThis.removeEventListener("resize", resize);
       cancelAnimationFrame(animationId);
     };
   }, []);

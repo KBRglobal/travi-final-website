@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { ZodSchema, ZodError } from 'zod';
-import { z } from 'zod';
+import { Request, Response, NextFunction } from "express";
+import { ZodSchema, ZodError, z } from "zod";
 
 /**
  * Validation middleware factory
@@ -41,20 +40,20 @@ export function validate(schemas: ValidateOptions) {
         req.body = await schemas.body.parseAsync(req.body);
       }
       if (schemas.query) {
-        req.query = await schemas.query.parseAsync(req.query) as typeof req.query;
+        req.query = (await schemas.query.parseAsync(req.query)) as typeof req.query;
       }
       if (schemas.params) {
-        req.params = await schemas.params.parseAsync(req.params) as typeof req.params;
+        req.params = (await schemas.params.parseAsync(req.params)) as typeof req.params;
       }
       next();
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({
-          error: 'Validation Error',
+          error: "Validation Error",
           details: error.errors.map(e => ({
-            field: e.path.join('.'),
-            message: e.message
-          }))
+            field: e.path.join("."),
+            message: e.message,
+          })),
         });
       }
       next(error);
@@ -72,7 +71,7 @@ export const paginationSchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
   sort: z.string().optional(),
-  order: z.enum(['asc', 'desc']).default('desc')
+  order: z.enum(["asc", "desc"]).default("desc"),
 });
 
 /**
@@ -80,7 +79,7 @@ export const paginationSchema = z.object({
  * Validates that :id is a valid UUID format
  */
 export const idParamSchema = z.object({
-  id: z.string().uuid('Invalid ID format')
+  id: z.string().uuid("Invalid ID format"),
 });
 
 /**
@@ -88,7 +87,11 @@ export const idParamSchema = z.object({
  * Validates that :slug is a valid URL slug
  */
 export const slugParamSchema = z.object({
-  slug: z.string().min(1).max(200).regex(/^[a-z0-9-]+$/, 'Invalid slug format')
+  slug: z
+    .string()
+    .min(1)
+    .max(200)
+    .regex(/^[a-z0-9-]+$/, "Invalid slug format"),
 });
 
 /**
@@ -98,21 +101,23 @@ export const slugParamSchema = z.object({
 export const searchQuerySchema = z.object({
   q: z.string().min(1).max(200).optional(),
   type: z.string().optional(),
-  status: z.enum(['draft', 'published', 'archived']).optional(),
-  ...paginationSchema.shape
+  status: z.enum(["draft", "published", "archived"]).optional(),
+  ...paginationSchema.shape,
 });
 
 /**
  * Date range query schema
  * Validates date range parameters for filtering
  */
-export const dateRangeSchema = z.object({
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional()
-}).refine(
-  data => !data.startDate || !data.endDate || new Date(data.startDate) <= new Date(data.endDate),
-  { message: 'startDate must be before or equal to endDate' }
-);
+export const dateRangeSchema = z
+  .object({
+    startDate: z.string().datetime().optional(),
+    endDate: z.string().datetime().optional(),
+  })
+  .refine(
+    data => !data.startDate || !data.endDate || new Date(data.startDate) <= new Date(data.endDate),
+    { message: "startDate must be before or equal to endDate" }
+  );
 
 /**
  * Async handler wrapper for Express routes
@@ -135,7 +140,7 @@ export class ValidationError extends Error {
 
   constructor(message: string) {
     super(message);
-    this.name = 'ValidationError';
+    this.name = "ValidationError";
   }
 }
 
@@ -143,9 +148,9 @@ export class NotFoundError extends Error {
   statusCode = 404;
   isOperational = true;
 
-  constructor(resource: string = 'Resource') {
+  constructor(resource: string = "Resource") {
     super(`${resource} not found`);
-    this.name = 'NotFoundError';
+    this.name = "NotFoundError";
   }
 }
 
@@ -153,9 +158,9 @@ export class UnauthorizedError extends Error {
   statusCode = 401;
   isOperational = true;
 
-  constructor(message: string = 'Unauthorized') {
+  constructor(message: string = "Unauthorized") {
     super(message);
-    this.name = 'UnauthorizedError';
+    this.name = "UnauthorizedError";
   }
 }
 
@@ -163,9 +168,9 @@ export class ForbiddenError extends Error {
   statusCode = 403;
   isOperational = true;
 
-  constructor(message: string = 'Forbidden') {
+  constructor(message: string = "Forbidden") {
     super(message);
-    this.name = 'ForbiddenError';
+    this.name = "ForbiddenError";
   }
 }
 
@@ -173,8 +178,8 @@ export class ConflictError extends Error {
   statusCode = 409;
   isOperational = true;
 
-  constructor(message: string = 'Resource conflict') {
+  constructor(message: string = "Resource conflict") {
     super(message);
-    this.name = 'ConflictError';
+    this.name = "ConflictError";
   }
 }

@@ -19,37 +19,33 @@ export function generateLlmsTxt(siteUrl: string = "https://travi.world"): string
   const lines: string[] = [];
 
   // Title and description
-  lines.push("# TRAVI World - Travel Intelligence Platform");
-  lines.push("");
-  lines.push("> TRAVI World is a comprehensive travel guide covering 16+ destinations worldwide.");
-  lines.push("");
-
-  // What we offer
-  lines.push("## What we offer:");
-  lines.push("- Tourist attractions with prices and hours");
-  lines.push("- Hotel recommendations (3-5 star)");
-  lines.push("- Restaurant guides");
-  lines.push("- Transportation information");
-  lines.push("- Local tips and cultural insights");
-  lines.push("- Multi-language support (17 languages)");
-  lines.push("");
-
-  // Destinations
-  lines.push("## Destinations:");
   lines.push(
-    "Dubai, Paris, London, Tokyo, New York, Barcelona, Rome, Istanbul, Singapore, Amsterdam, Bangkok, Hong Kong, Los Angeles, Las Vegas, Miami, Abu Dhabi"
+    "# TRAVI World - Travel Intelligence Platform",
+    "",
+    "> TRAVI World is a comprehensive travel guide covering 16+ destinations worldwide.",
+    "",
+    // What we offer
+    "## What we offer:",
+    "- Tourist attractions with prices and hours",
+    "- Hotel recommendations (3-5 star)",
+    "- Restaurant guides",
+    "- Transportation information",
+    "- Local tips and cultural insights",
+    "- Multi-language support (17 languages)",
+    "",
+    // Destinations
+    "## Destinations:",
+    "Dubai, Paris, London, Tokyo, New York, Barcelona, Rome, Istanbul, Singapore, Amsterdam, Bangkok, Hong Kong, Los Angeles, Las Vegas, Miami, Abu Dhabi",
+    "",
+    // Contact
+    "## Contact:",
+    `- Website: ${siteUrl}`,
+    "- Email: info@travi.world",
+    "",
+    // For AI assistants
+    "## For AI assistants:",
+    "Feel free to cite our content with attribution to TRAVI World (travi.world)"
   );
-  lines.push("");
-
-  // Contact
-  lines.push("## Contact:");
-  lines.push(`- Website: ${siteUrl}`);
-  lines.push("- Email: info@travi.world");
-  lines.push("");
-
-  // For AI assistants
-  lines.push("## For AI assistants:");
-  lines.push("Feel free to cite our content with attribution to TRAVI World (travi.world)");
 
   return lines.join("\n");
 }

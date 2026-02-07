@@ -11,7 +11,7 @@ import {
 import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { contentTypeEnum } from "./enums";
+import { contentTypeEnum, automationStatusEnum, workflowExecutionStatusEnum } from "./enums";
 
 // Note: Users/contents references removed to avoid circular dependencies.
 // Foreign key constraints exist at the database level.
@@ -161,8 +161,6 @@ export type InsertContentScore = z.infer<typeof insertContentScoreSchema>;
 // ============================================================================
 // WORKFLOW TABLES
 // ============================================================================
-
-import { automationStatusEnum, workflowExecutionStatusEnum } from "./enums";
 
 export const workflows = pgTable(
   "workflows",

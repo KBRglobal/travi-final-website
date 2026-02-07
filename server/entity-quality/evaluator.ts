@@ -20,32 +20,46 @@ const qualityCache: Map<string, QualityScore> = new Map();
 function evaluateCompleteness(content: any): DimensionScore {
   const components: Array<{ name: string; score: number; max: number }> = [];
 
-  components.push({ name: 'title', score: content.title ? 10 : 0, max: 10 });
-  components.push({ name: 'metaTitle', score: content.metaTitle ? 10 : 0, max: 10 });
-  components.push({ name: 'metaDescription', score: content.metaDescription ? 10 : 0, max: 10 });
-  components.push({ name: 'heroImage', score: content.heroImage ? 10 : 0, max: 10 });
-  components.push({ name: 'answerCapsule', score: content.answerCapsule ? 15 : 0, max: 15 });
-  components.push({ name: 'blocks', score: Math.min((content.blocks?.length || 0) * 3, 25), max: 25 });
-  components.push({ name: 'primaryKeyword', score: content.primaryKeyword ? 10 : 0, max: 10 });
-  components.push({ name: 'summary', score: content.summary ? 10 : 0, max: 10 });
+  components.push(
+    { name: "title", score: content.title ? 10 : 0, max: 10 },
+    { name: "metaTitle", score: content.metaTitle ? 10 : 0, max: 10 },
+    { name: "metaDescription", score: content.metaDescription ? 10 : 0, max: 10 },
+    { name: "heroImage", score: content.heroImage ? 10 : 0, max: 10 },
+    { name: "answerCapsule", score: content.answerCapsule ? 15 : 0, max: 15 },
+    { name: "blocks", score: Math.min((content.blocks?.length || 0) * 3, 25), max: 25 },
+    { name: "primaryKeyword", score: content.primaryKeyword ? 10 : 0, max: 10 },
+    { name: "summary", score: content.summary ? 10 : 0, max: 10 }
+  );
 
   const total = components.reduce((sum, c) => sum + c.score, 0);
   const max = components.reduce((sum, c) => sum + c.max, 0);
 
-  return { score: Math.round((total / max) * 100), weight: DIMENSION_WEIGHTS.completeness, components };
+  return {
+    score: Math.round((total / max) * 100),
+    weight: DIMENSION_WEIGHTS.completeness,
+    components,
+  };
 }
 
 function evaluateAccuracy(content: any): DimensionScore {
   const components: Array<{ name: string; score: number; max: number }> = [];
 
   const titleLength = content.title?.length || 0;
-  components.push({ name: 'titleLength', score: titleLength >= 20 && titleLength <= 70 ? 25 : 10, max: 25 });
+  components.push({
+    name: "titleLength",
+    score: titleLength >= 20 && titleLength <= 70 ? 25 : 10,
+    max: 25,
+  });
 
   const metaDescLength = content.metaDescription?.length || 0;
-  components.push({ name: 'metaDescLength', score: metaDescLength >= 120 && metaDescLength <= 160 ? 25 : 10, max: 25 });
+  components.push({
+    name: "metaDescLength",
+    score: metaDescLength >= 120 && metaDescLength <= 160 ? 25 : 10,
+    max: 25,
+  });
 
   const seoScore = content.seoScore || 0;
-  components.push({ name: 'seoScore', score: Math.round(seoScore / 2), max: 50 });
+  components.push({ name: "seoScore", score: Math.round(seoScore / 2), max: 50 });
 
   const total = components.reduce((sum, c) => sum + c.score, 0);
   const max = components.reduce((sum, c) => sum + c.max, 0);
@@ -59,54 +73,73 @@ function evaluateFreshness(content: any): DimensionScore {
   const updatedAt = content.updatedAt ? new Date(content.updatedAt) : null;
   if (updatedAt) {
     const daysSinceUpdate = (Date.now() - updatedAt.getTime()) / (1000 * 60 * 60 * 24);
-    const freshnessScore = daysSinceUpdate <= 30 ? 100 : daysSinceUpdate <= 90 ? 70 : daysSinceUpdate <= 180 ? 40 : 10;
-    components.push({ name: 'recency', score: freshnessScore, max: 100 });
+    const freshnessScore =
+      daysSinceUpdate <= 30 ? 100 : daysSinceUpdate <= 90 ? 70 : daysSinceUpdate <= 180 ? 40 : 10;
+    components.push({ name: "recency", score: freshnessScore, max: 100 });
   } else {
-    components.push({ name: 'recency', score: 0, max: 100 });
+    components.push({ name: "recency", score: 0, max: 100 });
   }
 
   const total = components.reduce((sum, c) => sum + c.score, 0);
   const max = components.reduce((sum, c) => sum + c.max, 0);
 
-  return { score: max > 0 ? Math.round((total / max) * 100) : 0, weight: DIMENSION_WEIGHTS.freshness, components };
+  return {
+    score: max > 0 ? Math.round((total / max) * 100) : 0,
+    weight: DIMENSION_WEIGHTS.freshness,
+    components,
+  };
 }
 
 function evaluateConsistency(content: any): DimensionScore {
   const components: Array<{ name: string; score: number; max: number }> = [];
 
   // Check slug consistency with title
-  const titleSlug = content.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || '';
+  const titleSlug =
+    content.title
+      ?.toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "";
   const slugMatch = content.slug?.includes(titleSlug.substring(0, 20)) ? 50 : 25;
-  components.push({ name: 'slugConsistency', score: slugMatch, max: 50 });
+  components.push({ name: "slugConsistency", score: slugMatch, max: 50 });
 
   // Check status consistency
-  const statusScore = content.status === 'published' && content.blocks?.length > 0 ? 50 : 25;
-  components.push({ name: 'statusConsistency', score: statusScore, max: 50 });
+  const statusScore = content.status === "published" && content.blocks?.length > 0 ? 50 : 25;
+  components.push({ name: "statusConsistency", score: statusScore, max: 50 });
 
   const total = components.reduce((sum, c) => sum + c.score, 0);
   const max = components.reduce((sum, c) => sum + c.max, 0);
 
-  return { score: max > 0 ? Math.round((total / max) * 100) : 0, weight: DIMENSION_WEIGHTS.consistency, components };
+  return {
+    score: max > 0 ? Math.round((total / max) * 100) : 0,
+    weight: DIMENSION_WEIGHTS.consistency,
+    components,
+  };
 }
 
 function evaluateRichness(content: any): DimensionScore {
   const components: Array<{ name: string; score: number; max: number }> = [];
 
   const wordCount = content.wordCount || 0;
-  const wordCountScore = wordCount >= 1000 ? 40 : wordCount >= 500 ? 30 : wordCount >= 200 ? 20 : 10;
-  components.push({ name: 'wordCount', score: wordCountScore, max: 40 });
+  const wordCountScore =
+    wordCount >= 1000 ? 40 : wordCount >= 500 ? 30 : wordCount >= 200 ? 20 : 10;
+  components.push({ name: "wordCount", score: wordCountScore, max: 40 });
 
   const blockCount = content.blocks?.length || 0;
   const blockScore = Math.min(blockCount * 5, 30);
-  components.push({ name: 'blockVariety', score: blockScore, max: 30 });
+  components.push({ name: "blockVariety", score: blockScore, max: 30 });
 
-  const hasAeo = content.answerCapsule && content.aeoScore > 50 ? 30 : content.answerCapsule ? 15 : 0;
-  components.push({ name: 'aeoQuality', score: hasAeo, max: 30 });
+  const hasAeo =
+    content.answerCapsule && content.aeoScore > 50 ? 30 : content.answerCapsule ? 15 : 0;
+  components.push({ name: "aeoQuality", score: hasAeo, max: 30 });
 
   const total = components.reduce((sum, c) => sum + c.score, 0);
   const max = components.reduce((sum, c) => sum + c.max, 0);
 
-  return { score: max > 0 ? Math.round((total / max) * 100) : 0, weight: DIMENSION_WEIGHTS.richness, components };
+  return {
+    score: max > 0 ? Math.round((total / max) * 100) : 0,
+    weight: DIMENSION_WEIGHTS.richness,
+    components,
+  };
 }
 
 function evaluateEngagement(content: any): DimensionScore {
@@ -114,46 +147,74 @@ function evaluateEngagement(content: any): DimensionScore {
 
   const viewCount = content.viewCount || 0;
   const viewScore = viewCount >= 1000 ? 100 : viewCount >= 100 ? 70 : viewCount >= 10 ? 40 : 10;
-  components.push({ name: 'views', score: viewScore, max: 100 });
+  components.push({ name: "views", score: viewScore, max: 100 });
 
   const total = components.reduce((sum, c) => sum + c.score, 0);
   const max = components.reduce((sum, c) => sum + c.max, 0);
 
-  return { score: max > 0 ? Math.round((total / max) * 100) : 0, weight: DIMENSION_WEIGHTS.engagement, components };
+  return {
+    score: max > 0 ? Math.round((total / max) * 100) : 0,
+    weight: DIMENSION_WEIGHTS.engagement,
+    components,
+  };
 }
 
 function identifyIssues(dimensions: Record<QualityDimension, DimensionScore>): QualityIssue[] {
   const issues: QualityIssue[] = [];
 
   if (dimensions.completeness.score < 50) {
-    issues.push({ dimension: 'completeness', severity: 'high', message: 'Missing critical content fields', recommendation: 'Add meta title, description, and answer capsule' } as any);
+    issues.push({
+      dimension: "completeness",
+      severity: "high",
+      message: "Missing critical content fields",
+      recommendation: "Add meta title, description, and answer capsule",
+    } as any);
   }
   if (dimensions.accuracy.score < 50) {
-    issues.push({ dimension: 'accuracy', severity: 'medium', message: 'SEO optimization needed', recommendation: 'Improve title length and meta description' } as any);
+    issues.push({
+      dimension: "accuracy",
+      severity: "medium",
+      message: "SEO optimization needed",
+      recommendation: "Improve title length and meta description",
+    } as any);
   }
   if (dimensions.freshness.score < 50) {
-    issues.push({ dimension: 'freshness', severity: 'medium', message: 'Content may be outdated', recommendation: 'Review and update content' } as any);
+    issues.push({
+      dimension: "freshness",
+      severity: "medium",
+      message: "Content may be outdated",
+      recommendation: "Review and update content",
+    } as any);
   }
   if (dimensions.richness.score < 50) {
-    issues.push({ dimension: 'richness', severity: 'low', message: 'Content lacks depth', recommendation: 'Add more content blocks and improve AEO score' } as any);
+    issues.push({
+      dimension: "richness",
+      severity: "low",
+      message: "Content lacks depth",
+      recommendation: "Add more content blocks and improve AEO score",
+    } as any);
   }
 
   return issues;
 }
 
 export async function evaluateEntityQuality(entityId: string): Promise<QualityScore> {
-  const [content] = await db
-    .select()
-    .from(contents)
-    .where(eq(contents.id, entityId));
+  const [content] = await db.select().from(contents).where(eq(contents.id, entityId));
 
   if (!content) {
     return {
       entityId,
-      entityType: 'unknown',
+      entityType: "unknown",
       overallScore: 0,
       dimensions: {} as Record<QualityDimension, DimensionScore>,
-      issues: [{ dimension: 'completeness', severity: 'high', message: 'Entity not found', recommendation: 'Check entity ID' }],
+      issues: [
+        {
+          dimension: "completeness",
+          severity: "high",
+          message: "Entity not found",
+          recommendation: "Check entity ID",
+        },
+      ],
       calculatedAt: new Date(),
     } as any;
   }
@@ -188,11 +249,11 @@ export function getCachedQualityScore(entityId: string): QualityScore | undefine
   return qualityCache.get(entityId);
 }
 
-export function getQualityGrade(score: number): 'excellent' | 'good' | 'fair' | 'poor' {
-  if (score >= (DEFAULT_THRESHOLDS as any).excellent) return 'excellent';
-  if (score >= (DEFAULT_THRESHOLDS as any).good) return 'good';
-  if (score >= (DEFAULT_THRESHOLDS as any).fair) return 'fair';
-  return 'poor';
+export function getQualityGrade(score: number): "excellent" | "good" | "fair" | "poor" {
+  if (score >= (DEFAULT_THRESHOLDS as any).excellent) return "excellent";
+  if (score >= (DEFAULT_THRESHOLDS as any).good) return "good";
+  if (score >= (DEFAULT_THRESHOLDS as any).fair) return "fair";
+  return "poor";
 }
 
 export async function getQualityStats(): Promise<QualityStats> {

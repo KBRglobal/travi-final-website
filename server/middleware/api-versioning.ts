@@ -50,9 +50,7 @@ export function clearDeprecatedEndpoints(): void {
 function parseAcceptHeader(acceptHeader: string | undefined): ApiVersion | null {
   if (!acceptHeader) return null;
 
-  const versionMatch = acceptHeader.match(
-    /application\/vnd\.travi\.v(\d+)\+json/i
-  );
+  const versionMatch = /application\/vnd\.travi\.v(\d+)\+json/i.exec(acceptHeader);
   if (versionMatch) {
     const version = `v${versionMatch[1]}` as ApiVersion;
     if (SUPPORTED_VERSIONS.includes(version)) {
@@ -67,7 +65,7 @@ function extractVersionFromUrl(path: string): {
   version: ApiVersion | null;
   cleanPath: string;
 } {
-  const versionMatch = path.match(/^\/api\/v(\d+)(\/.*)?$/);
+  const versionMatch = /^\/api\/v(\d+)(\/.*)?$/.exec(path);
   if (versionMatch) {
     const version = `v${versionMatch[1]}` as ApiVersion;
     const remainingPath = versionMatch[2] || "";

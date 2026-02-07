@@ -79,45 +79,7 @@ export function CookieConsentBanner() {
           onKeyDown={handleKeyDown}
           className="max-w-2xl mx-auto bg-card border shadow-lg rounded-lg pointer-events-auto"
         >
-          {!showManage ? (
-            <div className="p-4 sm:p-6">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Cookie className="w-5 h-5 text-primary" aria-hidden="true" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg mb-1">{t("cookies.title")}</h3>
-                  <p id="cookie-consent-description" className="text-sm text-muted-foreground">
-                    {t("cookies.description")}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-2 justify-end">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowManage(true)}
-                  className="gap-1"
-                  data-testid="button-manage-cookies"
-                >
-                  <Settings className="w-4 h-4" aria-hidden="true" />
-                  {t("cookies.manage")}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={rejectNonEssential}
-                  data-testid="button-reject-cookies"
-                >
-                  {t("cookies.rejectAll")}
-                </Button>
-                <Button size="sm" onClick={acceptAll} data-testid="button-accept-cookies">
-                  {t("cookies.acceptAll")}
-                </Button>
-              </div>
-            </div>
-          ) : (
+          {showManage ? (
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -195,6 +157,44 @@ export function CookieConsentBanner() {
                   data-testid="button-save-preferences"
                 >
                   {t("cookies.savePreferences")}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 sm:p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Cookie className="w-5 h-5 text-primary" aria-hidden="true" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-1">{t("cookies.title")}</h3>
+                  <p id="cookie-consent-description" className="text-sm text-muted-foreground">
+                    {t("cookies.description")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowManage(true)}
+                  className="gap-1"
+                  data-testid="button-manage-cookies"
+                >
+                  <Settings className="w-4 h-4" aria-hidden="true" />
+                  {t("cookies.manage")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={rejectNonEssential}
+                  data-testid="button-reject-cookies"
+                >
+                  {t("cookies.rejectAll")}
+                </Button>
+                <Button size="sm" onClick={acceptAll} data-testid="button-accept-cookies">
+                  {t("cookies.acceptAll")}
                 </Button>
               </div>
             </div>

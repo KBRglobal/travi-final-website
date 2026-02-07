@@ -262,18 +262,16 @@ export function runQualityGates(content: ContentForValidation, locale: string): 
 
   const gates: QualityGateResult[] = [];
 
-  // Critical gates (must pass)
-  gates.push(validatePurityGate(content.localePurityScore, thresholds.purityThreshold));
-  gates.push(validateCompletenessGate(content));
-  gates.push(validateMinWordCountGate(content, thresholds.minWordCount));
-
-  // Important gates
-  gates.push(validateFaqCountGate(content, thresholds.minFaqCount));
-  gates.push(validateAnswerCapsuleGate(content, thresholds.minAnswerCapsuleLength));
-
-  // SEO gates
-  gates.push(validateMetaTitleGate(content));
-  gates.push(validateMetaDescriptionGate(content));
+  // Critical gates (must pass), important gates, and SEO gates
+  gates.push(
+    validatePurityGate(content.localePurityScore, thresholds.purityThreshold),
+    validateCompletenessGate(content),
+    validateMinWordCountGate(content, thresholds.minWordCount),
+    validateFaqCountGate(content, thresholds.minFaqCount),
+    validateAnswerCapsuleGate(content, thresholds.minAnswerCapsuleLength),
+    validateMetaTitleGate(content),
+    validateMetaDescriptionGate(content)
+  );
 
   // Optional gates for higher tiers
   if (tier <= 2) {

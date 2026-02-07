@@ -185,14 +185,14 @@ export default function TiqetsAttractionsList() {
       label: "Edit",
       icon: <Edit2 className="h-4 w-4" />,
       onClick: attraction => {
-        window.location.href = `/admin/attractions/${attraction.id}`;
+        globalThis.location.href = `/admin/attractions/${attraction.id}`;
       },
     },
     {
       label: "View on Site",
       icon: <ExternalLink className="h-4 w-4" />,
       onClick: attraction => {
-        window.open(
+        globalThis.open(
           `/attractions/${attraction.cityName.toLowerCase()}/${attraction.slug}`,
           "_blank"
         );

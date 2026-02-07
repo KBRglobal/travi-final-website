@@ -327,7 +327,7 @@ export function checkHeadingStructure(html: string): QualityCheck {
   const allHeadings = html.match(/<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>/gi) || [];
   let lastLevel = 0;
   for (const heading of allHeadings) {
-    const level = Number.parseInt(heading.match(/<h([1-6])/i)?.[1] || "0");
+    const level = Number.parseInt(/<h([1-6])/i.exec(heading)?.[1] || "0");
     if (level > lastLevel + 1 && lastLevel > 0) {
       issues.push("Heading hierarchy skips levels (e.g., H1 to H3 without H2)");
       score -= 10;
@@ -356,7 +356,7 @@ export function checkLinkQuotas(html: string): QualityCheck {
   let authoritativeCount = 0;
 
   for (const link of allLinks) {
-    const hrefMatch = link.match(/href=["']([^"']+)["']/i);
+    const hrefMatch = /href=["']([^"']+)["']/i.exec(link);
     if (!hrefMatch) continue;
 
     const href = hrefMatch[1];
@@ -989,7 +989,7 @@ export function validateThroughGateway(content: ContentForValidation): QualityGa
   let authoritativeLinks = 0;
 
   for (const link of allLinks) {
-    const hrefMatch = link.match(/href=["']([^"']+)["']/i);
+    const hrefMatch = /href=["']([^"']+)["']/i.exec(link);
     if (!hrefMatch) continue;
     const href = hrefMatch[1];
     if (href.startsWith("/") || href.includes("travi")) {
