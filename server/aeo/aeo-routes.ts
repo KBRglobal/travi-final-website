@@ -23,51 +23,13 @@ import {
 import { generateAEOSchema, batchGenerateSchemas, validateSchema } from "./aeo-schema-generator";
 import { logCitation, getAEODashboard, getCrawlerStats, getCitationInsights } from "./aeo-tracking";
 import { log } from "../lib/logger";
+import { validateWebhookUrl } from "../lib/ssrf-protection";
 
 const aeoLogger = {
   error: (msg: string, data?: Record<string, unknown>) =>
     log.error(`[AEO] ${msg}`, undefined, data),
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO] ${msg}`, data),
 };
-
-/**
- * Validate and reconstruct a webhook URL for SSRF protection.
- * Returns a safe URL string or null if invalid.
- * The returned URL is independently constructed (no taint from input).
- */
-function validateWebhookUrl(input: unknown): string | null {
-  if (!input || typeof input !== "string") return null;
-  let parsed: URL;
-  try {
-    parsed = new URL(input);
-  } catch {
-    return null;
-  }
-  // Must be HTTPS
-  if (parsed.protocol !== "https:") return null;
-  // Block private/internal IPs
-  const h = parsed.hostname;
-  if (
-    h === "localhost" ||
-    h === "127.0.0.1" ||
-    h === "::1" ||
-    h.startsWith("10.") ||
-    h.startsWith("192.168.") ||
-    h.startsWith("169.254.") ||
-    (h.startsWith("172.") &&
-      Number.parseInt(h.split(".")[1]) >= 16 &&
-      Number.parseInt(h.split(".")[1]) <= 31)
-  ) {
-    return null;
-  }
-  // Construct a brand-new URL object from scratch (no taint from input)
-  const clean = new URL("https://placeholder.invalid");
-  clean.hostname = parsed.hostname;
-  clean.port = parsed.port;
-  clean.pathname = parsed.pathname;
-  clean.search = parsed.search;
-  return clean.href;
-}
 
 const router = Router();
 
@@ -1192,12 +1154,19 @@ router.post("/api/aeo/integrations/webhooks", async (req: Request, res: Response
       return;
     }
 
-    // SSRF protection: validate and allowlist webhook URL
-    const allowedWebhookUrl = validateWebhookUrl(url);
-    if (!allowedWebhookUrl) {
+    // SSRF protection: validate and allowlist webhook URL (async with DNS check)
+    let allowedWebhookUrl: string;
+    try {
+      allowedWebhookUrl = await validateWebhookUrl(url);
+    } catch (err) {
       res
         .status(400)
-        .json({ error: "Invalid webhook URL. Must be HTTPS and not point to internal addresses." });
+        .json({
+          error:
+            err instanceof Error
+              ? err.message
+              : "Invalid webhook URL. Must be HTTPS and not point to internal addresses.",
+        });
       return;
     }
 

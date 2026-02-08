@@ -5,6 +5,7 @@
 
 import { log } from "../lib/logger";
 import { registerNotificationHandler } from "./aeo-jobs";
+import { safeFetch } from "../lib/ssrf-protection";
 
 const aeoLogger = {
   error: (msg: string, data?: Record<string, unknown>) =>
@@ -292,22 +293,6 @@ export async function sendWebhookEvent(
 
   for (const webhook of relevantWebhooks) {
     try {
-      // SSRF protection: validate and reconstruct URL at fetch time
-      let fetchUrl: string;
-      try {
-        const parsed = new URL(webhook.url);
-        if (parsed.protocol !== "https:") continue;
-        // Reconstruct from a clean URL object to break any taint chain
-        const clean = new URL("https://placeholder.invalid");
-        clean.hostname = parsed.hostname;
-        clean.port = parsed.port;
-        clean.pathname = parsed.pathname;
-        clean.search = parsed.search;
-        fetchUrl = clean.href;
-      } catch {
-        continue;
-      }
-
       const body = JSON.stringify({
         event: eventType,
         timestamp: new Date().toISOString(),
@@ -325,10 +310,12 @@ export async function sendWebhookEvent(
         headers["X-AEO-Signature"] = signature;
       }
 
-      const response = await fetch(fetchUrl, {
+      // safeFetch handles SSRF validation, redirect blocking, and timeout
+      const response = await safeFetch(webhook.url, {
         method: "POST",
         headers,
         body,
+        timeout: 5000,
       });
 
       if (!response.ok) {
