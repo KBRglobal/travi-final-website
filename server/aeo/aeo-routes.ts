@@ -1101,8 +1101,24 @@ router.post("/api/aeo/integrations/slack", async (req: Request, res: Response) =
   try {
     const { webhookUrl, channel, username } = req.body;
 
-    if (!webhookUrl) {
+    if (!webhookUrl || typeof webhookUrl !== "string") {
       res.status(400).json({ error: "webhookUrl is required" });
+      return;
+    }
+
+    // Validate webhook URL to prevent SSRF — only allow official Slack webhook URLs
+    try {
+      const parsed = new URL(webhookUrl);
+      if (parsed.protocol !== "https:" || !parsed.hostname.endsWith(".slack.com")) {
+        res
+          .status(400)
+          .json({
+            error: "webhookUrl must be a valid Slack webhook URL (https://hooks.slack.com/...)",
+          });
+        return;
+      }
+    } catch {
+      res.status(400).json({ error: "webhookUrl is not a valid URL" });
       return;
     }
 
