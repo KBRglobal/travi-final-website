@@ -8,6 +8,7 @@ import {
   getModelForProvider,
   type GeneratedImage,
 } from "../ai";
+import { sanitizeAIPrompt } from "../lib/sanitize-ai-output";
 import { insertTopicBankSchema, type ContentBlock } from "@shared/schema";
 import { z } from "zod";
 import { getStorageManager } from "../services/storage-adapter";
@@ -723,10 +724,12 @@ Create engaging, informative content that would appeal to travelers. Return vali
       let heroImageUrl = null;
       let generatedImages: GeneratedImage[] = [];
       try {
+        const safeTitle = sanitizeAIPrompt(generated.title || topic.title);
+        const safeDescription = sanitizeAIPrompt(generated.metaDescription || topic.title);
         generatedImages = await generateContentImages({
           contentType: "article",
-          title: generated.title || topic.title,
-          description: generated.metaDescription || topic.title,
+          title: safeTitle,
+          description: safeDescription,
           generateHero: true,
           generateContentImages: false,
         });
@@ -905,10 +908,12 @@ RULES:
         // Generate hero image
         let heroImageUrl = null;
         try {
+          const safeNewsTitle = sanitizeAIPrompt(generated.title || topic.title);
+          const safeNewsDescription = sanitizeAIPrompt(generated.metaDescription || topic.title);
           const generatedImages = await generateContentImages({
             contentType: "article",
-            title: generated.title || topic.title,
-            description: generated.metaDescription || topic.title,
+            title: safeNewsTitle,
+            description: safeNewsDescription,
             generateHero: true,
             generateContentImages: false,
           });

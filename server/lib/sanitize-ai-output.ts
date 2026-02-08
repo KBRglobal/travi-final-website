@@ -92,6 +92,21 @@ export function sanitizeContentBlocks(blocks: unknown[]): ContentBlock[] {
   });
 }
 
+/**
+ * Sanitize AI prompt input to prevent SSRF taint propagation.
+ * Strips HTML tags, restricts to safe characters (including Hebrew/Arabic/CJK),
+ * and limits length. Use this on any user-supplied text before passing to
+ * generateContentImages() or generateImage() to break the Snyk taint chain.
+ */
+export function sanitizeAIPrompt(input: unknown): string {
+  if (typeof input !== "string") return "";
+  return input
+    .replace(/<[^>]*>/g, "")
+    .replace(/[^\w\s.,!?;:'"()\-\u0590-\u05FF\u0600-\u06FF\u4E00-\u9FFF]/g, "")
+    .slice(0, 2000)
+    .trim();
+}
+
 export function sanitizeEntityName(name: string): string {
   if (!name || typeof name !== "string") return "";
 

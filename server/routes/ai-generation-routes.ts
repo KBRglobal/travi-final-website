@@ -16,6 +16,7 @@ import {
 } from "../ai/providers";
 import { enforceWriterEngineSEO } from "../seo-enforcement";
 import { generateContentImages, generateImage, type GeneratedImage } from "../ai";
+import { sanitizeAIPrompt } from "../lib/sanitize-ai-output";
 
 // Helper to clean JSON from markdown code blocks
 function cleanJsonFromMarkdown(content: string): string {
@@ -514,9 +515,9 @@ Generate a complete, SEO-optimized article ready for publication.`;
 
         const images = await generateContentImages({
           contentType: contentType as any,
-          title,
-          description,
-          location: location || "",
+          title: sanitizeAIPrompt(title),
+          description: sanitizeAIPrompt(description),
+          location: sanitizeAIPrompt(location),
           generateHero: generateHero !== false,
           generateContentImages: genContentImages !== false,
           contentImageCount: contentImageCount || 3,
@@ -560,12 +561,13 @@ Generate a complete, SEO-optimized article ready for publication.`;
           .json({ error: "AI features are temporarily disabled", code: "AI_DISABLED" });
       }
       try {
-        const { prompt, style, size } = req.body;
+        const { prompt: rawPrompt, style, size } = req.body;
 
-        if (!prompt) {
+        if (!rawPrompt) {
           return res.status(400).json({ error: "Image prompt is required" });
         }
 
+        const prompt = sanitizeAIPrompt(rawPrompt);
         const imageUrl = await generateImage(prompt, {
           style: style || "natural",
           size: size || "1024x1024",

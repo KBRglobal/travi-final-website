@@ -28,6 +28,7 @@ import {
 import { enforceArticleSEO, enforceWriterEngineSEO } from "../seo-enforcement";
 import { getStorageManager } from "../services/storage-adapter";
 import { uploadImageFromUrl } from "../services/image-service";
+import { sanitizeAIPrompt } from "../lib/sanitize-ai-output";
 
 function cleanJsonFromMarkdown(content: string): string {
   let cleaned = content.trim();
@@ -354,10 +355,11 @@ async function findOrCreateArticleImage(
 
     if (results.length === 0) {
       try {
+        const safeTopic = sanitizeAIPrompt(topic);
         const aiImages = await generateContentImages({
           contentType: "article",
-          title: topic,
-          description: `Dubai travel article about ${topic}`,
+          title: safeTopic,
+          description: `Dubai travel article about ${safeTopic}`,
           style: "photorealistic",
           generateHero: true,
           generateContentImages: false,
@@ -1610,9 +1612,9 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
 
         const options: ImageGenerationOptions = {
           contentType,
-          title: title.trim(),
-          description: description?.trim(),
-          location: location?.trim(),
+          title: sanitizeAIPrompt(title),
+          description: sanitizeAIPrompt(description),
+          location: sanitizeAIPrompt(location),
           generateHero: generateHero !== false,
           generateContentImages: genContentImages === true,
           contentImageCount: Math.min(contentImageCount || 0, 5),
@@ -1657,12 +1659,13 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           .json({ error: "AI features are temporarily disabled", code: "AI_DISABLED" });
       }
       try {
-        const { prompt, size, quality, style, filename } = req.body;
+        const { prompt: rawPrompt, size, quality, style, filename } = req.body;
 
-        if (!prompt) {
+        if (!rawPrompt) {
           return res.status(400).json({ error: "Prompt is required" });
         }
 
+        const prompt = sanitizeAIPrompt(rawPrompt);
         const validSizes = ["1024x1024", "1792x1024", "1024x1792"];
         const imageSize = validSizes.includes(size) ? size : "1792x1024";
 

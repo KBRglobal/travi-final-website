@@ -195,11 +195,12 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
     const result = await renderSSR(path, locale, safeParams);
 
     // Handle redirects with proper HTTP headers
+    // Send minimal body to prevent XSS from reflected URL content in SSR HTML
     if (result.redirect) {
       res.status(result.status);
       res.setHeader("Location", result.redirect);
       res.setHeader("Cache-Control", "public, max-age=86400"); // Cache redirects for 1 day
-      res.send(result.html);
+      res.send("Redirecting...");
       return;
     }
 
