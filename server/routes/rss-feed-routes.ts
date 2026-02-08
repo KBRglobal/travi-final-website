@@ -200,7 +200,21 @@ export function registerRssFeedRoutes(app: Express): void {
         // Reconstruct URL from validated components to fully break taint chain
         const parsedFeedUrl = new URL(feed.url);
         const validatedFeedUrl = `${parsedFeedUrl.protocol}//${parsedFeedUrl.host}${parsedFeedUrl.pathname}${parsedFeedUrl.search}`;
-        const items = await parseRssFeed(validatedFeedUrl);
+
+        // Parse RSS feed with timeout protection
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        let items: Awaited<ReturnType<typeof parseRssFeed>>;
+        try {
+          items = await parseRssFeed(validatedFeedUrl);
+        } catch (parseError) {
+          return res.status(502).json({
+            error: "Failed to parse RSS feed",
+            details: parseError instanceof Error ? parseError.message : "Unknown parsing error",
+          });
+        } finally {
+          clearTimeout(timeout);
+        }
 
         // Update lastFetchedAt timestamp
         await storage.updateRssFeed(req.params.id, {
@@ -208,8 +222,11 @@ export function registerRssFeedRoutes(app: Express): void {
         });
 
         res.json({ items, count: items.length });
-      } catch {
-        res.status(500).json({ error: "Failed to fetch RSS feed items" });
+      } catch (err) {
+        res.status(500).json({
+          error: "Failed to fetch RSS feed items",
+          details: err instanceof Error ? err.message : "Unknown error",
+        });
       }
     }
   );

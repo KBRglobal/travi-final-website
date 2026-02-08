@@ -12,6 +12,13 @@ import DOMPurify from "isomorphic-dompurify";
 
 const VALID_LOCALES = SUPPORTED_LOCALES.map(l => l.code);
 
+/** DOMPurify config for SSR HTML output — allows tags/attrs needed for hydration */
+const SSR_PURIFY_OPTIONS = {
+  WHOLE_DOCUMENT: true,
+  ADD_TAGS: ["link", "meta", "style", "script"],
+  ADD_ATTR: ["content", "property", "rel", "href", "name", "charset", "http-equiv"],
+};
+
 /**
  * Known route patterns for SSR rendering validation.
  * Only paths matching these patterns will be server-side rendered.
@@ -230,12 +237,16 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
     );
 
     // Sanitize the rendered HTML with DOMPurify to prevent reflected XSS
-    const sanitizedHtml = DOMPurify.sanitize(result.html, {
-      WHOLE_DOCUMENT: true,
-      ADD_TAGS: ["link", "meta", "style", "script"],
-      ADD_ATTR: ["content", "property", "rel", "href", "name", "charset", "http-equiv"],
-    });
-    res.send(sanitizedHtml);
+    try {
+      const sanitizedHtml = DOMPurify.sanitize(
+        typeof result.html === "string" ? result.html : "",
+        SSR_PURIFY_OPTIONS
+      );
+      res.send(sanitizedHtml);
+    } catch (purifyError) {
+      console.error("DOMPurify failed to sanitize SSR HTML:", purifyError);
+      res.status(500).send("<!DOCTYPE html><html><body><h1>Server Error</h1></body></html>");
+    }
   } catch {
     next();
   }
