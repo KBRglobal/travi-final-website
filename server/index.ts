@@ -98,7 +98,7 @@ const CANONICAL_DOMAIN = process.env.CANONICAL_DOMAIN || "travi.world";
 app.use((req: Request, res: Response, next: NextFunction) => {
   const host = req.hostname || req.headers.host || "";
   if (host.startsWith("www.")) {
-    const safePath = req.originalUrl.replace(/\/+/g, "/");
+    const safePath = req.originalUrl.replaceAll(/\/+/g, "/");
     // Prevent open redirect — only allow relative paths
     if (safePath.startsWith("/") && !safePath.startsWith("//") && !safePath.includes("://")) {
       return res.redirect(301, `https://${CANONICAL_DOMAIN}${safePath}`);

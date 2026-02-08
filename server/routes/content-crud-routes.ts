@@ -237,6 +237,98 @@ function emitContentLifecycleEvents(
   }
 }
 
+/** Sanitize and normalize parsed content for creation */
+function normalizeNewContent(parsed: {
+  type: string;
+  title: string;
+  slug: string;
+  blocks?: ContentBlock[];
+  [key: string]: unknown;
+}): void {
+  if (parsed.blocks && Array.isArray(parsed.blocks)) {
+    parsed.blocks = sanitizeContentBlocks(parsed.blocks) as any;
+  }
+  if (!parsed.slug || parsed.slug.trim() === "") {
+    const timestamp = Date.now();
+    const randomSuffix = Math.random().toString(36).substring(2, 8);
+    parsed.slug = `draft-${parsed.type}-${timestamp}-${randomSuffix}`;
+  }
+  if (!parsed.title || parsed.title.trim() === "") {
+    parsed.title = `Untitled ${parsed.type} Draft`;
+  }
+}
+
+/** Create the type-specific sub-record for new content */
+async function createTypeSubRecord(
+  contentType: string,
+  contentId: string,
+  body: any
+): Promise<void> {
+  const typeCreatorMap: Record<string, (data: any) => Promise<any>> = {
+    attraction: data => storage.createAttraction(data),
+    hotel: data => storage.createHotel(data),
+    article: data => storage.createArticle(data),
+    event: data => storage.createEvent(data),
+    itinerary: data => {
+      if (body.itinerary) {
+        const itineraryData = (insertItinerarySchema as any)
+          .omit({ contentId: true })
+          .parse(body.itinerary);
+        return storage.createItinerary({
+          ...(itineraryData as Record<string, unknown>),
+          contentId,
+        });
+      }
+      return storage.createItinerary(data);
+    },
+    dining: data => storage.createDining(data),
+    district: data => storage.createDistrict(data),
+    transport: data => storage.createTransport(data),
+  };
+
+  const creator = typeCreatorMap[contentType];
+  if (creator) {
+    const bodyData = body[contentType];
+    if (bodyData && contentType !== "itinerary") {
+      await creator({ ...bodyData, contentId });
+    } else {
+      await creator({ contentId });
+    }
+  }
+}
+
+/** Fire post-creation events (audit, webhook, publish) */
+async function fireCreationEvents(
+  req: Request,
+  contentId: string,
+  parsed: { type: string; title: string; slug: string; status?: string }
+): Promise<void> {
+  await logAuditEvent(
+    req,
+    "create",
+    "content",
+    contentId,
+    `Created ${parsed.type}: ${parsed.title}`,
+    undefined,
+    { title: parsed.title, type: parsed.type, status: parsed.status || "draft" }
+  );
+
+  enterprise.webhooks
+    .trigger("content.created", {
+      contentId,
+      type: parsed.type,
+      title: parsed.title,
+      slug: parsed.slug,
+      status: parsed.status || "draft",
+      createdAt: new Date().toISOString(),
+    })
+    .catch(() => {});
+
+  if (parsed.status === "published") {
+    emitContentPublished(contentId, parsed.type, parsed.title, parsed.slug, "draft", "manual");
+  }
+}
+
 /**
  * Register all content CRUD routes
  */
@@ -453,7 +545,6 @@ export function registerContentCrudRoutes(app: Express): void {
     validate({ body: createContentBody }),
     async (req: Request, res: Response) => {
       try {
-        // Type assertion needed because drizzle-zod createInsertSchema infers as {}
         const parsed = insertContentSchema.parse(req.body) as {
           type: string;
           title: string;
@@ -463,94 +554,13 @@ export function registerContentCrudRoutes(app: Express): void {
           [key: string]: unknown;
         };
 
-        // Phase 16: Sanitize AI-generated content blocks to prevent XSS
-        if (parsed.blocks && Array.isArray(parsed.blocks)) {
-          parsed.blocks = sanitizeContentBlocks(parsed.blocks) as any;
-        }
-
-        // Generate fallback slug if empty to prevent unique constraint violation
-        if (!parsed.slug || parsed.slug.trim() === "") {
-          const timestamp = Date.now();
-          const randomSuffix = Math.random().toString(36).substring(2, 8);
-          parsed.slug = `draft-${parsed.type}-${timestamp}-${randomSuffix}`;
-        }
-
-        // Generate fallback title if empty
-        if (!parsed.title || parsed.title.trim() === "") {
-          parsed.title = `Untitled ${parsed.type} Draft`;
-        }
+        normalizeNewContent(parsed);
 
         const content = await storage.createContent(parsed as InsertContent);
-
-        const typeCreatorMap: Record<string, (data: any) => Promise<any>> = {
-          attraction: data => storage.createAttraction(data),
-          hotel: data => storage.createHotel(data),
-          article: data => storage.createArticle(data),
-          event: data => storage.createEvent(data),
-          itinerary: data => {
-            if (req.body.itinerary) {
-              const itineraryData = (insertItinerarySchema as any)
-                .omit({ contentId: true })
-                .parse(req.body.itinerary);
-              return storage.createItinerary({
-                ...(itineraryData as Record<string, unknown>),
-                contentId: content.id,
-              });
-            }
-            return storage.createItinerary(data);
-          },
-          dining: data => storage.createDining(data),
-          district: data => storage.createDistrict(data),
-          transport: data => storage.createTransport(data),
-        };
-
-        const creator = typeCreatorMap[parsed.type];
-        if (creator) {
-          const bodyData = req.body[parsed.type];
-          if (bodyData && parsed.type !== "itinerary") {
-            await creator({ ...bodyData, contentId: content.id });
-          } else {
-            await creator({ contentId: content.id });
-          }
-        }
+        await createTypeSubRecord(parsed.type, content.id, req.body);
 
         const fullContent = await storage.getContent(content.id);
-
-        // Audit log content creation
-        await logAuditEvent(
-          req,
-          "create",
-          "content",
-          content.id,
-          `Created ${parsed.type}: ${parsed.title}`,
-          undefined,
-          { title: parsed.title, type: parsed.type, status: parsed.status || "draft" }
-        );
-
-        // Trigger webhook for content creation
-        enterprise.webhooks
-          .trigger("content.created", {
-            contentId: content.id,
-            type: parsed.type,
-            title: parsed.title,
-            slug: parsed.slug,
-            status: parsed.status || "draft",
-            createdAt: new Date().toISOString(),
-          })
-          .catch(err => {});
-
-        // Phase 15A: Emit content published event if created as published
-        // Event bus triggers: search indexing, AEO capsule generation
-        if (parsed.status === "published") {
-          emitContentPublished(
-            content.id,
-            parsed.type,
-            parsed.title,
-            parsed.slug,
-            "draft", // No previous status when created directly as published
-            "manual"
-          );
-        }
+        await fireCreationEvents(req, content.id, parsed);
 
         res.status(201).json(fullContent);
       } catch (error) {

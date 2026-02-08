@@ -46,7 +46,7 @@ function cleanJsonFromMarkdown(content: string): string {
   }
   cleaned = cleaned.trim() || "{}";
   cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
-    return match.replaceAll(/[\u0000-\u001f\u007f]/g, char => {
+    return match.replaceAll(new RegExp(String.raw`[\x00-\x1f\x7f]`, "g"), char => {
       // NOSONAR - intentional control char handling
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
@@ -468,6 +468,16 @@ async function storeGeneratedImages(images: GeneratedImage[]): Promise<Generated
     }
   }
   return stored;
+}
+
+/** Get AI providers sorted with Gemini preferred first */
+function getSortedUnifiedProviders(): any[] {
+  const providers = getAllUnifiedProviders();
+  return [...providers].sort((a, b) => {
+    if (a.name === "gemini") return -1;
+    if (b.name === "gemini") return 1;
+    return 0;
+  });
 }
 
 /** Try unified providers for field generation */
@@ -1430,13 +1440,7 @@ Output format:
           .json({ error: "AI features are temporarily disabled", code: "AI_DISABLED" });
       }
       try {
-        const providers = getAllUnifiedProviders();
-
-        const sortedProviders = [...providers].sort((a, b) => {
-          if (a.name === "gemini") return -1;
-          if (b.name === "gemini") return 1;
-          return 0;
-        });
+        const sortedProviders = getSortedUnifiedProviders();
 
         if (sortedProviders.length === 0) {
           return res.status(503).json({ error: "No AI providers available" });

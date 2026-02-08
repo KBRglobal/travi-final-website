@@ -42,9 +42,8 @@ function isValidSettingValue(value: unknown): value is SettingValue {
 function extractCategorySettings(
   category: string,
   values: Record<string, unknown>
-): Array<{ category: string; key: string; value: string | number | boolean | null }> {
-  const result: Array<{ category: string; key: string; value: string | number | boolean | null }> =
-    [];
+): Array<{ category: string; key: string; value: SettingValue }> {
+  const result: Array<{ category: string; key: string; value: SettingValue }> = [];
   for (const [key, value] of Object.entries(values)) {
     if (DANGEROUS_KEYS.has(key)) continue;
     if (typeof key !== "string" || key.trim() === "") continue;
@@ -57,9 +56,8 @@ function extractCategorySettings(
 function extractValidSettings(
   settings: Record<string, unknown>,
   allowedCategories: Set<string>
-): Array<{ category: string; key: string; value: string | number | boolean | null }> {
-  const result: Array<{ category: string; key: string; value: string | number | boolean | null }> =
-    [];
+): Array<{ category: string; key: string; value: SettingValue }> {
+  const result: Array<{ category: string; key: string; value: SettingValue }> = [];
   for (const [category, values] of Object.entries(settings)) {
     if (DANGEROUS_KEYS.has(category)) continue;
     if (!allowedCategories.has(category)) continue;

@@ -116,18 +116,99 @@ function checkAndHandleLockout(req: Request, res: Response, username: string, ip
   });
 }
 
-/** Handle MFA pre-auth flow: issue pre-auth token and return MFA-required response */
-async function handleMfaPreAuth(
+/** Complete login with enterprise security checks and session creation */
+async function completeLoginWithSecurity(
   user: any,
   ip: string,
-  contextResult: { riskScore: number },
   fingerprint: any,
-  isNewDevice: boolean,
-  deviceInfo: { isTrusted: boolean },
-  geo: { country?: string } | null | undefined,
   req: Request,
   res: Response
-) {
+): Promise<void> {
+  const geo = await contextualAuth.getGeoLocation(ip);
+  const contextResult = await contextualAuth.evaluateContext(
+    user.id,
+    ip,
+    fingerprint,
+    geo || undefined
+  );
+
+  if (!contextResult.allowed) {
+    res.status(403).json({
+      error: "Access denied based on security policy",
+      riskFactors: contextResult.riskFactors,
+      riskScore: contextResult.riskScore,
+    });
+    return;
+  }
+
+  const deviceInfo = await deviceFingerprint.registerDevice(user.id, fingerprint, ip);
+  const isNewDevice = deviceInfo.loginCount === 1;
+  const requiresMfa = Boolean(user.totpEnabled && user.totpSecret);
+
+  if (requiresMfa) {
+    await handleMfaPreAuth({
+      user,
+      ip,
+      contextResult,
+      fingerprint,
+      isNewDevice,
+      deviceInfo,
+      geo,
+      req,
+      res,
+    });
+    return;
+  }
+
+  const sessionUser = { claims: { sub: user.id }, id: user.id };
+  await loginAsync(req, sessionUser);
+  await saveSessionAsync(req);
+  (res as any).resetBackoff?.();
+
+  logSecurityEvent({
+    action: "login",
+    resourceType: "auth",
+    userId: user.id,
+    userEmail: user.username || undefined,
+    ip,
+    userAgent: req.get("User-Agent"),
+    details: {
+      method: "password",
+      role: user.role,
+      isNewDevice,
+      riskScore: contextResult.riskScore,
+      deviceTrusted: deviceInfo.isTrusted,
+      geo: geo ? { country: geo.country, city: geo.city } : null,
+    },
+  });
+
+  res.json({
+    success: true,
+    user,
+    requiresMfa: false,
+    isNewDevice,
+    riskScore: contextResult.riskScore,
+    securityContext: {
+      deviceTrusted: deviceInfo.isTrusted,
+      country: geo?.country,
+    },
+  });
+}
+
+/** Handle MFA pre-auth flow: issue pre-auth token and return MFA-required response */
+async function handleMfaPreAuth(opts: {
+  user: any;
+  ip: string;
+  contextResult: { riskScore: number };
+  fingerprint: any;
+  isNewDevice: boolean;
+  deviceInfo: { isTrusted: boolean };
+  geo: { country?: string } | null | undefined;
+  req: Request;
+  res: Response;
+}) {
+  const { user, ip, contextResult, fingerprint, isNewDevice, deviceInfo, geo, req, res } = opts;
+
   const preAuthResult = await createPreAuthToken(user.id, user.username || user.email, {
     ipAddress: ip,
     userAgent: req.get("User-Agent") || "",
@@ -180,7 +261,6 @@ export function registerAuthRoutes(app: Express): void {
   if (process.env.NODE_ENV !== "production" && process.env.REPL_SLUG) {
     app.post("/api/dev/auto-login", async (req: Request, res: Response) => {
       try {
-        // Find admin user or first user with admin role
         const allUsers = await storage.getUsers();
         const adminUser = allUsers.find(u => u.role === "admin") || allUsers[0];
 
@@ -188,39 +268,26 @@ export function registerAuthRoutes(app: Express): void {
           return res.status(404).json({ error: "No users found. Please create a user first." });
         }
 
-        // Create session user object in the same format as regular login
         const sessionUser = {
           claims: { sub: adminUser.id },
           id: adminUser.id,
         };
 
-        // Use req.login (Passport's method) to properly establish session
-        req.login(sessionUser, (loginErr: any) => {
-          if (loginErr) {
-            return res.status(500).json({ error: "Failed to create session" });
-          }
+        await loginAsync(req, sessionUser);
+        (req.session as any).totpVerified = true;
+        await saveSessionAsync(req);
 
-          // Mark TOTP as verified (bypass 2FA for dev testing)
-          (req.session as any).totpVerified = true;
-
-          req.session.save((saveErr: any) => {
-            if (saveErr) {
-              return res.status(500).json({ error: "Failed to save session" });
-            }
-
-            res.json({
-              success: true,
-              message: "DEV auto-login successful",
-              user: {
-                id: adminUser.id,
-                username: adminUser.username,
-                email: adminUser.email,
-                role: adminUser.role,
-                firstName: adminUser.firstName,
-                lastName: adminUser.lastName,
-              },
-            });
-          });
+        res.json({
+          success: true,
+          message: "DEV auto-login successful",
+          user: {
+            id: adminUser.id,
+            username: adminUser.username,
+            email: adminUser.email,
+            role: adminUser.role,
+            firstName: adminUser.firstName,
+            lastName: adminUser.lastName,
+          },
         });
       } catch {
         res.status(500).json({ error: "Auto-login failed" });
@@ -263,91 +330,9 @@ export function registerAuthRoutes(app: Express): void {
           return res.status(403).json({ error: "Request blocked for security reasons" });
         }
 
-        // Enterprise Security: Extract device fingerprint
         const fingerprint = deviceFingerprint.extractFromRequest(req);
-
-        // Helper function to complete login with enterprise security
-        const completeLogin = async (user: any) => {
-          // Enterprise Security: Evaluate contextual authentication
-          const geo = await contextualAuth.getGeoLocation(ip);
-          const contextResult = await contextualAuth.evaluateContext(
-            user.id,
-            ip,
-            fingerprint,
-            geo || undefined
-          );
-
-          if (!contextResult.allowed) {
-            return res.status(403).json({
-              error: "Access denied based on security policy",
-              riskFactors: contextResult.riskFactors,
-              riskScore: contextResult.riskScore,
-            });
-          }
-
-          // Enterprise Security: Register device
-          const deviceInfo = await deviceFingerprint.registerDevice(user.id, fingerprint, ip);
-          const isNewDevice = deviceInfo.loginCount === 1;
-
-          // Check if MFA is required - ONLY if user has actually enrolled in 2FA
-          const requiresMfa = Boolean(user.totpEnabled && user.totpSecret);
-
-          if (requiresMfa) {
-            return handleMfaPreAuth(
-              user,
-              ip,
-              contextResult,
-              fingerprint,
-              isNewDevice,
-              deviceInfo,
-              geo,
-              req,
-              res
-            );
-          }
-
-          // No MFA required - create session immediately
-          const sessionUser = {
-            claims: { sub: user.id },
-            id: user.id,
-          };
-
-          await loginAsync(req, sessionUser);
-          await saveSessionAsync(req);
-
-          // Enterprise Security: Reset backoff on successful login
-          (res as any).resetBackoff?.();
-
-          // Log successful login with enterprise security details
-          logSecurityEvent({
-            action: "login",
-            resourceType: "auth",
-            userId: user.id,
-            userEmail: user.username || undefined,
-            ip,
-            userAgent: req.get("User-Agent"),
-            details: {
-              method: "password",
-              role: user.role,
-              isNewDevice,
-              riskScore: contextResult.riskScore,
-              deviceTrusted: deviceInfo.isTrusted,
-              geo: geo ? { country: geo.country, city: geo.city } : null,
-            },
-          });
-
-          res.json({
-            success: true,
-            user,
-            requiresMfa: false,
-            isNewDevice,
-            riskScore: contextResult.riskScore,
-            securityContext: {
-              deviceTrusted: deviceInfo.isTrusted,
-              country: geo?.country,
-            },
-          });
-        };
+        const completeLogin = (user: any) =>
+          completeLoginWithSecurity(user, ip, fingerprint, req, res);
 
         // Check for admin from environment first
         const isEnvAdmin = ADMIN_PASSWORD_HASH && username === ADMIN_USERNAME;

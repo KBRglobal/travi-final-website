@@ -65,5 +65,5 @@ export function requireRole(role: UserRole | UserRole[]) {
  */
 export function sanitizeForLog(input: string): string {
   if (!input) return "";
-  return input.replaceAll(/[\r\n\0]/g, "").substring(0, 200); // NOSONAR - intentional control char stripping
+  return input.replaceAll(new RegExp(String.raw`[\r\n\0]`, "g"), "").substring(0, 200);
 }

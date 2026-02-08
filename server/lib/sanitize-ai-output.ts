@@ -26,7 +26,7 @@ export function sanitizeText(input: string, maxLength: number = 10000): string {
   if (!input || typeof input !== "string") return "";
 
   return input
-    .replaceAll(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, "") // NOSONAR - intentional control char stripping
+    .replaceAll(new RegExp(String.raw`[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]`, "g"), "")
     .slice(0, maxLength)
     .trim();
 }

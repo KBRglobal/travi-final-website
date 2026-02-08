@@ -304,17 +304,17 @@ class SecurityDashboardService {
     const approvalMetrics = getApprovalSafetyMetrics();
     const policyLint = lintPolicies();
 
-    let anomalyStatus: "critical" | "warning" | "good";
+    let anomalyStatus: MetricStatus;
     if (intel.anomaliesLast24h > 20) anomalyStatus = "critical";
     else if (intel.anomaliesLast24h > 10) anomalyStatus = "warning";
     else anomalyStatus = "good";
 
-    let highRiskStatus: "critical" | "warning" | "good";
+    let highRiskStatus: MetricStatus;
     if (highRiskUsers.length > 5) highRiskStatus = "critical";
     else if (highRiskUsers.length > 2) highRiskStatus = "warning";
     else highRiskStatus = "good";
 
-    let policyStatus: "critical" | "warning" | "good";
+    let policyStatus: MetricStatus;
     if (policyLint.score < 70) policyStatus = "critical";
     else if (policyLint.score < 90) policyStatus = "warning";
     else policyStatus = "good";
