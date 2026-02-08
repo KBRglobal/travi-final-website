@@ -116,6 +116,83 @@ function checkAndHandleLockout(req: Request, res: Response, username: string, ip
   });
 }
 
+/** Try environment-variable admin login; returns true if handled */
+async function tryEnvAdminLogin(
+  username: string,
+  password: string,
+  adminUsername: string,
+  adminPasswordHash: string | undefined,
+  completeLogin: (user: any) => Promise<void>
+): Promise<boolean> {
+  const isEnvAdmin = adminPasswordHash && username === adminUsername;
+  if (!isEnvAdmin) return false;
+  const isAdminPassword = await bcrypt.compare(password, adminPasswordHash);
+  if (!isAdminPassword) return false;
+
+  let adminUser = await storage.getUserByUsername(username);
+  if (!adminUser) {
+    adminUser = await storage.createUserWithPassword({
+      username: adminUsername,
+      passwordHash: adminPasswordHash,
+      firstName: "Admin",
+      lastName: "User",
+      role: "admin",
+      isActive: true,
+    });
+  }
+  await completeLogin(adminUser);
+  return true;
+}
+
+/** Validate DB user: check active status, password, 2FA. Returns truthy if handled (error sent). */
+async function validateDbUser(
+  user: any,
+  password: string,
+  req: Request,
+  res: Response,
+  ip: string,
+  username: string
+): Promise<any> {
+  if (!user.isActive) {
+    recordLoginFailure(
+      req,
+      res,
+      ip,
+      username,
+      SecurityEventType.LOGIN_FAILED,
+      "Account deactivated",
+      { userId: user.id }
+    );
+    return res.status(401).json({ error: "Account is deactivated" });
+  }
+
+  const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+  if (!passwordMatch) {
+    recordLoginFailure(req, res, ip, username, SecurityEventType.LOGIN_FAILED, "Invalid password", {
+      userId: user.id,
+    });
+    return res.status(401).json({ error: "Invalid username or password" });
+  }
+
+  const twoFaCheck = enforceMandatory2FA(user);
+  if (!twoFaCheck.allowed) {
+    logSecurityEventFromRequest(req, SecurityEventType.UNAUTHORIZED_ACCESS, {
+      success: false,
+      resource: "admin_auth",
+      action: "2fa_not_configured",
+      errorMessage: twoFaCheck.reason || "TOTP not configured",
+      details: { userId: user.id },
+    });
+    return res.status(403).json({
+      error: twoFaCheck.reason,
+      code: "TOTP_SETUP_REQUIRED",
+      requiresTotpSetup: true,
+    });
+  }
+
+  return null;
+}
+
 /** Complete login with enterprise security checks and session creation */
 async function completeLoginWithSecurity(
   user: any,
@@ -335,27 +412,19 @@ export function registerAuthRoutes(app: Express): void {
           completeLoginWithSecurity(user, ip, fingerprint, req, res);
 
         // Check for admin from environment first
-        const isEnvAdmin = ADMIN_PASSWORD_HASH && username === ADMIN_USERNAME;
-        const isAdminPassword = isEnvAdmin && (await bcrypt.compare(password, ADMIN_PASSWORD_HASH));
-        if (isAdminPassword) {
-          let adminUser = await storage.getUserByUsername(username);
-          if (!adminUser) {
-            adminUser = await storage.createUserWithPassword({
-              username: ADMIN_USERNAME,
-              passwordHash: ADMIN_PASSWORD_HASH,
-              firstName: "Admin",
-              lastName: "User",
-              role: "admin",
-              isActive: true,
-            });
-          }
-          await completeLogin(adminUser);
-          return;
-        }
+        const envAdminResult = await tryEnvAdminLogin(
+          username,
+          password,
+          ADMIN_USERNAME,
+          ADMIN_PASSWORD_HASH,
+          completeLogin
+        );
+        if (envAdminResult) return;
 
         // Check database for user
         const user = await storage.getUserByUsername(username);
         if (!user?.passwordHash) {
+          const masked = username ? username.substring(0, 3) + "***" : "[empty]";
           recordLoginFailure(
             req,
             res,
@@ -363,55 +432,13 @@ export function registerAuthRoutes(app: Express): void {
             username,
             SecurityEventType.LOGIN_FAILED,
             "User not found or no password",
-            { attemptedUsername: username ? username.substring(0, 3) + "***" : "[empty]" }
+            { attemptedUsername: masked }
           );
           return res.status(401).json({ error: "Invalid username or password" });
         }
 
-        if (!user.isActive) {
-          recordLoginFailure(
-            req,
-            res,
-            ip,
-            username,
-            SecurityEventType.LOGIN_FAILED,
-            "Account deactivated",
-            { userId: user.id }
-          );
-          return res.status(401).json({ error: "Account is deactivated" });
-        }
-
-        const passwordMatch = await bcrypt.compare(password, user.passwordHash);
-        if (!passwordMatch) {
-          recordLoginFailure(
-            req,
-            res,
-            ip,
-            username,
-            SecurityEventType.LOGIN_FAILED,
-            "Invalid password",
-            { userId: user.id }
-          );
-          return res.status(401).json({ error: "Invalid username or password" });
-        }
-
-        // SECURITY: Mandatory 2FA enforcement for admin accounts
-        // If user has NOT configured TOTP, block access entirely
-        const twoFaCheck = enforceMandatory2FA(user);
-        if (!twoFaCheck.allowed) {
-          logSecurityEventFromRequest(req, SecurityEventType.UNAUTHORIZED_ACCESS, {
-            success: false,
-            resource: "admin_auth",
-            action: "2fa_not_configured",
-            errorMessage: twoFaCheck.reason || "TOTP not configured",
-            details: { userId: user.id },
-          });
-          return res.status(403).json({
-            error: twoFaCheck.reason,
-            code: "TOTP_SETUP_REQUIRED",
-            requiresTotpSetup: true,
-          });
-        }
+        const dbError = await validateDbUser(user, password, req, res, ip, username);
+        if (dbError) return dbError;
 
         // Clear lockout on successful password validation
         clearDualLockout(username.toLowerCase(), ip);

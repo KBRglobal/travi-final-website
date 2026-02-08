@@ -14,6 +14,8 @@ import { db } from "../db";
 import { tiqetsAttractions } from "@shared/schema";
 import { eq, ilike, and } from "drizzle-orm";
 
+const CANONICAL_DOMAIN = process.env.CANONICAL_DOMAIN || "travi.world";
+
 interface RedirectRule {
   from: string;
   to: string;
@@ -109,7 +111,11 @@ function tryOldAttractionRedirect(res: Response, path: string): boolean {
   if (!match) return false;
   const cityLower = match[1].toLowerCase();
   if (!VALID_DESTINATIONS.has(cityLower)) return false;
-  res.redirect(301, `/${cityLower}/attractions/${match[2]}`);
+  // Sanitize slug: allow only alphanumeric, hyphens, and underscores
+  const safeSlug = match[2].replaceAll(/[^a-zA-Z0-9_-]/g, "");
+  if (!safeSlug) return false;
+  const safePath = `/${cityLower}/attractions/${safeSlug}`;
+  res.redirect(301, `https://${CANONICAL_DOMAIN}${safePath}`);
   return true;
 }
 

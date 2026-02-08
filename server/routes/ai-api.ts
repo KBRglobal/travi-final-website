@@ -197,7 +197,7 @@ interface ArticleImageResult {
   source: "library" | "freepik";
 }
 
-const VALID_IMAGE_CONTENT_TYPES = [
+const VALID_IMAGE_CONTENT_TYPES = new Set([
   "hotel",
   "attraction",
   "article",
@@ -206,14 +206,14 @@ const VALID_IMAGE_CONTENT_TYPES = [
   "transport",
   "event",
   "itinerary",
-];
+]);
 
 function validateImageGenRequest(contentType: string, title: string): string | null {
   if (!contentType || !title) {
     addSystemLog("warning", "images", "AI image generation failed - missing content type or title");
     return "Content type and title are required";
   }
-  if (!VALID_IMAGE_CONTENT_TYPES.includes(contentType)) {
+  if (!VALID_IMAGE_CONTENT_TYPES.has(contentType)) {
     addSystemLog(
       "warning",
       "images",

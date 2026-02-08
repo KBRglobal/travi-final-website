@@ -256,12 +256,15 @@ async function generateWithDalle(
 
     return response.data?.[0]?.url || null;
   } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : typeof error === "string"
-          ? error
-          : JSON.stringify(error);
+    // errorMessage extracted for diagnostics; DALL-E 2 fallback below
+    let _dalleError: string;
+    if (error instanceof Error) {
+      _dalleError = error.message;
+    } else if (typeof error === "string") {
+      _dalleError = error;
+    } else {
+      _dalleError = JSON.stringify(error);
+    }
 
     // If DALL-E 3 fails (unknown model, etc.), try DALL-E 2
 

@@ -45,13 +45,15 @@ class ConsoleLogger extends EventEmitter {
 
   private captureLog(level: LogLevel, args: unknown[]) {
     const rawMessage = args
-      .map(arg =>
-        typeof arg === "object" && arg !== null
-          ? JSON.stringify(arg)
-          : typeof arg === "string"
-            ? arg
-            : String(arg)
-      )
+      .map(arg => {
+        if (typeof arg === "object" && arg !== null) {
+          return JSON.stringify(arg);
+        }
+        if (typeof arg === "string") {
+          return arg;
+        }
+        return String(arg);
+      })
       .join(" ");
 
     const { category, humanMessage } = this.translateMessage(rawMessage);
