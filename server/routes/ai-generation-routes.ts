@@ -6,6 +6,7 @@
 import type { Express } from "express";
 import { storage } from "../storage";
 import { safeMode, rateLimiters, checkAiUsageLimit, requirePermission } from "../security";
+import type OpenAI from "openai";
 import {
   getAIClient,
   getAllAIClients,
@@ -13,6 +14,7 @@ import {
   getProviderStatus,
   markProviderFailed,
   markProviderSuccess,
+  type AIProvider,
 } from "../ai/providers";
 import { enforceWriterEngineSEO } from "../seo-enforcement";
 import { generateContentImages, generateImage, type GeneratedImage } from "../ai";
@@ -49,10 +51,13 @@ function cleanJsonFromMarkdown(content: string): string {
 }
 
 // Safe JSON parse that handles markdown-wrapped JSON
-function safeParseJson(content: string, fallback: Record<string, unknown> = {}): any {
+function safeParseJson(
+  content: string,
+  fallback: Record<string, unknown> = {}
+): Record<string, unknown> {
   try {
     const cleaned = cleanJsonFromMarkdown(content);
-    return JSON.parse(cleaned);
+    return JSON.parse(cleaned) as Record<string, unknown>;
   } catch {
     return fallback;
   }
@@ -88,21 +93,33 @@ function addSystemLog(
   message: string,
   _details?: Record<string, unknown>
 ): void {
-  if (typeof (globalThis as any).addSystemLog === "function") {
-    (globalThis as any).addSystemLog(level, category, message, _details);
+  // globalThis is dynamically extended at runtime; typed access is not feasible here
+  const g = globalThis as Record<string, unknown>;
+  if (typeof g.addSystemLog === "function") {
+    (g.addSystemLog as (l: string, c: string, m: string, d?: Record<string, unknown>) => void)(
+      level,
+      category,
+      message,
+      _details
+    );
   }
+}
+
+interface ProviderResult {
+  result: Record<string, unknown>;
+  provider: string;
 }
 
 /** Try providers in order, returning first successful result */
 async function tryProvidersInOrder(
-  aiProviders: Array<{ client: any; provider: string }>,
-  tryProvider: (openai: any, provider: string) => Promise<{ result: any; provider: string } | null>
-): Promise<{ result: any; provider: string } | null> {
+  aiProviders: AIProvider[],
+  tryProvider: (openai: OpenAI, provider: string) => Promise<ProviderResult | null>
+): Promise<ProviderResult | null> {
   for (const { client: openai, provider } of aiProviders) {
     try {
       const result = await tryProvider(openai, provider);
       if (result) return result;
-    } catch (error) {
+    } catch (error: unknown) {
       const err = error instanceof Error ? error : new Error(String(error));
       const isCreditsError = /insufficient|quota|credits/.test(err.message);
       markProviderFailed(provider, isCreditsError ? "no_credits" : "rate_limited");
@@ -345,9 +362,9 @@ Generate a complete, SEO-optimized article ready for publication.`;
 
         // Try each AI provider with fallback
         const tryProvider = async (
-          openai: any,
+          openai: OpenAI,
           provider: string
-        ): Promise<{ result: any; provider: string } | null> => {
+        ): Promise<ProviderResult | null> => {
           addSystemLog("info", "ai", `Attempting article generation with ${provider}`);
           const response = await openai.chat.completions.create({
             model: getModelForProvider(provider),
@@ -534,9 +551,9 @@ Generate a complete, SEO-optimized article ready for publication.`;
           contentImageCount: validatedContentImageCount,
         };
 
-        const images = await generateContentImages(imageGenOptions);
+        const images: GeneratedImage[] = await generateContentImages(imageGenOptions);
 
-        if (!images || images.length === 0) {
+        if (!Array.isArray(images) || images.length === 0) {
           addSystemLog("error", "images", `Image generation failed: No images generated`);
           return res.status(500).json({ error: "Image generation failed - no images created" });
         }

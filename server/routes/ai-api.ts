@@ -16,6 +16,7 @@ import {
   type GeneratedImage,
   type ImageGenerationOptions,
 } from "../ai";
+import type OpenAI from "openai";
 import {
   getAIClient,
   getAllAIClients,
@@ -24,6 +25,8 @@ import {
   markProviderSuccess,
   getOpenAIClient,
   getProviderStatus,
+  type AIProvider,
+  type UnifiedAIProvider,
 } from "../ai/providers";
 import { enforceArticleSEO, enforceWriterEngineSEO } from "../seo-enforcement";
 import { getStorageManager } from "../services/storage-adapter";
@@ -59,10 +62,13 @@ function cleanJsonFromMarkdown(content: string): string {
   return cleaned;
 }
 
-function safeParseJson(content: string, fallback: Record<string, unknown> = {}): any {
+function safeParseJson(
+  content: string,
+  fallback: Record<string, unknown> = {}
+): Record<string, unknown> {
   try {
     const cleaned = cleanJsonFromMarkdown(content);
-    return JSON.parse(cleaned);
+    return JSON.parse(cleaned) as Record<string, unknown>;
   } catch {
     return fallback;
   }
@@ -90,40 +96,56 @@ function addSystemLog(
   category: string,
   message: string,
   _details?: Record<string, unknown>
-) {
-  if (typeof (globalThis as any).addSystemLog === "function") {
-    (globalThis as any).addSystemLog(level, category, message, _details);
-  } else {
-    // empty
+): void {
+  // globalThis is dynamically extended at runtime; typed access is not feasible here
+  const g = globalThis as Record<string, unknown>;
+  if (typeof g.addSystemLog === "function") {
+    (g.addSystemLog as (l: string, c: string, m: string, d?: Record<string, unknown>) => void)(
+      level,
+      category,
+      message,
+      _details
+    );
   }
 }
 
-function classifyProviderError(err: any): "no_credits" | "rate_limited" | "other" {
+function classifyProviderError(err: unknown): "no_credits" | "rate_limited" | "other" {
+  const error = err as { status?: number; code?: string; message?: string } | null;
   const isCredits =
-    err?.status === 402 ||
-    err?.message?.includes("credits") ||
-    err?.message?.includes("Insufficient Balance") ||
-    err?.message?.includes("insufficient_funds");
+    error?.status === 402 ||
+    error?.message?.includes("credits") ||
+    error?.message?.includes("Insufficient Balance") ||
+    error?.message?.includes("insufficient_funds");
   if (isCredits) return "no_credits";
 
   const isRateLimit =
-    err?.status === 429 ||
-    err?.code === "insufficient_quota" ||
-    err?.message?.includes("quota") ||
-    err?.message?.includes("429");
+    error?.status === 429 ||
+    error?.code === "insufficient_quota" ||
+    error?.message?.includes("quota") ||
+    error?.message?.includes("429");
   if (isRateLimit) return "rate_limited";
 
   return "other";
 }
 
+interface ProviderCompletionSuccess {
+  article: Record<string, unknown>;
+  provider: string;
+  client: OpenAI;
+  model: string;
+}
+
+interface ProviderCompletionFailure {
+  error: string;
+  lastError: Error;
+  triedProviders: string[];
+}
+
 async function tryProvidersForCompletion(
-  aiProviders: Array<{ client: any; provider: string; model: string }>,
-  messages: Array<{ role: string; content: string }>,
+  aiProviders: AIProvider[],
+  messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
   maxTokens: number
-): Promise<
-  | { article: any; provider: string; client: any; model: string }
-  | { error: string; lastError: Error; triedProviders: string[] }
-> {
+): Promise<ProviderCompletionSuccess | ProviderCompletionFailure> {
   let lastError: Error | null = null;
 
   for (const aiProvider of aiProviders) {
@@ -140,19 +162,16 @@ async function tryProvidersForCompletion(
       markProviderSuccess(provider);
       addSystemLog("info", "ai", `Successfully generated with ${provider}`);
       return { article, provider, client: openai, model };
-    } catch (providerError: any) {
-      lastError = providerError;
+    } catch (providerError: unknown) {
+      lastError = providerError instanceof Error ? providerError : new Error(String(providerError));
       const errorType = classifyProviderError(providerError);
-      addSystemLog(
-        "warning",
-        "ai",
-        `Provider ${provider} failed: ${providerError?.message || "Unknown error"}`,
-        {
-          status: providerError?.status,
-          isRateLimit: errorType === "rate_limited",
-          isCredits: errorType === "no_credits",
-        }
-      );
+      const errMsg = lastError.message || "Unknown error";
+      const errStatus = (providerError as { status?: number })?.status;
+      addSystemLog("warning", "ai", `Provider ${provider} failed: ${errMsg}`, {
+        status: errStatus,
+        isRateLimit: errorType === "rate_limited",
+        isCredits: errorType === "no_credits",
+      });
       if (errorType !== "other") {
         markProviderFailed(provider, errorType);
         addSystemLog(
@@ -236,12 +255,18 @@ function createFallbackImage(title: string, contentType: string): GeneratedImage
   };
 }
 
+interface FallbackImageResponse {
+  images: GeneratedImage[];
+  source: string;
+  message: string;
+}
+
 function buildFallbackResponse(
   title: string,
   contentType: string,
   generateHero: boolean | undefined,
   hasFreepik: boolean
-) {
+): FallbackImageResponse {
   const source = hasFreepik ? "freepik" : "unsplash";
   addSystemLog("info", "images", `No AI image API configured, using ${source} fallback`);
   const fallbackImages = generateHero === false ? [] : [createFallbackImage(title, contentType)];
@@ -257,11 +282,18 @@ function buildFallbackResponse(
   };
 }
 
+// Drizzle table and SQL condition types are deeply generic; using `typeof` import
+// to get the exact table type without coupling to Drizzle's internal type machinery
+type AiGeneratedImagesTable = Awaited<typeof import("@shared/schema")>["aiGeneratedImages"];
+type AiGeneratedImageRow = AiGeneratedImagesTable["$inferSelect"];
+type AiGeneratedImageInsert = AiGeneratedImagesTable["$inferInsert"];
+type DrizzleSQLCondition = ReturnType<typeof or>;
+
 async function findImageBySearchConditions(
-  aiGeneratedImages: any,
-  searchConditions: any[],
+  aiGeneratedImages: AiGeneratedImagesTable,
+  searchConditions: DrizzleSQLCondition[],
   category: string
-): Promise<any> {
+): Promise<AiGeneratedImageRow | null> {
   if (searchConditions.length > 0) {
     const approvedImages = await db
       .select()
@@ -315,7 +347,11 @@ async function findOrCreateArticleImage(
     if (foundImage) {
       await db
         .update(aiGeneratedImages)
-        .set({ usageCount: (foundImage.usageCount || 0) + 1, updatedAt: new Date() } as any)
+        // Drizzle ORM update types may not align with runtime column shapes; cast required
+        .set({
+          usageCount: (foundImage.usageCount || 0) + 1,
+          updatedAt: new Date(),
+        } as Partial<AiGeneratedImageInsert>)
         .where(eq(aiGeneratedImages.id, foundImage.id));
 
       return {
@@ -356,7 +392,7 @@ async function findOrCreateArticleImage(
     if (results.length === 0) {
       try {
         const safeTopic = sanitizeAIPrompt(topic);
-        const aiImages = await generateContentImages({
+        const aiImages: GeneratedImage[] = await generateContentImages({
           contentType: "article",
           title: safeTopic,
           description: `Dubai travel article about ${safeTopic}`,
@@ -365,11 +401,12 @@ async function findOrCreateArticleImage(
           generateContentImages: false,
         });
 
-        if (aiImages && aiImages.length > 0) {
+        if (Array.isArray(aiImages) && aiImages.length > 0) {
           const aiImage = aiImages[0];
 
           const [savedImage] = await db
             .insert(aiGeneratedImages)
+            // Drizzle insert schema may differ from runtime columns; cast to partial row type
             .values({
               filename: aiImage.filename,
               url: aiImage.url,
@@ -383,7 +420,7 @@ async function findOrCreateArticleImage(
               caption: aiImage.caption || topic,
               size: 0,
               usageCount: 1,
-            } as any)
+            } as AiGeneratedImageInsert)
             .returning();
 
           return {
@@ -425,6 +462,7 @@ async function findOrCreateArticleImage(
 
     const [savedImage] = await db
       .insert(aiGeneratedImages)
+      // Drizzle insert schema may differ from runtime columns; cast to partial row type
       .values({
         filename,
         url: persistedUrl,
@@ -438,7 +476,7 @@ async function findOrCreateArticleImage(
         caption: bestResult.title || topic,
         size: imageBuffer.byteLength,
         usageCount: 1,
-      } as any)
+      } as AiGeneratedImageInsert)
       .returning();
 
     return {
@@ -473,7 +511,7 @@ async function storeGeneratedImages(images: GeneratedImage[]): Promise<Generated
 }
 
 /** Get AI providers sorted with Gemini preferred first */
-function getSortedUnifiedProviders(): any[] {
+function getSortedUnifiedProviders(): UnifiedAIProvider[] {
   const providers = getAllUnifiedProviders();
   return [...providers].sort((a, b) => {
     if (a.name === "gemini") return -1;
@@ -484,7 +522,7 @@ function getSortedUnifiedProviders(): any[] {
 
 /** Try unified providers for field generation */
 async function tryUnifiedProvidersForField(
-  sortedProviders: any[],
+  sortedProviders: UnifiedAIProvider[],
   prompt: string
 ): Promise<string> {
   let content = "[]";
@@ -507,7 +545,7 @@ async function tryUnifiedProvidersForField(
       content = result.content;
       markProviderSuccess(provider.name);
       break;
-    } catch (providerError: any) {
+    } catch (providerError: unknown) {
       lastError = providerError instanceof Error ? providerError : new Error(String(providerError));
       const errorType = classifyProviderError(providerError);
       markProviderFailed(provider.name, errorType === "no_credits" ? "no_credits" : "rate_limited");
@@ -520,14 +558,72 @@ async function tryUnifiedProvidersForField(
   return content;
 }
 
+/** Shape of AI-generated article JSON (parsed from provider responses) */
+interface GeneratedArticleShape {
+  article?: {
+    intro?: string;
+    sections?: Array<{ heading: string; body: string }>;
+    proTips?: string[];
+    goodToKnow?: string[];
+    faq?: Array<{ q: string; a: string }>;
+    closing?: string;
+  };
+  meta?: {
+    keywords?: string[];
+    [key: string]: unknown;
+  };
+  analysis?: {
+    category?: string;
+    [key: string]: unknown;
+  };
+  suggestions?: Record<string, unknown>;
+  _generationStats?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+/** Count words in a text string */
+function countWords(text: string): number {
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter(w => w.length > 0).length;
+}
+
+/** Sum word counts across an array of items, optionally extracting a named field */
+function sumWords(
+  items: Array<Record<string, string>> | string[] | undefined,
+  field?: string
+): number {
+  return (items || []).reduce(
+    (sum: number, item: Record<string, string> | string) =>
+      sum +
+      countWords(field ? (item as Record<string, string>)[field] || "" : (item as string) || ""),
+    0
+  );
+}
+
+/** Calculate total word count of a generated article */
+function getArticleWordCount(article: GeneratedArticleShape): number {
+  const a = article.article;
+  if (!a) return 0;
+  return (
+    countWords(a.intro || "") +
+    sumWords(a.sections as Array<Record<string, string>> | undefined, "body") +
+    sumWords(a.proTips) +
+    sumWords(a.goodToKnow) +
+    sumWords(a.faq?.map(f => f.a)) +
+    countWords(a.closing || "")
+  );
+}
+
 /** Expand article content to meet word count minimum */
 async function expandArticleContent(
-  generatedArticle: any,
+  generatedArticle: GeneratedArticleShape,
   articleTitle: string,
-  openai: any,
+  openai: OpenAI,
   model: string,
   provider: string,
-  getWordCount: (article: any) => number
+  getWordCount: (article: GeneratedArticleShape) => number
 ): Promise<{ wordCount: number; attempts: number }> {
   const MIN_WORD_TARGET = 1800;
   const MAX_EXPANSION_ATTEMPTS = 3;
@@ -547,7 +643,7 @@ async function expandArticleContent(
 
     const expansionPrompt = `The article below has only ${wordCount} words but needs at least ${MIN_WORD_TARGET} words.
 
-Current sections: ${generatedArticle.article?.sections?.map((s: any) => s.heading).join(", ") || "none"}
+Current sections: ${generatedArticle.article?.sections?.map(s => s.heading).join(", ") || "none"}
 
 Please generate ${Math.max(3, Math.ceil(wordsNeeded / 200))} additional sections to expand this article about "${articleTitle}".
 Each section should have 250-400 words of detailed, valuable content.
@@ -582,17 +678,21 @@ Return JSON only:
 
       const expansion = safeParseJson(expansionResponse.choices[0].message.content || "{}", {});
 
-      if (expansion.additionalSections && generatedArticle.article?.sections) {
+      const additionalSections = expansion.additionalSections as
+        | Array<{ heading: string; body: string }>
+        | undefined;
+      const additionalFaqs = expansion.additionalFaqs as
+        | Array<{ q: string; a: string }>
+        | undefined;
+
+      if (additionalSections && generatedArticle.article?.sections) {
         generatedArticle.article.sections = [
           ...generatedArticle.article.sections,
-          ...expansion.additionalSections,
+          ...additionalSections,
         ];
       }
-      if (expansion.additionalFaqs && generatedArticle.article?.faq) {
-        generatedArticle.article.faq = [
-          ...generatedArticle.article.faq,
-          ...expansion.additionalFaqs,
-        ];
+      if (additionalFaqs && generatedArticle.article?.faq) {
+        generatedArticle.article.faq = [...generatedArticle.article.faq, ...additionalFaqs];
       }
 
       wordCount = getWordCount(generatedArticle);
@@ -950,35 +1050,10 @@ Return valid JSON only.`;
           });
         }
 
-        let generatedArticle = providerResult.article;
+        let generatedArticle = providerResult.article as GeneratedArticleShape;
         const openai = providerResult.client;
         const provider = providerResult.provider;
         const model = providerResult.model;
-
-        const countWords = (text: string): number =>
-          text
-            .trim()
-            .split(/\s+/)
-            .filter(w => w.length > 0).length;
-
-        const sumWords = (items: any[] | undefined, field?: string): number =>
-          (items || []).reduce(
-            (sum, item) => sum + countWords(field ? item[field] || "" : item || ""),
-            0
-          );
-
-        const getArticleWordCount = (article: any): number => {
-          const a = article.article;
-          if (!a) return 0;
-          return (
-            countWords(a.intro || "") +
-            sumWords(a.sections, "body") +
-            sumWords(a.proTips) +
-            sumWords(a.goodToKnow) +
-            sumWords(a.faq?.map((f: any) => f.a)) +
-            countWords(a.closing || "")
-          );
-        };
 
         const { wordCount, attempts } = await expandArticleContent(
           generatedArticle,
@@ -1695,10 +1770,8 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           metadata: { prompt, size: imageSize, quality, style },
         });
 
-        if (!result.success) {
-          return res
-            .status(500)
-            .json({ error: (result as any).error || "Failed to store generated image" });
+        if (result.success === false) {
+          return res.status(500).json({ error: result.error || "Failed to store generated image" });
         }
 
         res.json({ url: result.image.url, filename: result.image.filename });
