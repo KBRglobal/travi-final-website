@@ -203,6 +203,7 @@ export async function initializeOctypo(): Promise<boolean> {
     }
   } catch (error) {
     // Secrets module not configured, using env vars - this is acceptable
+    void 0;
   }
 
   // Step 2: Initialize RSS reader

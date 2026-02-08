@@ -21,8 +21,8 @@ async function ensureSessionTable(): Promise<void> {
       CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON sessions(expire);
     `;
     await pool.query(createTableSQL);
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 }
 

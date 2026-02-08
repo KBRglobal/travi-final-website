@@ -204,8 +204,8 @@ export async function validateUploadedFile(
   let fileTypeResult;
   try {
     fileTypeResult = await FileType.fromBuffer(buffer);
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 
   if (fileTypeResult && fileTypeResult.mime !== magicBytesResult.mime) {

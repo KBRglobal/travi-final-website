@@ -20,7 +20,7 @@ export class RedisRateLimitStore implements Store {
       try {
         this.redis = new Redis({ url, token });
       } catch {
-        // Redis unavailable — stays null, callers should check isAvailable
+        void 0; // Redis unavailable — stays null, callers should check isAvailable
       }
     }
   }

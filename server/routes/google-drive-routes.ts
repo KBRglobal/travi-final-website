@@ -94,7 +94,7 @@ async function processCityFile(
     report.skipped.push({ city: cityName, file: file.name, reason: "File already exists" });
     return;
   } catch {
-    // File doesn't exist, proceed with download
+    void 0; // File doesn't exist, proceed with download
   }
 
   try {

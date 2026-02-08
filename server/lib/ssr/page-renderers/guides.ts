@@ -27,8 +27,8 @@ export async function renderGuidesHub(options: SSRRenderOptions): Promise<SSRRen
       .where(eq(update9987Guides.status, "published"))
       .orderBy(desc(update9987Guides.publishedAt))
       .limit(50);
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 
   const metaTags = generateMetaTags({
@@ -145,8 +145,8 @@ export async function renderGuidePage(
       .where(eq(update9987Guides.slug, slug))
       .limit(1);
     guide = results[0];
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 
   if (!guide) {

@@ -47,8 +47,8 @@ async function seedTable(
       if (i % 1000 === 0 && i > 0) {
         // empty
       }
-    } catch (e: any) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }
 
@@ -95,7 +95,7 @@ export async function runProductionSeed(): Promise<void> {
 
     const pois = await loadTable("update_9987_tourpedia_pois");
     await seedTable("update_9987_tourpedia_pois", update9987TourpediaPois, pois, 500);
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 }

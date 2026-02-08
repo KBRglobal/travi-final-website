@@ -402,7 +402,7 @@ function recordAndReturn(
       );
       result.evidence = { id: evidence.id, timestamp: evidence.timestamp };
     } catch {
-      // Evidence generation is non-critical
+      void 0; // Evidence generation is non-critical
     }
   }
 

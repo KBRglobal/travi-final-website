@@ -234,7 +234,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
             .status(400)
             .json({ error: `File "${finalFilename}" already exists. Choose a different name.` });
         } catch {
-          // File doesn't exist, good to proceed
+          void 0; // File doesn't exist, good to proceed
         }
 
         // Convert to WebP using sharp

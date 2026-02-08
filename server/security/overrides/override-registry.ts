@@ -555,8 +555,8 @@ class OverrideRegistry {
     for (const callback of this.alertCallbacks) {
       try {
         callback(override, event);
-      } catch (error) {
-        /* ignored */
+      } catch {
+        void 0;
       }
     }
 

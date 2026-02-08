@@ -257,8 +257,8 @@ class DriftScanner {
             });
           }
         }
-      } catch (error) {
-        /* ignored */
+      } catch {
+        void 0;
       }
     }, intervalMs);
   }

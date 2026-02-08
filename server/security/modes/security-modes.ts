@@ -346,7 +346,7 @@ class SecurityModeManager {
       factors.push(driftFactor);
       totalScore += driftFactor.value * 25;
     } catch {
-      // No baseline, skip drift assessment
+      void 0;
     }
 
     // Normalize score
@@ -452,8 +452,8 @@ class SecurityModeManager {
         if (transition) {
           /* Mode transition applied automatically */
         }
-      } catch (error) {
-        /* ignored */
+      } catch {
+        void 0;
       }
     }, intervalMs);
   }

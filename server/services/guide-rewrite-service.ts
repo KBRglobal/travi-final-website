@@ -1097,6 +1097,7 @@ COMPREHENSIVE REWRITTEN CHUNK:`;
       }
     } catch {
       // Keep original on error
+      void 0;
     }
     return chunk;
   }

@@ -138,7 +138,7 @@ class SecurityDashboardService {
       if (drift.summary.criticalDrifts > 0) return 15;
       if (drift.summary.highDrifts > 0) return 10;
     } catch {
-      // No baseline
+      void 0; // No baseline
     }
     return 0;
   }

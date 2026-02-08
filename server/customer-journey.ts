@@ -660,7 +660,7 @@ export const customerJourney = {
           const domain = new URL(event.referrer).hostname;
           referrerCounts.set(domain, (referrerCounts.get(domain) || 0) + 1);
         } catch {
-          /* ignored */
+          void 0;
         }
       }
     }

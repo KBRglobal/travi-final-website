@@ -391,8 +391,8 @@ export function registerPublicContentRoutes(app: Express): void {
               break; // Found images, stop searching
             }
           }
-        } catch (e) {
-          // Folder doesn't exist or can't be read, continue to next
+        } catch {
+          void 0; // Folder doesn't exist or can't be read, continue to next
         }
       }
 

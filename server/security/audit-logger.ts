@@ -210,8 +210,8 @@ export async function logSecurityEvent(event: SecurityEvent): Promise<void> {
         ...maskedDetails,
       },
     });
-  } catch (error) {
-    // Don't fail the request if logging fails
+  } catch {
+    void 0; // Don't fail the request if logging fails
   }
 }
 

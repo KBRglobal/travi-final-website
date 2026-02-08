@@ -46,8 +46,8 @@ export async function renderHomepage(options: SSRRenderOptions): Promise<SSRRend
         item.tiqetsSummary ||
         `Attraction in ${item.cityName || "various destinations"}`,
     }));
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 
   // Fetch hotels and articles from contents table
@@ -58,8 +58,8 @@ export async function renderHomepage(options: SSRRenderOptions): Promise<SSRRend
     ]);
     hotels = results[0] || [];
     articles = results[1] || [];
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 
   const featuredHotels = hotels.slice(0, 6);

@@ -211,6 +211,7 @@ export async function initializeSettings(): Promise<void> {
     loadSettingsToEnv(settings);
   } catch (error) {
     // Using environment variables as fallback - this is expected behavior
+    void 0;
   }
 }
 

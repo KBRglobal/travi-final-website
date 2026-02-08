@@ -390,8 +390,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
             (req.session as any).totpVerified = true;
           }
         }
-      } catch (e) {
-        // Ignore errors, proceed without auth
+      } catch {
+        void 0;
       }
 
       next();
@@ -441,8 +441,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       if (contentToPublish.length > 0) {
         /* Scheduled content published successfully */
       }
-    } catch (error) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   };
 
@@ -905,8 +905,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     await initAutonomyPolicy();
     initEnforcement();
     initControlPlane();
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 
   // ============================================================================

@@ -76,8 +76,8 @@ export async function initAutonomyPolicy(): Promise<void> {
       if (seeded > 0) {
         // empty
       }
-    } catch (error) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }
 }

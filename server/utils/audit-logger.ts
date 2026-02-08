@@ -82,7 +82,7 @@ export async function logAuditEvent(
         null,
       userAgent: req.headers["user-agent"] || null,
     });
-  } catch (error) {
-    // Silently fail - audit logging should not break the main flow
+  } catch {
+    void 0;
   }
 }

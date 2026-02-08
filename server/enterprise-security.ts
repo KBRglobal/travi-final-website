@@ -353,8 +353,8 @@ export const contextualAuth = {
           timezone: data.timezone,
         };
       }
-    } catch (error) {
-      /* ignored */
+    } catch {
+      void 0;
     }
 
     return null;

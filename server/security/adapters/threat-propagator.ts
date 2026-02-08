@@ -346,8 +346,8 @@ class ThreatPropagator {
     for (const [, adapter] of adapters) {
       try {
         await adapter.onAnomalyDetected(anomaly);
-      } catch (error) {
-        /* ignored */
+      } catch {
+        void 0;
       }
     }
 
@@ -367,8 +367,8 @@ class ThreatPropagator {
     for (const [, adapter] of adapters) {
       try {
         await adapter.onHighRiskUser(user);
-      } catch (error) {
-        /* ignored */
+      } catch {
+        void 0;
       }
     }
 

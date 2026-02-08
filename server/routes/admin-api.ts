@@ -437,7 +437,7 @@ export function registerAdminApiRoutes(app: Express): void {
             .status(400)
             .json({ error: `File "${finalFilename}" already exists. Choose a different name.` });
         } catch {
-          // File doesn't exist, good to proceed
+          void 0; // File doesn't exist, good to proceed
         }
 
         const webpBuffer = await sharp(req.file.buffer).webp({ quality: 85 }).toBuffer();
@@ -1362,7 +1362,7 @@ export function registerAdminApiRoutes(app: Express): void {
             .where(eq(aiGenerationLogs.success, false));
           aiFailed = failedStats?.count || 0;
         } catch {
-          // Table may not exist yet
+          void 0; // Table may not exist yet
         }
 
         // Get Tiqets content generation stats (as additional AI generation tracking)
@@ -1377,7 +1377,7 @@ export function registerAdminApiRoutes(app: Express): void {
             .where(eq(tiqetsAttractions.status, "published"));
           tiqetsCompleted = tiqetsStats?.count || 0;
         } catch {
-          // Table may not exist
+          void 0; // Table may not exist
         }
 
         const totalAiCompleted = aiCompleted + tiqetsCompleted;

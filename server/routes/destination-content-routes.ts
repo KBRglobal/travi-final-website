@@ -807,7 +807,7 @@ router.get(
           const structured = JSON.parse(guide.rewrittenContent);
           return res.json(structured);
         } catch {
-          // Fall through to raw content
+          void 0; // Fall through to raw content
         }
       }
 

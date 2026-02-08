@@ -432,7 +432,7 @@ router.get("/pipeline/stats", async (req, res) => {
       const schedulerStats = await getSchedulerStats();
       rssStats = { ...status, ...schedulerStats };
     } catch {
-      // RSS scheduler not available
+      void 0; // RSS scheduler not available
     }
 
     // [REMOVED] Native content generation stats (localization engine deleted)
@@ -444,7 +444,7 @@ router.get("/pipeline/stats", async (req, res) => {
       const { getBackgroundServicesStatus } = await import("../../services/background-services");
       backgroundStatus = await getBackgroundServicesStatus();
     } catch {
-      // Background services not available
+      void 0; // Background services not available
     }
 
     // Database content counts

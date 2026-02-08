@@ -223,8 +223,8 @@ export async function seedDefaultPolicies(): Promise<number> {
     try {
       await db.insert(autonomyPolicies).values(policyToDb(policy));
       seeded++;
-    } catch (error) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }
 
@@ -272,8 +272,8 @@ async function flushDecisionLogs(): Promise<void> {
         metadata: entry.metadata,
       }))
     );
-  } catch (error) {
-    // Don't re-add to buffer to avoid infinite growth
+  } catch {
+    void 0;
   }
 }
 
@@ -337,7 +337,9 @@ export function startDecisionLogFlusher(): void {
   if (flushIntervalId) return;
 
   flushIntervalId = setInterval(() => {
-    flushDecisionLogs().catch(err => {});
+    flushDecisionLogs().catch(() => {
+      void 0;
+    });
   }, FLUSH_INTERVAL_MS);
 }
 
@@ -347,7 +349,9 @@ export function stopDecisionLogFlusher(): void {
     flushIntervalId = null;
   }
   // Final flush
-  flushDecisionLogs().catch(() => {});
+  flushDecisionLogs().catch(() => {
+    void 0;
+  });
 }
 
 export function invalidatePolicyCache(): void {

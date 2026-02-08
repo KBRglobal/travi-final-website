@@ -350,6 +350,7 @@ app.get("/sitemap", async (_req, res) => {
         .orderBy(destinations.name);
     } catch (dbError) {
       // Continue with empty destinations - never fail
+      void 0;
     }
 
     const baseUrl = process.env.SITE_URL || "https://travi.travel";

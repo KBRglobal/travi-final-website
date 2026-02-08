@@ -42,6 +42,7 @@ async function captureSnapshot(): Promise<SystemSnapshot> {
     }
   } catch {
     /* not available */
+    void 0;
   }
 
   try {
@@ -55,6 +56,7 @@ async function captureSnapshot(): Promise<SystemSnapshot> {
     }
   } catch {
     /* not available */
+    void 0;
   }
 
   try {
@@ -65,6 +67,7 @@ async function captureSnapshot(): Promise<SystemSnapshot> {
     }
   } catch {
     /* not available */
+    void 0;
   }
 
   const memUsage = process.memoryUsage();

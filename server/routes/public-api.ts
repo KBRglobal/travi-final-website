@@ -243,8 +243,8 @@ export function registerPublicApiRoutes(app: Express): void {
               break;
             }
           }
-        } catch (e) {
-          // Folder doesn't exist or can't be read, continue to next
+        } catch {
+          void 0; // Folder doesn't exist or can't be read, continue to next
         }
       }
 

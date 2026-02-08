@@ -343,8 +343,8 @@ export async function bulkAnalyze(contentIds: string[]): Promise<PromiseAnalysis
     try {
       const analysis = await analyzeContent(id);
       results.push(analysis);
-    } catch (error) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }
   return results;

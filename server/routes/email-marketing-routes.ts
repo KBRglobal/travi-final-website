@@ -776,7 +776,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
       try {
         await storage.updateCampaign(req.params.id, { status: "failed" });
       } catch {
-        /* ignored */
+        void 0; /* ignored */
       }
 
       res.status(500).json({ error: "Failed to send campaign" });

@@ -534,8 +534,8 @@ export async function addToPasswordHistory(userId: string, passwordHash: string)
       await storageAny.addPasswordHistory(userId, passwordHash);
     }
     // If method doesn't exist, silently skip (backward compatibility)
-  } catch (error) {
-    // Don't fail the password change if history tracking fails
+  } catch {
+    void 0; // Don't fail the password change if history tracking fails
   }
 }
 

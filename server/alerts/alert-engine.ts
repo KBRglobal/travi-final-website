@@ -51,8 +51,8 @@ export async function runDetection(): Promise<void> {
       } else {
         await handleResolvedRule(rule);
       }
-    } catch (error) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }
 }

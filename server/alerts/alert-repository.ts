@@ -24,8 +24,8 @@ async function ensureTable(): Promise<void> {
       )
     `);
     tableExists = true;
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 }
 

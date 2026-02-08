@@ -72,8 +72,8 @@ function loadFromDisk(): void {
         perf.score = calculateScore(perf);
       }
     }
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 }
 
@@ -94,8 +94,8 @@ function saveToDisk(): void {
     }
 
     fs.writeFileSync(PERSISTENCE_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (error) {
-    /* ignored */
+  } catch {
+    void 0;
   }
 }
 

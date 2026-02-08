@@ -134,8 +134,8 @@ class CacheService {
           token: redisToken,
         });
         this.isRedisAvailable = true;
-      } catch (error) {
-        /* ignored */
+      } catch {
+        void 0;
       }
     } else {
       /* Redis not configured - using in-memory cache */

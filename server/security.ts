@@ -275,7 +275,7 @@ export function createRateLimiter(config: RateLimitConfig) {
         return next();
       }
     } catch {
-      // Redis failed — fall through to in-memory
+      void 0;
     }
 
     // In-memory fallback
@@ -391,7 +391,9 @@ export async function checkAiUsageLimit(req: Request, res: Response, next: NextF
   aiUsageCache.set(key, entry);
 
   // Persist to database asynchronously (don't block request)
-  storage.incrementRateLimit(key, new Date(entry.resetTime)).catch(err => {});
+  storage.incrementRateLimit(key, new Date(entry.resetTime)).catch(() => {
+    void 0;
+  });
 
   next();
 }
@@ -440,7 +442,7 @@ export async function initDevAutoAuth(getAdminUser: () => Promise<any>) {
     try {
       devAutoAuthUser = await getAdminUser();
     } catch {
-      /* ignored */
+      void 0;
     }
   }
 }

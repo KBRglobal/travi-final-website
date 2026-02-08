@@ -536,8 +536,8 @@ export async function initSecurityOS(config: SecurityOSConfig = {}): Promise<voi
     if (config.captureInitialBaseline) {
       try {
         await captureBaseline("Initial Baseline", "system");
-      } catch (error) {
-        /* ignored */
+      } catch {
+        void 0;
       }
     }
 

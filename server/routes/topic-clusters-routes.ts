@@ -146,8 +146,8 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
               sourceTitle: item.title,
               rssFeedId: item.rssFeedId || null,
             });
-          } catch (e) {
-            // Fingerprint might already exist in rare edge case
+          } catch {
+            void 0; // Fingerprint might already exist in rare edge case
           }
 
           const clusterItems = await storage.getTopicClusterItems(cluster.id);
@@ -417,8 +417,8 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
                 sourceTitle: item.sourceTitle,
                 rssFeedId: item.rssFeedId || null,
               });
-            } catch (e) {
-              // Fingerprint might already exist
+            } catch {
+              void 0; // Fingerprint might already exist
             }
           }
           await storage.updateTopicClusterItem(item.id, { isUsedInMerge: true });

@@ -719,8 +719,8 @@ Create engaging, informative content that would appeal to travelers. Return vali
             heroImageUrl = persistedUrl || heroImage.url; // Fallback to temp URL if persist fails
           }
         }
-      } catch (imageError) {
-        // Continue without images - don't fail the whole article generation
+      } catch {
+        void 0; // Continue without images - don't fail the whole article generation
       }
 
       const content = await storage.createContent({

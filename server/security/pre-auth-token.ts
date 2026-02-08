@@ -136,8 +136,8 @@ function startCleanupTimer(): void {
     try {
       const now = new Date();
       await db.delete(preAuthTokens).where(lt(preAuthTokens.expiresAt, now));
-    } catch (error) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }, 60 * 1000); // Every minute
 

@@ -224,8 +224,8 @@ class JobQueue {
       if (result.length > 0) {
         /* Stale processing jobs reset to pending */
       }
-    } catch (err) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }
 
@@ -320,8 +320,8 @@ class JobQueue {
         // 1% chance each run
         await this.cleanup();
       }
-    } catch (err) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }
 
@@ -345,8 +345,8 @@ class JobQueue {
       if (result.length > 0) {
         /* Old completed/failed jobs cleaned up */
       }
-    } catch (err) {
-      /* ignored */
+    } catch {
+      void 0;
     }
   }
 
