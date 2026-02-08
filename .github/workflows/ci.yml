@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [replit-agent]
+    branches: [main, replit-agent]
   pull_request:
-    branches: [replit-agent, main]
+    branches: [main, replit-agent]
 
 jobs:
   ci:
@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history needed for SonarCloud
 
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
@@ -38,3 +40,12 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Security audit
+        run: npm audit --audit-level=high
+
+      - name: SonarCloud scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
