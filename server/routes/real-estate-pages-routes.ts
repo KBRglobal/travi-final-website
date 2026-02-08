@@ -26,7 +26,7 @@ export function registerRealEstatePagesRoutes(app: Express): void {
 
       const pages = await query.orderBy(realEstatePages.title);
       res.json({ pages });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch real estate pages" });
     }
   });
@@ -45,7 +45,7 @@ export function registerRealEstatePagesRoutes(app: Express): void {
       }
 
       res.json(page);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch real estate page" });
     }
   });
@@ -91,7 +91,7 @@ export function registerRealEstatePagesRoutes(app: Express): void {
           .returning();
         res.status(201).json(created);
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to save real estate page" });
     }
   });
@@ -125,7 +125,7 @@ export function registerRealEstatePagesRoutes(app: Express): void {
       }
 
       res.json(updated);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update real estate page" });
     }
   });
@@ -148,7 +148,7 @@ export function registerRealEstatePagesRoutes(app: Express): void {
         }
 
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete real estate page" });
       }
     }
@@ -264,7 +264,7 @@ export function registerRealEstatePagesRoutes(app: Express): void {
         }
 
         res.json({ success: true, created, skipped, total: STATIC_PAGES.length });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to seed real estate pages" });
       }
     }

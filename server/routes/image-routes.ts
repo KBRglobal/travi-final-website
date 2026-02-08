@@ -643,7 +643,7 @@ export function registerImageRoutes(app: Express) {
         success: true,
         areas: DUBAI_AREAS,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch areas" });
     }
   });
@@ -717,7 +717,7 @@ export function registerImageRoutes(app: Express) {
         categories,
         purposes,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch categories" });
     }
   });
@@ -886,7 +886,7 @@ export function registerImageRoutes(app: Express) {
           supportedMimeTypes: supportedTypes,
           maxFileSize: "10MB",
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to get status" });
       }
     }

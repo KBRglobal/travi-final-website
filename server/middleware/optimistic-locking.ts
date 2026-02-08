@@ -74,7 +74,7 @@ export function checkOptimisticLock() {
       }
 
       next();
-    } catch (error) {
+    } catch {
       next(); // Fail open - allow request to proceed
     }
   };

@@ -28,7 +28,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
         })
       );
       res.json(enrichedClusters);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch clusters" });
     }
   });
@@ -41,7 +41,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
       }
       const members = await storage.getClusterMembers(cluster.id);
       res.json({ ...cluster, members });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch cluster" });
     }
   });
@@ -74,7 +74,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
         { name: cluster.name, slug: cluster.slug }
       );
       res.status(201).json(cluster);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create cluster" });
     }
   });
@@ -111,7 +111,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
           { name: cluster.name, slug: cluster.slug }
         );
         res.json(cluster);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update cluster" });
       }
     }
@@ -136,7 +136,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
           `Deleted cluster: ${existingCluster.name}`
         );
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete cluster" });
       }
     }
@@ -159,7 +159,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
           role: role || "supporting",
         });
         res.status(201).json(member);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to add cluster member" });
       }
     }
@@ -174,7 +174,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
       try {
         await (storage as any).removeClusterMember(req.params.id, req.params.contentId);
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to remove cluster member" });
       }
     }
@@ -196,7 +196,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
           }
         );
         res.json(member);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update cluster member" });
       }
     }
@@ -210,7 +210,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
     try {
       const contentTagsList = await storage.getContentTags(req.params.contentId);
       res.json(contentTagsList);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content tags" });
     }
   });
@@ -230,7 +230,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
           tagId,
         });
         res.status(201).json(contentTag);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to add content tag" });
       }
     }
@@ -244,7 +244,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
       try {
         await storage.removeContentTag(req.params.contentId, req.params.tagId);
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to remove content tag" });
       }
     }
@@ -265,7 +265,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
       }
       const count = await storage.bulkUpdateContentStatus(ids, status);
       res.json({ success: true, count });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to bulk update status" });
     }
   });
@@ -280,7 +280,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
       const count = await storage.bulkDeleteContents(ids);
 
       res.json({ success: true, count });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to bulk delete" });
     }
   });
@@ -296,7 +296,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
       }
       const count = await storage.bulkAddTagToContents(ids, tagId);
       res.json({ success: true, count });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to bulk add tag" });
     }
   });
@@ -312,7 +312,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
       }
       const count = await storage.bulkRemoveTagFromContents(ids, tagId);
       res.json({ success: true, count });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to bulk remove tag" });
     }
   });
@@ -365,7 +365,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
       }
 
       res.json(contents);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to export contents" });
     }
   });
@@ -378,7 +378,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
     try {
       const templates = await storage.getContentTemplates();
       res.json(templates);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch templates" });
     }
   });
@@ -390,7 +390,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
         return res.status(404).json({ error: "Template not found" });
       }
       res.json(template);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch template" });
     }
   });
@@ -409,7 +409,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
         seoDefaults: seoDefaults || {},
       });
       res.status(201).json(template);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create template" });
     }
   });
@@ -428,7 +428,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
         return res.status(404).json({ error: "Template not found" });
       }
       res.json(template);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update template" });
     }
   });
@@ -437,7 +437,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
     try {
       await storage.deleteContentTemplate(req.params.id);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete template" });
     }
   });
@@ -468,7 +468,7 @@ export function registerContentOrganizationRoutes(app: Express): void {
         });
         await storage.incrementTemplateUsage(req.params.id);
         res.status(201).json(content);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to apply template" });
       }
     }

@@ -34,7 +34,7 @@ export function registerSocialRoutes(app: Express) {
         .from(socialCampaigns)
         .orderBy(desc(socialCampaigns.createdAt));
       res.json(campaigns);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to list campaigns" });
     }
   });
@@ -51,7 +51,7 @@ export function registerSocialRoutes(app: Express) {
           .values(parsed as any)
           .returning();
         res.json(campaign);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create campaign" });
       }
     }
@@ -68,7 +68,7 @@ export function registerSocialRoutes(app: Express) {
         return res.status(404).json({ error: "Campaign not found" });
       }
       res.json(campaign);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get campaign" });
     }
   });
@@ -107,7 +107,7 @@ export function registerSocialRoutes(app: Express) {
           .where(eq(socialCampaigns.id, req.params.id))
           .returning();
         res.json(campaign);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update campaign" });
       }
     }
@@ -121,7 +121,7 @@ export function registerSocialRoutes(app: Express) {
       try {
         await db.delete(socialCampaigns).where(eq(socialCampaigns.id, req.params.id));
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete campaign" });
       }
     }
@@ -148,7 +148,7 @@ export function registerSocialRoutes(app: Express) {
 
       const posts = await query.orderBy(desc(socialPosts.scheduledAt));
       res.json(posts);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to list posts" });
     }
   });
@@ -165,7 +165,7 @@ export function registerSocialRoutes(app: Express) {
           .values(parsed as any)
           .returning();
         res.json(post);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create post" });
       }
     }
@@ -179,7 +179,7 @@ export function registerSocialRoutes(app: Express) {
         return res.status(404).json({ error: "Post not found" });
       }
       res.json(post);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get post" });
     }
   });
@@ -212,7 +212,7 @@ export function registerSocialRoutes(app: Express) {
           .where(eq(socialPosts.id, req.params.id))
           .returning();
         res.json(post);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update post" });
       }
     }
@@ -226,7 +226,7 @@ export function registerSocialRoutes(app: Express) {
       try {
         await db.delete(socialPosts).where(eq(socialPosts.id, req.params.id));
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete post" });
       }
     }
@@ -249,7 +249,7 @@ export function registerSocialRoutes(app: Express) {
           .where(eq(socialPosts.id, req.params.id))
           .returning();
         res.json(post);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to schedule post" });
       }
     }
@@ -265,7 +265,7 @@ export function registerSocialRoutes(app: Express) {
         .where(and(eq(socialPosts.status, "scheduled"), lte(socialPosts.scheduledAt, now)))
         .orderBy(socialPosts.scheduledAt);
       res.json(posts);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get due posts" });
     }
   });
@@ -381,7 +381,7 @@ export function registerSocialRoutes(app: Express) {
           .where(eq(socialAnalytics.postId, req.params.postId))
           .orderBy(desc(socialAnalytics.fetchedAt));
         res.json(analytics);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to get analytics" });
       }
     }
@@ -404,7 +404,7 @@ export function registerSocialRoutes(app: Express) {
           .from(socialAnalytics)
           .where(eq(socialAnalytics.campaignId, req.params.campaignId));
         res.json(analytics[0] || {});
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to get campaign analytics" });
       }
     }
@@ -437,7 +437,7 @@ export function registerSocialRoutes(app: Express) {
         posts: postCounts || { total: 0, scheduled: 0, published: 0, draft: 0 },
         analytics: analytics || { totalImpressions: 0, totalEngagement: 0 },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get dashboard" });
     }
   });
@@ -462,7 +462,7 @@ export function registerSocialRoutes(app: Express) {
         .from(socialCredentials)
         .where(eq(socialCredentials.userId, userId));
       res.json(credentials);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to list credentials" });
     }
   });
@@ -475,7 +475,7 @@ export function registerSocialRoutes(app: Express) {
         .delete(socialCredentials)
         .where(and(eq(socialCredentials.id, req.params.id), eq(socialCredentials.userId, userId)));
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete credential" });
     }
   });

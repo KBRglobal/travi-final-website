@@ -25,7 +25,7 @@ export function registerAbTestingRoutes(app: Express): void {
       } else {
         res.status(500).json({ error: "Failed to create test" });
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create A/B test" });
     }
   });
@@ -35,7 +35,7 @@ export function registerAbTestingRoutes(app: Express): void {
       const ctaAbTesting = (await import("../monetization/cta-ab-testing")) as any;
       const tests = await ctaAbTesting.ctaAbTestingService.getTests();
       res.json(tests);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch A/B tests" });
     }
   });
@@ -46,7 +46,7 @@ export function registerAbTestingRoutes(app: Express): void {
       const { id } = req.params;
       const result = await ctaAbTesting.ctaAbTestingService.updateTest(id, { status: "running" });
       res.json({ success: result });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to start A/B test" });
     }
   });
@@ -57,7 +57,7 @@ export function registerAbTestingRoutes(app: Express): void {
       const { id } = req.params;
       const result = await ctaAbTesting.ctaAbTestingService.updateTest(id, { status: "stopped" });
       res.json({ success: result });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to stop A/B test" });
     }
   });
@@ -68,7 +68,7 @@ export function registerAbTestingRoutes(app: Express): void {
       const { id } = req.params;
       const results = await ctaAbTesting.ctaAbTestingService.getResults(id);
       res.json(results);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch A/B test results" });
     }
   });
@@ -79,7 +79,7 @@ export function registerAbTestingRoutes(app: Express): void {
       const { id } = req.params;
       const variant = await ctaAbTesting.ctaAbTestingService.getTest(id);
       res.json(variant);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get variant" });
     }
   });
@@ -91,7 +91,7 @@ export function registerAbTestingRoutes(app: Express): void {
       const { variantId } = req.body;
       await ctaAbTesting.ctaAbTestingService.recordConversion(id, variantId);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track event" });
     }
   });

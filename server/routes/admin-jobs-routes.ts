@@ -112,7 +112,7 @@ export function registerAdminJobsRoutes(app: Express): void {
     try {
       const blockedIps = getBlockedIps();
       res.json({ blockedIps, total: blockedIps.length });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch blocked IPs" });
     }
   });
@@ -126,7 +126,7 @@ export function registerAdminJobsRoutes(app: Express): void {
     try {
       const metrics = getPerformanceMetrics();
       res.json(metrics);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch performance metrics" });
     }
   });
@@ -140,7 +140,7 @@ export function registerAdminJobsRoutes(app: Express): void {
     try {
       const stats = await jobQueue.getStats();
       res.json(stats);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch job statistics" });
     }
   });
@@ -155,7 +155,7 @@ export function registerAdminJobsRoutes(app: Express): void {
       }
       const jobs = await jobQueue.getJobsByStatus(status as any);
       res.json({ jobs, total: jobs.length });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch jobs" });
     }
   });
@@ -168,7 +168,7 @@ export function registerAdminJobsRoutes(app: Express): void {
         return res.status(404).json({ error: "Job not found" });
       }
       res.json(job);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch job" });
     }
   });
@@ -181,7 +181,7 @@ export function registerAdminJobsRoutes(app: Express): void {
         return res.status(400).json({ error: "Cannot cancel job (not pending or not found)" });
       }
       res.json({ success: true, message: "Job cancelled" });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to cancel job" });
     }
   });
@@ -194,7 +194,7 @@ export function registerAdminJobsRoutes(app: Express): void {
         return res.status(400).json({ error: "Cannot retry job (not failed or not found)" });
       }
       res.json({ success: true, message: "Job queued for retry" });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to retry job" });
     }
   });

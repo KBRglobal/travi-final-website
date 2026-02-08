@@ -29,7 +29,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
       const filters = category ? { category: category as string } : undefined;
       const templates = await storage.getEmailTemplates(filters);
       res.json(templates);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch templates" });
     }
   });
@@ -41,7 +41,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         return res.status(404).json({ error: "Template not found" });
       }
       res.json(template);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch template" });
     }
   });
@@ -66,7 +66,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           `Created email template: ${template.name}`
         );
         res.status(201).json(template);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create template" });
       }
     }
@@ -92,7 +92,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           `Updated email template: ${template?.name}`
         );
         res.json(template);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update template" });
       }
     }
@@ -118,7 +118,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           `Deleted email template: ${existing.name}`
         );
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete template" });
       }
     }
@@ -134,7 +134,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
       const filters = status ? { status: status as string } : undefined;
       const tests = await storage.getNewsletterAbTests(filters);
       res.json(tests);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch A/B tests" });
     }
   });
@@ -149,7 +149,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           return res.status(404).json({ error: "A/B test not found" });
         }
         res.json(test);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch A/B test" });
       }
     }
@@ -170,7 +170,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         const test = await storage.createNewsletterAbTest(testData);
         await logAuditEvent(req, "create", "campaign", test.id, `Created A/B test: ${test.name}`);
         res.status(201).json(test);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create A/B test" });
       }
     }
@@ -190,7 +190,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         const test = await storage.updateNewsletterAbTest(id, req.body);
         await logAuditEvent(req, "update", "campaign", id, `Updated A/B test: ${test?.name}`);
         res.json(test);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update A/B test" });
       }
     }
@@ -218,7 +218,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         });
         await logAuditEvent(req, "update", "campaign", id, `Started A/B test: ${test.name}`);
         res.json(updated);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to start A/B test" });
       }
     }
@@ -256,7 +256,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           `Selected winner for A/B test: ${test.name} - Winner: Variant ${winnerId.toUpperCase()}`
         );
         res.json(updated);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to select winner" });
       }
     }
@@ -276,7 +276,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         await storage.deleteNewsletterAbTest(id);
         await logAuditEvent(req, "delete", "campaign", id, `Deleted A/B test: ${existing.name}`);
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete A/B test" });
       }
     }
@@ -290,7 +290,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
     try {
       const segments = await storage.getSubscriberSegments();
       res.json(segments);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch segments" });
     }
   });
@@ -306,7 +306,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         }
         const conditions = await storage.getSegmentConditions(req.params.id);
         res.json({ ...segment, conditions });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch segment" });
       }
     }
@@ -343,7 +343,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           `Created subscriber segment: ${segment.name}`
         );
         res.status(201).json(segment);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create segment" });
       }
     }
@@ -369,7 +369,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           `Updated subscriber segment: ${segment?.name}`
         );
         res.json(segment);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update segment" });
       }
     }
@@ -395,7 +395,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           `Deleted subscriber segment: ${existing.name}`
         );
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete segment" });
       }
     }
@@ -423,7 +423,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           bounceRate: Number.parseFloat(bounceRate),
           bouncedSubscribers: bouncedSubscribers.slice(0, 50),
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch bounce statistics" });
       }
     }
@@ -482,7 +482,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
           Object.entries(languageSegments).map(([lang, data]) => [lang, data.count])
         ),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch segments" });
     }
   });
@@ -495,7 +495,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
     try {
       const campaigns = await storage.getCampaigns();
       res.json(campaigns);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch campaigns" });
     }
   });
@@ -508,7 +508,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         return res.status(404).json({ error: "Campaign not found" });
       }
       res.json(campaign);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch campaign" });
     }
   });
@@ -536,7 +536,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         );
 
         res.status(201).json(campaign);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create campaign" });
       }
     }
@@ -573,7 +573,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         }
 
         res.json(campaign);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update campaign" });
       }
     }
@@ -603,7 +603,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         });
 
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete campaign" });
       }
     }
@@ -615,7 +615,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
       const { id } = req.params;
       const events = await storage.getCampaignEvents(id);
       res.json(events);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch campaign events" });
     }
   });
@@ -771,7 +771,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         failed: failedCount,
         total: subscribers.length,
       });
-    } catch (error) {
+    } catch {
       // Try to update status to failed
       try {
         await storage.updateCampaign(req.params.id, { status: "failed" });
@@ -811,7 +811,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
       res.set("Content-Type", "image/gif");
       res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
       res.send(transparentGif);
-    } catch (error) {
+    } catch {
       // Still return the pixel even on error
       const transparentGif = Buffer.from(
         "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
@@ -871,7 +871,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
 
       // Redirect to the validated URL
       res.redirect(url);
-    } catch (error) {
+    } catch {
       res.status(500).send("Tracking error");
     }
   });

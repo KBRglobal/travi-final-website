@@ -84,7 +84,7 @@ async function sendConfirmationEmail(
     });
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -158,7 +158,7 @@ async function sendWelcomeEmail(
     });
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -341,7 +341,7 @@ export function registerNewsletterRoutes(app: Express): void {
       await sendConfirmationEmail(email, confirmToken, firstName || undefined);
 
       res.json({ success: true, message: "Please check your email to confirm your subscription" });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to subscribe" });
     }
   });
@@ -398,11 +398,11 @@ export function registerNewsletterRoutes(app: Express): void {
 
       // Send welcome email (fire and forget - don't block response)
       sendWelcomeEmail(subscriber.email, subscriber.firstName || undefined, subscriber.id).catch(
-        err => {}
+        () => {}
       );
 
       res.send(renderConfirmationPage(true, "Thank you! Your subscription has been confirmed."));
-    } catch (error) {
+    } catch {
       res
         .status(500)
         .send(renderConfirmationPage(false, "Something went wrong. Please try again."));
@@ -466,7 +466,7 @@ export function registerNewsletterRoutes(app: Express): void {
       res.send(
         renderUnsubscribePage(true, "You have been successfully unsubscribed from our newsletter.")
       );
-    } catch (error) {
+    } catch {
       res.status(500).send(renderUnsubscribePage(false, "Something went wrong. Please try again."));
     }
   });
@@ -481,7 +481,7 @@ export function registerNewsletterRoutes(app: Express): void {
         const filters = status ? { status: status as string } : undefined;
         const subscribers = await storage.getNewsletterSubscribers(filters);
         res.json(subscribers);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch subscribers" });
       }
     }
@@ -515,7 +515,7 @@ export function registerNewsletterRoutes(app: Express): void {
         } else {
           res.status(500).json({ error: "Failed to delete subscriber" });
         }
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete subscriber" });
       }
     }
@@ -551,7 +551,7 @@ export function registerNewsletterRoutes(app: Express): void {
           `Updated subscriber preferences: ${subscriber.email}`
         );
         res.json(updated);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update subscriber" });
       }
     }

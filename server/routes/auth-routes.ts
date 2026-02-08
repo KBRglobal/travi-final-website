@@ -158,7 +158,7 @@ export function registerAuthRoutes(app: Express): void {
             });
           });
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Auto-login failed" });
       }
     });
@@ -401,7 +401,7 @@ export function registerAuthRoutes(app: Express): void {
         clearDualLockout(username.toLowerCase(), ip);
 
         await completeLogin(user);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Login failed" });
       }
     }
@@ -457,7 +457,7 @@ export function registerAuthRoutes(app: Express): void {
       // Remove sensitive fields before sending
       const { passwordHash, totpSecret, totpRecoveryCodes, ...safeUser } = user;
       res.json(safeUser);
-    } catch (error) {
+    } catch {
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
@@ -472,7 +472,7 @@ export function registerAuthRoutes(app: Express): void {
       const userRole: UserRole = user?.role || "viewer";
       const permissions = ROLE_PERMISSIONS[userRole] || ROLE_PERMISSIONS.viewer;
       res.json({ role: userRole, permissions });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch permissions" });
     }
   });
@@ -494,7 +494,7 @@ export function registerAuthRoutes(app: Express): void {
     try {
       const stats = await storage.getStats();
       res.json(stats);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });
@@ -515,7 +515,7 @@ export function registerAuthRoutes(app: Express): void {
         const baseUrl = `${req.protocol}://${req.get("host")}`;
         const result = await magicLinkAuth.sendMagicLink(email, baseUrl);
         res.json(result);
-      } catch (error) {
+      } catch {
         res.status(500).json({ success: false, message: "Failed to send magic link" });
       }
     }
@@ -538,7 +538,7 @@ export function registerAuthRoutes(app: Express): void {
         } else {
           res.status(400).json(result);
         }
-      } catch (error) {
+      } catch {
         res.status(500).json({ success: false, error: "Failed to verify magic link" });
       }
     }

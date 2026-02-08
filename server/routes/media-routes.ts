@@ -39,7 +39,7 @@ export function registerMediaRoutes(app: Express): void {
       const { contentId } = req.query;
       const links = await storage.getAffiliateLinks(contentId as string | undefined);
       res.json(links);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch affiliate links" });
     }
   });
@@ -51,7 +51,7 @@ export function registerMediaRoutes(app: Express): void {
         return res.status(404).json({ error: "Affiliate link not found" });
       }
       res.json(link);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch affiliate link" });
     }
   });
@@ -104,7 +104,7 @@ export function registerMediaRoutes(app: Express): void {
           { anchor: link.anchor, url: link.url }
         );
         res.json(link);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update affiliate link" });
       }
     }
@@ -129,7 +129,7 @@ export function registerMediaRoutes(app: Express): void {
           );
         }
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete affiliate link" });
       }
     }
@@ -143,7 +143,7 @@ export function registerMediaRoutes(app: Express): void {
     try {
       const files = await storage.getMediaFiles();
       res.json(files);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch media files" });
     }
   });
@@ -155,7 +155,7 @@ export function registerMediaRoutes(app: Express): void {
         return res.status(404).json({ error: "Media file not found" });
       }
       res.json(file);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch media file" });
     }
   });
@@ -172,7 +172,7 @@ export function registerMediaRoutes(app: Express): void {
 
       const usage = await storage.checkMediaUsage(mediaFile.url);
       res.json(usage);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to check media usage" });
     }
   });
@@ -263,7 +263,7 @@ export function registerMediaRoutes(app: Express): void {
         );
 
         res.status(201).json(mediaFile);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to upload media file" });
       }
     }
@@ -280,7 +280,7 @@ export function registerMediaRoutes(app: Express): void {
           return res.status(404).json({ error: "Media file not found" });
         }
         res.json(file);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update media file" });
       }
     }
@@ -313,7 +313,7 @@ export function registerMediaRoutes(app: Express): void {
           );
         }
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete media file" });
       }
     }

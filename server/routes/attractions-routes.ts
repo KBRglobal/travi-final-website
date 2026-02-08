@@ -86,7 +86,7 @@ export function registerAttractionsRoutes(app: Express): void {
         pageSize: pageSizeNum,
         totalPages,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -163,7 +163,7 @@ export function registerAttractionsRoutes(app: Express): void {
         aiGenerated: !!attr.aiContent,
         ...(shouldRedirect ? { redirect: `/${citySlug}/attractions/${canonicalSlug}` } : {}),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction" });
     }
   });
@@ -225,7 +225,7 @@ export function registerAttractionsRoutes(app: Express): void {
           fullAttraction.metaTitle = aiResult.metaTitle;
           fullAttraction.metaDescription = aiResult.metaDescription;
           aiGenerated = true;
-        } catch (aiError) {
+        } catch {
           // Fallback content
           fullAttraction.introduction = `${attraction.name} is one of ${destInfo.name}'s most popular attractions, offering visitors an unforgettable experience.`;
           fullAttraction.whatToExpect = [
@@ -281,7 +281,7 @@ export function registerAttractionsRoutes(app: Express): void {
         affiliateLink: TIQETS_AFFILIATE_LINK,
         aiGenerated,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -299,7 +299,7 @@ export function registerAttractionsRoutes(app: Express): void {
         destinations,
         affiliateLink: TIQETS_AFFILIATE_LINK,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch destinations" });
     }
   });
@@ -331,7 +331,7 @@ export function registerAttractionsRoutes(app: Express): void {
       });
 
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -513,7 +513,7 @@ export function registerAttractionsRoutes(app: Express): void {
         affiliateLink: TIQETS_AFFILIATE_LINK,
         aiGenerated: !!attr.aiContent,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -545,7 +545,7 @@ export function registerAttractionsRoutes(app: Express): void {
         attraction: attraction[0],
         affiliateLink: TIQETS_AFFILIATE_LINK,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -591,7 +591,7 @@ export function registerAttractionsRoutes(app: Express): void {
         pageSize: pageSizeNum,
         totalPages,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -721,7 +721,7 @@ export function registerAttractionsRoutes(app: Express): void {
         pageSize: pageSizeNum,
         totalPages,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });

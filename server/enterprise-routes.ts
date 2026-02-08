@@ -19,7 +19,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const teams = await enterprise.teams.getAll();
       res.json(teams);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch teams" });
     }
   });
@@ -33,7 +33,7 @@ export function registerEnterpriseRoutes(app: Express) {
       }
       const members = await enterprise.teams.getMembers(req.params.id);
       res.json({ ...team, members });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch team" });
     }
   });
@@ -43,7 +43,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const team = await enterprise.teams.create(req.body);
       res.status(201).json(team);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create team" });
     }
   });
@@ -56,7 +56,7 @@ export function registerEnterpriseRoutes(app: Express) {
         return res.status(404).json({ error: "Team not found" });
       }
       res.json(team);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update team" });
     }
   });
@@ -66,7 +66,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       await enterprise.teams.delete(req.params.id);
       res.status(204).send();
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete team" });
     }
   });
@@ -80,7 +80,7 @@ export function registerEnterpriseRoutes(app: Express) {
         role: req.body.role || "member",
       });
       res.status(201).json(member);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to add team member" });
     }
   });
@@ -93,7 +93,7 @@ export function registerEnterpriseRoutes(app: Express) {
       try {
         await enterprise.teams.removeMember(req.params.teamId, req.params.userId);
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to remove team member" });
       }
     }
@@ -104,7 +104,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const teams = await enterprise.teams.getUserTeams(req.params.userId);
       res.json(teams);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch user teams" });
     }
   });
@@ -118,7 +118,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const templates = await enterprise.workflows.getTemplates();
       res.json(templates);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch workflow templates" });
     }
   });
@@ -132,7 +132,7 @@ export function registerEnterpriseRoutes(app: Express) {
         createdBy: user?.claims?.sub,
       });
       res.status(201).json(template);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create workflow template" });
     }
   });
@@ -157,7 +157,7 @@ export function registerEnterpriseRoutes(app: Express) {
       });
 
       res.status(201).json(instance);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to submit for review" });
     }
   });
@@ -167,7 +167,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const instance = await enterprise.workflows.getInstanceByContent(req.params.id);
       res.json(instance || { status: "none" });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch workflow status" });
     }
   });
@@ -178,7 +178,7 @@ export function registerEnterpriseRoutes(app: Express) {
       const user = req.user as any;
       const approvals = await enterprise.workflows.getPendingApprovals(user?.claims?.sub);
       res.json(approvals);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch pending approvals" });
     }
   });
@@ -206,7 +206,7 @@ export function registerEnterpriseRoutes(app: Express) {
         }
 
         res.json(instance);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to approve workflow" });
       }
     }
@@ -235,7 +235,7 @@ export function registerEnterpriseRoutes(app: Express) {
         }
 
         res.json(instance);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to reject workflow" });
       }
     }
@@ -254,7 +254,7 @@ export function registerEnterpriseRoutes(app: Express) {
         teamId: teamId as string,
       });
       res.json(activities);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch activity" });
     }
   });
@@ -264,7 +264,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const activities = await enterprise.activity.getForContent(req.params.id);
       res.json(activities);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content activity" });
     }
   });
@@ -284,7 +284,7 @@ export function registerEnterpriseRoutes(app: Express) {
       }
 
       res.json(result);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to acquire lock" });
     }
   });
@@ -295,7 +295,7 @@ export function registerEnterpriseRoutes(app: Express) {
       const user = req.user as any;
       await enterprise.locks.releaseLock(req.params.id, user?.claims?.sub);
       res.status(204).send();
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to release lock" });
     }
   });
@@ -305,7 +305,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const lock = await enterprise.locks.getLock(req.params.id);
       res.json(lock || { locked: false });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch lock status" });
     }
   });
@@ -315,7 +315,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const locks = await enterprise.locks.getAllActiveLocks();
       res.json({ locks, total: locks.length });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch active locks" });
     }
   });
@@ -328,7 +328,7 @@ export function registerEnterpriseRoutes(app: Express) {
       try {
         await enterprise.locks.forceUnlock(req.params.contentId);
         res.json({ success: true, message: "Lock released successfully" });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to force unlock" });
       }
     }
@@ -339,7 +339,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const count = await enterprise.locks.cleanupExpired();
       res.json({ success: true, cleaned: count });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to cleanup expired locks" });
     }
   });
@@ -359,7 +359,7 @@ export function registerEnterpriseRoutes(app: Express) {
       });
       const unreadCount = await enterprise.notifications.getUnreadCount(user?.claims?.sub);
       res.json({ notifications, unreadCount });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch notifications" });
     }
   });
@@ -370,7 +370,7 @@ export function registerEnterpriseRoutes(app: Express) {
       const user = req.user as any;
       await enterprise.notifications.markAsRead(req.params.id, user?.claims?.sub);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to mark notification as read" });
     }
   });
@@ -381,7 +381,7 @@ export function registerEnterpriseRoutes(app: Express) {
       const user = req.user as any;
       await enterprise.notifications.markAllAsRead(user?.claims?.sub);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to mark all notifications as read" });
     }
   });
@@ -392,7 +392,7 @@ export function registerEnterpriseRoutes(app: Express) {
       const user = req.user as any;
       await enterprise.notifications.delete(req.params.id, user?.claims?.sub);
       res.status(204).send();
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete notification" });
     }
   });
@@ -406,7 +406,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const webhooks = await enterprise.webhooks.getAll();
       res.json(webhooks);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch webhooks" });
     }
   });
@@ -420,7 +420,7 @@ export function registerEnterpriseRoutes(app: Express) {
         createdBy: user?.claims?.sub,
       });
       res.status(201).json(webhook);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create webhook" });
     }
   });
@@ -433,7 +433,7 @@ export function registerEnterpriseRoutes(app: Express) {
         return res.status(404).json({ error: "Webhook not found" });
       }
       res.json(webhook);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update webhook" });
     }
   });
@@ -443,7 +443,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       await enterprise.webhooks.delete(req.params.id);
       res.status(204).send();
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete webhook" });
     }
   });
@@ -453,7 +453,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const logs = await enterprise.webhooks.getLogs(req.params.id);
       res.json(logs);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch webhook logs" });
     }
   });
@@ -472,7 +472,7 @@ export function registerEnterpriseRoutes(app: Express) {
       });
 
       res.json({ success: true, message: "Test webhook sent" });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to test webhook" });
     }
   });
@@ -486,7 +486,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const comments = await enterprise.comments.getForContent(req.params.id);
       res.json(comments);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch comments" });
     }
   });
@@ -526,7 +526,7 @@ export function registerEnterpriseRoutes(app: Express) {
       }
 
       res.status(201).json(comment);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create comment" });
     }
   });
@@ -539,7 +539,7 @@ export function registerEnterpriseRoutes(app: Express) {
         return res.status(404).json({ error: "Comment not found" });
       }
       res.json(comment);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update comment" });
     }
   });
@@ -549,7 +549,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       await enterprise.comments.delete(req.params.id);
       res.status(204).send();
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete comment" });
     }
   });
@@ -563,7 +563,7 @@ export function registerEnterpriseRoutes(app: Express) {
         return res.status(404).json({ error: "Comment not found" });
       }
       res.json(comment);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to resolve comment" });
     }
   });
@@ -576,7 +576,7 @@ export function registerEnterpriseRoutes(app: Express) {
         return res.status(404).json({ error: "Comment not found" });
       }
       res.json(comment);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to unresolve comment" });
     }
   });
@@ -589,7 +589,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const stats = await cache.getStats();
       res.json(stats);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch cache status" });
     }
   });
@@ -600,7 +600,7 @@ export function registerEnterpriseRoutes(app: Express) {
       const { pattern = "*" } = req.body;
       const cleared = await cache.invalidate(pattern);
       res.json({ success: true, cleared });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to clear cache" });
     }
   });
@@ -614,7 +614,7 @@ export function registerEnterpriseRoutes(app: Express) {
     try {
       const stats = await backupService.getBackupStats();
       res.json(stats);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch backup statistics" });
     }
   });
@@ -631,7 +631,7 @@ export function registerEnterpriseRoutes(app: Express) {
         `attachment; filename="travi-export-${new Date().toISOString().split("T")[0]}.json"`
       );
       res.json(data);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to export data" });
     }
   });
@@ -649,7 +649,7 @@ export function registerEnterpriseRoutes(app: Express) {
           stats: data.stats,
           options: data.options,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to preview export" });
       }
     }
@@ -663,7 +663,7 @@ export function registerEnterpriseRoutes(app: Express) {
       try {
         const validation = await importService.validateImportData(req.body);
         res.json(validation);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to validate import data" });
       }
     }
@@ -678,7 +678,7 @@ export function registerEnterpriseRoutes(app: Express) {
         const { data, options = {} } = req.body;
         const result = await importService.importData(data, { ...options, dryRun: true });
         res.json(result);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to preview import" });
       }
     }
@@ -697,7 +697,7 @@ export function registerEnterpriseRoutes(app: Express) {
 
       const result = await importService.importData(data, { ...options, dryRun: false });
       res.json(result);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to import data" });
     }
   });
@@ -713,7 +713,7 @@ export function registerEnterpriseRoutes(app: Express) {
         `attachment; filename="travi-backup-${new Date().toISOString().split("T")[0]}.json"`
       );
       res.json(data);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create backup" });
     }
   });

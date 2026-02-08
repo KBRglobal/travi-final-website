@@ -71,7 +71,7 @@ router.get("/api/public/guides", async (req: Request, res: Response) => {
       pagination: paginationMeta(total, pg),
       locale,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch guides" });
   }
 });
@@ -179,7 +179,7 @@ router.get("/api/public/guides/:slug", async (req: Request, res: Response) => {
     };
 
     res.json(formattedGuide);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch guide" });
   }
 });
@@ -214,7 +214,7 @@ router.get("/api/public/guides/destination/:destinationId", async (req: Request,
       availableLocales: sections?.translations ? Object.keys(sections.translations) : ["en"],
       sourceUrl: translation?.sourceUrl,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch destination guide" });
   }
 });
@@ -245,7 +245,7 @@ router.post(
           ? `Successfully imported ${result.imported} language versions for ${destName}`
           : `Failed to import guide for ${destName}`,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to import guide from Wikivoyage" });
     }
   }
@@ -263,7 +263,7 @@ router.post(
       });
 
       runFullWikivoyageIngestion().catch(console.error);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to start full Wikivoyage import" });
     }
   }
@@ -309,7 +309,7 @@ router.get(
         availableDestinations: getAvailableDestinations(),
         availableLocales: getAvailableLocales(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get Wikivoyage status" });
     }
   }

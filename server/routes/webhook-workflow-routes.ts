@@ -31,7 +31,7 @@ export function registerWebhookWorkflowRoutes(app: Express): void {
         })
         .returning();
       res.json(workflow[0]);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create workflow" });
     }
   });
@@ -40,7 +40,7 @@ export function registerWebhookWorkflowRoutes(app: Express): void {
     try {
       const allWorkflows = await db.select().from(workflows);
       res.json(allWorkflows);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch workflows" });
     }
   });
@@ -54,7 +54,7 @@ export function registerWebhookWorkflowRoutes(app: Express): void {
         const { id } = req.params;
         const result = await workflowEngine.executeWorkflow(id, req.body);
         res.json(result);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to execute workflow" });
       }
     }
@@ -73,7 +73,7 @@ export function registerWebhookWorkflowRoutes(app: Express): void {
           .orderBy(desc(workflowExecutions.startedAt))
           .limit(50);
         res.json(executions);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch workflow executions" });
       }
     }

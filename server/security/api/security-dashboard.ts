@@ -459,7 +459,7 @@ securityDashboardRouter.get("/dashboard", async (req, res) => {
   try {
     const dashboard = await dashboardService.generateDashboard();
     res.json(dashboard);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to generate dashboard" });
   }
 });
@@ -471,7 +471,7 @@ securityDashboardRouter.get("/posture", async (req, res) => {
   try {
     const posture = await dashboardService.calculatePosture();
     res.json(posture);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to calculate posture" });
   }
 });
@@ -483,7 +483,7 @@ securityDashboardRouter.get("/threat", async (req, res) => {
   try {
     const threat = await assessThreatLevel();
     res.json(threat);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to assess threat" });
   }
 });
@@ -514,7 +514,7 @@ securityDashboardRouter.post("/mode", (req, res) => {
   try {
     const config = setSecurityMode(mode, reason, userId, expiresIn);
     res.json(config);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to set mode" });
   }
 });
@@ -526,7 +526,7 @@ securityDashboardRouter.get("/policy-health", (req, res) => {
   try {
     const lint = lintPolicies();
     res.json(lint);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to lint policies" });
   }
 });
@@ -578,7 +578,7 @@ securityDashboardRouter.get("/report/pdf", async (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", "attachment; filename=security-report.pdf");
     res.send(pdf);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to generate report" });
   }
 });

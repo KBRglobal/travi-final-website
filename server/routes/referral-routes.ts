@@ -68,7 +68,7 @@ export function registerReferralRoutes(app: Express) {
         partnerCode: newCode.code,
         referralLink: `${req.protocol}://${req.get("host")}?ref=${newCode.code}`,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to register as partner" });
     }
   });
@@ -148,7 +148,7 @@ export function registerReferralRoutes(app: Express) {
         })),
         referralLink: `${req.protocol}://${req.get("host")}?ref=${partnerCode.code}`,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch dashboard" });
     }
   });
@@ -191,7 +191,7 @@ export function registerReferralRoutes(app: Express) {
         .where(eq(referralCodes.id, partnerCode.id));
 
       res.json({ success: true, tracked: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -222,7 +222,7 @@ export function registerReferralRoutes(app: Express) {
             createdAt: p.createdAt,
           }))
         );
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch partners" });
       }
     }
@@ -250,7 +250,7 @@ export function registerReferralRoutes(app: Express) {
           .limit(100);
 
         res.json(clicks);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch clicks" });
       }
     }
@@ -278,7 +278,7 @@ export function registerReferralRoutes(app: Express) {
           .limit(100);
 
         res.json(conversions);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch conversions" });
       }
     }
@@ -323,7 +323,7 @@ export function registerReferralRoutes(app: Express) {
           commissionRate: updated.commissionRate,
           isActive: updated.isActive,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update partner" });
       }
     }
@@ -346,7 +346,7 @@ export function registerReferralRoutes(app: Express) {
         await db.delete(referralCodes).where(eq(referralCodes.id, partnerCode.id));
 
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete partner" });
       }
     }

@@ -476,7 +476,7 @@ export class AttractionDetector {
         isAttraction: false,
         reasoning: parsed.reasoning || "Not a new attraction announcement",
       };
-    } catch (error) {
+    } catch {
       logger.error("[AttractionDetector] Failed to parse LLM response");
       return {
         isAttraction: false,

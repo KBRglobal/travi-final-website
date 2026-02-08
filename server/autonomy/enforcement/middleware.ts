@@ -149,7 +149,7 @@ export function createDegradedModeMiddleware<T>(
       }
 
       next();
-    } catch (error) {
+    } catch {
       // On errors with degraded mode, return fallback
       if (DEFAULT_ENFORCEMENT_CONFIG.degradedModeEnabled) {
         const degraded: DegradedResponse<T> = {

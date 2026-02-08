@@ -135,7 +135,7 @@ async function testAnthropicKey(apiKey: string): Promise<{ success: boolean; mes
       const error = await response.json();
       return { success: false, message: error.error?.message || "Invalid key" };
     }
-  } catch (error) {
+  } catch {
     return { success: false, message: "Connection error" };
   }
 }
@@ -151,7 +151,7 @@ async function testOpenAIKey(apiKey: string): Promise<{ success: boolean; messag
     } else {
       return { success: false, message: "Invalid key" };
     }
-  } catch (error) {
+  } catch {
     return { success: false, message: "Connection error" };
   }
 }
@@ -167,7 +167,7 @@ async function testGeminiKey(apiKey: string): Promise<{ success: boolean; messag
     } else {
       return { success: false, message: "Invalid key" };
     }
-  } catch (error) {
+  } catch {
     return { success: false, message: "Connection error" };
   }
 }

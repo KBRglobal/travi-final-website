@@ -63,7 +63,7 @@ export function registerLogRoutes(app: Express) {
 
         const logs = getLogs(filter);
         res.json({ logs, count: logs.length });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch logs" });
       }
     }
@@ -80,7 +80,7 @@ export function registerLogRoutes(app: Express) {
       try {
         const stats = getLogStats();
         res.json(stats);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch log stats" });
       }
     }
@@ -98,7 +98,7 @@ export function registerLogRoutes(app: Express) {
         const categories = getCategories();
         const displayNames = getCategoryDisplayNames();
         res.json({ categories, displayNames });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch log categories" });
       }
     }
@@ -127,7 +127,7 @@ export function registerLogRoutes(app: Express) {
         res.setHeader("Content-Type", "application/json");
         res.setHeader("Content-Disposition", `attachment; filename=logs-${Date.now()}.json`);
         res.send(jsonData);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to export logs" });
       }
     }
@@ -144,7 +144,7 @@ export function registerLogRoutes(app: Express) {
       try {
         clearLogs();
         res.json({ success: true, message: "Logs cleared" });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to clear logs" });
       }
     }

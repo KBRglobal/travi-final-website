@@ -28,7 +28,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
 
       await customerJourney.trackEvent(event);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track event" });
     }
   });
@@ -76,7 +76,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
       });
 
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track page view" });
     }
   });
@@ -122,7 +122,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
       });
 
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -162,7 +162,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
       });
 
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track CTA" });
     }
   });
@@ -191,7 +191,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
       });
 
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track scroll" });
     }
   });
@@ -234,7 +234,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
         });
 
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to track conversion" });
       }
     }
@@ -249,7 +249,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
       const hours = Number.parseInt(req.query.hours as string) || 24;
       const summary = await customerJourney.getDashboardSummary(hours);
       res.json(summary);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get dashboard" });
     }
   });
@@ -263,7 +263,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
       const minutes = Number.parseInt(req.query.minutes as string) || 5;
       const activeUsers = customerJourney.getActiveUsers(minutes);
       res.json({ activeUsers, minutes });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get realtime data" });
     }
   });
@@ -283,7 +283,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
       });
 
       res.json(analytics);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get page analytics" });
     }
   });
@@ -307,7 +307,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
         }
 
         res.json(journey);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to get journey" });
       }
     }
@@ -329,7 +329,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
 
       const funnel = await customerJourney.getConversionFunnel(steps);
       res.json(funnel);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get funnel" });
     }
   });
@@ -343,7 +343,7 @@ export function registerCustomerJourneyRoutes(app: Express) {
       const pagePath = "/" + (req.params[0] || "");
       const heatmap = await customerJourney.getClickHeatmap(pagePath);
       res.json(heatmap);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get heatmap" });
     }
   });

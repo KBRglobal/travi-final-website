@@ -13,7 +13,7 @@ export function registerAnalyticsRoutes(app: Express): void {
     try {
       const overview = await storage.getAnalyticsOverview();
       res.json(overview);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch analytics overview" });
     }
   });
@@ -26,7 +26,7 @@ export function registerAnalyticsRoutes(app: Express): void {
         const days = Number.parseInt(req.query.days as string) || 30;
         const views = await storage.getViewsOverTime(Math.min(days, 90));
         res.json(views);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch views over time" });
       }
     }
@@ -37,7 +37,7 @@ export function registerAnalyticsRoutes(app: Express): void {
       const limit = Number.parseInt(req.query.limit as string) || 10;
       const topContent = await storage.getTopContent(Math.min(limit, 50));
       res.json(topContent);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch top content" });
     }
   });
@@ -49,7 +49,7 @@ export function registerAnalyticsRoutes(app: Express): void {
       try {
         const byType = await storage.getViewsByContentType();
         res.json(byType);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch views by content type" });
       }
     }
@@ -68,7 +68,7 @@ export function registerAnalyticsRoutes(app: Express): void {
           sessionId: req.sessionID,
         });
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.json({ success: true });
       }
     }

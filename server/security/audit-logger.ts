@@ -292,7 +292,7 @@ export async function getSecurityEvents(filters?: {
     }
 
     return filtered;
-  } catch (error) {
+  } catch {
     return [];
   }
 }

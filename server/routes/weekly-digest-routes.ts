@@ -21,7 +21,7 @@ export function registerWeeklyDigestRoutes(app: Express): void {
         const { getDigestStatus } = await import("../newsletter/weekly-digest");
         const status = await getDigestStatus();
         res.json(status);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch digest status" });
       }
     }
@@ -49,7 +49,7 @@ export function registerWeeklyDigestRoutes(app: Express): void {
             error: result.errors.join(", ") || "Failed to send digest",
           });
         }
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to send weekly digest" });
       }
     }
@@ -88,7 +88,7 @@ export function registerWeeklyDigestRoutes(app: Express): void {
             error: result.errors.join(", "),
           });
         }
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to send test digest" });
       }
     }
@@ -108,7 +108,7 @@ export function registerWeeklyDigestRoutes(app: Express): void {
           preview: result.preview,
           wouldSendTo: result.wouldSendTo,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to generate dry-run digest" });
       }
     }
@@ -124,7 +124,7 @@ export function registerWeeklyDigestRoutes(app: Express): void {
         const { getDigestKPIStats } = await import("../newsletter/weekly-digest");
         const stats = await getDigestKPIStats();
         res.json(stats);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch digest stats" });
       }
     }

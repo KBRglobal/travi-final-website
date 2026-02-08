@@ -213,7 +213,7 @@ export async function backfillSeoSlugs(options?: {
           .where(eq(tiqetsAttractions.id, attraction.id));
 
         updated++;
-      } catch (error) {
+      } catch {
         errors++;
       }
     }

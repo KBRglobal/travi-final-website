@@ -155,7 +155,7 @@ class CacheService {
         return await this.redis.get<T>(key);
       }
       return await this.memory.get<T>(key);
-    } catch (error) {
+    } catch {
       return await this.memory.get<T>(key);
     }
   }
@@ -171,7 +171,7 @@ class CacheService {
       }
       // Always set in memory as backup
       await this.memory.set(key, value, ttlSeconds);
-    } catch (error) {
+    } catch {
       await this.memory.set(key, value, ttlSeconds);
     }
   }
@@ -185,7 +185,7 @@ class CacheService {
         await this.redis.del(key);
       }
       await this.memory.del(key);
-    } catch (error) {
+    } catch {
       await this.memory.del(key);
     }
   }
@@ -204,7 +204,7 @@ class CacheService {
         return keys.length;
       }
       return await this.memory.flushByPattern(pattern);
-    } catch (error) {
+    } catch {
       return await this.memory.flushByPattern(pattern);
     }
   }
@@ -223,7 +223,7 @@ class CacheService {
         return count;
       }
       return await this.memory.incr(key, ttlSeconds);
-    } catch (error) {
+    } catch {
       return await this.memory.incr(key, ttlSeconds);
     }
   }
@@ -238,7 +238,7 @@ class CacheService {
         return await this.redis.ttl(key);
       }
       return await this.memory.ttl(key);
-    } catch (error) {
+    } catch {
       return await this.memory.ttl(key);
     }
   }

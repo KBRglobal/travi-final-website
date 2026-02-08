@@ -20,7 +20,7 @@ export function registerWriterPromotionRoutes(app: Express): void {
     try {
       const writers = await storage.getAllWriters();
       res.json({ writers, total: writers.length });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch writers" });
     }
   });
@@ -30,7 +30,7 @@ export function registerWriterPromotionRoutes(app: Express): void {
     try {
       const stats = await storage.getWriterStats();
       res.json({ stats });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch writer stats" });
     }
   });
@@ -43,7 +43,7 @@ export function registerWriterPromotionRoutes(app: Express): void {
         return res.status(404).json({ error: "Writer not found" });
       }
       res.json(writer);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch writer" });
     }
   });
@@ -57,7 +57,7 @@ export function registerWriterPromotionRoutes(app: Express): void {
       try {
         const count = await storage.seedWritersFromConfig();
         res.json({ success: true, message: `Seeded ${count} writers` });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to seed writers" });
       }
     }
@@ -99,7 +99,7 @@ export function registerWriterPromotionRoutes(app: Express): void {
           return res.status(404).json({ error: "Writer not found" });
         }
         res.json(updated);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update writer" });
       }
     }
@@ -138,7 +138,7 @@ export function registerWriterPromotionRoutes(app: Express): void {
       );
 
       res.json(promotionsWithContent);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage promotions" });
     }
   });
@@ -198,7 +198,7 @@ export function registerWriterPromotionRoutes(app: Express): void {
       try {
         await storage.deleteHomepagePromotion(req.params.id);
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete homepage promotion" });
       }
     }

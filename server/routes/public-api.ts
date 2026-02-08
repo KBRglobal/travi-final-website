@@ -94,7 +94,7 @@ export function registerPublicApiRoutes(app: Express): void {
         const sanitized = results.slice(0, maxLimit).map(sanitizeContentForPublic);
         res.json(sanitized);
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch contents" });
     }
   });
@@ -154,7 +154,7 @@ export function registerPublicApiRoutes(app: Express): void {
         heroCTAText: config.heroCTAText ?? null,
         heroCTALink: config.heroCTALink ?? null,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch destinations index hero" });
     }
   });
@@ -184,7 +184,7 @@ export function registerPublicApiRoutes(app: Express): void {
         .orderBy(destinations.name);
 
       res.json(allDestinations);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch destinations" });
     }
   });
@@ -288,7 +288,7 @@ export function registerPublicApiRoutes(app: Express): void {
           tagline: destination.moodTagline,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch destination" });
     }
   });
@@ -304,7 +304,7 @@ export function registerPublicApiRoutes(app: Express): void {
         .orderBy(homepageSections.sortOrder);
 
       res.json(sections);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage sections" });
     }
   });
@@ -320,7 +320,7 @@ export function registerPublicApiRoutes(app: Express): void {
         .orderBy(homepageCards.sortOrder);
 
       res.json(cards);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage cards" });
     }
   });
@@ -336,7 +336,7 @@ export function registerPublicApiRoutes(app: Express): void {
         .orderBy(experienceCategories.sortOrder);
 
       res.json(categories);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch experience categories" });
     }
   });
@@ -352,7 +352,7 @@ export function registerPublicApiRoutes(app: Express): void {
         .orderBy(regionLinks.sortOrder);
 
       res.json(regions);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch region links" });
     }
   });
@@ -427,7 +427,7 @@ export function registerPublicApiRoutes(app: Express): void {
         destinations: destinationsResult,
         total,
       });
-    } catch (error: any) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction destinations" });
     }
   });
@@ -490,7 +490,7 @@ export function registerPublicApiRoutes(app: Express): void {
         total: totalCount,
         cities: citiesResult.map(c => c.city),
       });
-    } catch (error: any) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -755,7 +755,7 @@ export function registerPublicApiRoutes(app: Express): void {
         locale,
         isTranslated: true,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content" });
     }
   });
@@ -782,7 +782,7 @@ export function registerPublicApiRoutes(app: Express): void {
       }
 
       res.json(layout[0]);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch layout" });
     }
   });
@@ -816,7 +816,7 @@ export function registerPublicApiRoutes(app: Express): void {
         slug: survey.slug,
         definition: survey.definition,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch survey" });
     }
   });
@@ -864,7 +864,7 @@ export function registerPublicApiRoutes(app: Express): void {
       });
 
       res.status(201).json({ success: true, responseId: response.id });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to submit response" });
     }
   });
@@ -1033,7 +1033,7 @@ export function registerPublicApiRoutes(app: Express): void {
         affiliateLink: TIQETS_AFFILIATE_LINK,
         aiGenerated: !!attr.aiContent,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -1064,7 +1064,7 @@ export function registerPublicApiRoutes(app: Express): void {
         attraction: attraction[0],
         affiliateLink: TIQETS_AFFILIATE_LINK,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction details" });
     }
   });
@@ -1100,7 +1100,7 @@ export function registerPublicApiRoutes(app: Express): void {
         affiliateLink: TIQETS_AFFILIATE_LINK,
         pagination: paginationMeta(total, pg),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -1210,7 +1210,7 @@ export function registerPublicApiRoutes(app: Express): void {
         affiliateLink: TIQETS_AFFILIATE_LINK,
         pagination: paginationMeta(total, pg),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -1250,7 +1250,7 @@ export function registerPublicApiRoutes(app: Express): void {
         robotsMeta: seoData.robotsMeta,
         jsonLdSchema: seoData.jsonLdSchema,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch page SEO" });
     }
   });
@@ -1358,7 +1358,7 @@ export function registerPublicApiRoutes(app: Express): void {
       const { id } = req.params;
       await storage.incrementPlacementClicks(id);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -1378,7 +1378,7 @@ export function registerPublicApiRoutes(app: Express): void {
             maxItems: c.maxItems,
           }))
       );
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch zone configs" });
     }
   });

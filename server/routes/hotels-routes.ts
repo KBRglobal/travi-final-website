@@ -234,7 +234,7 @@ export function registerHotelsRoutes(app: Express): void {
 
       const data = await response.json();
       res.json(data);
-    } catch (error) {
+    } catch {
       res.json({ locations: [], hotels: [] });
     }
   });
@@ -398,7 +398,7 @@ export function registerHotelsRoutes(app: Express): void {
         totalPages,
         totalFromApi,
       });
-    } catch (error) {
+    } catch {
       res.json({
         hotels: sampleHotels.slice(0, 20),
         source: "sample",
@@ -507,7 +507,7 @@ export function registerHotelsRoutes(app: Express): void {
       }
 
       res.json({ hotel, source: "api", aiGenerated });
-    } catch (error) {
+    } catch {
       const sampleHotel = sampleHotels[0];
       res.json({
         hotel: {
@@ -562,7 +562,7 @@ export function registerHotelsRoutes(app: Express): void {
         selections: data || [],
         source: "api",
       });
-    } catch (error) {
+    } catch {
       res.json({
         selections: [],
         hotels: sampleHotels,

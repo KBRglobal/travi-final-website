@@ -114,7 +114,7 @@ export async function getPolicies(): Promise<PolicyDefinition[]> {
 
     policyCacheExpiry = Date.now() + POLICY_CACHE_TTL_MS;
     return policyCache;
-  } catch (error) {
+  } catch {
     // Return defaults on error
     return [DEFAULT_GLOBAL_POLICY, ...FEATURE_POLICIES];
   }

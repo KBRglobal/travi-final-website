@@ -179,7 +179,7 @@ export class GatekeeperOrchestrator {
             await this.queueAttractionWritingJob(item, selection, detection);
             return;
           }
-        } catch (detectionError) {
+        } catch {
           // Attraction detection is non-critical, continue with regular write
           logger.warn(
             { feedItemId: item.id },

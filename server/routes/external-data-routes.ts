@@ -31,7 +31,7 @@ router.get("/pois/cities", async (req: Request, res: Response) => {
       .orderBy(desc(sql`count(*)`));
 
     res.json({ success: true, data: cities });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch cities" });
   }
 });
@@ -49,7 +49,7 @@ router.get("/pois/categories", async (req: Request, res: Response) => {
       .orderBy(desc(sql`count(*)`));
 
     res.json({ success: true, data: categories });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch categories" });
   }
 });
@@ -96,7 +96,7 @@ router.get("/pois", async (req: Request, res: Response) => {
       limit: Number.parseInt(limit as string),
       offset: Number.parseInt(offset as string),
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch POIs" });
   }
 });
@@ -116,7 +116,7 @@ router.get("/pois/:id", async (req: Request, res: Response) => {
     }
 
     res.json({ success: true, data: poi[0] });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch POI" });
   }
 });
@@ -153,7 +153,7 @@ router.get("/holidays/countries", async (req: Request, res: Response) => {
     }));
 
     res.json({ success: true, data: enrichedCountries });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch countries" });
   }
 });
@@ -186,7 +186,7 @@ router.get("/holidays", async (req: Request, res: Response) => {
       .orderBy(asc(update9987PublicHolidays.date));
 
     res.json({ success: true, data: holidays });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch holidays" });
   }
 });
@@ -231,7 +231,7 @@ router.get("/destinations/countries", async (req: Request, res: Response) => {
       data: countries,
       total: countResult[0]?.count || 0,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch countries" });
   }
 });
@@ -250,7 +250,7 @@ router.get("/destinations/regions", async (req: Request, res: Response) => {
       .orderBy(asc(update9987Countries.region));
 
     res.json({ success: true, data: regions });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch regions" });
   }
 });
@@ -283,7 +283,7 @@ router.get("/destinations/countries/:code", async (req: Request, res: Response) 
         states,
       },
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch country" });
   }
 });
@@ -314,7 +314,7 @@ router.get("/destinations/states", async (req: Request, res: Response) => {
       .offset(Number.parseInt(offset as string));
 
     res.json({ success: true, data: states });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch states" });
   }
 });
@@ -341,7 +341,7 @@ router.get("/stats", async (req: Request, res: Response) => {
         holidays: holidays[0]?.count || 0,
       },
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch stats" });
   }
 });

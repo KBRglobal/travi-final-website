@@ -223,7 +223,7 @@ export function registerContentCrudRoutes(app: Express): void {
         const data = await storage.getContentsWithRelations(filters);
         res.json(data);
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch contents" });
     }
   });
@@ -263,7 +263,7 @@ export function registerContentCrudRoutes(app: Express): void {
       );
 
       res.json({ lowSeo, noViews, scheduledToday });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attention items" });
     }
   });
@@ -280,7 +280,7 @@ export function registerContentCrudRoutes(app: Express): void {
       }
 
       res.json(content);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content" });
     }
   });
@@ -308,7 +308,7 @@ export function registerContentCrudRoutes(app: Express): void {
       }
 
       res.json(content);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content" });
     }
   });
@@ -360,7 +360,7 @@ export function registerContentCrudRoutes(app: Express): void {
         jsonLd,
         htmlEmbed: `<script type="application/ld+json">\n${jsonLd}\n</script>`,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to generate schema" });
     }
   });
@@ -674,7 +674,7 @@ export function registerContentCrudRoutes(app: Express): void {
         }
 
         res.json(fullContent);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update content" });
       }
     }
@@ -723,7 +723,7 @@ export function registerContentCrudRoutes(app: Express): void {
         }
 
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete content" });
       }
     }
@@ -745,7 +745,7 @@ export function registerContentCrudRoutes(app: Express): void {
       }
       const versions = await storage.getContentVersions(req.params.id);
       res.json(versions);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content versions" });
     }
   });
@@ -761,7 +761,7 @@ export function registerContentCrudRoutes(app: Express): void {
         return res.status(404).json({ error: "Version not found" });
       }
       res.json(version);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content version" });
     }
   });
@@ -817,7 +817,7 @@ export function registerContentCrudRoutes(app: Express): void {
         );
 
         res.json(updated);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to restore version" });
       }
     }
@@ -839,7 +839,7 @@ export function registerContentCrudRoutes(app: Express): void {
       }
       const translations = await storage.getTranslationsByContentId(req.params.id);
       res.json(translations);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });
@@ -906,7 +906,7 @@ export function registerContentCrudRoutes(app: Express): void {
           updatedAt: t.updatedAt,
         })),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translation status" });
     }
   });
@@ -1004,7 +1004,7 @@ export function registerContentCrudRoutes(app: Express): void {
             ? SUPPORTED_LOCALES.filter(l => tiers.includes(l.tier)).length
             : SUPPORTED_LOCALES.length - 1,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to start translation" });
       }
     }
@@ -1042,7 +1042,7 @@ export function registerContentCrudRoutes(app: Express): void {
           cancelledCount,
           contentId: req.params.id,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to cancel translation" });
       }
     }

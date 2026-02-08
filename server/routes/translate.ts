@@ -119,7 +119,7 @@ router.post("/", async (req: Request, res: Response) => {
       provider: provider,
       costNote: costNotes[provider] || costNotes.claude,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Translation failed" });
   }
 });

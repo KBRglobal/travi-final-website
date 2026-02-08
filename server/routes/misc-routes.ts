@@ -204,7 +204,7 @@ export function registerMiscRoutes(app: Express): void {
       res.set("Content-Type", contentTypes[fileExt || "jpg"] || "image/jpeg");
       res.set("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
       res.send(buffer);
-    } catch (error) {
+    } catch {
       res.status(404).send("Image not found");
     }
   });
@@ -218,7 +218,7 @@ export function registerMiscRoutes(app: Express): void {
       const { contentId } = req.query;
       const links = await storage.getInternalLinks(contentId as string | undefined);
       res.json(links);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch internal links" });
     }
   });
@@ -231,7 +231,7 @@ export function registerMiscRoutes(app: Express): void {
       try {
         const link = await storage.createInternalLink(req.body);
         res.status(201).json(link);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create internal link" });
       }
     }
@@ -245,7 +245,7 @@ export function registerMiscRoutes(app: Express): void {
       try {
         await storage.deleteInternalLink(req.params.id);
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete internal link" });
       }
     }
@@ -260,7 +260,7 @@ export function registerMiscRoutes(app: Express): void {
     try {
       const scheduledContent = await storage.getScheduledContentToPublish();
       res.json(scheduledContent);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch scheduled content" });
     }
   });
@@ -338,7 +338,7 @@ export function registerMiscRoutes(app: Express): void {
         message: "Thank you! Our team will contact you within 24 hours.",
         leadId: lead.id,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to submit. Please try again." });
     }
   });
@@ -363,7 +363,7 @@ export function registerMiscRoutes(app: Express): void {
         storage.getAuditLogCount(filters),
       ]);
       res.json({ logs, total, limit: filters.limit, offset: filters.offset });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch audit logs" });
     }
   });
@@ -386,7 +386,7 @@ export function registerMiscRoutes(app: Express): void {
         return res.json({ id: null, ...DEFAULT_CONTENT_RULES });
       }
       res.json(rules[0]);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content rules" });
     }
   });
@@ -422,7 +422,7 @@ export function registerMiscRoutes(app: Express): void {
         } as any);
         res.json({ success: true, created: true });
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to save content rules" });
     }
   });
@@ -432,7 +432,7 @@ export function registerMiscRoutes(app: Express): void {
     try {
       const rules = await db.select().from(contentRules).orderBy(desc(contentRules.createdAt));
       res.json(rules);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content rules" });
     }
   });
@@ -460,7 +460,7 @@ export function registerMiscRoutes(app: Express): void {
         })
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       res.json({ backups: files, directory: backupDir });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to list backups" });
     }
   });
@@ -474,7 +474,7 @@ export function registerMiscRoutes(app: Express): void {
       } else {
         res.status(500).json({ error: result.error || "Backup failed" });
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create backup" });
     }
   });
@@ -483,7 +483,7 @@ export function registerMiscRoutes(app: Express): void {
     try {
       const { getSchedulerStatus } = await import("../lib/backup-scheduler");
       res.json(getSchedulerStatus());
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get backup status" });
     }
   });

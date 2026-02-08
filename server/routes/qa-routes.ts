@@ -35,7 +35,7 @@ export function registerQaRoutes(app: Express) {
         },
       });
       res.json(categories);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch categories" });
     }
   });
@@ -49,7 +49,7 @@ export function registerQaRoutes(app: Express) {
       try {
         const [category] = await db.insert(qaCategories).values(req.body).returning();
         res.status(201).json(category);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create category" });
       }
     }
@@ -68,7 +68,7 @@ export function registerQaRoutes(app: Express) {
           .where(eq(qaCategories.id, req.params.id))
           .returning();
         res.json(category);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update category" });
       }
     }
@@ -97,7 +97,7 @@ export function registerQaRoutes(app: Express) {
         },
       });
       res.json(items);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch items" });
     }
   });
@@ -111,7 +111,7 @@ export function registerQaRoutes(app: Express) {
       try {
         const [item] = await db.insert(qaChecklistItems).values(req.body).returning();
         res.status(201).json(item);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create item" });
       }
     }
@@ -130,7 +130,7 @@ export function registerQaRoutes(app: Express) {
           .where(eq(qaChecklistItems.id, req.params.id))
           .returning();
         res.json(item);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update item" });
       }
     }
@@ -153,7 +153,7 @@ export function registerQaRoutes(app: Express) {
         limit: 50,
       });
       res.json(runs);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch runs" });
     }
   });
@@ -188,7 +188,7 @@ export function registerQaRoutes(app: Express) {
       }
 
       res.json(run);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch run" });
     }
   });
@@ -268,7 +268,7 @@ export function registerQaRoutes(app: Express) {
       QaRunner.run(run.id).catch(err => {});
 
       res.status(201).json(run);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create run" });
     }
   });
@@ -282,7 +282,7 @@ export function registerQaRoutes(app: Express) {
         .where(eq(qaRuns.id, req.params.id))
         .returning();
       res.json(run);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update run" });
     }
   });
@@ -316,7 +316,7 @@ export function registerQaRoutes(app: Express) {
         .returning();
 
       res.json(run);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to complete run" });
     }
   });
@@ -362,7 +362,7 @@ export function registerQaRoutes(app: Express) {
         .where(eq(qaRuns.id, result.runId));
 
       res.json(result);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update result" });
     }
   });
@@ -388,7 +388,7 @@ export function registerQaRoutes(app: Express) {
       }
 
       res.json({ success: true, updated: updates.length });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update results" });
     }
   });
@@ -413,7 +413,7 @@ export function registerQaRoutes(app: Express) {
         },
       });
       res.json(issues);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch issues" });
     }
   });
@@ -437,7 +437,7 @@ export function registerQaRoutes(app: Express) {
         .returning();
 
       res.status(201).json(issue);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create issue" });
     }
   });
@@ -466,7 +466,7 @@ export function registerQaRoutes(app: Express) {
         .returning();
 
       res.json(issue);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update issue" });
     }
   });
@@ -482,7 +482,7 @@ export function registerQaRoutes(app: Express) {
         orderBy: [desc(qaTemplates.isDefault), qaTemplates.name],
       });
       res.json(templates);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch templates" });
     }
   });
@@ -506,7 +506,7 @@ export function registerQaRoutes(app: Express) {
           .returning();
 
         res.status(201).json(template);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create template" });
       }
     }
@@ -534,7 +534,7 @@ export function registerQaRoutes(app: Express) {
         await seedQaChecklist();
 
         res.json({ success: true, message: "QA checklist data seeded successfully" });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to seed QA data" });
       }
     }
@@ -560,7 +560,7 @@ export function registerQaRoutes(app: Express) {
           failed: results.filter(r => !r.passed).length,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to run automated checks" });
     }
   });
@@ -615,7 +615,7 @@ export function registerQaRoutes(app: Express) {
         total: lastRun.totalItems,
         byCategory,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch automated status" });
     }
   });
@@ -657,7 +657,7 @@ export function registerQaRoutes(app: Express) {
         averageScore: avgScore,
         recentRuns,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });

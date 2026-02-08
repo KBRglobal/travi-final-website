@@ -473,7 +473,7 @@ export async function renderRestaurantPage(
   let content: ContentWithRelations | undefined;
   try {
     content = await storage.getContentBySlug(slug);
-  } catch (error) {
+  } catch {
     return render404(options);
   }
 
@@ -574,7 +574,7 @@ export async function renderEventPage(
   let content: ContentWithRelations | undefined;
   try {
     content = await storage.getContentBySlug(slug);
-  } catch (error) {
+  } catch {
     return render404(options);
   }
 

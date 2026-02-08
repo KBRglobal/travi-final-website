@@ -1223,7 +1223,7 @@ Requirements:
           return JSON.parse(jsonMatch[0]);
         }
       }
-    } catch (error) {
+    } catch {
       log(`[GuideRewrite] SEO metadata generation failed, using defaults`);
     }
 
@@ -1275,7 +1275,7 @@ Requirements:
           return JSON.parse(jsonMatch[0]);
         }
       }
-    } catch (error) {
+    } catch {
       log(`[GuideRewrite] FAQ generation failed`);
     }
 
@@ -1337,7 +1337,7 @@ Requirements:
           }
         }
         await this.sleep(100); // Rate limit
-      } catch (error) {
+      } catch {
         log(`[GuideRewrite] Unsplash fetch failed for: ${query}`);
       }
     }
@@ -1402,7 +1402,7 @@ Include all 12 months. Rate each as good, fair, or poor for tourism.`;
           return JSON.parse(jsonMatch[0]);
         }
       }
-    } catch (error) {
+    } catch {
       log(`[GuideRewrite] Best time generation failed`);
     }
 
@@ -1457,7 +1457,7 @@ Include 4-8 main areas that travelers should know about.`;
           return JSON.parse(jsonMatch[0]);
         }
       }
-    } catch (error) {
+    } catch {
       log(`[GuideRewrite] Districts extraction failed`);
     }
 
@@ -1499,7 +1499,7 @@ Return ONLY valid JSON object with these keys:
           return JSON.parse(jsonMatch[0]);
         }
       }
-    } catch (error) {
+    } catch {
       log(`[GuideRewrite] Quick facts generation failed`);
     }
 

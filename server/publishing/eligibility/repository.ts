@@ -49,7 +49,7 @@ export async function getBlockedContent(limit: number = 50): Promise<BlockedCont
     }
 
     return blockedItems;
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -93,7 +93,7 @@ export async function getPublishedWithIssues(limit: number = 50): Promise<Blocke
     }
 
     return issueItems;
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -125,7 +125,7 @@ export async function getEligibilityStats(): Promise<{
       eligible: Math.max(0, totalDraft - blocked.length),
       publishedWithIssues: publishedIssues.length,
     };
-  } catch (error) {
+  } catch {
     return {
       totalDraft: 0,
       blocked: 0,

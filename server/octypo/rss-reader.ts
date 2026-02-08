@@ -262,7 +262,7 @@ class RSSReader {
           `);
 
           result.newItems++;
-        } catch (error) {
+        } catch {
           // Duplicate URL, skip
           result.duplicatesSkipped++;
         }

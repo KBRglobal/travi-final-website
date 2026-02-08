@@ -111,7 +111,7 @@ export const SecurityGate = {
       }
 
       return decision;
-    } catch (error) {
+    } catch {
       // FAIL CLOSED - if evaluation fails, deny the action
 
       if (DEFAULT_SECURITY_AUTHORITY_CONFIG.failClosed) {

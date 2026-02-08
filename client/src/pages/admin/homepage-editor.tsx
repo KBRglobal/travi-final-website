@@ -2678,7 +2678,7 @@ function DestinationItem({
           variant: "destructive",
         });
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Auto Meta error",
         description: "Network or server error",
@@ -2955,7 +2955,7 @@ function DestinationsEditor() {
           variant: "destructive",
         });
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Auto Meta error",
         description: "Network or server error",

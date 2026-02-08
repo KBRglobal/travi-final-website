@@ -45,7 +45,7 @@ async function ensureTableExists(): Promise<void> {
       CREATE INDEX IF NOT EXISTS "IDX_pre_auth_expires" ON pre_auth_tokens(expires_at);
     `;
     await pool.query(createTableSQL);
-  } catch (error) {
+  } catch {
     // If FK constraint fails (users table doesn't exist yet), try without it
     try {
       const fallbackSQL = `
@@ -237,7 +237,7 @@ export async function createPreAuthToken(
       deviceFingerprint: context.deviceFingerprint,
       expiresAt: new Date(expiresAt),
     } as any);
-  } catch (error) {
+  } catch {
     throw new Error("Failed to create pre-auth token");
   }
 
@@ -273,7 +273,7 @@ export async function verifyPreAuthToken(token: string): Promise<PendingLogin | 
   try {
     const payloadJson = Buffer.from(payloadBase64, "base64url").toString();
     payload = JSON.parse(payloadJson);
-  } catch (error) {
+  } catch {
     return null;
   }
 
@@ -323,7 +323,7 @@ export async function verifyPreAuthToken(token: string): Promise<PendingLogin | 
       deviceFingerprint: dbToken.deviceFingerprint || undefined,
       nonce: dbToken.nonce,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -346,7 +346,7 @@ export async function consumePreAuthToken(token: string): Promise<boolean> {
     }
 
     return deleted;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -376,7 +376,7 @@ export async function getPreAuthStats(): Promise<{
       pendingCount: tokens.length,
       oldestPendingAge: oldestAge ? Math.floor(oldestAge / 1000) : undefined, // seconds
     };
-  } catch (error) {
+  } catch {
     return { pendingCount: 0 };
   }
 }

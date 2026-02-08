@@ -63,7 +63,7 @@ export function registerGdprRoutes(app: Express): void {
       res.setHeader("Content-Type", "application/json");
       res.setHeader("Content-Disposition", `attachment; filename="gdpr-export-${userId}.json"`);
       res.json(exportData);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to export data" });
     }
   });
@@ -115,7 +115,7 @@ export function registerGdprRoutes(app: Express): void {
             contentAnonymized,
           },
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete user data" });
       }
     }

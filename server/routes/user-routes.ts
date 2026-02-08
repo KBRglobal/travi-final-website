@@ -41,7 +41,7 @@ export function registerUserRoutes(app: Express): void {
           profileImageUrl: u.profileImageUrl,
         }))
       );
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch users" });
     }
   });
@@ -65,7 +65,7 @@ export function registerUserRoutes(app: Express): void {
         createdAt: user.createdAt,
         profileImageUrl: user.profileImageUrl,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch user" });
     }
   });
@@ -276,7 +276,7 @@ export function registerUserRoutes(app: Express): void {
           isActive: user.isActive,
           createdAt: user.createdAt,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update user" });
       }
     }
@@ -302,7 +302,7 @@ export function registerUserRoutes(app: Express): void {
       );
 
       res.status(204).send();
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete user" });
     }
   });
@@ -351,7 +351,7 @@ export function registerUserRoutes(app: Express): void {
         }
 
         res.json({ success: true, deletedCount });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to bulk delete users" });
       }
     }

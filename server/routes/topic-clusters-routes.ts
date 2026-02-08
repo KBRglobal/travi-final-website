@@ -36,7 +36,7 @@ function safeParseJson(content: string, fallback: Record<string, unknown> = {}):
     }
     cleaned = cleaned.trim() || "{}";
     return JSON.parse(cleaned);
-  } catch (e) {
+  } catch {
     return fallback;
   }
 }
@@ -72,7 +72,7 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
       );
 
       res.json(clustersWithItems);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch topic clusters" });
     }
   });
@@ -181,7 +181,7 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
             duplicatesSkipped: skippedDuplicates.length,
           },
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to aggregate RSS items" });
       }
     }
@@ -441,7 +441,7 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
           wordCount,
           translationsQueued: 0,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to merge articles" });
       }
     }
@@ -459,7 +459,7 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
           return res.status(404).json({ error: "Topic cluster not found" });
         }
         res.json({ message: "Cluster dismissed", cluster });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to dismiss cluster" });
       }
     }
@@ -474,7 +474,7 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
       try {
         await storage.deleteTopicCluster(req.params.id);
         res.json({ message: "Cluster deleted" });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete cluster" });
       }
     }
@@ -493,7 +493,7 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
         res.status(410).json({
           message: "Legacy RSS auto-processing has been removed. Use Gatekeeper pipeline instead.",
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to auto-process RSS feeds" });
       }
     }
@@ -512,7 +512,7 @@ export async function registerTopicClustersRoutes(app: Express): Promise<void> {
         lastCheckTimestamp: new Date().toISOString(),
         autoProcessIntervalMinutes: 30,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get auto-process status" });
     }
   });

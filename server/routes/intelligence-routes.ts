@@ -102,7 +102,7 @@ export function registerIntelligenceRoutes(app: Express): void {
           highPriorityGaps,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to analyze content gaps" });
     }
   }) as any);
@@ -176,7 +176,7 @@ export function registerIntelligenceRoutes(app: Express): void {
           mediumPriority: watchlist.filter(w => w.priority === "medium").length,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to build watchlist" });
     }
   }) as any);
@@ -230,7 +230,7 @@ export function registerIntelligenceRoutes(app: Express): void {
           needsUpdate: events.filter(e => e.needsUpdate).length,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track events" });
     }
   }) as any);
@@ -276,7 +276,7 @@ export function registerIntelligenceRoutes(app: Express): void {
         clusters: Object.values(clusters).filter(c => c.count > 0),
         total: allContent.length,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to build clusters" });
     }
   }) as any);
@@ -326,7 +326,7 @@ export function registerIntelligenceRoutes(app: Express): void {
           orphans: orphanPages.length,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to analyze internal links" });
     }
   }) as any);

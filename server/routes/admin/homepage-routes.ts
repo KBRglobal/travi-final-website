@@ -88,7 +88,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
       });
 
       res.json(translatedSections);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage sections" });
     }
   });
@@ -126,7 +126,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           title: trans.title ?? section?.title,
           subtitle: trans.subtitle ?? section?.subtitle,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update homepage section" });
       }
     }
@@ -163,7 +163,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         } catch {
           res.json([]);
         }
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to list images" });
       }
     }
@@ -192,7 +192,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         } catch {
           res.json([]);
         }
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to list hero images" });
       }
     }
@@ -282,7 +282,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           size: webpBuffer.length,
           folder: targetFolder,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to upload image" });
       }
     }
@@ -310,7 +310,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
       });
 
       res.json(translatedSlides);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch hero slides" });
     }
   });
@@ -330,7 +330,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await setTranslations("hero_slide", slide.id, locale, { headline, subheadline, ctaText });
 
         res.json({ ...slide, headline, subheadline, ctaText });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create hero slide" });
       }
     }
@@ -364,7 +364,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           subheadline: trans.subheadline ?? slide?.subheadline,
           ctaText: trans.ctaText ?? slide?.ctaText,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update hero slide" });
       }
     }
@@ -380,7 +380,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await deleteEntityTranslations("hero_slide", id);
         await db.delete(heroSlides).where(eq(heroSlides.id, id));
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete hero slide" });
       }
     }
@@ -411,7 +411,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
       });
 
       res.json(translatedCards);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage cards" });
     }
   });
@@ -429,7 +429,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await setTranslations("homepage_card", card.id, locale, { title, subtitle });
 
         res.json({ ...card, title, subtitle });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create homepage card" });
       }
     }
@@ -462,7 +462,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           title: trans.title ?? card?.title,
           subtitle: trans.subtitle ?? card?.subtitle,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update homepage card" });
       }
     }
@@ -478,7 +478,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await deleteEntityTranslations("homepage_card", id);
         await db.delete(homepageCards).where(eq(homepageCards.id, id));
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete homepage card" });
       }
     }
@@ -512,7 +512,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         });
 
         res.json(translatedCategories);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch experience categories" });
       }
     }
@@ -531,7 +531,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await setTranslations("experience_category", category.id, locale, { name, description });
 
         res.json({ ...category, name, description });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create experience category" });
       }
     }
@@ -567,7 +567,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           name: trans.name ?? cat?.name,
           description: trans.description ?? cat?.description,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update experience category" });
       }
     }
@@ -583,7 +583,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await deleteEntityTranslations("experience_category", id);
         await db.delete(experienceCategories).where(eq(experienceCategories.id, id));
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete experience category" });
       }
     }
@@ -614,7 +614,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
       });
 
       res.json(translatedDestinations);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch destinations" });
     }
   });
@@ -664,7 +664,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await setTranslations("destination" as any, id, locale, { name, summary });
 
         res.json({ ...destination, name, summary });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create destination" });
       }
     }
@@ -705,7 +705,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           name: trans.name ?? dest?.name,
           summary: trans.summary ?? dest?.summary,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update destination" });
       }
     }
@@ -721,7 +721,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await deleteEntityTranslations("destination" as any, id);
         await db.delete(destinations).where(eq(destinations.id, Number(id)));
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete destination" });
       }
     }
@@ -769,7 +769,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
       });
 
       res.json(translatedLinks);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch region links" });
     }
   });
@@ -787,7 +787,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await setTranslations("region_link", link.id, locale, { name });
 
         res.json({ ...link, name });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create region link" });
       }
     }
@@ -819,7 +819,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           ...link,
           name: trans.name ?? link?.name,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update region link" });
       }
     }
@@ -835,7 +835,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         await deleteEntityTranslations("region_link", id);
         await db.delete(regionLinks).where(eq(regionLinks.id, id));
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete region link" });
       }
     }
@@ -857,7 +857,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         buttonText: trans.buttonText ?? cta.buttonText,
         helperText: trans.helperText ?? cta.helperText,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage CTA" });
     }
   });
@@ -905,7 +905,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           buttonText: trans.buttonText ?? cta?.buttonText,
           helperText: trans.helperText ?? cta?.helperText,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update homepage CTA" });
       }
     }
@@ -926,7 +926,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
         ogTitle: trans.ogTitle ?? meta.ogTitle,
         ogDescription: trans.ogDescription ?? meta.ogDescription,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage SEO meta" });
     }
   });
@@ -966,7 +966,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
           ogTitle: trans.ogTitle ?? meta?.ogTitle,
           ogDescription: trans.ogDescription ?? meta?.ogDescription,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update homepage SEO meta" });
       }
     }
@@ -1067,7 +1067,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
               ? `${skippedCount} existing translations preserved (use overwrite=true to replace)`
               : undefined,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to generate translations" });
       }
     }

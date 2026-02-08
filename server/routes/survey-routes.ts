@@ -18,7 +18,7 @@ export function registerSurveyRoutes(app: Express): void {
       const { status } = req.query;
       const surveys = await storage.getSurveys(status ? { status: status as string } : undefined);
       res.json(surveys);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch surveys" });
     }
   });
@@ -31,7 +31,7 @@ export function registerSurveyRoutes(app: Express): void {
         return res.status(404).json({ error: "Survey not found" });
       }
       res.json(survey);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch survey" });
     }
   });
@@ -66,7 +66,7 @@ export function registerSurveyRoutes(app: Express): void {
       });
 
       res.status(201).json(survey);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create survey" });
     }
   });
@@ -99,7 +99,7 @@ export function registerSurveyRoutes(app: Express): void {
       }
 
       res.json(survey);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update survey" });
     }
   });
@@ -109,7 +109,7 @@ export function registerSurveyRoutes(app: Express): void {
     try {
       await storage.deleteSurvey(req.params.id);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete survey" });
     }
   });
@@ -119,7 +119,7 @@ export function registerSurveyRoutes(app: Express): void {
     try {
       const responses = await storage.getSurveyResponses(req.params.id);
       res.json(responses);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch responses" });
     }
   });
@@ -130,7 +130,7 @@ export function registerSurveyRoutes(app: Express): void {
       const analytics = await storage.getSurveyAnalytics(req.params.id);
       const survey = await storage.getSurvey(req.params.id);
       res.json({ ...analytics, survey });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch analytics" });
     }
   });
@@ -143,7 +143,7 @@ export function registerSurveyRoutes(app: Express): void {
       try {
         await storage.deleteSurveyResponse(req.params.id);
         res.json({ success: true });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete response" });
       }
     }
@@ -180,7 +180,7 @@ export function registerSurveyRoutes(app: Express): void {
         slug: survey.slug,
         definition: survey.definition,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch survey" });
     }
   });
@@ -228,7 +228,7 @@ export function registerSurveyRoutes(app: Express): void {
       });
 
       res.status(201).json({ success: true, responseId: response.id });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to submit response" });
     }
   });

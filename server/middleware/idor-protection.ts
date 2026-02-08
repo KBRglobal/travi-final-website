@@ -172,7 +172,7 @@ export function requireOwnership(resourceType: "content") {
       (req as any).dbUser = dbUser;
       (req as any).userRole = userRole;
       next();
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };
@@ -245,7 +245,7 @@ export function requireOwnershipOrPermission(
         requiredPermission: permission,
         currentRole: userRole,
       });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };
@@ -303,7 +303,7 @@ export function requireSelfOrAdmin() {
         error: "Access denied",
         message: "You can only access your own profile",
       });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };
@@ -352,7 +352,7 @@ export function requireAdmin() {
       (req as any).dbUser = dbUser;
       (req as any).userRole = userRole;
       next();
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };
@@ -398,7 +398,7 @@ export function requirePermissionWithAudit(permission: PermissionKey) {
       (req as any).dbUser = dbUser;
       (req as any).userRole = userRole;
       next();
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: "Authorization check failed" });
     }
   };

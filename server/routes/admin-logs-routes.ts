@@ -47,7 +47,7 @@ export function registerAdminLogsRoutes(app: Express): void {
           logs: transformedLogs.toReversed(), // Most recent first
           total: transformedLogs.length,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch logs" });
       }
     }
@@ -116,7 +116,7 @@ export function registerAdminLogsRoutes(app: Express): void {
         };
 
         res.json(stats);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch log stats" });
       }
     }
@@ -131,7 +131,7 @@ export function registerAdminLogsRoutes(app: Express): void {
         consoleLogger.clear();
         consoleLogger.addManualLog("info", "system", "Logs cleared by admin");
         res.json({ success: true, message: "Logs cleared" });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to clear logs" });
       }
     }
@@ -159,7 +159,7 @@ export function registerAdminLogsRoutes(app: Express): void {
           `attachment; filename="logs-${new Date().toISOString().split("T")[0]}.json"`
         );
         res.json(logs);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to export logs" });
       }
     }

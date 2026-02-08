@@ -57,7 +57,7 @@ export function registerSearchDebugRoutes(app: Express) {
     try {
       const debugResult = await debugSearch(query);
       res.json(debugResult);
-    } catch (error) {
+    } catch {
       res.status(500).json({
         error: "Failed to debug search query",
         query,
@@ -108,7 +108,7 @@ export function registerSearchDebugRoutes(app: Express) {
           ...debugResult,
           timestamp: new Date().toISOString(),
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({
           error: "Failed to debug content for query",
           contentId,
@@ -190,7 +190,7 @@ export function registerSearchDebugRoutes(app: Express) {
         },
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         error: "Failed to compare queries",
         timestamp: new Date().toISOString(),

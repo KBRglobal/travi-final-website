@@ -146,7 +146,7 @@ export function contentGuard(action: "publish" | "unpublish" | "delete" | "edit"
       });
 
       handleGateResult(req, res, next, result, `content.${action}`);
-    } catch (error) {
+    } catch {
       // Fail-closed
       if (SECURITY_GATE_ENFORCE) {
         return res.status(500).json({
@@ -195,7 +195,7 @@ export function bulkGuard(operation: "update" | "delete" | "export" | "import") 
       });
 
       handleGateResult(req, res, next, result, `bulk.${operation}[${recordCount}]`);
-    } catch (error) {
+    } catch {
       if (SECURITY_GATE_ENFORCE) {
         return res.status(500).json({
           error: "Security check failed",
@@ -312,7 +312,7 @@ export async function governanceGuard(
     });
 
     handleGateResult(req, res, next, result, `governance.${action}:${resource}`);
-  } catch (error) {
+  } catch {
     if (SECURITY_GATE_ENFORCE) {
       res.status(500).json({
         error: "Security check failed",
@@ -368,7 +368,7 @@ export async function exportGuard(
     });
 
     handleGateResult(req, res, next, result, `export.${resource}`);
-  } catch (error) {
+  } catch {
     if (SECURITY_GATE_ENFORCE) {
       res.status(500).json({
         error: "Security check failed",
@@ -425,7 +425,7 @@ export async function autonomyGuard(
     });
 
     handleGateResult(req, res, next, result, `autonomy.change:${system}`);
-  } catch (error) {
+  } catch {
     if (SECURITY_GATE_ENFORCE) {
       res.status(500).json({
         error: "Security check failed",
@@ -471,7 +471,7 @@ export async function publishGuard(
     });
 
     handleGateResult(req, res, next, result, "publish.broadcast");
-  } catch (error) {
+  } catch {
     if (SECURITY_GATE_ENFORCE) {
       res.status(500).json({
         error: "Security check failed",
@@ -508,7 +508,7 @@ export function createGuard(action: string, resource: string) {
       });
 
       handleGateResult(req, res, next, result, `${action}:${resource}`);
-    } catch (error) {
+    } catch {
       if (SECURITY_GATE_ENFORCE) {
         return res.status(500).json({
           error: "Security check failed",

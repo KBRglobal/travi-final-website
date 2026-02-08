@@ -210,7 +210,7 @@ export async function checkPasswordHistory(
     }
 
     return { allowed: true };
-  } catch (error) {
+  } catch {
     // On error, allow the password change (fail open for better UX)
     return { allowed: true };
   }

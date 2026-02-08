@@ -49,7 +49,7 @@ router.get("/policy/current", async (req: Request, res: Response) => {
       data: policies,
       count: policies.length,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to retrieve policies",
@@ -74,7 +74,7 @@ router.get("/policy/:id", async (req: Request, res: Response) => {
     }
 
     res.json({ success: true, data: policy });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to retrieve policy",
@@ -166,7 +166,7 @@ router.delete("/policy/:id", async (req: Request, res: Response) => {
     }
 
     res.json({ success: true, message: "Policy deleted" });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to delete policy",
@@ -186,7 +186,7 @@ router.post("/policy/seed", async (req: Request, res: Response) => {
       message: seeded > 0 ? `Seeded ${seeded} default policies` : "Policies already exist",
       seeded,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to seed policies",
@@ -202,7 +202,7 @@ router.get("/budgets/summary", async (req: Request, res: Response) => {
   try {
     const summary = await getBudgetSummary();
     res.json({ success: true, data: summary });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to retrieve budget summary",
@@ -240,7 +240,7 @@ router.post("/budgets/reset", async (req: Request, res: Response) => {
       targetKey,
       period: period || "all",
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to reset budget",
@@ -278,7 +278,7 @@ router.get("/decisions/recent", async (req: Request, res: Response) => {
       data: decisions,
       count: decisions.length,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to retrieve decisions",
@@ -331,7 +331,7 @@ router.post("/evaluate", async (req: Request, res: Response) => {
     });
 
     res.json({ success: true, data: result });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to evaluate policy",
@@ -352,7 +352,7 @@ router.post("/cache/clear", async (req: Request, res: Response) => {
       success: true,
       message: "All caches cleared",
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to clear caches",

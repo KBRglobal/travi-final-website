@@ -49,7 +49,7 @@ export function registerPublicContentRoutes(app: Express): void {
       const maxLimit = Math.min(Number.parseInt(limit as string) || 50, 100);
       const sanitizedContents = contents.slice(0, maxLimit).map(sanitizeContentForPublic);
       res.json(sanitizedContents);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch contents" });
     }
   });
@@ -82,7 +82,7 @@ export function registerPublicContentRoutes(app: Express): void {
         .orderBy(destinations.name);
 
       res.json(allDestinations);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch destinations" });
     }
   });
@@ -97,7 +97,7 @@ export function registerPublicContentRoutes(app: Express): void {
         .orderBy(homepageSections.sortOrder);
 
       res.json(sections);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage sections" });
     }
   });
@@ -112,7 +112,7 @@ export function registerPublicContentRoutes(app: Express): void {
         .orderBy(homepageCards.sortOrder);
 
       res.json(cards);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch homepage cards" });
     }
   });
@@ -127,7 +127,7 @@ export function registerPublicContentRoutes(app: Express): void {
         .orderBy(experienceCategories.sortOrder);
 
       res.json(categories);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch experience categories" });
     }
   });
@@ -142,7 +142,7 @@ export function registerPublicContentRoutes(app: Express): void {
         .orderBy(regionLinks.sortOrder);
 
       res.json(regions);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch region links" });
     }
   });
@@ -224,7 +224,7 @@ export function registerPublicContentRoutes(app: Express): void {
         destinations: destinationsResult,
         total,
       });
-    } catch (error: any) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction destinations" });
     }
   });
@@ -291,7 +291,7 @@ export function registerPublicContentRoutes(app: Express): void {
         total: totalCount,
         cities: citiesResult.map(c => c.city),
       });
-    } catch (error: any) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -441,7 +441,7 @@ export function registerPublicContentRoutes(app: Express): void {
           tagline: destination.moodTagline || `Experience ${destination.name}`,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch destination" });
     }
   });

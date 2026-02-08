@@ -61,7 +61,7 @@ export async function convertToWebP(
       width: metadata.width,
       height: metadata.height,
     };
-  } catch (error) {
+  } catch {
     return { buffer, filename: originalFilename, mimeType };
   }
 }

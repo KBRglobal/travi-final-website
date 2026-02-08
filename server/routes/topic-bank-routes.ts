@@ -45,7 +45,7 @@ function safeParseJson(content: string, fallback: Record<string, unknown> = {}):
   try {
     const cleaned = cleanJsonFromMarkdown(content);
     return JSON.parse(cleaned);
-  } catch (e) {
+  } catch {
     return fallback;
   }
 }
@@ -150,7 +150,7 @@ async function persistImageToStorage(imageUrl: string, filename: string): Promis
     const result = await storageManager.upload(storagePath, buffer);
 
     return result.url;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -452,7 +452,7 @@ export function registerTopicBankRoutes(app: Express): void {
         isActive: isActive === undefined ? undefined : isActive === "true",
       });
       res.json(items);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch topic bank items" });
     }
   });
@@ -464,7 +464,7 @@ export function registerTopicBankRoutes(app: Express): void {
       // Count unused topics (timesUsed === 0 or undefined)
       const unusedCount = items.filter(item => !item.timesUsed || item.timesUsed === 0).length;
       res.json({ unusedCount, totalTopics: items.length });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch topic bank stats" });
     }
   });
@@ -476,7 +476,7 @@ export function registerTopicBankRoutes(app: Express): void {
         return res.status(404).json({ error: "Topic not found" });
       }
       res.json(item);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch topic bank item" });
     }
   });
@@ -501,7 +501,7 @@ export function registerTopicBankRoutes(app: Express): void {
         return res.status(404).json({ error: "Topic not found" });
       }
       res.json(item);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update topic bank item" });
     }
   });
@@ -510,7 +510,7 @@ export function registerTopicBankRoutes(app: Express): void {
     try {
       await storage.deleteTopicBankItem(req.params.id);
       res.status(204).send();
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete topic bank item" });
     }
   });
@@ -548,7 +548,7 @@ export function registerTopicBankRoutes(app: Express): void {
         mergedGroups: mergedCount,
         deletedItems: deletedCount,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to merge duplicate topics" });
     }
   });
@@ -560,7 +560,7 @@ export function registerTopicBankRoutes(app: Express): void {
         return res.status(404).json({ error: "Topic not found" });
       }
       res.json(item);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to increment topic usage" });
     }
   });
@@ -764,7 +764,7 @@ Create engaging, informative content that would appeal to travelers. Return vali
         images: generatedImages,
         message: "Article generated successfully from topic",
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to generate article from topic" });
     }
   });
@@ -949,7 +949,7 @@ RULES:
           topicDeleted: true,
           message: "News article generated and topic removed from bank",
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to generate news from topic" });
       }
     }
@@ -1081,7 +1081,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
         failed: results.filter(r => !r.success),
         message: `Generated ${results.filter(r => r.success).length} of ${sortedTopics.length} articles`,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to batch generate from topics" });
     }
   });

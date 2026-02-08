@@ -71,7 +71,7 @@ router.get("/placements/:id", async (req: Request, res: Response) => {
 
     const content = await storage.getContent(placement.contentId);
     res.json({ ...placement, content });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch placement" });
   }
 });
@@ -160,7 +160,7 @@ router.patch("/placements/:id", async (req: Request, res: Response) => {
     }
 
     res.json(placement);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update placement" });
   }
 });
@@ -172,7 +172,7 @@ router.delete("/placements/:id", async (req: Request, res: Response) => {
   try {
     await storage.deletePlacement(req.params.id);
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to delete placement" });
   }
 });
@@ -196,7 +196,7 @@ router.post("/placements/:id/rotate", async (req: Request, res: Response) => {
     }
 
     res.json(placement);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to rotate placement" });
   }
 });
@@ -214,7 +214,7 @@ router.post("/placements/reorder", async (req: Request, res: Response) => {
 
     await storage.reorderPlacements(zone as EditorialZone, orderedIds);
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to reorder placements" });
   }
 });
@@ -230,7 +230,7 @@ router.get("/zone-configs", async (_req: Request, res: Response) => {
   try {
     const configs = await storage.getZoneConfigs();
     res.json(configs);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch zone configs" });
   }
 });
@@ -245,7 +245,7 @@ router.get("/zone-configs/:zone", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Zone config not found" });
     }
     res.json(config);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch zone config" });
   }
 });
@@ -261,7 +261,7 @@ router.put("/zone-configs/:zone", async (req: Request, res: Response) => {
       ...req.body,
     });
     res.json(config);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to save zone config" });
   }
 });
@@ -293,7 +293,7 @@ router.get("/scheduled", async (req: Request, res: Response) => {
     );
 
     res.json(enriched);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch scheduled items" });
   }
 });
@@ -335,7 +335,7 @@ router.post("/scheduled", async (req: Request, res: Response) => {
     });
 
     res.status(201).json(item);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create scheduled item" });
   }
 });
@@ -350,7 +350,7 @@ router.patch("/scheduled/:id", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Scheduled item not found" });
     }
     res.json(item);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update scheduled item" });
   }
 });
@@ -362,7 +362,7 @@ router.delete("/scheduled/:id", async (req: Request, res: Response) => {
   try {
     await storage.deleteScheduledItem(req.params.id);
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to delete scheduled item" });
   }
 });
@@ -385,7 +385,7 @@ router.get("/rotation-history", async (req: Request, res: Response) => {
     });
 
     res.json(history);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch rotation history" });
   }
 });
@@ -401,7 +401,7 @@ router.get("/stats/:zone", async (req: Request, res: Response) => {
   try {
     const stats = await storage.getZoneStats(req.params.zone as EditorialZone);
     res.json(stats);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch zone stats" });
   }
 });
@@ -426,7 +426,7 @@ router.get("/top-performing/:zone", async (req: Request, res: Response) => {
     );
 
     res.json(enriched);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch top performing content" });
   }
 });
@@ -447,7 +447,7 @@ router.get("/needs-rotation", async (_req: Request, res: Response) => {
     );
 
     res.json(enriched);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch placements needing rotation" });
   }
 });
@@ -459,7 +459,7 @@ router.get("/expired", async (_req: Request, res: Response) => {
   try {
     const placements = await storage.getExpiredPlacements();
     res.json(placements);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch expired placements" });
   }
 });

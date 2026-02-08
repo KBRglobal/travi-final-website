@@ -209,7 +209,7 @@ export async function initializeSettings(): Promise<void> {
   try {
     const settings = await getSettings();
     loadSettingsToEnv(settings);
-  } catch (error) {
+  } catch {
     // Using environment variables as fallback - this is expected behavior
     void 0;
   }

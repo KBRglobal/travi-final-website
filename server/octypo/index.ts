@@ -201,7 +201,7 @@ export async function initializeOctypo(): Promise<boolean> {
     if (secretsExist()) {
       initializeOctypoConfig();
     }
-  } catch (error) {
+  } catch {
     // Secrets module not configured, using env vars - this is acceptable
     void 0;
   }

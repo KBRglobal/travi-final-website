@@ -205,7 +205,7 @@ export const AdapterManager = {
     for (const [name, adapter] of registeredAdapters) {
       try {
         status[name] = await adapter.getStatus();
-      } catch (error) {
+      } catch {
         status[name] = {
           name,
           connected: false,
@@ -317,7 +317,7 @@ export const AdapterManager = {
 
         pendingEvents.shift();
         processed++;
-      } catch (error) {
+      } catch {
         break;
       }
     }

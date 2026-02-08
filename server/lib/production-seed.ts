@@ -25,7 +25,7 @@ async function loadTable(tableName: string): Promise<any[]> {
     const compressed = readFileSync(gzPath);
     const content = gunzipSync(compressed).toString("utf-8");
     return JSON.parse(content);
-  } catch (e) {
+  } catch {
     return [];
   }
 }

@@ -20,7 +20,7 @@ export function registerAiToolsRoutes(app: Express): void {
       const { threshold } = req.body;
       const result = await plagiarismDetector.checkPlagiarism(contentId, threshold);
       res.json(result);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to check plagiarism" });
     }
   });
@@ -31,7 +31,7 @@ export function registerAiToolsRoutes(app: Express): void {
       const { text1, text2 } = req.body;
       const similarity = await plagiarismDetector.compareTexts(text1, text2);
       res.json({ similarity });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to compare texts" });
     }
   });

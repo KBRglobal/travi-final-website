@@ -154,7 +154,7 @@ export async function isBotBlockingDisabled(): Promise<boolean> {
     botBlockingDisabledCache = result.length > 0 && result[0].value === true;
     botBlockingCacheTime = now;
     return botBlockingDisabledCache;
-  } catch (error) {
+  } catch {
     return false; // Default to blocking enabled if error
   }
 }

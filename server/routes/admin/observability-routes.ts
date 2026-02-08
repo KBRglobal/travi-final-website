@@ -147,7 +147,7 @@ export function registerObservabilityRoutes(app: Express) {
           limit,
           offset,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to get content intelligence status" });
       }
     }
@@ -210,7 +210,7 @@ export function registerObservabilityRoutes(app: Express) {
           last24h: true,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get recent jobs" });
     }
   });
@@ -270,7 +270,7 @@ export function registerObservabilityRoutes(app: Express) {
         },
         publishedAt: content.publishedAt?.toISOString() || null,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get content health" });
     }
   });
@@ -329,7 +329,7 @@ export function registerObservabilityRoutes(app: Express) {
         },
         recentItems24h: Number(itemsResult?.count || 0),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get RSS status" });
     }
   });
@@ -384,7 +384,7 @@ export function registerObservabilityRoutes(app: Express) {
               lastIndexed: null,
             },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get search status" });
     }
   });

@@ -24,7 +24,7 @@ router.get("/pages", isAuthenticated, async (_req: Request, res: Response) => {
     const pages = await db.select().from(editablePages).orderBy(desc(editablePages.updatedAt));
 
     res.json(pages);
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to fetch pages",
       heGuide: "",
@@ -54,7 +54,7 @@ router.get("/pages/:slug", isAuthenticated, async (req: Request, res: Response) 
       .orderBy(asc(pageSections.sortOrder));
 
     res.json({ ...page, sections });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to fetch page",
       heGuide: "",
@@ -131,7 +131,7 @@ router.put("/pages/:id", isAuthenticated, async (req: Request, res: Response) =>
     }
 
     res.json(page);
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to update page",
       heGuide: "",
@@ -159,7 +159,7 @@ router.delete("/pages/:id", isAuthenticated, async (req: Request, res: Response)
       deletedPage,
       heGuide: "",
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to delete page",
       heGuide: "",
@@ -181,7 +181,7 @@ router.get("/sections/:pageId", isAuthenticated, async (req: Request, res: Respo
       .orderBy(asc(pageSections.sortOrder));
 
     res.json(sections);
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to fetch sections",
       heGuide: "",
@@ -319,7 +319,7 @@ async function updateSectionHandler(req: Request, res: Response) {
       versionNumber: newVersionNumber,
       heGuide: "",
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to update section",
       heGuide: "",
@@ -353,7 +353,7 @@ router.delete("/sections/:id", isAuthenticated, async (req: Request, res: Respon
       deletedSection,
       heGuide: "",
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to delete section",
       heGuide: "",
@@ -393,7 +393,7 @@ router.put("/sections/reorder", isAuthenticated, async (req: Request, res: Respo
       success: true,
       heGuide: "",
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to reorder sections",
       heGuide: "",
@@ -415,7 +415,7 @@ router.get("/sections/:id/versions", isAuthenticated, async (req: Request, res: 
       .orderBy(desc(sectionVersions.versionNumber));
 
     res.json(versions);
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to fetch section versions",
       heGuide: "",
@@ -499,7 +499,7 @@ router.post(
         newVersionNumber: newVersionNum,
         heGuide: "",
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         error: "Failed to restore section version",
         heGuide: "",
@@ -537,7 +537,7 @@ router.get("/public/:slug", async (req: Request, res: Response) => {
       ...page,
       sections,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       error: "Failed to fetch page",
       heGuide: "",

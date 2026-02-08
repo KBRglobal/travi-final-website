@@ -32,7 +32,7 @@ export function registerRssFeedRoutes(app: Express): void {
     try {
       const feeds = await storage.getRssFeeds();
       res.json(feeds);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch RSS feeds" });
     }
   });
@@ -47,7 +47,7 @@ export function registerRssFeedRoutes(app: Express): void {
         c => c.type === "article" && c.title?.includes("[RSS]")
       );
       res.json({ pendingCount: rssArticles.length, totalFeeds: feeds.length });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch RSS stats" });
     }
   });
@@ -59,7 +59,7 @@ export function registerRssFeedRoutes(app: Express): void {
         return res.status(404).json({ error: "RSS feed not found" });
       }
       res.json(feed);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch RSS feed" });
     }
   });
@@ -112,7 +112,7 @@ export function registerRssFeedRoutes(app: Express): void {
           { name: feed.name, url: feed.url }
         );
         res.json(feed);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update RSS feed" });
       }
     }
@@ -137,7 +137,7 @@ export function registerRssFeedRoutes(app: Express): void {
           );
         }
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete RSS feed" });
       }
     }
@@ -162,7 +162,7 @@ export function registerRssFeedRoutes(app: Express): void {
         });
 
         res.json({ items, count: items.length });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch RSS feed items" });
       }
     }
@@ -296,7 +296,7 @@ export function registerRssFeedRoutes(app: Express): void {
               ? `Imported ${createdContents.length} items. Skipped ${duplicates.length} duplicate(s).`
               : `Successfully imported ${createdContents.length} items.`,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to import RSS feed items" });
       }
     }

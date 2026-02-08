@@ -73,7 +73,7 @@ export async function sendOtpEmail(email: string, code: string): Promise<boolean
     });
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -106,7 +106,7 @@ export async function requestOtp(email: string): Promise<{ success: boolean; mes
     }
 
     return { success: true, message: "Verification code sent to your email" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "Failed to process OTP request" };
   }
 }

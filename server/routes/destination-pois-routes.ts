@@ -116,7 +116,7 @@ router.get("/:slug/pois", async (req: Request, res: Response) => {
         category: category || "all",
       },
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch POIs" });
   }
 });
@@ -174,7 +174,7 @@ router.get("/:slug/holidays", async (req: Request, res: Response) => {
         total: holidays.length,
       },
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch holidays" });
   }
 });
@@ -219,7 +219,7 @@ router.get("/:slug/poi-stats", async (req: Request, res: Response) => {
         countryCode: destination.countryCode,
       },
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ success: false, error: "Failed to fetch POI stats" });
   }
 });

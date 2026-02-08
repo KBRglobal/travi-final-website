@@ -32,7 +32,7 @@ router.get("/navigation", async (_req: Request, res: Response) => {
     }));
 
     res.json(menusWithItems);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch navigation" });
   }
 });
@@ -54,7 +54,7 @@ router.get("/navigation/:slug", async (req: Request, res: Response) => {
       .orderBy(asc(navigationMenuItems.sortOrder));
 
     res.json({ ...menu, items });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch menu" });
   }
 });
@@ -63,7 +63,7 @@ router.post("/navigation", async (req: Request, res: Response) => {
   try {
     const [menu] = await db.insert(navigationMenus).values(req.body).returning();
     res.json(menu);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create menu" });
   }
 });
@@ -76,7 +76,7 @@ router.put("/navigation/:id", async (req: Request, res: Response) => {
       .where(eq(navigationMenus.id, req.params.id))
       .returning();
     res.json(menu);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update menu" });
   }
 });
@@ -91,7 +91,7 @@ router.post("/navigation/:menuId/items", async (req: Request, res: Response) => 
       })
       .returning();
     res.json(item);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create menu item" });
   }
 });
@@ -104,7 +104,7 @@ router.put("/navigation/items/:id", async (req: Request, res: Response) => {
       .where(eq(navigationMenuItems.id, req.params.id))
       .returning();
     res.json(item);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update menu item" });
   }
 });
@@ -113,7 +113,7 @@ router.delete("/navigation/items/:id", async (req: Request, res: Response) => {
   try {
     await db.delete(navigationMenuItems).where(eq(navigationMenuItems.id, req.params.id));
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to delete menu item" });
   }
 });
@@ -128,7 +128,7 @@ router.put("/navigation/items/reorder", async (req: Request, res: Response) => {
         .where(eq(navigationMenuItems.id, item.id));
     }
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to reorder menu items" });
   }
 });
@@ -156,7 +156,7 @@ router.get("/footer", async (_req: Request, res: Response) => {
     }));
 
     res.json(sectionsWithLinks);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch footer" });
   }
 });
@@ -165,7 +165,7 @@ router.post("/footer/sections", async (req: Request, res: Response) => {
   try {
     const [section] = await db.insert(footerSections).values(req.body).returning();
     res.json(section);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create footer section" });
   }
 });
@@ -178,7 +178,7 @@ router.put("/footer/sections/:id", async (req: Request, res: Response) => {
       .where(eq(footerSections.id, req.params.id))
       .returning();
     res.json(section);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update footer section" });
   }
 });
@@ -187,7 +187,7 @@ router.delete("/footer/sections/:id", async (req: Request, res: Response) => {
   try {
     await db.delete(footerSections).where(eq(footerSections.id, req.params.id));
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to delete footer section" });
   }
 });
@@ -196,7 +196,7 @@ router.post("/footer/links", async (req: Request, res: Response) => {
   try {
     const [link] = await db.insert(footerLinks).values(req.body).returning();
     res.json(link);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create footer link" });
   }
 });
@@ -209,7 +209,7 @@ router.put("/footer/links/:id", async (req: Request, res: Response) => {
       .where(eq(footerLinks.id, req.params.id))
       .returning();
     res.json(link);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update footer link" });
   }
 });
@@ -218,7 +218,7 @@ router.delete("/footer/links/:id", async (req: Request, res: Response) => {
   try {
     await db.delete(footerLinks).where(eq(footerLinks.id, req.params.id));
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to delete footer link" });
   }
 });
@@ -231,7 +231,7 @@ router.get("/pages", async (_req: Request, res: Response) => {
   try {
     const pages = await db.select().from(staticPages);
     res.json(pages);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch static pages" });
   }
 });
@@ -244,7 +244,7 @@ router.get("/pages/by-id/:id", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Page not found" });
     }
     res.json(page);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch page" });
   }
 });
@@ -257,7 +257,7 @@ router.get("/pages/:slug", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Page not found" });
     }
     res.json(page);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch page" });
   }
 });
@@ -266,7 +266,7 @@ router.post("/pages", async (req: Request, res: Response) => {
   try {
     const [page] = await db.insert(staticPages).values(req.body).returning();
     res.json(page);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create page" });
   }
 });
@@ -279,7 +279,7 @@ router.put("/pages/:id", async (req: Request, res: Response) => {
       .where(eq(staticPages.id, req.params.id))
       .returning();
     res.json(page);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update page" });
   }
 });
@@ -288,7 +288,7 @@ router.delete("/pages/:id", async (req: Request, res: Response) => {
   try {
     await db.delete(staticPages).where(eq(staticPages.id, req.params.id));
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to delete page" });
   }
 });
@@ -422,7 +422,7 @@ router.post("/pages/:id/translate", async (req: Request, res: Response) => {
       locale: targetLocale,
       title: translatedTitleText,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to translate page" });
   }
 });
@@ -439,7 +439,7 @@ router.get("/homepage", async (_req: Request, res: Response) => {
       .where(eq((homepageSections as any).isActive, true))
       .orderBy(asc(homepageSections.sortOrder));
     res.json(sections);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch homepage sections" });
   }
 });
@@ -448,7 +448,7 @@ router.post("/homepage", async (req: Request, res: Response) => {
   try {
     const [section] = await db.insert(homepageSections).values(req.body).returning();
     res.json(section);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create homepage section" });
   }
 });
@@ -461,7 +461,7 @@ router.put("/homepage/:id", async (req: Request, res: Response) => {
       .where(eq(homepageSections.id, req.params.id))
       .returning();
     res.json(section);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update homepage section" });
   }
 });
@@ -470,7 +470,7 @@ router.delete("/homepage/:id", async (req: Request, res: Response) => {
   try {
     await db.delete(homepageSections).where(eq(homepageSections.id, req.params.id));
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to delete homepage section" });
   }
 });
@@ -487,7 +487,7 @@ router.get("/settings", async (_req: Request, res: Response) => {
       settingsMap[setting.key] = setting.value;
     }
     res.json(settingsMap);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch settings" });
   }
 });
@@ -531,7 +531,7 @@ router.put("/settings/:key", async (req: Request, res: Response) => {
 
       res.json(setting);
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update setting" });
   }
 });
@@ -736,7 +736,7 @@ router.post("/seed", async (_req: Request, res: Response) => {
       navigation: { menuId: mainMenu.id, itemCount: navItems.length },
       footer: { sectionCount: footerSectionsData.length },
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to seed data" });
   }
 });
@@ -764,7 +764,7 @@ router.get("/public/navigation/:slug", async (req: Request, res: Response) => {
 
     const activeItems = items.filter(item => item.isActive);
     res.json({ ...menu, items: activeItems });
-  } catch (error) {
+  } catch {
     res.json({ items: [] });
   }
 });
@@ -789,7 +789,7 @@ router.get("/public/footer", async (_req: Request, res: Response) => {
     }));
 
     res.json(sectionsWithLinks);
-  } catch (error) {
+  } catch {
     res.json([]);
   }
 });
@@ -804,7 +804,7 @@ router.get("/public/pages/:slug", async (req: Request, res: Response) => {
     }
 
     res.json(page);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch page" });
   }
 });

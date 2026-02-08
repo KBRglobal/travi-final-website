@@ -219,7 +219,7 @@ async function persistImageToStorage(imageUrl: string, filename: string): Promis
     const result = await storageManager.upload(storagePath, buffer);
 
     return result.url;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

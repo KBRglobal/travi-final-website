@@ -159,7 +159,7 @@ export function registerContentRoutes(app: Express): void {
       };
 
       res.json(translatedContent);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translated content" });
     }
   });
@@ -193,7 +193,7 @@ export function registerContentRoutes(app: Express): void {
         availableLocales,
         hreflang: generateHreflangLinks(content.slug, content.type),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });

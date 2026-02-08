@@ -295,7 +295,7 @@ export class Gate2Approver {
 
     try {
       return JSON.parse(jsonStr);
-    } catch (error) {
+    } catch {
       logger.error("[Gate2] Failed to parse LLM response");
       throw new Error("Failed to parse Gate2 review response");
     }

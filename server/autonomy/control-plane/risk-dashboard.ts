@@ -150,7 +150,7 @@ async function getDecisionSummary(period: TimePeriod): Promise<DecisionSummary> 
     const blockRate = total > 0 ? (blocked / total) * 100 : 0;
 
     return { period, total, allowed, warned, blocked, blockRate };
-  } catch (error) {
+  } catch {
     return { period, total: 0, allowed: 0, warned: 0, blocked: 0, blockRate: 0 };
   }
 }
@@ -210,7 +210,7 @@ async function getAllBudgetSummaries(): Promise<BudgetSummary[]> {
     }
 
     return results;
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -244,7 +244,7 @@ async function getTopOffenders(limit: number): Promise<TopOffender[]> {
       blockedCount: Number(o.blockedCount),
       lastBlocked: o.lastBlocked,
     }));
-  } catch (error) {
+  } catch {
     return [];
   }
 }

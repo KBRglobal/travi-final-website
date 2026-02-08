@@ -22,7 +22,7 @@ export function registerAdminAuditRoutes(app: Express): void {
           limit: Number.parseInt(limit as string) || 100,
         });
         res.json({ logs, total: logs.length });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch audit logs" });
       }
     }

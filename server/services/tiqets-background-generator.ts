@@ -92,7 +92,7 @@ async function releaseStaleLocksWithCount(): Promise<number> {
     }
 
     return staleCount;
-  } catch (error) {
+  } catch {
     return 0;
   }
 }
@@ -108,7 +108,7 @@ async function approveReadyContent(): Promise<number> {
       WHERE content_generation_status = 'ready'
     `);
     return result.rowCount || 0;
-  } catch (error) {
+  } catch {
     return 0;
   }
 }
@@ -140,7 +140,7 @@ async function resetFailedContent(limit: number = 50): Promise<number> {
       health.failedItemsReset += count;
     }
     return count;
-  } catch (error) {
+  } catch {
     return 0;
   }
 }
@@ -160,7 +160,7 @@ async function getStatusCounts(): Promise<Record<string, number>> {
       counts[row.content_generation_status] = Number.parseInt(row.count);
     }
     return counts;
-  } catch (error) {
+  } catch {
     return {};
   }
 }
@@ -207,7 +207,7 @@ async function isQueueActiveWithFreshLocks(): Promise<{
       freshCount,
       staleCount,
     };
-  } catch (error) {
+  } catch {
     return { active: false, freshCount: 0, staleCount: 0 };
   }
 }
@@ -226,7 +226,7 @@ async function triggerParallelGeneration(): Promise<boolean> {
       health.triggeredGenerations++;
     }
     return response.ok;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -242,7 +242,7 @@ async function getOctypoPendingCount(): Promise<number> {
       WHERE quality_score IS NULL OR quality_score < 78
     `);
     return Number.parseInt(result.rows[0].count) || 0;
-  } catch (error) {
+  } catch {
     return 0;
   }
 }
@@ -284,7 +284,7 @@ async function triggerOctypoGeneration(): Promise<boolean> {
     }
 
     return response.ok;
-  } catch (error) {
+  } catch {
     octypoState.setRunning(false);
 
     return false;
@@ -422,7 +422,7 @@ export async function forceReleaseAllLocks(): Promise<number> {
     const count = result.rowCount || 0;
 
     return count;
-  } catch (error) {
+  } catch {
     return 0;
   }
 }

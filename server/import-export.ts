@@ -350,7 +350,7 @@ export const importService = {
           await db.insert(table).values(record).onConflictDoNothing();
           imported++;
         }
-      } catch (error) {
+      } catch {
         // Skip records that fail (likely due to foreign key constraints)
         skipped++;
       }

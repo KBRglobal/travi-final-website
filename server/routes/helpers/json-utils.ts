@@ -51,7 +51,7 @@ export function safeParseJson(
   try {
     const cleaned = cleanJsonFromMarkdown(content);
     return JSON.parse(cleaned) as Record<string, unknown>;
-  } catch (e) {
+  } catch {
     return fallback;
   }
 }

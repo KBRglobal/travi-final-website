@@ -116,7 +116,7 @@ export async function getInternalLinkUrls(
 
       cachedInternalLinks = links.length > 0 ? links : FALLBACK_INTERNAL_LINKS;
       internalLinksCacheTime = now;
-    } catch (error) {
+    } catch {
       cachedInternalLinks = FALLBACK_INTERNAL_LINKS;
     }
   }

@@ -130,7 +130,7 @@ export class OctypoOrchestrator {
         }
 
         retryCount++;
-      } catch (error) {
+      } catch {
         retryCount++;
         if (retryCount >= this.config.maxRetries) {
           return {
@@ -219,7 +219,7 @@ export class OctypoOrchestrator {
           ),
         ]);
         results.push(styleResult);
-      } catch (_error) {
+      } catch {
         log.warn(`[Orchestrator] Style validation timed out, using fallback pass`);
         results.push({
           validatorId: "validator-aisha",
@@ -627,7 +627,7 @@ export class OctypoOrchestrator {
         }
 
         retryCount++;
-      } catch (error) {
+      } catch {
         retryCount++;
 
         if (retryCount >= this.config.maxRetries) {

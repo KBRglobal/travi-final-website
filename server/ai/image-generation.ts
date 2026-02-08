@@ -146,7 +146,7 @@ Return ONLY the prompt text, no additional explanation.`,
     });
 
     return response.choices[0].message.content?.trim() || null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -219,7 +219,7 @@ async function generateWithFlux(
     if (result.urls?.get) return pollForResult(result.urls.get, replicateApiKey);
 
     return null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -273,7 +273,7 @@ async function generateWithDalle(
       });
 
       return response.data?.[0]?.url || null;
-    } catch (_error: unknown) {
+    } catch {
       return null;
     }
   }

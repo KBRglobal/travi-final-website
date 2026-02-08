@@ -437,7 +437,7 @@ export const customerJourney = {
       await db.insert(analyticsEvents).values(dbEvents);
 
       return eventsToFlush.length;
-    } catch (error) {
+    } catch {
       // On error, put events back
 
       eventStore.events.unshift(...eventsToFlush);

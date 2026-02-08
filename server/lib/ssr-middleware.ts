@@ -148,7 +148,7 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
     res.setHeader("X-Content-Type-Hint", contentType);
 
     res.send(result.html);
-  } catch (error) {
+  } catch {
     next();
   }
 }

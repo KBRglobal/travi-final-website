@@ -102,7 +102,7 @@ export async function getLocalizationSystemStatus(): Promise<LocalizationSystemS
 
     // Note: We can't get detailed engine health without modifying EngineRegistry
     // For now, we'll track blocked providers from generation failures
-  } catch (error) {
+  } catch {
     aiProviders.available = false;
   }
 

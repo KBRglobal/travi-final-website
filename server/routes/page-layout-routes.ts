@@ -27,7 +27,7 @@ export function registerPageLayoutRoutes(app: Express): void {
       }
 
       res.json(layout[0]);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch layout" });
     }
   });
@@ -77,7 +77,7 @@ export function registerPageLayoutRoutes(app: Express): void {
         .returning();
 
       res.json(updated);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to save draft" });
     }
   });
@@ -124,7 +124,7 @@ export function registerPageLayoutRoutes(app: Express): void {
         .returning();
 
       res.json(published);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to publish layout" });
     }
   });
@@ -150,7 +150,7 @@ export function registerPageLayoutRoutes(app: Express): void {
       }
 
       res.json(layout[0]);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch layout" });
     }
   });
@@ -167,7 +167,7 @@ export function registerPageLayoutRoutes(app: Express): void {
       res.set("Content-Type", "application/xml; charset=utf-8");
       res.set("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
       res.send(sitemapIndex);
-    } catch (error) {
+    } catch {
       res.status(500).set("Content-Type", "text/plain").send("Error generating sitemap");
     }
   });
@@ -187,7 +187,7 @@ export function registerPageLayoutRoutes(app: Express): void {
       res.set("Content-Type", "application/xml; charset=utf-8");
       res.set("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
       res.send(sitemap);
-    } catch (error) {
+    } catch {
       res.status(500).set("Content-Type", "text/plain").send("Error generating sitemap");
     }
   });
@@ -200,7 +200,7 @@ export function registerPageLayoutRoutes(app: Express): void {
       res.set("Content-Type", "text/plain; charset=utf-8");
       res.set("Cache-Control", "public, max-age=86400"); // Cache for 24 hours
       res.send(robotsTxt);
-    } catch (error) {
+    } catch {
       res.status(500).set("Content-Type", "text/plain").send("Error generating robots.txt");
     }
   });

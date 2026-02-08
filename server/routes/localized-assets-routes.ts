@@ -70,7 +70,7 @@ router.get("/api/localized-assets/:entityType/:entityId", async (req: Request, r
     }
 
     res.json(filteredAssets);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch localized assets" });
   }
 });
@@ -137,7 +137,7 @@ router.get(
       }
 
       res.json({ ...asset, isFallback: false });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch localized asset" });
     }
   }
@@ -204,7 +204,7 @@ router.delete(
       }
 
       res.json({ success: true, deleted });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to delete localized asset" });
     }
   }
@@ -228,7 +228,7 @@ router.get("/api/admin/localized-assets", requireAuth, async (req: Request, res:
         : await baseQuery.orderBy(desc(localizedAssets.updatedAt));
 
     res.json(assets);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to list localized assets" });
   }
 });

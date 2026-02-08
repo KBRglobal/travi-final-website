@@ -48,7 +48,7 @@ export function registerPublishingRoutes(app: Express): void {
             intelligenceCoverageRequired: isIntelligenceCoverageRequired(),
           },
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to evaluate eligibility" });
       }
     }
@@ -69,7 +69,7 @@ export function registerPublishingRoutes(app: Express): void {
         count: blocked.length,
         generatedAt: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get blocked content" });
     }
   });
@@ -89,7 +89,7 @@ export function registerPublishingRoutes(app: Express): void {
         count: issues.length,
         generatedAt: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get content issues" });
     }
   });
@@ -112,7 +112,7 @@ export function registerPublishingRoutes(app: Express): void {
         },
         generatedAt: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get stats" });
     }
   });
@@ -137,7 +137,7 @@ export function registerPublishingRoutes(app: Express): void {
           action: guard.action,
           eligibility: guard.eligibility,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to check publish eligibility" });
       }
     }

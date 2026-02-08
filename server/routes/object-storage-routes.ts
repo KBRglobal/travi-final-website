@@ -63,7 +63,7 @@ export function registerObjectStorageRoutes(app: Express): void {
       res.set("Content-Type", contentTypes[ext] || "application/octet-stream");
       res.set("Cache-Control", "public, max-age=31536000");
       res.send(buffer);
-    } catch (error) {
+    } catch {
       res.status(404).send("File not found");
     }
   });

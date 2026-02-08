@@ -61,7 +61,7 @@ function safeParseJson(content: string, fallback: Record<string, unknown> = {}):
   try {
     const cleaned = cleanJsonFromMarkdown(content);
     return JSON.parse(cleaned);
-  } catch (e) {
+  } catch {
     return fallback;
   }
 }
@@ -396,7 +396,7 @@ async function findOrCreateArticleImage(
       imageId: savedImage.id,
       source: "freepik",
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -589,7 +589,7 @@ export function registerAiApiRoutes(app: Express): void {
           translation: !!aiClient,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to check AI status" });
     }
   });
@@ -698,7 +698,7 @@ export function registerAiApiRoutes(app: Express): void {
           { suggestions: [] }
         );
         res.json(suggestions);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to suggest internal links" });
       }
     }
@@ -975,7 +975,7 @@ Return valid JSON only.`;
           ...enforcedArticle,
           heroImage,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to generate article" });
       }
     }
@@ -1032,7 +1032,7 @@ Return valid JSON-LD that can be embedded in a webpage.`,
 
         const schema = safeParseJson(response.choices[0].message.content || "{}", {});
         res.json(schema);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to generate SEO schema" });
       }
     }
@@ -1113,7 +1113,7 @@ Remember to follow the character limits strictly!`,
 
         const result = safeParseJson(response.choices[0].message.content || "{}", {});
         res.json(result);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to generate page SEO" });
       }
     }
@@ -1762,7 +1762,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
 
         const result = response.choices[0].message.content || "";
         res.json({ result, action });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to process AI action" });
       }
     }
@@ -1819,7 +1819,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
 
         const result = response.choices[0].message.content || "";
         res.json({ response: result });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to process assistant request" });
       }
     }
@@ -1845,7 +1845,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       const { threshold } = req.body;
       const result = await plagiarismDetector.checkPlagiarism(contentId, threshold);
       res.json(result);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to check plagiarism" });
     }
   });
@@ -1856,7 +1856,7 @@ Focus on Dubai travel, tourism, hotels, attractions, dining, and related topics.
       const { text1, text2 } = req.body;
       const similarity = await plagiarismDetector.compareTexts(text1, text2);
       res.json({ similarity });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to compare texts" });
     }
   });

@@ -433,7 +433,7 @@ export async function evaluateChecklist(contentId: string): Promise<ChecklistRes
       warningItems,
       evaluatedAt,
     };
-  } catch (error) {
+  } catch {
     return createErrorResult(contentId, "Evaluation failed", evaluatedAt);
   }
 }

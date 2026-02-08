@@ -57,7 +57,7 @@ export async function createAlert(
       metadata: row.metadata || {},
       isActive: row.is_active,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -87,7 +87,7 @@ export async function findActiveAlertByType(type: AlertType): Promise<Alert | nu
       metadata: row.metadata || {},
       isActive: row.is_active,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -103,7 +103,7 @@ export async function resolveAlert(id: string): Promise<boolean> {
       RETURNING id
     `);
     return result.rows.length > 0;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -119,7 +119,7 @@ export async function resolveAlertsByType(type: AlertType): Promise<number> {
       RETURNING id
     `);
     return result.rows.length;
-  } catch (error) {
+  } catch {
     return 0;
   }
 }
@@ -152,7 +152,7 @@ export async function getActiveAlerts(): Promise<Alert[]> {
       metadata: row.metadata || {},
       isActive: row.is_active,
     }));
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -178,7 +178,7 @@ export async function getAllAlerts(limit = 100): Promise<Alert[]> {
       metadata: row.metadata || {},
       isActive: row.is_active,
     }));
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -206,7 +206,7 @@ export async function getAlertById(id: string): Promise<Alert | null> {
       metadata: row.metadata || {},
       isActive: row.is_active,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -249,7 +249,7 @@ export async function getAlertStats(): Promise<AlertStats> {
         : null,
       lastDetectionRun: null,
     };
-  } catch (error) {
+  } catch {
     return {
       total: 0,
       active: 0,

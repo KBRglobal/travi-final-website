@@ -50,7 +50,7 @@ function safeParseJson(content: string, fallback: Record<string, unknown> = {}):
   try {
     const cleaned = cleanJsonFromMarkdown(content);
     return JSON.parse(cleaned);
-  } catch (e) {
+  } catch {
     return fallback;
   }
 }
@@ -140,7 +140,7 @@ export function registerAiGenerationRoutes(app: Express): void {
           translation: !!aiClient,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to check AI status" });
     }
   });
@@ -249,7 +249,7 @@ export function registerAiGenerationRoutes(app: Express): void {
           { suggestions: [] }
         );
         res.json(suggestions);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to suggest internal links" });
       }
     }
@@ -732,7 +732,7 @@ Focus on travel, tourism, hotels, attractions, dining, and related topics.`,
 
         const result = response.choices[0].message.content || "";
         res.json({ response: result });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to process assistant request" });
       }
     }

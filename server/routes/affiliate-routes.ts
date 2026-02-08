@@ -17,7 +17,7 @@ export function registerAffiliateRoutes(app: Express): void {
     try {
       const partner = await db.insert(partners).values(req.body).returning();
       res.json(partner[0]);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create partner" });
     }
   });
@@ -26,7 +26,7 @@ export function registerAffiliateRoutes(app: Express): void {
     try {
       const allPartners = await db.select().from(partners);
       res.json(allPartners);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch partners" });
     }
   });
@@ -39,7 +39,7 @@ export function registerAffiliateRoutes(app: Express): void {
       const { id } = req.params;
       const metrics = await partnerDashboard.getPartnerMetrics(id);
       res.json(metrics);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch partner dashboard" });
     }
   });
@@ -55,7 +55,7 @@ export function registerAffiliateRoutes(app: Express): void {
         const { contentId, dryRun } = req.body;
         const result = await affiliateInjector.injectAffiliateLinks(contentId, dryRun);
         res.json(result);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to inject affiliate links" });
       }
     }
@@ -69,7 +69,7 @@ export function registerAffiliateRoutes(app: Express): void {
       const { trackingCode } = req.body;
       await affiliateInjector.trackClick(trackingCode);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track click" });
     }
   });
@@ -89,7 +89,7 @@ export function registerAffiliateRoutes(app: Express): void {
         ...status,
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch affiliate status" });
     }
   });
@@ -212,7 +212,7 @@ export function registerAffiliateRoutes(app: Express): void {
         },
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to validate affiliate configuration" });
     }
   });
@@ -246,7 +246,7 @@ export function registerAffiliateRoutes(app: Express): void {
         enabled: isAffiliateHooksEnabled(),
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch affiliate metrics" });
     }
   });
@@ -330,7 +330,7 @@ export function registerAffiliateRoutes(app: Express): void {
         trackingId: linkResult.trackingId,
         disclosureRequired: injectionResult.disclosureRequired,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         allowed: false,
         reason: "Failed to generate affiliate link",
@@ -356,7 +356,7 @@ export function registerAffiliateRoutes(app: Express): void {
       } else {
         res.status(500).json({ error: "Failed to schedule payout" });
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to schedule payout" });
     }
   });
@@ -373,7 +373,7 @@ export function registerAffiliateRoutes(app: Express): void {
       const { id } = req.params;
       const result = await payoutManager.processPayout(id);
       res.json({ success: result });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to process payout" });
     }
   });
@@ -388,7 +388,7 @@ export function registerAffiliateRoutes(app: Express): void {
         .orderBy(desc(payouts.createdAt))
         .limit(20);
       res.json(payoutHistory);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch payout history" });
     }
   });

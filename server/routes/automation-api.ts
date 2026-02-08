@@ -41,7 +41,7 @@ export function registerAutomationApiRoutes(app: Express): void {
           })
           .returning();
         res.json(webhook[0]);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create webhook" });
       }
     }
@@ -54,7 +54,7 @@ export function registerAutomationApiRoutes(app: Express): void {
       try {
         const allWebhooks = await db.select().from(webhooks);
         res.json(allWebhooks);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch webhooks" });
       }
     }
@@ -71,7 +71,7 @@ export function registerAutomationApiRoutes(app: Express): void {
         const { id } = req.params;
         const result = await webhookManager.testWebhook(id);
         res.json(result);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to test webhook" });
       }
     }
@@ -90,7 +90,7 @@ export function registerAutomationApiRoutes(app: Express): void {
           .orderBy(desc(webhookLogs.createdAt))
           .limit(50);
         res.json(logs);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch webhook logs" });
       }
     }
@@ -112,7 +112,7 @@ export function registerAutomationApiRoutes(app: Express): void {
           })
           .returning();
         res.json(workflow[0]);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create workflow" });
       }
     }
@@ -125,7 +125,7 @@ export function registerAutomationApiRoutes(app: Express): void {
       try {
         const allWorkflows = await db.select().from(workflows);
         res.json(allWorkflows);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch workflows" });
       }
     }
@@ -140,7 +140,7 @@ export function registerAutomationApiRoutes(app: Express): void {
         const { id } = req.params;
         const result = await workflowEngine.executeWorkflow(id, req.body);
         res.json(result);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to execute workflow" });
       }
     }
@@ -159,7 +159,7 @@ export function registerAutomationApiRoutes(app: Express): void {
           .orderBy(desc(workflowExecutions.startedAt))
           .limit(50);
         res.json(executions);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch workflow executions" });
       }
     }
@@ -184,7 +184,7 @@ export function registerAutomationApiRoutes(app: Express): void {
         } else {
           res.status(500).json({ error: "Failed to create test" });
         }
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to create A/B test" });
       }
     }
@@ -196,7 +196,7 @@ export function registerAutomationApiRoutes(app: Express): void {
         .ctaAbTesting as { listTests: () => Promise<any[]> };
       const tests = await ctaAbTesting.listTests();
       res.json(tests);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch A/B tests" });
     }
   });
@@ -211,7 +211,7 @@ export function registerAutomationApiRoutes(app: Express): void {
         const { id } = req.params;
         const result = await ctaAbTesting.startTest(id);
         res.json({ success: result });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to start A/B test" });
       }
     }
@@ -227,7 +227,7 @@ export function registerAutomationApiRoutes(app: Express): void {
         const { id } = req.params;
         const result = await ctaAbTesting.stopTest(id);
         res.json({ success: result });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to stop A/B test" });
       }
     }
@@ -240,7 +240,7 @@ export function registerAutomationApiRoutes(app: Express): void {
       const { id } = req.params;
       const results = await ctaAbTesting.getTestResults(id);
       res.json(results);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch A/B test results" });
     }
   });
@@ -257,7 +257,7 @@ export function registerAutomationApiRoutes(app: Express): void {
       const sessionId = authReq.session?.id || req.ip || "";
       const variant = await ctaAbTesting.getVariant(id, userId, sessionId);
       res.json(variant);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get variant" });
     }
   });
@@ -282,7 +282,7 @@ export function registerAutomationApiRoutes(app: Express): void {
       const sessionId = authReq.session?.id || req.ip || "";
       await ctaAbTesting.trackEvent(id, variantId, eventType, userId, sessionId, metadata);
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to track event" });
     }
   });

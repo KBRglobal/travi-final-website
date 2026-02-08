@@ -51,7 +51,7 @@ async function flushConsumptionBuffer() {
         aiSpendCents: consumption.aiSpendCents,
         failuresCount: consumption.failuresCount,
       });
-    } catch (error) {
+    } catch {
       // Re-add to buffer if flush fails (bounded)
       if (consumptionBuffer.size < MAX_BUFFER_SIZE) {
         consumptionBuffer.set(key, consumption);

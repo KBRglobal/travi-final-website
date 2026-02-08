@@ -42,7 +42,7 @@ export function registerTranslationRoutes(app: Express): void {
       }
 
       res.json(coverage);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translation coverage" });
     }
   });
@@ -93,7 +93,7 @@ export function registerTranslationRoutes(app: Express): void {
         languageStats,
         totalTranslations: allTranslations.filter(t => t.status === "completed").length,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translation stats" });
     }
   });
@@ -122,7 +122,7 @@ export function registerTranslationRoutes(app: Express): void {
       });
 
       res.json(contentTranslations);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });
@@ -132,7 +132,7 @@ export function registerTranslationRoutes(app: Express): void {
     try {
       const translations = await storage.getTranslationsByContentId(req.params.contentId);
       res.json(translations);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translations" });
     }
   });
@@ -146,7 +146,7 @@ export function registerTranslationRoutes(app: Express): void {
         return res.status(404).json({ error: "Translation not found" });
       }
       res.json(translation);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch translation" });
     }
   });
@@ -225,7 +225,7 @@ export function registerTranslationRoutes(app: Express): void {
         }
 
         res.json(translation);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to translate content" });
       }
     }
@@ -299,7 +299,7 @@ export function registerTranslationRoutes(app: Express): void {
           targetLocales: SUPPORTED_LOCALES,
           translations: savedTranslations,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to batch translate content" });
       }
     }
@@ -337,7 +337,7 @@ export function registerTranslationRoutes(app: Express): void {
         }
 
         res.json(translation);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to save translation" });
       }
     }
@@ -357,7 +357,7 @@ export function registerTranslationRoutes(app: Express): void {
         unsupportedLocales: getUnsupportedLocales(),
         totalLocales: SUPPORTED_LOCALES.length,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch usage stats" });
     }
   });
@@ -390,7 +390,7 @@ export function registerTranslationRoutes(app: Express): void {
         locale,
         isTranslated: true,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content" });
     }
   });
@@ -433,7 +433,7 @@ export function registerTranslationRoutes(app: Express): void {
             translatedCount: status.filter(s => s.translatedLocales.includes(locale.code)).length,
           })),
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to fetch translation status" });
       }
     }

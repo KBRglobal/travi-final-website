@@ -41,7 +41,7 @@ export function registerLiveChatRoutes(app: Express): void {
       }
 
       res.json(conversation);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to create conversation" });
     }
   });
@@ -54,7 +54,7 @@ export function registerLiveChatRoutes(app: Express): void {
 
       const messages = await storage.getLiveChatMessages(id, since);
       res.json(messages);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch messages" });
     }
   });
@@ -77,7 +77,7 @@ export function registerLiveChatRoutes(app: Express): void {
       });
 
       res.json(message);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to send message" });
     }
   });
@@ -91,7 +91,7 @@ export function registerLiveChatRoutes(app: Express): void {
       const status = req.query.status as string | undefined;
       const conversations = await storage.getLiveChatConversations(status);
       res.json(conversations);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch conversations" });
     }
   }) as any);
@@ -110,7 +110,7 @@ export function registerLiveChatRoutes(app: Express): void {
       }
 
       res.json(conversation);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch conversation" });
     }
   }) as any);
@@ -138,7 +138,7 @@ export function registerLiveChatRoutes(app: Express): void {
       });
 
       res.json(message);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to send message" });
     }
   }) as any);
@@ -162,7 +162,7 @@ export function registerLiveChatRoutes(app: Express): void {
       }
 
       res.json(conversation);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update conversation" });
     }
   }) as any);
@@ -176,7 +176,7 @@ export function registerLiveChatRoutes(app: Express): void {
       const { id } = req.params;
       await storage.markMessagesAsRead(id, "admin");
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to mark messages as read" });
     }
   }) as any);

@@ -57,7 +57,7 @@ async function flushDecisionBuffer() {
 
   try {
     await db.insert(autonomyDecisionLogs).values(toFlush as any);
-  } catch (error) {
+  } catch {
     // Re-add failed entries (up to max buffer size)
     const remaining = MAX_BUFFER_SIZE - decisionBuffer.length;
     if (remaining > 0) {
@@ -137,7 +137,7 @@ async function checkOverride(
     overrideCache.set(cacheKey, { override: result, expiresAt: Date.now() + OVERRIDE_CACHE_TTL });
 
     return result;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

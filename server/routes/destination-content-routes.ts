@@ -395,7 +395,7 @@ router.get("/api/public/destination-content/:slug", async (req: Request, res: Re
         },
       },
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch destination content" });
   }
 });
@@ -467,7 +467,7 @@ router.get(
         sourceUrl: translation?.sourceUrl,
         lastFetched: translation?.lastFetched,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch section" });
     }
   }
@@ -549,7 +549,7 @@ router.get("/api/public/holidays/:countryCode", async (req: Request, res: Respon
       })),
       byMonth,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch holidays" });
   }
 });
@@ -681,7 +681,7 @@ router.get(
         sourceUrl: translation?.sourceUrl,
         lastFetched: translation?.lastFetched,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch essentials" });
     }
   }
@@ -698,7 +698,7 @@ router.get(
     try {
       const status = await guideRewriteService.getRewriteStatus();
       res.json({ guides: status, total: status.length });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get rewrite status" });
     }
   }
@@ -723,7 +723,7 @@ router.post(
       } else {
         res.status(400).json({ success: false, error: result.error });
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to rewrite guide" });
     }
   }
@@ -749,7 +749,7 @@ router.post("/api/destination-content/guides/rewrite-all", async (req: Request, 
         console.error(error);
       }
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to start batch rewrite" });
   }
 });
@@ -775,7 +775,7 @@ router.post(
           console.error(error);
         }
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to start force rewrite" });
     }
   }
@@ -817,7 +817,7 @@ router.get(
         hasRewrittenContent: false,
         originalContentLength: guide.originalContent?.length || 0,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get structured guide" });
     }
   }
@@ -858,7 +858,7 @@ router.get("/api/public/destinations/:slug/mobility", async (req: Request, res: 
       ...content,
       updatedAt: record.updatedAt,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch mobility data" });
   }
 });
@@ -901,7 +901,7 @@ router.get(
         updatedAt: record.updatedAt,
         createdAt: record.createdAt,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch mobility data" });
     }
   }
@@ -961,7 +961,7 @@ router.put(
           version: 1,
         });
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to save mobility data" });
     }
   }
@@ -1000,7 +1000,7 @@ router.get("/api/public/destinations/:slug/seasons", async (req: Request, res: R
       generatedModel: seasonsData[0].generatedModel,
       updatedAt: seasonsData[0].updatedAt,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to fetch seasons data" });
   }
 });

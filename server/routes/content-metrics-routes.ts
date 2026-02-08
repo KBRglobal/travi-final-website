@@ -49,7 +49,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
         score: breakdown.totalScore,
         breakdown,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch content metrics" });
     }
   });
@@ -72,7 +72,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
         })),
         count: topPerformers.length,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch top performers" });
     }
   });
@@ -82,7 +82,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
       const { contentId } = req.params;
       const metrics = recordImpression(contentId);
       res.json({ success: true, metrics });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to record impression" });
     }
   });
@@ -92,7 +92,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
       const { contentId } = req.params;
       const metrics = recordClick(contentId);
       res.json({ success: true, metrics });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to record click" });
     }
   });
@@ -108,7 +108,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
 
       const metrics = recordScrollDepth(contentId, depth);
       res.json({ success: true, metrics });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to record scroll depth" });
     }
   });
@@ -118,7 +118,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
       const { contentId } = req.params;
       const decision = getRegenerationDecision(contentId);
       res.json(decision);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to check regeneration status" });
     }
   });
@@ -169,7 +169,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
         lastUpdated: performance.lastUpdated.toISOString(),
         createdAt: performance.createdAt.toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch performance metrics" });
     }
   });
@@ -190,7 +190,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
         })),
         count: all.length,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch performance metrics" });
     }
   });
@@ -244,7 +244,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
           createdAt: performance!.createdAt.toISOString(),
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to record performance event" });
     }
   });
@@ -274,7 +274,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
               }
             : null,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to check regeneration eligibility" });
       }
     }
@@ -291,7 +291,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
 
       const performance = recordPerformanceImpression(entityId, entityType);
       res.json({ success: true, performance });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to record impression" });
     }
   });
@@ -307,7 +307,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
 
       const performance = recordPerformanceClick(entityId, entityType);
       res.json({ success: true, performance });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to record click" });
     }
   });
@@ -329,7 +329,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
             }
           : null,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to check rewrite eligibility" });
     }
   });
@@ -371,7 +371,7 @@ export async function registerContentMetricsRoutes(app: Express): Promise<void> 
         lastUpdated: performance.lastUpdated.toISOString(),
         createdAt: performance.createdAt.toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch entity metrics" });
     }
   });

@@ -29,7 +29,7 @@ export function registerChecklistRoutes(app: Express): void {
       try {
         const checklist = await evaluateChecklist(id);
         res.json(checklist);
-      } catch (error) {
+      } catch {
         res.status(500).json({
           error: "Failed to evaluate checklist",
           contentId: id,
@@ -57,7 +57,7 @@ export function registerChecklistRoutes(app: Express): void {
           canPublish,
           timestamp: new Date().toISOString(),
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({
           contentId: id,
           canPublish: false,

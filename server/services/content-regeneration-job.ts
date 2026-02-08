@@ -106,7 +106,7 @@ async function saveContentToDatabase(
       .where(eq(tiqetsAttractions.id, attractionId));
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -204,7 +204,7 @@ export async function regenerateAllAttractions(
           }
 
           regenerationStats.processed++;
-        } catch (error) {
+        } catch {
           regenerationStats.errors++;
           regenerationStats.processed++;
         }

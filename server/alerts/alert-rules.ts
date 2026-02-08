@@ -38,7 +38,7 @@ export const alertRules: AlertRule[] = [
         }
 
         return { triggered: false, message: "" };
-      } catch (error) {
+      } catch {
         return { triggered: false, message: "" };
       }
     },
@@ -77,7 +77,7 @@ export const alertRules: AlertRule[] = [
         }
 
         return { triggered: false, message: "" };
-      } catch (error) {
+      } catch {
         return { triggered: false, message: "" };
       }
     },
@@ -99,7 +99,7 @@ export const alertRules: AlertRule[] = [
         }
 
         return { triggered: false, message: "" };
-      } catch (error) {
+      } catch {
         return { triggered: false, message: "" };
       }
     },
@@ -127,7 +127,7 @@ export const alertRules: AlertRule[] = [
           return {
             triggered: true,
             message: `${result.rows.length} published content(s) not indexed after ${THRESHOLDS.SEARCH_INDEX_STALE_MINUTES} minutes`,
-            metadata: { 
+            metadata: {
               count: result.rows.length,
               contentIds: result.rows.map((r: any) => r.id),
             },
@@ -135,7 +135,7 @@ export const alertRules: AlertRule[] = [
         }
 
         return { triggered: false, message: "" };
-      } catch (error) {
+      } catch {
         return { triggered: false, message: "" };
       }
     },
@@ -165,7 +165,7 @@ export const alertRules: AlertRule[] = [
         }
 
         return { triggered: false, message: "" };
-      } catch (error) {
+      } catch {
         return { triggered: false, message: "" };
       }
     },
@@ -192,7 +192,7 @@ export const alertRules: AlertRule[] = [
           return {
             triggered: true,
             message: `AI provider failures in last hour: ${providers.join(", ")}`,
-            metadata: { 
+            metadata: {
               providers: result.rows.map((r: any) => ({
                 provider: r.provider,
                 failureCount: r.failure_count,
@@ -202,7 +202,7 @@ export const alertRules: AlertRule[] = [
         }
 
         return { triggered: false, message: "" };
-      } catch (error) {
+      } catch {
         return { triggered: false, message: "" };
       }
     },

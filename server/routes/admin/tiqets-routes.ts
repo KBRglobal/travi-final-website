@@ -74,7 +74,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
     try {
       const cities = await db.select().from(tiqetsCities).orderBy(tiqetsCities.name);
       res.json({ cities });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch cities" });
     }
   });
@@ -94,7 +94,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
 
       await db.update(tiqetsCities).set(updateData).where(eq(tiqetsCities.id, id));
       res.json({ success: true });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update city" });
     }
   });
@@ -125,7 +125,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
 
       const data = await response.json();
       res.json({ results: data.cities || [] });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to search Tiqets API", results: [] });
     }
   });
@@ -151,7 +151,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         .from(tiqetsAttractions);
 
       res.json({ attractions, total: countResult?.count || 0 });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions" });
     }
   });
@@ -172,7 +172,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
       }
 
       res.json(attraction);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attraction" });
     }
   });
@@ -213,7 +213,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         .returning();
 
       res.json(updated);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to update attraction" });
     }
   });
@@ -242,7 +242,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         .where(eq(tiqetsAttractions.cityName, cityName));
 
       res.json({ attractions, total: countResult?.count || 0 });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch attractions", attractions: [], total: 0 });
     }
   });
@@ -317,7 +317,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
           partnerId: partnerId || null,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch stats" });
     }
   });
@@ -1106,7 +1106,7 @@ export function registerAdminTiqetsRoutes(app: Express): void {
 
         // Signal batch completion to background service
         octypoState.setRunning(false);
-      } catch (err: any) {
+      } catch {
         // Signal completion even on error
         octypoState.setRunning(false);
       }

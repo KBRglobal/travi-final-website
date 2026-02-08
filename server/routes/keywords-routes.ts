@@ -23,7 +23,7 @@ export function registerKeywordsRoutes(app: Express): void {
         isActive: isActive === undefined ? undefined : isActive === "true",
       });
       res.json(items);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch keywords" });
     }
   });
@@ -35,7 +35,7 @@ export function registerKeywordsRoutes(app: Express): void {
         return res.status(404).json({ error: "Keyword not found" });
       }
       res.json(item);
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch keyword" });
     }
   });
@@ -64,7 +64,7 @@ export function registerKeywordsRoutes(app: Express): void {
           return res.status(404).json({ error: "Keyword not found" });
         }
         res.json(item);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to update keyword" });
       }
     }
@@ -78,7 +78,7 @@ export function registerKeywordsRoutes(app: Express): void {
       try {
         await storage.deleteKeyword(req.params.id);
         res.status(204).send();
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to delete keyword" });
       }
     }
@@ -95,7 +95,7 @@ export function registerKeywordsRoutes(app: Express): void {
           return res.status(404).json({ error: "Keyword not found" });
         }
         res.json(item);
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to increment keyword usage" });
       }
     }
@@ -157,7 +157,7 @@ export function registerKeywordsRoutes(app: Express): void {
           errors: results.errors.slice(0, 10),
           totalErrors: results.errors.length,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to bulk import keywords" });
       }
     }

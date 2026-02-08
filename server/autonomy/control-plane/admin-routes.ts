@@ -33,7 +33,7 @@ router.get("/status", async (req: Request, res: Response) => {
       activeOverrides: dashboard.activeOverrides,
       policyCount: dashboard.policyCount,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get status" });
   }
 });
@@ -46,7 +46,7 @@ router.get("/dashboard", async (req: Request, res: Response) => {
   try {
     const dashboard = await getDashboardData();
     res.json(dashboard);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get dashboard" });
   }
 });
@@ -63,7 +63,7 @@ router.get("/policies", async (req: Request, res: Response) => {
   try {
     const policies = await getPolicies();
     res.json({ policies });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to list policies" });
   }
 });
@@ -90,7 +90,7 @@ router.post("/policies", async (req: Request, res: Response) => {
     } as any);
 
     res.status(201).json({ policy });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create policy" });
   }
 });
@@ -117,7 +117,7 @@ router.patch("/policies/:id", async (req: Request, res: Response) => {
     }
 
     res.json({ policy });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to update policy" });
   }
 });
@@ -134,7 +134,7 @@ router.get("/budgets", async (req: Request, res: Response) => {
   try {
     const summary = await getBudgetSummary();
     res.json(summary);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get budgets" });
   }
 });
@@ -165,7 +165,7 @@ router.get("/budgets/:targetKey", async (req: Request, res: Response) => {
 
     const statuses = await checkBudgetStatus(targetKey, defaultLimits);
     res.json({ targetKey, statuses });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get budget status" });
   }
 });
@@ -197,7 +197,7 @@ router.post("/budgets/reset", async (req: Request, res: Response) => {
       countersReset: count,
       targetKey: parsed.data.targetKey,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to reset budget" });
   }
 });
@@ -224,7 +224,7 @@ router.get("/decisions", async (req: Request, res: Response) => {
     } as any);
 
     res.json({ decisions });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get decisions" });
   }
 });
@@ -249,7 +249,7 @@ router.get("/overrides", async (req: Request, res: Response) => {
     });
 
     res.json({ overrides });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to list overrides" });
   }
 });
@@ -272,7 +272,7 @@ router.post("/override", async (req: Request, res: Response) => {
     const override = await createOverride(parsed.data, userId);
 
     res.status(201).json({ override });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to create override" });
   }
 });
@@ -292,7 +292,7 @@ router.delete("/overrides/:id", async (req: Request, res: Response) => {
     }
 
     res.json({ success: true });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to revoke override" });
   }
 });
@@ -335,7 +335,7 @@ router.post("/simulate", async (req: Request, res: Response) => {
 
     const result = await simulateEvaluation(parsed.data as any);
     res.json(result);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to run simulation" });
   }
 });
@@ -359,7 +359,7 @@ router.get("/blocked-jobs", async (req: Request, res: Response) => {
     const blockedJobs = decisions.filter(d => d.metadata?.jobType || d.metadata?.jobId);
 
     res.json({ blockedJobs });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get blocked jobs" });
   }
 });
@@ -396,7 +396,7 @@ router.post("/blocked-jobs/:jobId/retry", async (req: Request, res: Response) =>
       override,
       message: "Override created. Job will be retried on next scheduler run.",
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to retry job" });
   }
 });

@@ -66,7 +66,7 @@ router.get("/providers", async (_req, res) => {
       available: providers,
       total: providers.length,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get providers" });
   }
 });
@@ -86,7 +86,7 @@ router.get("/assets/:id", async (req, res) => {
     const variants = await vamsStorage.getVariants(asset.id);
 
     res.json({ asset, variants });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get asset" });
   }
 });
@@ -110,7 +110,7 @@ router.get("/assets", async (req, res) => {
       count: assets.length,
       assets,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to list assets" });
   }
 });
@@ -184,7 +184,7 @@ router.get("/content/:contentId/images", async (req, res) => {
   try {
     const images = await getContentImages(req.params.contentId);
     res.json(images);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get content images" });
   }
 });
@@ -202,7 +202,7 @@ router.get("/stats", async (_req, res) => {
       ...stats,
       availableProviders: providers,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: "Failed to get stats" });
   }
 });

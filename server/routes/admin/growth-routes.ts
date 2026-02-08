@@ -81,7 +81,7 @@ export function registerGrowthRoutes(app: Express) {
         activeTasks,
         updatedAt: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get growth overview" });
     }
   });
@@ -146,7 +146,7 @@ export function registerGrowthRoutes(app: Express) {
           estimatedDaysToComplete: estimatedDays,
           ratePerDay,
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to get content pipeline" });
       }
     }
@@ -216,7 +216,7 @@ export function registerGrowthRoutes(app: Express) {
           dallePerImage: dalleCost,
         },
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get image pipeline" });
     }
   });
@@ -310,7 +310,7 @@ export function registerGrowthRoutes(app: Express) {
                 : 0,
           },
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to get translation pipeline" });
       }
     }
@@ -347,7 +347,7 @@ export function registerGrowthRoutes(app: Express) {
         })),
         total: logs.length,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get activity log" });
     }
   });
@@ -434,7 +434,7 @@ export function registerGrowthRoutes(app: Express) {
         },
         updatedAt: now.toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get growth metrics" });
     }
   });
@@ -455,7 +455,7 @@ export function registerGrowthRoutes(app: Express) {
           message: "Image generation triggered",
           triggeredAt: new Date().toISOString(),
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to trigger image generation" });
       }
     }
@@ -473,7 +473,7 @@ export function registerGrowthRoutes(app: Express) {
           message: "Translation batch triggered",
           triggeredAt: new Date().toISOString(),
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to trigger translations" });
       }
     }
@@ -540,7 +540,7 @@ export function registerGrowthRoutes(app: Express) {
         })),
         checkedAt: freshnessResult.checkedAt.toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get freshness status" });
     }
   });
@@ -592,7 +592,7 @@ export function registerGrowthRoutes(app: Express) {
         entityLinkedPercent:
           totalPublished > 0 ? Math.round((entityLinked / totalPublished) * 100) : 0,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get intelligence stats" });
     }
   });
@@ -642,7 +642,7 @@ export function registerGrowthRoutes(app: Express) {
             duration: result.duration,
           });
         }
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to refresh content" });
       }
     }

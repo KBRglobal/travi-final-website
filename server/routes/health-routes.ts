@@ -261,7 +261,7 @@ export function registerHealthRoutes(app: Express): void {
         },
         environment: process.env.NODE_ENV || "development",
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get system status" });
     }
   });
@@ -276,7 +276,7 @@ export function registerHealthRoutes(app: Express): void {
         queue: stats,
         timestamp: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get worker status" });
     }
   });

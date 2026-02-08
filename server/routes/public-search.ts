@@ -70,7 +70,7 @@ export function registerPublicSearchRoutes(app: Express): void {
       const suggestions = await getSearchSuggestions(query, limit);
 
       res.json({ suggestions });
-    } catch (error) {
+    } catch {
       res.status(500).json({
         suggestions: [],
         error: "Suggestions failed",

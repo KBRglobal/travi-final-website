@@ -624,7 +624,7 @@ export const auditLogger = {
       }));
 
       return { logs, total };
-    } catch (error) {
+    } catch {
       // Fallback to in-memory if database fails
       let filtered = [...auditLogStore];
       if (filters.userId) filtered = filtered.filter(l => l.userId === filters.userId);
@@ -677,7 +677,7 @@ export const auditLogger = {
           timestamp: l.timestamp,
         })),
       };
-    } catch (error) {
+    } catch {
       return { totalActions: 0, byAction: {}, bySeverity: {}, recentActivity: [] };
     }
   },
@@ -737,7 +737,7 @@ export const auditLogger = {
           .slice(0, 10),
         suspiciousIps,
       };
-    } catch (error) {
+    } catch {
       return {
         totalEvents: 0,
         warnings: 0,
@@ -821,7 +821,7 @@ export const captcha = {
         action: data.action,
         errorCodes: data["error-codes"],
       };
-    } catch (error) {
+    } catch {
       return { success: false, errorCodes: ["verification-failed"] };
     }
   },
@@ -857,7 +857,7 @@ export const captcha = {
         success: data.success,
         errorCodes: data["error-codes"],
       };
-    } catch (error) {
+    } catch {
       return { success: false, errorCodes: ["verification-failed"] };
     }
   },
@@ -893,7 +893,7 @@ export const captcha = {
         success: data.success,
         errorCodes: data["error-codes"],
       };
-    } catch (error) {
+    } catch {
       return { success: false, errorCodes: ["verification-failed"] };
     }
   },

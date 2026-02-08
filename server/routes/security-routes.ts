@@ -86,7 +86,7 @@ export function registerSecurityRoutes(app: Express): void {
       const userId = getUserId(authReq);
       const devices = deviceFingerprint.getUserDevices(userId);
       res.json({ devices });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch devices" });
     }
   });
@@ -99,7 +99,7 @@ export function registerSecurityRoutes(app: Express): void {
       const fingerprint = deviceFingerprint.extractFromRequest(req);
       await deviceFingerprint.trustDevice(userId, fingerprint);
       res.json({ success: true, message: "Device trusted" });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to trust device" });
     }
   });
@@ -117,7 +117,7 @@ export function registerSecurityRoutes(app: Express): void {
       } else {
         res.status(404).json({ error: "Device not found" });
       }
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to revoke device" });
     }
   });
@@ -141,7 +141,7 @@ export function registerSecurityRoutes(app: Express): void {
       }));
 
       res.json({ sessions: safeSessions });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch sessions" });
     }
   });
@@ -155,7 +155,7 @@ export function registerSecurityRoutes(app: Express): void {
 
       const count = await sessionSecurity.revokeAllUserSessions(userId, currentSessionId);
       res.json({ success: true, message: `${count} sessions revoked` });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to revoke sessions" });
     }
   });
@@ -212,7 +212,7 @@ export function registerSecurityRoutes(app: Express): void {
             ? threatAnalysis.indicators.map(i => i.description)
             : [],
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get security context" });
     }
   });
@@ -227,7 +227,7 @@ export function registerSecurityRoutes(app: Express): void {
         blockedIpList: blockedIps.slice(0, 10), // Top 10
         recentSecurityEvents: await getAuditLogs({ resourceType: "auth", limit: 20 }),
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to get security dashboard" });
     }
   });
@@ -249,7 +249,7 @@ export function registerSecurityRoutes(app: Express): void {
         totpEnabled: user.totpEnabled || false,
         hasSecret: !!user.totpSecret,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch TOTP status" });
     }
   });
@@ -297,7 +297,7 @@ export function registerSecurityRoutes(app: Express): void {
         qrCode: qrCodeDataUrl,
         otpauth,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to setup TOTP" });
     }
   });
@@ -347,7 +347,7 @@ export function registerSecurityRoutes(app: Express): void {
         message: "Two-factor authentication enabled",
         recoveryCodes,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to verify TOTP" });
     }
   });
@@ -383,7 +383,7 @@ export function registerSecurityRoutes(app: Express): void {
       await storage.updateUser(userId, { totpEnabled: false, totpSecret: null });
 
       res.json({ success: true, message: "Two-factor authentication disabled" });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to disable TOTP" });
     }
   });
@@ -543,7 +543,7 @@ export function registerSecurityRoutes(app: Express): void {
             });
           });
         });
-      } catch (error) {
+      } catch {
         res.status(500).json({ error: "Failed to validate TOTP" });
       }
     }
@@ -682,7 +682,7 @@ export function registerSecurityRoutes(app: Express): void {
           });
         });
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: "Failed to validate recovery code" });
     }
   });

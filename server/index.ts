@@ -342,7 +342,7 @@ app.get("/sitemap", async (_req, res) => {
         .from(destinations)
         .where(eq(destinations.isActive, true))
         .orderBy(destinations.name);
-    } catch (dbError) {
+    } catch {
       // Continue with empty destinations - never fail
       void 0;
     }
@@ -442,7 +442,7 @@ app.get("/sitemap", async (_req, res) => {
         "Cache-Control": "public, max-age=3600",
       })
       .end(html);
-  } catch (error) {
+  } catch {
     // Ultimate failsafe - always return valid HTML, never 404
 
     const minimalHtml = `<!DOCTYPE html><html><head><title>Sitemap | TRAVI</title></head><body><h1>Sitemap</h1><p>Please visit <a href="/">TRAVI Home</a></p></body></html>`;
