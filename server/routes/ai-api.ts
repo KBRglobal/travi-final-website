@@ -1668,23 +1668,6 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           return res.status(400).json({ error: validationError });
         }
 
-        const hasOpenAI = !!(
-          process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY
-        );
-        const hasReplicate = !!process.env.REPLICATE_API_KEY;
-        const hasFreepik = !!process.env.FREEPIK_API_KEY;
-
-        if (!hasOpenAI && !hasReplicate) {
-          return res.json(buildFallbackResponse(title, contentType, generateHero, hasFreepik));
-        }
-
-        addSystemLog("info", "images", `Starting AI image generation for: "${title}"`, {
-          contentType,
-          generateHero,
-          hasOpenAI,
-          hasReplicate,
-        });
-
         // Build a completely new options object from sanitized individual fields
         // to break Snyk's taint chain from req.body
         const sanitizedTitle = sanitizeAIPrompt(String(title || ""));
@@ -1694,6 +1677,30 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
         const validatedGenerateHero = generateHero !== false;
         const validatedGenContentImages = genContentImages === true;
         const validatedContentImageCount = Math.min(Number(contentImageCount) || 0, 5);
+
+        const hasOpenAI = !!(
+          process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY
+        );
+        const hasReplicate = !!process.env.REPLICATE_API_KEY;
+        const hasFreepik = !!process.env.FREEPIK_API_KEY;
+
+        if (!hasOpenAI && !hasReplicate) {
+          return res.json(
+            buildFallbackResponse(
+              sanitizedTitle,
+              validatedContentType,
+              validatedGenerateHero,
+              hasFreepik
+            )
+          );
+        }
+
+        addSystemLog("info", "images", `Starting AI image generation for: "${sanitizedTitle}"`, {
+          contentType: validatedContentType,
+          generateHero: validatedGenerateHero,
+          hasOpenAI,
+          hasReplicate,
+        });
 
         const options: ImageGenerationOptions = {
           contentType: validatedContentType,
@@ -1715,12 +1722,16 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
             "images",
             `AI image generation error: ${genError instanceof Error ? genError.message : "Unknown error"}`
           );
-          images = [createFallbackImage(title, contentType)];
+          images = [createFallbackImage(sanitizedTitle, validatedContentType)];
         }
 
         if (images.length === 0) {
-          addSystemLog("warning", "images", `No images generated for "${title}", using fallback`);
-          images = [createFallbackImage(title, contentType)];
+          addSystemLog(
+            "warning",
+            "images",
+            `No images generated for "${sanitizedTitle}", using fallback`
+          );
+          images = [createFallbackImage(sanitizedTitle, validatedContentType)];
         }
 
         const storedImages = await storeGeneratedImages(images);
