@@ -9,6 +9,13 @@ import { spellChecker } from "./spell-checker";
 import { synonymExpander } from "./synonyms";
 import { queryProcessor } from "./query-processor";
 
+/**
+ * Escape special regex characters to prevent ReDoS when building RegExp from user input
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export interface QueryRewriteResult {
   original: string;
   rewritten: string;
@@ -196,7 +203,7 @@ export const queryRewriter = {
       const synonyms = synonymExpander.getSynonyms(token, locale);
       if (synonyms.length > 0) {
         const suggestion = query.replaceAll(
-          new RegExp(String.raw`\b` + token + String.raw`\b`, "gi"),
+          new RegExp(String.raw`\b` + escapeRegExp(token) + String.raw`\b`, "gi"),
           synonyms[0]
         );
         if (suggestion !== query) {

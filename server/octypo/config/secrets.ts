@@ -400,7 +400,7 @@ if (isMainModule) {
   const args = new Set(process.argv.slice(2));
 
   if (args.has("--setup") || args.has("-s")) {
-    await interactiveSetup().catch(console.error);
+    interactiveSetup().catch(console.error);
   } else if (args.has("--verify") || args.has("-v")) {
     const password = process.env.OCTYPO_SECRETS_PASSWORD || getSecretsPassword();
     const secrets = loadSecrets(password);

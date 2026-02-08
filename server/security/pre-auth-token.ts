@@ -73,7 +73,7 @@ async function ensureTableExists(): Promise<void> {
 }
 
 // Initialize table on module load
-await ensureTableExists();
+ensureTableExists().catch(err => console.error("Failed to initialize pre-auth token table:", err));
 
 /**
  * Pre-auth token configuration

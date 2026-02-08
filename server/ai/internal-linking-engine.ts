@@ -19,6 +19,13 @@ import { eq, and, isNotNull } from "drizzle-orm";
 
 const logger = createLogger("internal-linking");
 
+/**
+ * Escape special regex characters to prevent ReDoS when building RegExp from content data
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // Cache for database-loaded content
 let dbLinksCache: LinkableContent[] = [];
 let dbLinksCacheTime = 0;
@@ -355,7 +362,7 @@ function calculateRelevance(keyword: string, target: LinkableContent, content: s
 
   // Multiple mentions increase relevance
   const mentions = Array.from(
-    content.toLowerCase().matchAll(new RegExp(keyword.toLowerCase(), "g"))
+    content.toLowerCase().matchAll(new RegExp(escapeRegExp(keyword.toLowerCase()), "g"))
   ).length;
   score += Math.min(mentions * 5, 20);
 

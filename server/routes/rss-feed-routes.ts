@@ -12,6 +12,42 @@ import { logAuditEvent } from "../utils/audit-logger";
 import { parseRssFeed } from "../services/rss-parser";
 import crypto from "node:crypto";
 
+/**
+ * Validate that a URL is safe to fetch (not targeting internal/private resources).
+ * Defense-in-depth: applied at route level before passing URL to service layer.
+ */
+function isUrlSafeForFetch(urlStr: string): boolean {
+  try {
+    const parsed = new URL(urlStr);
+    if (!["http:", "https:"].includes(parsed.protocol)) return false;
+    const hostname = parsed.hostname.toLowerCase();
+    // Block localhost and loopback
+    if (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "::1" ||
+      hostname === "[::1]"
+    )
+      return false;
+    // Block private IP ranges
+    if (
+      hostname.startsWith("10.") ||
+      hostname.startsWith("192.168.") ||
+      hostname.startsWith("169.254.")
+    )
+      return false;
+    if (hostname.startsWith("172.")) {
+      const secondOctet = parseInt(hostname.split(".")[1], 10);
+      if (secondOctet >= 16 && secondOctet <= 31) return false;
+    }
+    // Block cloud metadata endpoints
+    if (hostname === "metadata.google.internal" || hostname === "169.254.169.254") return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Fingerprint generator for content deduplication
 function generateFingerprint(title: string, url?: string): string {
   const normalizedTitle = title.toLowerCase().replaceAll(/[^a-z0-9]/g, "");
@@ -152,6 +188,13 @@ export function registerRssFeedRoutes(app: Express): void {
         const feed = await storage.getRssFeed(req.params.id);
         if (!feed) {
           return res.status(404).json({ error: "RSS feed not found" });
+        }
+
+        // SSRF protection: validate feed URL at route level before fetching
+        if (!isUrlSafeForFetch(feed.url)) {
+          return res
+            .status(400)
+            .json({ error: "RSS feed URL is not allowed (blocked by SSRF protection)" });
         }
 
         const items = await parseRssFeed(feed.url);

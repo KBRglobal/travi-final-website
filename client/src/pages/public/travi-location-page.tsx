@@ -580,7 +580,16 @@ function generateSchemaOrg(location: TraviLocation) {
       addressCountry: location.country || "",
       streetAddress: location.details?.address || "",
     },
-    url: globalThis.window === undefined ? "" : globalThis.location.href,
+    url: (() => {
+      try {
+        if (globalThis.window === undefined) return "";
+        const parsed = new URL(globalThis.location.href);
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return "/";
+        return parsed.origin + parsed.pathname;
+      } catch {
+        return "/";
+      }
+    })(),
   };
 
   if (location.details?.phone) {
@@ -671,7 +680,17 @@ export default function TraviLocationPage() {
         <meta property="og:type" content="website" />
         <link
           rel="canonical"
-          href={globalThis.window === undefined ? "" : globalThis.location.href}
+          href={(() => {
+            try {
+              if (globalThis.window === undefined) return "";
+              const url = new URL(globalThis.location.href);
+              if (url.protocol !== "http:" && url.protocol !== "https:") return "/";
+              // Only use pathname to prevent query/fragment injection
+              return url.origin + url.pathname;
+            } catch {
+              return "/";
+            }
+          })()}
         />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>

@@ -28,6 +28,18 @@ import { createLogger } from "../lib/logger";
 
 const logger = createLogger("link-management-routes");
 
+/**
+ * Validate that a content ID is a safe string (UUID format or alphanumeric).
+ * Prevents ReDoS by ensuring IDs don't contain regex-special characters
+ * before they flow into functions that may construct RegExp from content data.
+ */
+const SAFE_CONTENT_ID_PATTERN = /^[\w-]+$/;
+function isValidContentId(id: unknown): id is string {
+  return (
+    typeof id === "string" && id.length > 0 && id.length <= 128 && SAFE_CONTENT_ID_PATTERN.test(id)
+  );
+}
+
 export function registerLinkManagementRoutes(app: Router) {
   const router = Router();
 
@@ -98,6 +110,10 @@ export function registerLinkManagementRoutes(app: Router) {
     try {
       const { contentId } = req.params;
 
+      if (!isValidContentId(contentId)) {
+        return res.status(400).json({ success: false, error: "Invalid content ID format" });
+      }
+
       const content = await db
         .select({
           id: contents.id,
@@ -152,6 +168,15 @@ export function registerLinkManagementRoutes(app: Router) {
 
       if (contentIds.length > 100) {
         return res.status(400).json({ success: false, error: "Maximum 100 contents per batch" });
+      }
+
+      // Validate all content IDs to prevent ReDoS via RegExp construction downstream
+      const invalidIds = contentIds.filter((id: unknown) => !isValidContentId(id));
+      if (invalidIds.length > 0) {
+        return res.status(400).json({
+          success: false,
+          error: `Invalid content ID format in batch: ${invalidIds.length} invalid ID(s)`,
+        });
       }
 
       const results = await batchProcessLinks(contentIds, Math.min(concurrency, 10));

@@ -12,6 +12,56 @@ import { SUPPORTED_LOCALES } from "@shared/schema";
 const VALID_LOCALES = SUPPORTED_LOCALES.map(l => l.code);
 
 /**
+ * Known route patterns for SSR rendering validation.
+ * Only paths matching these patterns will be server-side rendered.
+ * This prevents XSS via crafted URLs being reflected in SSR output.
+ */
+const KNOWN_ROUTE_PATTERNS: RegExp[] = [
+  /^\/$/,
+  /^\/articles$/,
+  /^\/article\/[\w-]+$/,
+  /^\/attractions$/,
+  /^\/attraction\/[\w-]+$/,
+  /^\/hotels$/,
+  /^\/hotel\/[\w-]+$/,
+  /^\/dining$/,
+  /^\/dining\/[\w-]+$/,
+  /^\/events$/,
+  /^\/events\/[\w-]+$/,
+  /^\/news$/,
+  /^\/news\/[\w-]+$/,
+  /^\/about$/,
+  /^\/contact$/,
+  /^\/privacy$/,
+  /^\/terms$/,
+  /^\/faq$/,
+  /^\/districts$/,
+  /^\/districts\/[\w-]+$/,
+  /^\/shopping$/,
+  /^\/shopping\/[\w-]+$/,
+  /^\/guides$/,
+  /^\/guides\/[\w-]+$/,
+  /^\/destinations$/,
+  /^\/destinations\/[\w-]+$/,
+  /^\/search$/,
+  /^\/travi\/[\w-]+\/[\w-]+$/,
+];
+
+/**
+ * Check if a path matches a known route pattern
+ */
+function isKnownRoute(path: string): boolean {
+  return KNOWN_ROUTE_PATTERNS.some(pattern => pattern.test(path));
+}
+
+/**
+ * Generic 404 HTML page for unknown routes
+ */
+function get404Html(): string {
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>404 - Page Not Found</title></head><body><h1>404 - Page Not Found</h1><p>The requested page does not exist.</p></body></html>`;
+}
+
+/**
  * SSR Middleware - intercepts bot requests and serves pre-rendered HTML
  *
  * Usage: Apply before static file serving in Express
@@ -123,10 +173,26 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
   try {
     const { path, locale } = parsePathAndLocale(req.path);
 
-    // Pass query params to SSR renderer for pagination support
-    const searchParams = new URLSearchParams(req.query as Record<string, string>);
+    // Validate that the path is a known route before rendering
+    // This prevents XSS via crafted URLs being reflected in SSR output
+    if (!isKnownRoute(path)) {
+      res.status(404).set("Content-Type", "text/html; charset=utf-8").send(get404Html());
+      return;
+    }
 
-    const result = await renderSSR(path, locale, searchParams);
+    // Pass query params to SSR renderer for pagination support
+    // Only allow known safe query parameters (page, limit, locale, type)
+    const safeParams = new URLSearchParams();
+    const allowedParams = ["page", "limit", "locale", "type", "q", "sort"];
+    for (const key of allowedParams) {
+      const value = req.query[key];
+      if (typeof value === "string") {
+        // Strip any HTML/script content from parameter values
+        safeParams.set(key, value.replace(/<[^>]*>/g, "").replace(/[<>"']/g, ""));
+      }
+    }
+
+    const result = await renderSSR(path, locale, safeParams);
 
     // Handle redirects with proper HTTP headers
     if (result.redirect) {
