@@ -22,7 +22,7 @@ const SALT_LENGTH = 64;
 const ITERATIONS = 100000;
 
 // File paths
-const SECRETS_FILE = ".octypo-secrets.enc";
+const SECRETS_FILE = process.env.OCTYPO_SECRETS_FILE || ".octypo-secrets.enc";
 const SECRETS_PATH = path.join(process.cwd(), SECRETS_FILE);
 
 export interface OctypoSecrets {

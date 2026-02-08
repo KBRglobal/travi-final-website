@@ -144,8 +144,14 @@ export function registerSearchRoutes(app: Express) {
         return res.status(400).json({ error: "Query parameter 'q' is required" });
       }
 
+      // ReDoS protection: sanitize query to prevent regex injection
+      // Strip characters that could cause catastrophic backtracking in RegExp
+      // and limit length before passing to rewriter
+      const rawQ = q.trim().slice(0, 500);
+      const sanitizedQ = rawQ.replace(/[.*+?^${}()|[\]\\]/g, "");
+
       const locale = (req.query.locale as string) || "en";
-      const result = await queryRewriter.rewrite(q, locale);
+      const result = await queryRewriter.rewrite(sanitizedQ, locale);
 
       res.json(result);
     } catch (error) {

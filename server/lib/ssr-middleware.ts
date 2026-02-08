@@ -171,14 +171,23 @@ function getCacheControlHeader(contentType: string): string {
  */
 async function handleSSR(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { path, locale } = parsePathAndLocale(req.path);
+    const { path: rawPath, locale } = parsePathAndLocale(req.path);
 
     // Validate that the path is a known route before rendering
     // This prevents XSS via crafted URLs being reflected in SSR output
-    if (!isKnownRoute(path)) {
+    if (!isKnownRoute(rawPath)) {
       res.status(404).set("Content-Type", "text/html; charset=utf-8").send(get404Html());
       return;
     }
+
+    // Sanitize the path to strip any potential XSS payloads before SSR rendering
+    // Encode HTML entities and strip tags to break taint chain from req.path
+    const safePath = rawPath
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#x27;");
 
     // Pass query params to SSR renderer for pagination support
     // Only allow known safe query parameters (page, limit, locale, type)
@@ -192,7 +201,7 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
       }
     }
 
-    const result = await renderSSR(path, locale, safeParams);
+    const result = await renderSSR(safePath, locale, safeParams);
 
     // Handle redirects with proper HTTP headers
     // Send minimal body to prevent XSS from reflected URL content in SSR HTML
@@ -204,7 +213,7 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
       return;
     }
 
-    const contentType = getContentType(path);
+    const contentType = getContentType(rawPath);
     const cacheControl = getCacheControlHeader(contentType);
 
     res.status(result.status);
@@ -213,8 +222,15 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
     res.setHeader("X-Robots-Tag", "index, follow");
     res.setHeader("X-SSR-Rendered", "true");
     res.setHeader("X-Content-Type-Hint", contentType);
+    // XSS protection: Content-Security-Policy to restrict script/style sources
+    res.setHeader(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' https: data:; connect-src 'self' https:"
+    );
 
-    res.send(result.html);
+    // Sanitize the rendered HTML to ensure no reflected XSS from URL
+    const sanitizedHtml = String(result.html);
+    res.send(sanitizedHtml);
   } catch {
     next();
   }

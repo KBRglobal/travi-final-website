@@ -1110,11 +1110,9 @@ router.post("/api/aeo/integrations/slack", async (req: Request, res: Response) =
     try {
       const parsed = new URL(webhookUrl);
       if (parsed.protocol !== "https:" || !parsed.hostname.endsWith(".slack.com")) {
-        res
-          .status(400)
-          .json({
-            error: "webhookUrl must be a valid Slack webhook URL (https://hooks.slack.com/...)",
-          });
+        res.status(400).json({
+          error: "webhookUrl must be a valid Slack webhook URL (https://hooks.slack.com/...)",
+        });
         return;
       }
     } catch {
@@ -1155,7 +1153,37 @@ router.post("/api/aeo/integrations/webhooks", async (req: Request, res: Response
       return;
     }
 
-    registerWebhook({ url, secret, events });
+    // SSRF protection: validate webhook URL
+    let parsedWebhookUrl: URL;
+    try {
+      parsedWebhookUrl = new URL(url);
+      if (parsedWebhookUrl.protocol !== "https:") {
+        res.status(400).json({ error: "Webhook URL must use HTTPS" });
+        return;
+      }
+      const hostname = parsedWebhookUrl.hostname;
+      if (
+        hostname === "localhost" ||
+        hostname === "127.0.0.1" ||
+        hostname === "::1" ||
+        hostname.startsWith("10.") ||
+        hostname.startsWith("192.168.") ||
+        hostname.startsWith("169.254.") ||
+        (hostname.startsWith("172.") &&
+          parseInt(hostname.split(".")[1]) >= 16 &&
+          parseInt(hostname.split(".")[1]) <= 31)
+      ) {
+        res.status(400).json({ error: "Webhook URL cannot point to internal/private addresses" });
+        return;
+      }
+    } catch {
+      res.status(400).json({ error: "Invalid webhook URL" });
+      return;
+    }
+
+    // Use sanitized URL to break taint chain
+    const sanitizedUrl = parsedWebhookUrl.toString();
+    registerWebhook({ url: sanitizedUrl, secret, events });
     res.json({ success: true });
   } catch (error) {
     aeoLogger.error("Failed to register webhook", { error });

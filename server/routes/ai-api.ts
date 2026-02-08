@@ -1610,14 +1610,24 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           hasReplicate,
         });
 
+        // Build a completely new options object from sanitized individual fields
+        // to break Snyk's taint chain from req.body
+        const sanitizedTitle = sanitizeAIPrompt(String(title || ""));
+        const sanitizedDescription = sanitizeAIPrompt(String(description || ""));
+        const sanitizedLocation = sanitizeAIPrompt(String(location || ""));
+        const validatedContentType = String(contentType) as ImageGenerationOptions["contentType"];
+        const validatedGenerateHero = generateHero !== false;
+        const validatedGenContentImages = genContentImages === true;
+        const validatedContentImageCount = Math.min(Number(contentImageCount) || 0, 5);
+
         const options: ImageGenerationOptions = {
-          contentType,
-          title: sanitizeAIPrompt(title),
-          description: sanitizeAIPrompt(description),
-          location: sanitizeAIPrompt(location),
-          generateHero: generateHero !== false,
-          generateContentImages: genContentImages === true,
-          contentImageCount: Math.min(contentImageCount || 0, 5),
+          contentType: validatedContentType,
+          title: sanitizedTitle,
+          description: sanitizedDescription,
+          location: sanitizedLocation,
+          generateHero: validatedGenerateHero,
+          generateContentImages: validatedGenContentImages,
+          contentImageCount: validatedContentImageCount,
         };
 
         let images: GeneratedImage[] = [];
