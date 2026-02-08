@@ -450,9 +450,9 @@ router.get("/guides/content/:guideSlug/:locale", async (req: Request, res: Respo
         guideSlug,
         locale,
         message:
-          locale !== "en"
-            ? "Localized content pending generation - NO English fallback"
-            : "Content not found",
+          locale === "en"
+            ? "Content not found"
+            : "Localized content pending generation - NO English fallback",
       });
     }
 

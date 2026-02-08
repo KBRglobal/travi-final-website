@@ -28,7 +28,7 @@ function cleanJsonFromMarkdown(content: string): string {
   cleaned = cleaned.trim() || "{}";
 
   cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
-    return match.replaceAll(/[\x00-\x1F\x7F]/g, char => {
+    return match.replaceAll(new RegExp("[\\x00-\\x1F\\x7F]", "g"), char => {
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
       if (code === 0x0a) return String.raw`\n`;
@@ -51,14 +51,30 @@ function safeParseJson(content: string, fallback: Record<string, unknown> = {}):
 }
 
 /** Merge fields from duplicate topics into the keeper */
-function mergeTopicFields(keeper: any, toDelete: any[]): Record<string, any> {
-  const allKeywords = new Set<string>(keeper.keywords || []);
-  let longestOutline = keeper.outline || "";
-  let totalTimesUsed = keeper.timesUsed || 0;
-  let bestPriority = keeper.priority || 0;
-  let isActive = keeper.isActive === true;
+/** Merge a single duplicate's fields into accumulated state */
+function accumulateDuplicate(
+  dup: any,
+  acc: {
+    keywords: Set<string>;
+    outline: string;
+    timesUsed: number;
+    priority: number;
+    isActive: boolean;
+    best: Record<string, any>;
+  },
+  categoricalFields: readonly string[]
+): void {
+  if (dup.keywords) dup.keywords.forEach((kw: string) => acc.keywords.add(kw));
+  if (dup.outline && dup.outline.length > acc.outline.length) acc.outline = dup.outline;
+  acc.timesUsed += dup.timesUsed || 0;
+  for (const field of categoricalFields) {
+    if (!acc.best[field] && dup[field]) acc.best[field] = dup[field];
+  }
+  if ((dup.priority || 0) > acc.priority) acc.priority = dup.priority || 0;
+  if (dup.isActive === true) acc.isActive = true;
+}
 
-  // Categorical fields: prefer keeper, fallback to first non-null duplicate
+function mergeTopicFields(keeper: any, toDelete: any[]): Record<string, any> {
   const categoricalFields = [
     "category",
     "mainCategory",
@@ -67,29 +83,32 @@ function mergeTopicFields(keeper: any, toDelete: any[]): Record<string, any> {
     "format",
     "headlineAngle",
   ] as const;
+
   const best: Record<string, any> = {};
   for (const field of categoricalFields) {
     best[field] = keeper[field];
   }
 
+  const acc = {
+    keywords: new Set<string>(keeper.keywords || []),
+    outline: keeper.outline || "",
+    timesUsed: keeper.timesUsed || 0,
+    priority: keeper.priority || 0,
+    isActive: keeper.isActive === true,
+    best,
+  };
+
   for (const dup of toDelete) {
-    if (dup.keywords) dup.keywords.forEach((kw: string) => allKeywords.add(kw));
-    if (dup.outline && dup.outline.length > longestOutline.length) longestOutline = dup.outline;
-    totalTimesUsed += dup.timesUsed || 0;
-    for (const field of categoricalFields) {
-      if (!best[field] && dup[field]) best[field] = dup[field];
-    }
-    if ((dup.priority || 0) > bestPriority) bestPriority = dup.priority || 0;
-    if (dup.isActive === true) isActive = true;
+    accumulateDuplicate(dup, acc, categoricalFields);
   }
 
   return {
-    keywords: Array.from(allKeywords),
-    outline: longestOutline || null,
-    timesUsed: totalTimesUsed,
-    ...best,
-    priority: bestPriority,
-    isActive,
+    keywords: Array.from(acc.keywords),
+    outline: acc.outline || null,
+    timesUsed: acc.timesUsed,
+    ...acc.best,
+    priority: acc.priority,
+    isActive: acc.isActive,
   };
 }
 
@@ -697,7 +716,7 @@ Create engaging, informative content that would appeal to travelers. Return vali
         topic.title
           .toLowerCase()
           .replaceAll(/[^a-z0-9]+/g, "-")
-          .replaceAll(/^-|-$/g, "");
+          .replaceAll(/(?:^-|-$)/g, "");
 
       // Generate hero image for the article and persist to storage
       let heroImageUrl = null;
@@ -880,7 +899,7 @@ RULES:
           topic.title
             .toLowerCase()
             .replaceAll(/[^a-z0-9]+/g, "-")
-            .replaceAll(/^-|-$/g, "");
+            .replaceAll(/(?:^-|-$)/g, "");
 
         // Generate hero image
         let heroImageUrl = null;
@@ -1011,7 +1030,7 @@ IMPORTANT: Include 5-8 internal links and 2-3 external links in your text sectio
             topic.title
               .toLowerCase()
               .replaceAll(/[^a-z0-9]+/g, "-")
-              .replaceAll(/^-|-$/g, "");
+              .replaceAll(/(?:^-|-$)/g, "");
 
           // Validate and normalize blocks to ensure all required sections exist
           const blocks = validateAndNormalizeBlocks(

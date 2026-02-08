@@ -32,7 +32,6 @@ import { synonymExpander } from "./synonyms";
 import { searchTelemetry } from "./search-telemetry";
 import { getEntityTypeFrequencies } from "../session/intent-memory";
 
-type IntentEntityType = any;
 import { type UnifiedIntentType, type IntentSignal } from "../../shared/intent-schema";
 import {
   syncSearchIntentToChat,
@@ -152,9 +151,9 @@ function calculatePopularityBoost(viewCount: number | null | undefined): number 
  */
 function calculateIntentMemoryBoost(
   resultType: SearchResult["type"],
-  entityTypeFrequencies: Map<IntentEntityType, number>
+  entityTypeFrequencies: Map<any, number>
 ): number {
-  const frequency = entityTypeFrequencies.get(resultType as IntentEntityType) || 0;
+  const frequency = entityTypeFrequencies.get(resultType as any) || 0;
 
   if (frequency === 0) return 1;
   if (frequency >= 5) return 1.2;
@@ -175,7 +174,7 @@ function calculateIntentMemoryBoost(
 function calculateRankingScore(
   result: SearchResult,
   queryTerms: string[],
-  entityTypeFrequencies?: Map<IntentEntityType, number>,
+  entityTypeFrequencies?: Map<any, number>,
   unifiedIntent?: UnifiedIntentType | null
 ): number {
   let score = result.score;

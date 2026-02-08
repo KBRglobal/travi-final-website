@@ -180,7 +180,7 @@ export async function incrementBudgetCounter(
 
   if (!updated) {
     // Counter doesn't exist, create and increment
-    const counter = await getOrCreateBudgetCounter(targetKey, period);
+    await getOrCreateBudgetCounter(targetKey, period);
     return incrementBudgetCounter(targetKey, period, increments);
   }
 

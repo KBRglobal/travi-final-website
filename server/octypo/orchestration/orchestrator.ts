@@ -57,7 +57,7 @@ const DEFAULT_CONFIG: OrchestratorConfig = {
 };
 
 export class OctypoOrchestrator {
-  private config: OrchestratorConfig;
+  private readonly config: OrchestratorConfig;
   private initialized = false;
 
   constructor(config: Partial<OrchestratorConfig> = {}) {
@@ -71,7 +71,7 @@ export class OctypoOrchestrator {
     initializeValidatorAgents();
 
     EngineRegistry.initialize();
-    const stats = EngineRegistry.getStats();
+    EngineRegistry.getStats();
 
     this.initialized = true;
   }

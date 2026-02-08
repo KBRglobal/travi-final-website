@@ -147,6 +147,66 @@ const xoteloLocationKeys: Record<string, { key: string; name: string }> = {
   miami: { key: "g34438", name: "Miami" },
 };
 
+/** Transform raw hotel API data into our hotel response format */
+function transformHotelData(hotelData: any, hotelId: string): any {
+  const hotel: any = {
+    id: hotelData.id || hotelId,
+    name: hotelData.name || hotelData.hotelName,
+    stars: hotelData.stars || 0,
+    rating: hotelData.rating ? (hotelData.rating / 10).toFixed(1) : null,
+    reviews: hotelData.reviews || 0,
+    price: hotelData.priceFrom || hotelData.price || null,
+    currency: "USD",
+    image:
+      hotelData.photos?.[0]?.url ||
+      (hotelData.id
+        ? `https://photo.hotellook.com/image_v2/limit/${hotelData.id}/1/800x600.jpg`
+        : "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop&q=80"),
+    location: {
+      name: hotelData.location?.name || hotelData.address || "",
+      city: hotelData.location?.city || hotelData.cityName || "",
+      country: hotelData.location?.country || hotelData.countryName || "",
+      lat: hotelData.location?.lat || hotelData.latitude,
+      lon: hotelData.location?.lon || hotelData.longitude,
+    },
+    amenities: hotelData.amenities || [],
+    facilities: hotelData.facilities ||
+      hotelData.amenities || ["WiFi", "Pool", "Spa", "Restaurant"],
+    description:
+      hotelData.description ||
+      hotelData.desc ||
+      "Experience luxury and comfort at this stunning property. Featuring world-class amenities and exceptional service.",
+    gallery: (hotelData.photos || []).map(
+      (p: any) =>
+        p.url ||
+        `https://photo.hotellook.com/image_v2/limit/${hotelData.id}/${p.id || 1}/800x600.jpg`
+    ),
+    bookingUrl: hotelData.fullUrl || null,
+    checkInTime: hotelData.checkIn || "14:00",
+    checkOutTime: hotelData.checkOut || "12:00",
+    seoTitle: `${hotelData.name || hotelData.hotelName} | ${hotelData.stars || 5}-Star Luxury Hotel | TRAVI`,
+    seoDescription:
+      "Book " +
+      (hotelData.name || hotelData.hotelName) +
+      (hotelData.location?.city || hotelData.cityName
+        ? " in " + (hotelData.location?.city || hotelData.cityName)
+        : "") +
+      ". Premium amenities and exceptional service.",
+    highlights: [],
+  };
+
+  if (hotel.gallery.length === 0) {
+    hotel.gallery = [hotel.image];
+    for (let i = 2; i <= 5; i++) {
+      hotel.gallery.push(
+        `https://photo.hotellook.com/image_v2/limit/${hotelData.id}/${i}/800x600.jpg`
+      );
+    }
+  }
+
+  return hotel;
+}
+
 export function registerHotelsRoutes(app: Express): void {
   // Location lookup for hotel search
   app.get("/api/hotels/lookup", async (req: Request, res: Response) => {
@@ -184,8 +244,6 @@ export function registerHotelsRoutes(app: Express): void {
     try {
       const {
         cityId,
-        checkIn,
-        checkOut,
         adults = 2,
         lang = "en",
         currency = "usd",
@@ -421,60 +479,7 @@ export function registerHotelsRoutes(app: Express): void {
         return res.status(404).json({ error: "Hotel not found" });
       }
 
-      const hotel: any = {
-        id: hotelData.id || hotelId,
-        name: hotelData.name || hotelData.hotelName,
-        stars: hotelData.stars || 0,
-        rating: hotelData.rating ? (hotelData.rating / 10).toFixed(1) : null,
-        reviews: hotelData.reviews || 0,
-        price: hotelData.priceFrom || hotelData.price || null,
-        currency: "USD",
-        image:
-          hotelData.photos?.[0]?.url ||
-          (hotelData.id
-            ? `https://photo.hotellook.com/image_v2/limit/${hotelData.id}/1/800x600.jpg`
-            : "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop&q=80"),
-        location: {
-          name: hotelData.location?.name || hotelData.address || "",
-          city: hotelData.location?.city || hotelData.cityName || "",
-          country: hotelData.location?.country || hotelData.countryName || "",
-          lat: hotelData.location?.lat || hotelData.latitude,
-          lon: hotelData.location?.lon || hotelData.longitude,
-        },
-        amenities: hotelData.amenities || [],
-        facilities: hotelData.facilities ||
-          hotelData.amenities || ["WiFi", "Pool", "Spa", "Restaurant"],
-        description:
-          hotelData.description ||
-          hotelData.desc ||
-          "Experience luxury and comfort at this stunning property. Featuring world-class amenities and exceptional service.",
-        gallery: (hotelData.photos || []).map(
-          (p: any) =>
-            p.url ||
-            `https://photo.hotellook.com/image_v2/limit/${hotelData.id}/${p.id || 1}/800x600.jpg`
-        ),
-        bookingUrl: hotelData.fullUrl || null,
-        checkInTime: hotelData.checkIn || "14:00",
-        checkOutTime: hotelData.checkOut || "12:00",
-        seoTitle: `${hotelData.name || hotelData.hotelName} | ${hotelData.stars || 5}-Star Luxury Hotel | TRAVI`,
-        seoDescription:
-          "Book " +
-          (hotelData.name || hotelData.hotelName) +
-          (hotelData.location?.city || hotelData.cityName
-            ? " in " + (hotelData.location?.city || hotelData.cityName)
-            : "") +
-          ". Premium amenities and exceptional service.",
-        highlights: [],
-      };
-
-      if (hotel.gallery.length === 0) {
-        hotel.gallery = [hotel.image];
-        for (let i = 2; i <= 5; i++) {
-          hotel.gallery.push(
-            `https://photo.hotellook.com/image_v2/limit/${hotelData.id}/${i}/800x600.jpg`
-          );
-        }
-      }
+      const hotel = transformHotelData(hotelData, hotelId);
 
       let aiGenerated = false;
       if (enableAI) {

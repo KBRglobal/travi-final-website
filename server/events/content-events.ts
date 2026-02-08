@@ -47,8 +47,8 @@ export type ContentEventType = "content.published" | "content.updated";
 
 class ContentEventBus extends EventEmitter {
   private static instance: ContentEventBus;
-  private subscriberCount: Map<string, number> = new Map();
-  private eventStats: Map<string, { count: number; lastEmitted: Date | null }> = new Map();
+  private readonly subscriberCount: Map<string, number> = new Map();
+  private readonly eventStats: Map<string, { count: number; lastEmitted: Date | null }> = new Map();
 
   private constructor() {
     super();

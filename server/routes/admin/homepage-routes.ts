@@ -32,6 +32,31 @@ import multer from "multer";
 // Configure multer for memory storage (matching routes.ts pattern)
 const upload = multer({ storage: multer.memoryStorage() });
 
+/** Helper to translate a single homepage entity translation entry */
+async function translateSingleHomepageEntry(
+  engTrans: { entityType: string; entityId: string; field: string; value: string | null },
+  targetLocale: string,
+  overwrite: boolean,
+  existingKeys: Set<string>,
+  translateText: (...args: any[]) => Promise<{ translatedText: string }>
+): Promise<"skipped" | "translated" | string | null> {
+  if (!engTrans.value || engTrans.value.trim() === "") return null;
+  const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
+  if (!overwrite && existingKeys.has(key)) return "skipped";
+  try {
+    const result = await translateText(
+      { text: engTrans.value, sourceLocale: "en", targetLocale, contentType: "body" },
+      { provider: "claude" }
+    );
+    await setTranslations(engTrans.entityType as any, engTrans.entityId, targetLocale, {
+      [engTrans.field]: result.translatedText,
+    });
+    return "translated";
+  } catch {
+    return `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`;
+  }
+}
+
 export function registerAdminHomepageRoutes(app: Express): void {
   // ========== HOMEPAGE CMS ADMIN ROUTES ==========
   // All admin endpoints now support ?locale=xx for reading/writing translations
@@ -204,7 +229,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
             .toLowerCase()
             .replaceAll(/[^a-z0-9\-_]/g, "-")
             .replaceAll(/-+/g, "-")
-            .replaceAll(/^-|-$/g, "");
+            .replaceAll(/(?:^-|-$)/g, "");
         } else {
           // Use original filename without extension
           customFilename = req.file.originalname
@@ -212,7 +237,7 @@ export function registerAdminHomepageRoutes(app: Express): void {
             .toLowerCase()
             .replaceAll(/[^a-z0-9\-_]/g, "-")
             .replaceAll(/-+/g, "-")
-            .replaceAll(/^-|-$/g, "");
+            .replaceAll(/(?:^-|-$)/g, "");
         }
 
         if (!customFilename) {
@@ -1018,33 +1043,16 @@ export function registerAdminHomepageRoutes(app: Express): void {
         // Process translations for each target locale
         for (const targetLocale of targetLocales) {
           for (const engTrans of englishTranslations) {
-            if (!engTrans.value || engTrans.value.trim() === "") continue;
-
-            const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
-            if (!overwrite && existingKeys.has(key)) {
-              skippedCount++;
-              continue;
-            }
-
-            try {
-              const result = await translateText(
-                {
-                  text: engTrans.value,
-                  sourceLocale: "en" as any,
-                  targetLocale: targetLocale as any,
-                  contentType: "body",
-                },
-                { provider: "claude" }
-              );
-              await setTranslations(engTrans.entityType as any, engTrans.entityId, targetLocale, {
-                [engTrans.field]: result.translatedText,
-              });
-              translatedCount++;
-            } catch {
-              errors.push(
-                `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`
-              );
-            }
+            const result = await translateSingleHomepageEntry(
+              engTrans,
+              targetLocale,
+              overwrite,
+              existingKeys,
+              translateText
+            );
+            if (result === "skipped") skippedCount++;
+            else if (result === "translated") translatedCount++;
+            else if (result) errors.push(result);
           }
         }
 

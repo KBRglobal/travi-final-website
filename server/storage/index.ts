@@ -1,38 +1,35 @@
 // Re-export all storage modules
 export * from "./base";
 
-// Import all storage classes
-import { UsersStorage, usersStorage } from "./users.storage";
-import { ContentStorage, contentStorage } from "./content.storage";
-import { ContentTypesStorage, contentTypesStorage } from "./content-types.storage";
-import { RssStorage, rssStorage } from "./rss.storage";
-import { AffiliateStorage, affiliateStorage } from "./affiliate.storage";
-import { MediaStorage, mediaStorage } from "./media.storage";
-import { TopicBankStorage, topicBankStorage } from "./topic-bank.storage";
-import { VersionsStorage, versionsStorage } from "./versions.storage";
-import { TranslationsStorage, translationsStorage } from "./translations.storage";
-import { HomepageStorage, homepageStorage } from "./homepage.storage";
-import { AnalyticsStorage, analyticsStorage } from "./analytics.storage";
-import { AuditStorage, auditStorage } from "./audit.storage";
-import { NewsletterStorage, newsletterStorage } from "./newsletter.storage";
-import { PropertyLeadsStorage, propertyLeadsStorage } from "./property-leads.storage";
-import { ClustersStorage, clustersStorage } from "./clusters.storage";
-import { TagsStorage, tagsStorage } from "./tags.storage";
-import { BulkStorage, bulkStorage } from "./bulk.storage";
-import { TemplatesStorage, templatesStorage } from "./templates.storage";
-import { SettingsStorage, settingsStorage } from "./settings.storage";
-import { OtpStorage, otpStorage } from "./otp.storage";
-import { AIWritersStorage, aiWritersStorage } from "./ai-writers.storage";
-import { LiveChatStorage, liveChatStorage } from "./live-chat.storage";
-import { SurveysStorage, surveysStorage } from "./surveys.storage";
-import { ReferralsStorage, referralsStorage } from "./referrals.storage";
-import {
-  EditorialPlacementsStorage,
-  editorialPlacementsStorage,
-} from "./editorial-placements.storage";
-import { VamsStorage, vamsStorage } from "./vams.storage";
+// Import storage instances (used locally by DatabaseStorage class)
+import { usersStorage } from "./users.storage";
+import { contentStorage } from "./content.storage";
+import { contentTypesStorage } from "./content-types.storage";
+import { rssStorage } from "./rss.storage";
+import { affiliateStorage } from "./affiliate.storage";
+import { mediaStorage } from "./media.storage";
+import { topicBankStorage } from "./topic-bank.storage";
+import { versionsStorage } from "./versions.storage";
+import { translationsStorage } from "./translations.storage";
+import { homepageStorage } from "./homepage.storage";
+import { analyticsStorage } from "./analytics.storage";
+import { auditStorage } from "./audit.storage";
+import { newsletterStorage } from "./newsletter.storage";
+import { propertyLeadsStorage } from "./property-leads.storage";
+import { clustersStorage } from "./clusters.storage";
+import { tagsStorage } from "./tags.storage";
+import { bulkStorage } from "./bulk.storage";
+import { templatesStorage } from "./templates.storage";
+import { settingsStorage } from "./settings.storage";
+import { otpStorage } from "./otp.storage";
+import { aiWritersStorage } from "./ai-writers.storage";
+import { liveChatStorage } from "./live-chat.storage";
+import { surveysStorage } from "./surveys.storage";
+import { referralsStorage } from "./referrals.storage";
+import { editorialPlacementsStorage } from "./editorial-placements.storage";
+import { vamsStorage } from "./vams.storage";
 
-// Export all storage classes
+// Export all storage classes and instances
 export { UsersStorage, usersStorage } from "./users.storage";
 export { ContentStorage, contentStorage } from "./content.storage";
 export { ContentTypesStorage, contentTypesStorage } from "./content-types.storage";

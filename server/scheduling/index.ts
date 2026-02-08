@@ -31,5 +31,3 @@ export type CalendarView = { items: CalendarItem[] };
 export type UpcomingSchedule = { items: ContentSchedule[] };
 export type ScheduleResult = { success: boolean };
 export type PublishResult = { success: boolean };
-export type ScheduleStatus = string;
-export type PublishMode = string;

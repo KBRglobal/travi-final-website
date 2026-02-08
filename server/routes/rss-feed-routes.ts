@@ -247,7 +247,7 @@ export function registerRssFeedRoutes(app: Express): void {
           const slug = item.title
             .toLowerCase()
             .replaceAll(/[^a-z0-9]+/g, "-")
-            .replaceAll(/^-|-$/g, "");
+            .replaceAll(/(?:^-|-$)/g, "");
 
           const content = await storage.createContent({
             title: item.title,

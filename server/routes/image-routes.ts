@@ -805,7 +805,7 @@ export function registerImageRoutes(app: Express) {
         const entitySlug = (contentTitle || "dubai-image")
           .toLowerCase()
           .replaceAll(/[^a-z0-9]+/g, "-")
-          .replaceAll(/^-|-$/g, "");
+          .replaceAll(/(?:^-|-$)/g, "");
 
         const seoContext: ImageSEOContext = {
           contentType: (contentType || "article") as ContentType,

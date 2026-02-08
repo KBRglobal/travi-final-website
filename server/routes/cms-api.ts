@@ -36,6 +36,22 @@ function isValidSettingValue(value: unknown): value is string | number | boolean
   );
 }
 
+/** Extract valid key-value pairs from a category's settings */
+function extractCategorySettings(
+  category: string,
+  values: Record<string, unknown>
+): Array<{ category: string; key: string; value: string | number | boolean | null }> {
+  const result: Array<{ category: string; key: string; value: string | number | boolean | null }> =
+    [];
+  for (const [key, value] of Object.entries(values)) {
+    if (DANGEROUS_KEYS.has(key)) continue;
+    if (typeof key !== "string" || key.trim() === "") continue;
+    if (!isValidSettingValue(value)) continue;
+    result.push({ category, key: key.trim(), value });
+  }
+  return result;
+}
+
 function extractValidSettings(
   settings: Record<string, unknown>,
   allowedCategories: Set<string>
@@ -46,12 +62,7 @@ function extractValidSettings(
     if (DANGEROUS_KEYS.has(category)) continue;
     if (!allowedCategories.has(category)) continue;
     if (typeof values !== "object" || values === null || Array.isArray(values)) continue;
-    for (const [key, value] of Object.entries(values as Record<string, unknown>)) {
-      if (DANGEROUS_KEYS.has(key)) continue;
-      if (typeof key !== "string" || key.trim() === "") continue;
-      if (!isValidSettingValue(value)) continue;
-      result.push({ category, key: key.trim(), value });
-    }
+    result.push(...extractCategorySettings(category, values as Record<string, unknown>));
   }
   return result;
 }

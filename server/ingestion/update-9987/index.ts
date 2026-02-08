@@ -24,7 +24,6 @@ export interface FeedbackStats {
   total: number;
   average: number;
 }
-export type IssueLabel = string;
 export interface Experiment {
   id: string;
   name: string;

@@ -5,7 +5,7 @@
 import { db } from "../../../db";
 import { storage } from "../../../storage";
 import { tiqetsAttractions, contents } from "@shared/schema";
-import type { ContentWithRelations } from "@shared/schema";
+import type { ContentWithRelations, Locale } from "@shared/schema";
 import { and, isNull, eq, desc, sql } from "drizzle-orm";
 import { generateMetaTags, generateStructuredData, getCanonicalUrl } from "../../meta-tags";
 import { SITE_NAME } from "../constants";
@@ -202,6 +202,29 @@ async function fetchContentItems(contentType: string): Promise<NormalizedItem[]>
   }
 }
 
+/** Build pagination HTML for category pages */
+function buildPaginationHtml(
+  contentType: string,
+  baseUrlPath: string,
+  currentPage: number,
+  totalPages: number,
+  locale: Locale
+): string {
+  if (contentType !== "attraction" || totalPages <= 1) return "";
+
+  const prevPagePath = baseUrlPath + (currentPage === 2 ? "" : "?page=" + (currentPage - 1));
+  const prevPageUrl = getCanonicalUrl(prevPagePath, locale);
+  const nextPagePath = baseUrlPath + "?page=" + (currentPage + 1);
+  const nextPageUrl = getCanonicalUrl(nextPagePath, locale);
+
+  const prevLink =
+    currentPage > 1 ? `<a href="${prevPageUrl}" rel="prev">Previous</a>` : `<span>Previous</span>`;
+  const nextLink =
+    currentPage < totalPages ? `<a href="${nextPageUrl}" rel="next">Next</a>` : `<span>Next</span>`;
+
+  return `<nav aria-label="Pagination">${prevLink}<span>Page ${currentPage} of ${totalPages}</span>${nextLink}</nav>`;
+}
+
 /**
  * Render category listing page with pagination support for attractions
  */
@@ -294,28 +317,13 @@ export async function renderCategoryPage(
     .join("\n");
 
   // Generate pagination HTML for attractions
-  const prevPagePath = baseUrlPath + (currentPage === 2 ? "" : "?page=" + (currentPage - 1));
-  const prevPageUrl = getCanonicalUrl(prevPagePath, locale);
-  const nextPagePath = baseUrlPath + "?page=" + (currentPage + 1);
-  const nextPageUrl = getCanonicalUrl(nextPagePath, locale);
-  let paginationHtml = "";
-  if (contentType === "attraction" && totalPages > 1) {
-    const prevLink =
-      currentPage > 1
-        ? `<a href="${prevPageUrl}" rel="prev">Previous</a>`
-        : `<span>Previous</span>`;
-    const nextLink =
-      currentPage < totalPages
-        ? `<a href="${nextPageUrl}" rel="next">Next</a>`
-        : `<span>Next</span>`;
-    paginationHtml = `
-          <nav aria-label="Pagination">
-            ${prevLink}
-            <span>Page ${currentPage} of ${totalPages}</span>
-            ${nextLink}
-          </nav>
-  `;
-  }
+  const paginationHtml = buildPaginationHtml(
+    contentType,
+    baseUrlPath,
+    currentPage,
+    totalPages,
+    locale
+  );
 
   const html = wrapInHtml({
     metaTags,

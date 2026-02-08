@@ -128,9 +128,10 @@ const AUTONOMY_BY_THREAT: Record<ThreatLevel, Partial<AutonomyRestrictions>> = {
 // ============================================================================
 
 class AutonomyController {
-  private states: Map<AutonomySystem, AutonomyState> = new Map();
-  private manualOverrides: Map<AutonomySystem, boolean> = new Map();
-  private listeners: Set<(system: AutonomySystem, state: AutonomyState) => void> = new Set();
+  private readonly states: Map<AutonomySystem, AutonomyState> = new Map();
+  private readonly manualOverrides: Map<AutonomySystem, boolean> = new Map();
+  private readonly listeners: Set<(system: AutonomySystem, state: AutonomyState) => void> =
+    new Set();
 
   constructor() {
     this.initializeStates();

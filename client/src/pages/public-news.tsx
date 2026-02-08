@@ -396,29 +396,23 @@ function FeaturedArticle({ article }: Readonly<{ article: Article }>) {
       >
         {/* Image */}
         <div className="absolute inset-0">
-          {article.heroImage ? (
-            <img
-              src={article.heroImage}
-              alt={article.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              width={1200}
-              height={500}
-              loading="eager"
-              decoding="async"
-            />
-          ) : destination?.image ? (
-            <img
-              src={destination.image}
-              alt={article.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              width={1200}
-              height={500}
-              loading="eager"
-              decoding="async"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-600" />
-          )}
+          {(() => {
+            const imageSrc = article.heroImage || destination?.image;
+            if (imageSrc) {
+              return (
+                <img
+                  src={imageSrc}
+                  alt={article.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  width={1200}
+                  height={500}
+                  loading="eager"
+                  decoding="async"
+                />
+              );
+            }
+            return <div className="w-full h-full bg-gradient-to-br from-purple-600 to-blue-600" />;
+          })()}
         </div>
 
         {/* Overlay */}
@@ -483,31 +477,27 @@ function ArticleCard({ article, index = 0 }: Readonly<{ article: Article; index?
       >
         {/* Image */}
         <div className="relative h-52 overflow-hidden">
-          {article.heroImage ? (
-            <img
-              src={article.heroImage}
-              alt={article.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              width={600}
-              height={400}
-              loading="lazy"
-              decoding="async"
-            />
-          ) : destination?.image ? (
-            <img
-              src={destination.image}
-              alt={article.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              width={600}
-              height={400}
-              loading="lazy"
-              decoding="async"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <Globe2 className="w-12 h-12 text-gray-300" aria-hidden="true" />
-            </div>
-          )}
+          {(() => {
+            const imageSrc = article.heroImage || destination?.image;
+            if (imageSrc) {
+              return (
+                <img
+                  src={imageSrc}
+                  alt={article.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  width={600}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
+                />
+              );
+            }
+            return (
+              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                <Globe2 className="w-12 h-12 text-gray-300" aria-hidden="true" />
+              </div>
+            );
+          })()}
 
           {/* Destination Badge */}
           {destination && (
@@ -803,13 +793,15 @@ export default function PublicNews() {
           </div>
 
           {/* Featured + Grid */}
-          {isLoading ? (
+          {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }, (_, i) => `skel-${i}`).map(id => (
                 <ArticleCardSkeleton key={id} />
               ))}
             </div>
-          ) : filteredArticles.length > 0 ? (
+          )}
+          {!isLoading && filteredArticles.length === 0 && <EmptyState onClear={clearFilters} />}
+          {!isLoading && filteredArticles.length > 0 && (
             <div className="space-y-12">
               {/* Featured Article */}
               {!hasActiveFilters && featuredArticle && (
@@ -875,8 +867,6 @@ export default function PublicNews() {
                 </div>
               )}
             </div>
-          ) : (
-            <EmptyState onClear={clearFilters} />
           )}
 
           {/* Explore Destinations */}

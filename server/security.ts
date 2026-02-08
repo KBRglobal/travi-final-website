@@ -1025,13 +1025,16 @@ function escapeHtml(str: string): string {
   return str.replaceAll(/[&<>"'/]/g, char => htmlEscapes[char]);
 }
 
+// Regex to match ASCII control characters except tab, newline, carriage return
+const CONTROL_CHARS_RE = new RegExp("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]", "g");
+
 // Remove null bytes and other dangerous characters
 function sanitizeString(value: string): string {
   // Remove null bytes
   let sanitized = value.replaceAll("\0", "");
 
   // Remove other control characters (except newline and tab)
-  sanitized = sanitized.replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  sanitized = sanitized.replaceAll(CONTROL_CHARS_RE, "");
 
   return sanitized.trim();
 }
@@ -1061,9 +1064,7 @@ function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
         sanitized[key] = sanitizeString(value);
       } else {
         // For longer content (like body/content), just remove dangerous control chars
-        sanitized[key] = value
-          .replaceAll("\0", "")
-          .replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+        sanitized[key] = value.replaceAll("\0", "").replaceAll(CONTROL_CHARS_RE, "");
       }
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map(item => {

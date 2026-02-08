@@ -93,7 +93,7 @@ export interface Alert {
 // ============================================================================
 
 class SecurityDashboardService {
-  private alertHistory: Alert[] = [];
+  private readonly alertHistory: Alert[] = [];
   private lastPosture: SecurityPosture | null = null;
 
   /**

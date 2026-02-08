@@ -482,10 +482,7 @@ router.get("/api/public/holidays/:countryCode", async (req: Request, res: Respon
 
     const upperCountryCode = countryCode.toUpperCase();
 
-    let query = db
-      .select()
-      .from(update9987PublicHolidays)
-      .where(eq(update9987PublicHolidays.countryCode, upperCountryCode));
+    let query;
 
     if (upcoming) {
       const today = new Date().toISOString().split("T")[0];

@@ -345,7 +345,6 @@ async function runBackgroundTask(): Promise<void> {
   if (isRunning) return;
 
   isRunning = true;
-  const startTime = Date.now();
   health.lastRun = new Date();
 
   try {

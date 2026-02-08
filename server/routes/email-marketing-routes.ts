@@ -683,7 +683,7 @@ export function registerEmailMarketingRoutes(app: Express): void {
         subscriberId: string
       ): string => {
         // Match href="..." but not tracking URLs or unsubscribe links
-        return html.replace(/href="(https?:\/\/[^"]+)"/gi, (match, url) => {
+        return html.replaceAll(/href="(https?:\/\/[^"]+)"/gi, (match, url) => {
           // Don't wrap tracking URLs or unsubscribe links
           if (url.includes("/api/track/") || url.includes("/api/newsletter/unsubscribe")) {
             return match;

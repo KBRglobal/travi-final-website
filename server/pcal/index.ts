@@ -86,10 +86,6 @@ export const getFeedbackState = () => ({});
 export const clearFeedback = () => {};
 
 // Types
-export type DecisionScope = string;
-export type DecisionAuthority = string;
-export type DecisionOutcome = string;
-export type DecisionSource = string;
 export type DecisionRecord = { id: string };
 export type DecisionSignal = { type: string };
 export type AuthorityChain = { nodes: AuthorityNode[] };

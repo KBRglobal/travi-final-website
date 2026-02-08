@@ -4,8 +4,7 @@
  */
 
 import { GuardedFeature } from "../enforcement/types";
-type PolicyDecision = any;
-import { BudgetLimit } from "../policy/types";
+import { type PolicyDecision, type BudgetLimit } from "../policy/types";
 
 /**
  * A historical decision record to replay

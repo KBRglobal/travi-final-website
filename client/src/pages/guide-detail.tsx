@@ -476,22 +476,25 @@ function TableOfContents({
                 href={`#${sectionId}`}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2.5 text-sm rounded-xl transition-all duration-200 group",
-                  isActive
-                    ? "bg-gradient-to-r from-[#6443F4]/10 to-[#E84C9A]/10 text-[#6443F4] font-medium border border-[#6443F4]/20"
-                    : isPast
-                      ? "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"
-                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
+                  isActive &&
+                    "bg-gradient-to-r from-[#6443F4]/10 to-[#E84C9A]/10 text-[#6443F4] font-medium border border-[#6443F4]/20",
+                  !isActive &&
+                    isPast &&
+                    "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5",
+                  !isActive &&
+                    !isPast &&
+                    "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
                 )}
                 data-testid={`toc-link-${sectionId}`}
               >
                 <span
                   className={cn(
                     "flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs transition-all",
-                    isActive
-                      ? "bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white"
-                      : isPast
-                        ? "bg-[#6443F4]/20 text-[#6443F4]"
-                        : "bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 group-hover:bg-[#6443F4]/20 group-hover:text-[#6443F4]"
+                    isActive && "bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white",
+                    !isActive && isPast && "bg-[#6443F4]/20 text-[#6443F4]",
+                    !isActive &&
+                      !isPast &&
+                      "bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 group-hover:bg-[#6443F4]/20 group-hover:text-[#6443F4]"
                   )}
                 >
                   {index + 1}

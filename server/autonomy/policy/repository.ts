@@ -288,8 +288,6 @@ export async function getRecentDecisions(
   // Flush pending logs first
   await flushDecisionLogs();
 
-  let query = db.select().from(autonomyDecisionLogs);
-
   const conditions = [];
   if (filters?.targetKey) {
     conditions.push(eq(autonomyDecisionLogs.targetKey, filters.targetKey));

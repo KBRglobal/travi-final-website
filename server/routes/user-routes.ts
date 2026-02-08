@@ -219,7 +219,7 @@ export function registerUserRoutes(app: Express): void {
         }
 
         // Audit log user update (check for role change)
-        const actionType = existingUser?.role !== user.role ? "role_change" : "user_update";
+        const actionType = existingUser?.role === user.role ? "user_update" : "role_change";
         await logAuditEvent(
           req,
           actionType,

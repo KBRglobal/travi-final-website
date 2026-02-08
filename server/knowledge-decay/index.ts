@@ -28,6 +28,3 @@ export async function updateIndicatorStatus() {
 export type DecayIndicator = { id: string };
 export type DecayAnalysis = { indicators: DecayIndicator[] };
 export type DecayStats = { total: number };
-export type DecayType = string;
-export type DecaySeverity = string;
-export type DecayStatus = string;

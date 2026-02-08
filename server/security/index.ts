@@ -142,7 +142,7 @@ export function attackDetectionMiddleware(req: Request, res: Response, next: Nex
 // Override with STRICT_CSP=false in production to temporarily relax
 const isProduction = process.env.NODE_ENV === "production";
 const STRICT_CSP =
-  process.env.STRICT_CSP !== undefined ? process.env.STRICT_CSP === "true" : isProduction;
+  process.env.STRICT_CSP === undefined ? isProduction : process.env.STRICT_CSP === "true";
 
 /**
  * Setup security middleware on Express app

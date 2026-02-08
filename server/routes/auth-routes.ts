@@ -77,6 +77,31 @@ function recordLoginFailure(
   });
 }
 
+/** Check lockout status and return error response if locked */
+function checkAndHandleLockout(req: Request, res: Response, username: string, ip: string): any {
+  const lockoutStatus = checkDualLockout(username.toLowerCase(), ip);
+  if (!lockoutStatus.locked) return null;
+
+  const lockTypeMsgMap: Record<string, string> = { both: "IP and account", ip: "IP address" };
+  const lockTypeMsg = lockTypeMsgMap[lockoutStatus.lockType || ""] || "account";
+  logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
+    success: false,
+    resource: "auth",
+    action: "login_lockout",
+    errorMessage: `${lockTypeMsg} locked for ${lockoutStatus.remainingTime} minutes`,
+    details: {
+      attemptedUsername: username.substring(0, 3) + "***",
+      lockType: lockoutStatus.lockType,
+    },
+  });
+  return res.status(429).json({
+    error: `Access temporarily locked. Try again in ${lockoutStatus.remainingTime} minutes.`,
+    code: "ACCOUNT_LOCKED",
+    lockType: lockoutStatus.lockType,
+    remainingMinutes: lockoutStatus.remainingTime,
+  });
+}
+
 export function registerAuthRoutes(app: Express): void {
   // Admin credentials from environment variables (hashed password stored in env)
   const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
@@ -165,31 +190,8 @@ export function registerAuthRoutes(app: Express): void {
         const ip = req.ip || req.socket.remoteAddress || "unknown";
 
         // SECURITY: Check dual lockout (IP + username) BEFORE any password verification
-        // This prevents timing attacks and reduces database load during lockout
-        const lockoutStatus = checkDualLockout(username.toLowerCase(), ip);
-        if (lockoutStatus.locked) {
-          const lockTypeMsgMap: Record<string, string> = {
-            both: "IP and account",
-            ip: "IP address",
-          };
-          const lockTypeMsg = lockTypeMsgMap[lockoutStatus.lockType || ""] || "account";
-          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-            success: false,
-            resource: "auth",
-            action: "login_lockout",
-            errorMessage: `${lockTypeMsg} locked for ${lockoutStatus.remainingTime} minutes`,
-            details: {
-              attemptedUsername: username.substring(0, 3) + "***",
-              lockType: lockoutStatus.lockType,
-            },
-          });
-          return res.status(429).json({
-            error: `Access temporarily locked. Try again in ${lockoutStatus.remainingTime} minutes.`,
-            code: "ACCOUNT_LOCKED",
-            lockType: lockoutStatus.lockType,
-            remainingMinutes: lockoutStatus.remainingTime,
-          });
-        }
+        const lockoutResponse = checkAndHandleLockout(req, res, username, ip);
+        if (lockoutResponse) return lockoutResponse;
 
         // Enterprise Security: Threat Intelligence Check
         const threatAnalysis = threatIntelligence.analyzeRequest(req);

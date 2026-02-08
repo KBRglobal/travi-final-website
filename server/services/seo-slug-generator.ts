@@ -61,7 +61,7 @@ export function generateSeoSlug(title: string, cityName: string): string {
 
   // Remove noise words
   for (const word of noiseWords) {
-    slug = slug.replace(new RegExp(String.raw`\b` + word + String.raw`\b`, "gi"), " ");
+    slug = slug.replaceAll(new RegExp(String.raw`\b` + word + String.raw`\b`, "gi"), " ");
   }
 
   // Remove city name if it appears more than once or at the end
@@ -88,7 +88,7 @@ export function generateSeoSlug(title: string, cityName: string): string {
     .trim()
     .replaceAll(/\s/g, "-") // Spaces to hyphens
     .replaceAll(/-+/g, "-") // Multiple hyphens to single
-    .replaceAll(/^-|-$/g, ""); // Remove leading/trailing hyphens
+    .replaceAll(/(?:^-|-$)/g, ""); // Remove leading/trailing hyphens
 
   // City name as slug (with hyphens instead of spaces)
   const citySlug = cityName.toLowerCase().replaceAll(/\s+/g, "-");

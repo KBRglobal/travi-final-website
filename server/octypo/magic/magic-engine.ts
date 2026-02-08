@@ -18,7 +18,7 @@ import {
   type FieldGeneratorName,
 } from "./field-generators";
 import { validateGeneratedContent } from "./validators";
-import type { FieldType, PromptContext } from "./prompts";
+import type { FieldType } from "./prompts";
 
 const logger = createLogger("magic-engine");
 
@@ -384,11 +384,11 @@ export class MagicEngine {
           };
         }
 
-        if (batchResult.fields[field] !== undefined) {
-          fieldsGenerated++;
-        } else {
+        if (batchResult.fields[field] === undefined) {
           fieldsFailed++;
           errors[field] = "Field not generated";
+        } else {
+          fieldsGenerated++;
         }
       }
 

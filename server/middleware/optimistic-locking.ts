@@ -24,7 +24,7 @@ export function generateETag(updatedAt: Date | string): string {
  */
 export function parseETag(etag: string | undefined): string | null {
   if (!etag) return null;
-  return etag.replaceAll(/^["']|["']$/g, "");
+  return etag.replaceAll(/(?:^["']|["']$)/g, "");
 }
 
 /**

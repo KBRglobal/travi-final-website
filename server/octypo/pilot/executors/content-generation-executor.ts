@@ -123,7 +123,7 @@ async function generateFromRSS(
         const slug = item.title
           .toLowerCase()
           .replaceAll(/[^a-z0-9]+/g, "-")
-          .replaceAll(/^-|-$/g, "")
+          .replaceAll(/(?:^-|-$)/g, "")
           .substring(0, 100);
 
         // Check for duplicate

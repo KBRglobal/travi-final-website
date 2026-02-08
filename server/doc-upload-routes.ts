@@ -16,7 +16,7 @@ type DocContentType = "hotel" | "article" | "attraction" | "dining" | "district"
 function sanitizeForLog(input: string): string {
   if (!input) return "";
   // Remove newlines, carriage returns, and null bytes to prevent log injection
-  return input.replaceAll(/[\r\n\x00]/g, "").substring(0, 200);
+  return input.replaceAll(new RegExp("[\\r\\n\\x00]", "g"), "").substring(0, 200);
 }
 
 /** Map contentType to default article category */

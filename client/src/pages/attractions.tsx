@@ -1144,20 +1144,22 @@ export default function Attractions() {
               </motion.div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {isLoadingDestinations ? (
+                {isLoadingDestinations &&
                   ["sk-a", "sk-b", "sk-c", "sk-d", "sk-e", "sk-f", "sk-g", "sk-h"].map(id => (
                     <div key={id} className="overflow-hidden rounded-lg">
                       <Skeleton className="aspect-[4/3] w-full" />
                     </div>
-                  ))
-                ) : destinations.length === 0 ? (
+                  ))}
+                {!isLoadingDestinations && destinations.length === 0 && (
                   <div className="col-span-full text-center py-12">
                     <Globe className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
                     <p className="text-slate-500 dark:text-slate-400">
                       {t("attractions.browse.noDestinations")}
                     </p>
                   </div>
-                ) : (
+                )}
+                {!isLoadingDestinations &&
+                  destinations.length > 0 &&
                   destinations.map((dest, i) => (
                     <motion.div
                       key={dest.slug}
@@ -1198,8 +1200,7 @@ export default function Attractions() {
                         </Card>
                       </Link>
                     </motion.div>
-                  ))
-                )}
+                  ))}
               </div>
 
               <div className="mt-6 text-center sm:hidden">

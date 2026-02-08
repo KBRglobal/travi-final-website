@@ -66,11 +66,11 @@ export async function runProductionSeed(): Promise<void> {
       return;
     }
 
-    const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+    JSON.parse(readFileSync(manifestPath, "utf-8"));
 
-    const existingGuides = await db.select({ count: count() }).from(update9987Guides);
-    const existingAttractions = await db.select({ count: count() }).from(tiqetsAttractions);
-    const existingVisas = await db.select({ count: count() }).from(visaRequirements);
+    await db.select({ count: count() }).from(update9987Guides);
+    await db.select({ count: count() }).from(tiqetsAttractions);
+    await db.select({ count: count() }).from(visaRequirements);
 
     const guides = await loadTable("update_9987_guides");
     await seedTable("update_9987_guides", update9987Guides, guides);

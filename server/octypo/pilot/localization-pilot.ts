@@ -242,7 +242,7 @@ export function calculateLocalePurity(
   for (const exemption of exemptions) {
     if (exemption?.trim()) {
       const escapedExemption = exemption.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-      cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
+      cleanText = cleanText.replaceAll(new RegExp(escapedExemption, "gi"), "");
     }
   }
 
@@ -773,7 +773,7 @@ export function calculateLocalePurityExtended(
   for (const exemption of exemptions) {
     if (exemption?.trim()) {
       const escapedExemption = exemption.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-      cleanText = cleanText.replace(new RegExp(escapedExemption, "gi"), "");
+      cleanText = cleanText.replaceAll(new RegExp(escapedExemption, "gi"), "");
     }
   }
 

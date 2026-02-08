@@ -402,10 +402,10 @@ function GuidesErrorCard() {
 function GuidesEmptyCard({
   searchQuery,
   setSearchQuery,
-}: {
+}: Readonly<{
   searchQuery: string;
   setSearchQuery: (q: string) => void;
-}) {
+}>) {
   return (
     <Card className="p-12 text-center bg-gradient-to-br from-purple-50 to-pink-50 border-0 shadow-xl rounded-3xl">
       <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-[#6443F4]/20 to-[#E84C9A]/20 flex items-center justify-center">
@@ -442,7 +442,7 @@ function GuidesContentSection({
   searchQuery,
   setSearchQuery,
   totalGuides,
-}: {
+}: Readonly<{
   isLoading: boolean;
   error: any;
   filteredGuides: Guide[];
@@ -452,7 +452,7 @@ function GuidesContentSection({
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   totalGuides: number;
-}) {
+}>) {
   if (isLoading) return <GuidesLoadingSkeleton />;
   if (error) return <GuidesErrorCard />;
   if (filteredGuides.length === 0)
@@ -507,11 +507,11 @@ function GuidesContentSection({
 }
 
 export default function TravelGuidesPage() {
-  const [location] = useLocation();
+  useLocation();
   const [selectedLocale, setSelectedLocale] = useState("en");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
-  const shouldReduceMotion = useReducedMotion();
+  useReducedMotion();
 
   const dest = HERO_GUIDES[currentIndex];
   const goTo = (i: number) => setCurrentIndex(i);

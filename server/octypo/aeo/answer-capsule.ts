@@ -184,7 +184,7 @@ export class SchemaGenerator {
     return text
       .toLowerCase()
       .replaceAll(/[^a-z0-9]+/g, "-")
-      .replaceAll(/^-|-$/g, "");
+      .replaceAll(/(?:^-|-$)/g, "");
   }
 
   private getCountryCode(cityName: string): string {

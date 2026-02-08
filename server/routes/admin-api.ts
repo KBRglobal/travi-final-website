@@ -96,6 +96,38 @@ function validateFieldCharLimits(
   return errors;
 }
 
+/** Translate a single English translation entry to a target locale */
+async function translateSingleEntry(
+  engTrans: any,
+  targetLocale: string,
+  overwrite: boolean,
+  existingKeys: Set<string>,
+  translateText: (...args: any[]) => Promise<{ translatedText: string }>
+): Promise<"skipped" | "translated" | string | null> {
+  if (!engTrans.value || engTrans.value.trim() === "") return null;
+
+  const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
+  if (!overwrite && existingKeys.has(key)) return "skipped";
+
+  try {
+    const result = await translateText(
+      {
+        text: engTrans.value,
+        sourceLocale: "en" as any,
+        targetLocale: targetLocale as any,
+        contentType: "body",
+      },
+      { provider: "claude" }
+    );
+    await setTranslations(engTrans.entityType as any, engTrans.entityId, targetLocale, {
+      [engTrans.field]: result.translatedText,
+    });
+    return "translated";
+  } catch {
+    return `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`;
+  }
+}
+
 export function registerAdminApiRoutes(app: Express): void {
   const router = Router();
 
@@ -411,14 +443,14 @@ export function registerAdminApiRoutes(app: Express): void {
             .toLowerCase()
             .replaceAll(/[^a-z0-9\-_]/g, "-")
             .replaceAll(/-+/g, "-")
-            .replaceAll(/^-|-$/g, "");
+            .replaceAll(/(?:^-|-$)/g, "");
         } else {
           customFilename = req.file.originalname
             .replace(/\.[^.]+$/, "")
             .toLowerCase()
             .replaceAll(/[^a-z0-9\-_]/g, "-")
             .replaceAll(/-+/g, "-")
-            .replaceAll(/^-|-$/g, "");
+            .replaceAll(/(?:^-|-$)/g, "");
         }
 
         if (!customFilename) {
@@ -1221,33 +1253,16 @@ export function registerAdminApiRoutes(app: Express): void {
 
         for (const targetLocale of targetLocales) {
           for (const engTrans of englishTranslations) {
-            if (!engTrans.value || engTrans.value.trim() === "") continue;
-
-            const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
-            if (!overwrite && existingKeys.has(key)) {
-              skippedCount++;
-              continue;
-            }
-
-            try {
-              const result = await translateText(
-                {
-                  text: engTrans.value,
-                  sourceLocale: "en" as any,
-                  targetLocale: targetLocale as any,
-                  contentType: "body",
-                },
-                { provider: "claude" }
-              );
-              await setTranslations(engTrans.entityType as any, engTrans.entityId, targetLocale, {
-                [engTrans.field]: result.translatedText,
-              });
-              translatedCount++;
-            } catch {
-              errors.push(
-                `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`
-              );
-            }
+            const translateResult = await translateSingleEntry(
+              engTrans,
+              targetLocale,
+              overwrite,
+              existingKeys,
+              translateText
+            );
+            if (translateResult === "skipped") skippedCount++;
+            else if (translateResult === "translated") translatedCount++;
+            else if (translateResult) errors.push(translateResult);
           }
         }
 

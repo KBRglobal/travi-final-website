@@ -48,10 +48,10 @@ describe("SecurityGate", () => {
 
   // Restore original env after all tests
   afterEach(() => {
-    if (originalEnv !== undefined) {
-      process.env.ENABLE_SECURITY_AUTHORITY = originalEnv;
-    } else {
+    if (originalEnv === undefined) {
       delete process.env.ENABLE_SECURITY_AUTHORITY;
+    } else {
+      process.env.ENABLE_SECURITY_AUTHORITY = originalEnv;
     }
   });
 

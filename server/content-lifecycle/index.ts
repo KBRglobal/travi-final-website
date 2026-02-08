@@ -35,6 +35,4 @@ export type ContentLifecycle = { events: LifecycleEvent[] };
 export type TimelineFilter = Record<string, unknown>;
 export type TimelineStats = { total: number };
 export type AuditExport = { data: unknown };
-export type EventType = string;
-export type EventSource = string;
 export type StateSnapshot = Record<string, unknown>;

@@ -96,6 +96,75 @@ const createContentBody = z
 /** Validates PATCH /api/contents/:id body */
 const updateContentBody = createContentBody.partial().passthrough();
 
+// ============================================================================
+// CONTENT UPDATE HELPERS (extracted to reduce cognitive complexity)
+// ============================================================================
+
+/** Validate content fields before publishing */
+function validatePublishFields(body: any, existingContent: any): string[] {
+  const errors: string[] = [];
+  const stagedTitle = body.title ?? existingContent.title;
+  const stagedBlocks = body.blocks ?? existingContent.blocks;
+  const stagedLocale = body.locale ?? (existingContent as any).locale;
+
+  if (!stagedTitle || stagedTitle.trim() === "") {
+    errors.push("Missing title");
+  }
+  if (!stagedBlocks || stagedBlocks.length === 0) {
+    errors.push("Missing content blocks");
+  }
+  if (!stagedLocale || stagedLocale.trim() === "") {
+    errors.push("Missing locale");
+  }
+  return errors;
+}
+
+/** Check if user has permission to publish */
+async function checkPublishPermission(req: Request): Promise<boolean> {
+  const user = req.user as any;
+  const userId = user?.claims?.sub;
+  const dbUser = userId ? await storage.getUser(userId) : null;
+  const userRole = dbUser?.role || "viewer";
+  const permissions = ROLE_PERMISSIONS[userRole as keyof typeof ROLE_PERMISSIONS];
+  return !!permissions?.canPublish;
+}
+
+/** Convert date string fields to Date objects */
+function convertDateFields(contentData: any): void {
+  if (contentData.publishedAt && typeof contentData.publishedAt === "string") {
+    contentData.publishedAt = new Date(contentData.publishedAt);
+  }
+  if (contentData.scheduledAt && typeof contentData.scheduledAt === "string") {
+    contentData.scheduledAt = new Date(contentData.scheduledAt);
+  }
+}
+
+/** Check publish guards and return error response if blocked */
+async function checkPublishGuards(
+  contentId: string,
+  contentData: any,
+  existingStatus: string
+): Promise<{ blocked: boolean; error?: any }> {
+  if (contentData.status !== "published" || existingStatus === "published") {
+    return { blocked: false };
+  }
+  if (!isPublishGuardsEnabled()) {
+    return { blocked: false };
+  }
+  const guardResult = await guardManualPublish(contentId);
+  if (!guardResult.success) {
+    return {
+      blocked: true,
+      error: {
+        error: "Publishing blocked by eligibility rules",
+        message: guardResult.error,
+        eligibility: guardResult.eligibility,
+      },
+    };
+  }
+  return { blocked: false };
+}
+
 /**
  * Register all content CRUD routes
  */
@@ -453,44 +522,18 @@ export function registerContentCrudRoutes(app: Express): void {
 
         // TASK 3: Publish Validation Guard - prevent publishing broken content
         if (isPublishing) {
-          const strictMode = process.env.STRICT_PUBLISH_VALIDATION === "true";
-          const validationErrors: string[] = [];
-
-          // Check staged payload (req.body) merged with existing content
-          const stagedTitle = req.body.title ?? existingContent.title;
-          const stagedBlocks = req.body.blocks ?? existingContent.blocks;
-          const stagedLocale = req.body.locale ?? (existingContent as any).locale;
-
-          if (!stagedTitle || stagedTitle.trim() === "") {
-            validationErrors.push("Missing title");
-          }
-          if (!stagedBlocks || stagedBlocks.length === 0) {
-            validationErrors.push("Missing content blocks");
-          }
-          if (!stagedLocale || stagedLocale.trim() === "") {
-            validationErrors.push("Missing locale");
+          const validationErrors = validatePublishFields(req.body, existingContent);
+          if (validationErrors.length > 0 && process.env.STRICT_PUBLISH_VALIDATION === "true") {
+            return res.status(400).json({
+              error: "Content validation failed",
+              details: validationErrors,
+              message:
+                "Cannot publish content with missing required fields. Fix issues or disable STRICT_PUBLISH_VALIDATION.",
+            });
           }
 
-          if (validationErrors.length > 0) {
-            if (strictMode) {
-              return res.status(400).json({
-                error: "Content validation failed",
-                details: validationErrors,
-                message:
-                  "Cannot publish content with missing required fields. Fix issues or disable STRICT_PUBLISH_VALIDATION.",
-              });
-            }
-          }
-        }
-
-        if (isPublishing) {
-          const user = req.user as any;
-          const userId = user?.claims?.sub;
-          const dbUser = userId ? await storage.getUser(userId) : null;
-          const userRole = dbUser?.role || "viewer";
-          const permissions = ROLE_PERMISSIONS[userRole as keyof typeof ROLE_PERMISSIONS];
-
-          if (!permissions?.canPublish) {
+          const canPublish = await checkPublishPermission(req);
+          if (!canPublish) {
             return res.status(403).json({
               error: "Permission denied: You do not have permission to publish content",
             });
@@ -529,25 +572,16 @@ export function registerContentCrudRoutes(app: Express): void {
         } = req.body;
 
         // Convert date strings to Date objects for database
-        if (contentData.publishedAt && typeof contentData.publishedAt === "string") {
-          contentData.publishedAt = new Date(contentData.publishedAt);
-        }
-        if (contentData.scheduledAt && typeof contentData.scheduledAt === "string") {
-          contentData.scheduledAt = new Date(contentData.scheduledAt);
-        }
+        convertDateFields(contentData);
 
         // Check publish guard when status is changing to published
-        if (contentData.status === "published" && existingContent.status !== "published") {
-          if (isPublishGuardsEnabled()) {
-            const guardResult = await guardManualPublish(req.params.id);
-            if (!guardResult.success) {
-              return res.status(422).json({
-                error: "Publishing blocked by eligibility rules",
-                message: guardResult.error,
-                eligibility: guardResult.eligibility,
-              });
-            }
-          }
+        const guardCheck = await checkPublishGuards(
+          req.params.id,
+          contentData,
+          existingContent.status
+        );
+        if (guardCheck.blocked) {
+          return res.status(422).json(guardCheck.error);
         }
 
         // Auto-set publishedAt when content is being published for the first time
@@ -564,7 +598,7 @@ export function registerContentCrudRoutes(app: Express): void {
           contentData.blocks = sanitizeContentBlocks(contentData.blocks);
         }
 
-        const updatedContent = await storage.updateContent(req.params.id, contentData);
+        await storage.updateContent(req.params.id, contentData);
 
         // Update content-type-specific data via lookup
         const typeUpdateMap: Record<

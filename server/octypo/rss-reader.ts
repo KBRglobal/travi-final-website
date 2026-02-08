@@ -58,8 +58,8 @@ export interface FetchResult {
 // ============================================================================
 
 class RSSReader {
-  private parser: Parser;
-  private feedItemsTable = "rss_feed_items";
+  private readonly parser: Parser;
+  private readonly feedItemsTable = "rss_feed_items";
   private initialized = false;
 
   constructor() {

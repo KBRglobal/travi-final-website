@@ -1092,7 +1092,6 @@ export function registerAdminTiqetsRoutes(app: Express): void {
         };
 
         // Process with adaptive bounded concurrency
-        const batchStartTime = Date.now();
         let chunkIndex = 0;
         let remainingAttractions = [...attractions];
 
@@ -1101,7 +1100,6 @@ export function registerAdminTiqetsRoutes(app: Express): void {
           const adaptiveConcurrency = octypoState.adjustConcurrency();
           const chunk = remainingAttractions.splice(0, adaptiveConcurrency);
 
-          const chunkStartTime = Date.now();
           await Promise.all(chunk.map(processAttraction));
           chunkIndex++;
         }
@@ -1337,7 +1335,14 @@ Return as valid JSON.`,
 
       // Calculate health score (0-100)
       const healthScore = calculateHealthScore(health, queueStats, failureStats);
-      const status = healthScore >= 80 ? "healthy" : healthScore >= 50 ? "degraded" : "unhealthy";
+      let status: string;
+      if (healthScore >= 80) {
+        status = "healthy";
+      } else if (healthScore >= 50) {
+        status = "degraded";
+      } else {
+        status = "unhealthy";
+      }
 
       res.json({
         status,

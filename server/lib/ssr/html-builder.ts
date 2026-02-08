@@ -136,7 +136,12 @@ function renderGalleryBlock(data: any): string {
 }
 
 function renderFAQBlock(data: any): string {
-  const items = Array.isArray(data.items) ? data.items : Array.isArray(data.faqs) ? data.faqs : [];
+  let items: any[] = [];
+  if (Array.isArray(data.items)) {
+    items = data.items;
+  } else if (Array.isArray(data.faqs)) {
+    items = data.faqs;
+  }
   if (items.length === 0) return "";
   const faqEntries = items
     .map(

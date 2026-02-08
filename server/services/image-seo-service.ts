@@ -831,7 +831,7 @@ ${schema}
       .trim()
       .replaceAll(/[^\w\s-]/g, "")
       .replaceAll(/[\s_-]+/g, "-")
-      .replaceAll(/^-+|-+$/g, "");
+      .replaceAll(/(?:^-+|-+$)/g, "");
   }
 }
 

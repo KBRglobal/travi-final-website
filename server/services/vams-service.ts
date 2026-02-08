@@ -76,7 +76,7 @@ export interface ImageSelectionResult {
 }
 
 export class VamsService {
-  private providerKeys: Map<VamsProvider, string | undefined> = new Map();
+  private readonly providerKeys: Map<VamsProvider, string | undefined> = new Map();
 
   constructor() {
     // Load API keys from environment

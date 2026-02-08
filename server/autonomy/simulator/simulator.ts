@@ -218,8 +218,8 @@ function updateFeatureStats(
   if (simulated.simulatedDecision === "BLOCK") stats.simulatedBlocks++;
 
   const cost = decision.outcome?.costCents || 0;
-  stats.originalCost += decision.originalDecision !== "BLOCK" ? cost : 0;
-  stats.simulatedCost += simulated.simulatedDecision !== "BLOCK" ? cost : 0;
+  stats.originalCost += decision.originalDecision === "BLOCK" ? 0 : cost;
+  stats.simulatedCost += simulated.simulatedDecision === "BLOCK" ? 0 : cost;
   featureStats.set(decision.feature, stats);
 }
 
@@ -295,12 +295,12 @@ function computeComparison(
   );
 
   const originalCost = decisions.reduce(
-    (sum, d) => sum + (d.originalDecision !== "BLOCK" ? d.outcome?.costCents || 0 : 0),
+    (sum, d) => sum + (d.originalDecision === "BLOCK" ? 0 : d.outcome?.costCents || 0),
     0
   );
   const predictedCost = decisions.reduce(
     (sum, d, i) =>
-      sum + (simulatedDecisions[i].simulatedDecision !== "BLOCK" ? d.outcome?.costCents || 0 : 0),
+      sum + (simulatedDecisions[i].simulatedDecision === "BLOCK" ? 0 : d.outcome?.costCents || 0),
     0
   );
 

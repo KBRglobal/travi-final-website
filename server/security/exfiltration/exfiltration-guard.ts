@@ -198,8 +198,8 @@ const accessTracker = new AccessTracker();
 // ============================================================================
 
 class ExfiltrationGuard {
-  private rules: Map<string, ExfiltrationRule> = new Map();
-  private blockedAttempts: Map<string, number> = new Map();
+  private readonly rules: Map<string, ExfiltrationRule> = new Map();
+  private readonly blockedAttempts: Map<string, number> = new Map();
 
   constructor() {
     for (const rule of DEFAULT_RULES) {

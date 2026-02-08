@@ -167,7 +167,7 @@ const THREAT_THRESHOLDS = {
 class SecurityModeManager {
   private currentConfig: ModeConfiguration;
   private transitionHistory: ModeTransition[] = [];
-  private assessmentHistory: ThreatAssessment[] = [];
+  private readonly assessmentHistory: ThreatAssessment[] = [];
   private autoModeEnabled: boolean = true;
 
   constructor() {

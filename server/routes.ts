@@ -33,7 +33,7 @@ import * as path from "node:path";
 // Rate limiter for auth endpoints (magic-link, TOTP) - excludes login which has its own limiter
 // Security audit logger for critical auth events (failed logins, password changes, role changes)
 // PII masking is enabled by default - does NOT affect request flow
-import { log } from "./lib/logger";
+
 // Performance monitoring (N+1 detection, latency tracking)
 // Admin security hardening: Emergency kill switch, IP allowlist, mandatory 2FA
 import "./security/admin-hardening";

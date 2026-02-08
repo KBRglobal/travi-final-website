@@ -33,7 +33,7 @@ function cleanJsonFromMarkdown(content: string): string {
   cleaned = cleaned.trim() || "{}";
 
   cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
-    return match.replaceAll(/[\x00-\x1F\x7F]/g, char => {
+    return match.replaceAll(new RegExp("[\\x00-\\x1F\\x7F]", "g"), char => {
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
       if (code === 0x0a) return String.raw`\n`;
@@ -88,6 +88,25 @@ function addSystemLog(
   if (typeof (globalThis as any).addSystemLog === "function") {
     (globalThis as any).addSystemLog(level, category, message, _details);
   }
+}
+
+/** Try providers in order, returning first successful result */
+async function tryProvidersInOrder(
+  aiProviders: Array<{ client: any; provider: string }>,
+  tryProvider: (openai: any, provider: string) => Promise<{ result: any; provider: string } | null>
+): Promise<{ result: any; provider: string } | null> {
+  for (const { client: openai, provider } of aiProviders) {
+    try {
+      const result = await tryProvider(openai, provider);
+      if (result) return result;
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      const isCreditsError = /insufficient|quota|credits/.test(err.message);
+      markProviderFailed(provider, isCreditsError ? "no_credits" : "rate_limited");
+      addSystemLog("warning", "ai", `${provider} failed: ${err.message}`);
+    }
+  }
+  return null;
 }
 
 export function registerAiGenerationRoutes(app: Express): void {
@@ -355,30 +374,11 @@ Generate a complete, SEO-optimized article ready for publication.`;
           return null;
         };
 
-        let finalResult: { result: any; provider: string } | null = null;
-        let lastError: Error | null = null;
-
-        for (const { client: openai, provider } of aiProviders) {
-          try {
-            finalResult = await tryProvider(openai, provider);
-            if (finalResult) break;
-          } catch (error) {
-            lastError = error instanceof Error ? error : new Error(String(error));
-            const isCreditsError = /insufficient|quota|credits/.test(lastError.message);
-            markProviderFailed(provider, isCreditsError ? "no_credits" : "rate_limited");
-            addSystemLog("warning", "ai", `${provider} failed: ${lastError.message}`);
-          }
-        }
-
+        const finalResult = await tryProvidersInOrder(aiProviders, tryProvider);
         if (!finalResult) {
-          addSystemLog(
-            "error",
-            "ai",
-            `All AI providers failed for article generation: ${lastError?.message}`
-          );
+          addSystemLog("error", "ai", "All AI providers failed for article generation");
           return res.status(500).json({
             error: "Failed to generate article - all AI providers failed",
-            details: lastError?.message,
           });
         }
 

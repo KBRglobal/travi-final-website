@@ -46,7 +46,7 @@ function cleanJsonFromMarkdown(content: string): string {
   }
   cleaned = cleaned.trim() || "{}";
   cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
-    return match.replaceAll(/[\x00-\x1F\x7F]/g, char => {
+    return match.replaceAll(new RegExp("[\\x00-\\x1F\\x7F]", "g"), char => {
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
       if (code === 0x0a) return String.raw`\n`;
@@ -401,6 +401,162 @@ async function findOrCreateArticleImage(
   }
 }
 
+/** Store generated images by uploading them */
+async function storeGeneratedImages(images: GeneratedImage[]): Promise<GeneratedImage[]> {
+  const stored: GeneratedImage[] = [];
+  for (const image of images) {
+    try {
+      const result = await uploadImageFromUrl(image.url, image.filename, {
+        source: "ai",
+        altText: image.alt,
+        metadata: { type: image.type, originalUrl: image.url },
+      });
+      if (result.success) {
+        stored.push({ ...image, url: result.image.url });
+      }
+    } catch (imgError) {
+      console.error(imgError);
+    }
+  }
+  return stored;
+}
+
+/** Try unified providers for field generation */
+async function tryUnifiedProvidersForField(
+  sortedProviders: any[],
+  prompt: string
+): Promise<string> {
+  let content = "[]";
+  let lastError: Error | null = null;
+
+  for (const provider of sortedProviders) {
+    try {
+      const result = await provider.generateCompletion({
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an expert SEO content writer specializing in Dubai travel content. Generate high-quality, optimized suggestions. Always return valid JSON arrays of strings.",
+          },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.8,
+        maxTokens: 1024,
+      });
+      content = result.content;
+      markProviderSuccess(provider.name);
+      break;
+    } catch (providerError: any) {
+      lastError = providerError instanceof Error ? providerError : new Error(String(providerError));
+      const errorType = classifyProviderError(providerError);
+      markProviderFailed(provider.name, errorType === "no_credits" ? "no_credits" : "rate_limited");
+    }
+  }
+
+  if (content === "[]" && lastError) {
+    throw lastError;
+  }
+  return content;
+}
+
+/** Expand article content to meet word count minimum */
+async function expandArticleContent(
+  generatedArticle: any,
+  articleTitle: string,
+  openai: any,
+  model: string,
+  provider: string,
+  getWordCount: (article: any) => number
+): Promise<{ wordCount: number; attempts: number }> {
+  const MIN_WORD_TARGET = 1800;
+  const MAX_EXPANSION_ATTEMPTS = 3;
+  let wordCount = getWordCount(generatedArticle);
+  let attempts = 0;
+
+  addSystemLog("info", "ai", `Initial generation: ${wordCount} words`, { title: articleTitle });
+
+  while (wordCount < MIN_WORD_TARGET && attempts < MAX_EXPANSION_ATTEMPTS) {
+    attempts++;
+    const wordsNeeded = MIN_WORD_TARGET - wordCount;
+    addSystemLog(
+      "info",
+      "ai",
+      `Expanding content: attempt ${attempts}, need ${wordsNeeded} more words`
+    );
+
+    const expansionPrompt = `The article below has only ${wordCount} words but needs at least ${MIN_WORD_TARGET} words.
+
+Current sections: ${generatedArticle.article?.sections?.map((s: any) => s.heading).join(", ") || "none"}
+
+Please generate ${Math.max(3, Math.ceil(wordsNeeded / 200))} additional sections to expand this article about "${articleTitle}".
+Each section should have 250-400 words of detailed, valuable content.
+
+IMPORTANT: Generate NEW, UNIQUE sections that add value - do NOT repeat existing content.
+Focus on practical tips, insider information, comparisons, or detailed guides.
+
+Return JSON only:
+{
+  "additionalSections": [
+    {"heading": "H2 Section Title", "body": "Detailed paragraph content 250-400 words..."}
+  ],
+  "additionalFaqs": [
+    {"q": "Relevant question?", "a": "Detailed answer 80-120 words..."}
+  ]
+}`;
+
+    try {
+      const expansionResponse = await openai.chat.completions.create({
+        model: model,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an expert Dubai travel content writer. Generate high-quality expansion content to meet word count requirements.",
+          },
+          { role: "user", content: expansionPrompt },
+        ],
+        ...(provider === "openai" ? { response_format: { type: "json_object" } } : {}),
+        max_tokens: 4000,
+      });
+
+      const expansion = safeParseJson(expansionResponse.choices[0].message.content || "{}", {});
+
+      if (expansion.additionalSections && generatedArticle.article?.sections) {
+        generatedArticle.article.sections = [
+          ...generatedArticle.article.sections,
+          ...expansion.additionalSections,
+        ];
+      }
+      if (expansion.additionalFaqs && generatedArticle.article?.faq) {
+        generatedArticle.article.faq = [
+          ...generatedArticle.article.faq,
+          ...expansion.additionalFaqs,
+        ];
+      }
+
+      wordCount = getWordCount(generatedArticle);
+      addSystemLog("info", "ai", `After expansion ${attempts}: ${wordCount} words`);
+    } catch {
+      break;
+    }
+  }
+
+  if (wordCount < MIN_WORD_TARGET) {
+    addSystemLog(
+      "warning",
+      "ai",
+      `Article generated with only ${wordCount} words (minimum: ${MIN_WORD_TARGET})`,
+      { title: articleTitle }
+    );
+  } else {
+    addSystemLog("info", "ai", `Article meets word count requirement: ${wordCount} words`, {
+      title: articleTitle,
+    });
+  }
+
+  return { wordCount, attempts };
+}
+
 export function registerAiApiRoutes(app: Express): void {
   const router = Router();
 
@@ -593,10 +749,11 @@ export function registerAiApiRoutes(app: Express): void {
           inputType,
         });
 
-        let contextInfo = `Title: "${articleTitle}"`;
-        if (summary) contextInfo += `\nSummary: ${summary}`;
-        if (sourceText) contextInfo += `\nSource text: ${sourceText}`;
-        if (sourceUrl) contextInfo += `\nSource URL: ${sourceUrl}`;
+        const contextParts = [`Title: "${articleTitle}"`];
+        if (summary) contextParts.push(`Summary: ${summary}`);
+        if (sourceText) contextParts.push(`Source text: ${sourceText}`);
+        if (sourceUrl) contextParts.push(`Source URL: ${sourceUrl}`);
+        const contextInfo = contextParts.join("\n");
 
         const systemPrompt = `You are an expert Dubai travel news content writer for a CMS. You MUST follow ALL these rules:
 
@@ -762,100 +919,18 @@ Return valid JSON only.`;
           );
         };
 
-        const MIN_WORD_TARGET = 1800;
-        const MAX_EXPANSION_ATTEMPTS = 3;
-        let wordCount = getArticleWordCount(generatedArticle);
-        let attempts = 0;
-
-        addSystemLog("info", "ai", `Initial generation: ${wordCount} words`, {
-          title: articleTitle,
-        });
-
-        while (wordCount < MIN_WORD_TARGET && attempts < MAX_EXPANSION_ATTEMPTS) {
-          attempts++;
-          const wordsNeeded = MIN_WORD_TARGET - wordCount;
-          addSystemLog(
-            "info",
-            "ai",
-            `Expanding content: attempt ${attempts}, need ${wordsNeeded} more words`
-          );
-
-          const expansionPrompt = `The article below has only ${wordCount} words but needs at least ${MIN_WORD_TARGET} words.
-
-Current sections: ${generatedArticle.article?.sections?.map((s: any) => s.heading).join(", ") || "none"}
-
-Please generate ${Math.max(3, Math.ceil(wordsNeeded / 200))} additional sections to expand this article about "${articleTitle}".
-Each section should have 250-400 words of detailed, valuable content.
-
-IMPORTANT: Generate NEW, UNIQUE sections that add value - do NOT repeat existing content.
-Focus on practical tips, insider information, comparisons, or detailed guides.
-
-Return JSON only:
-{
-  "additionalSections": [
-    {"heading": "H2 Section Title", "body": "Detailed paragraph content 250-400 words..."}
-  ],
-  "additionalFaqs": [
-    {"q": "Relevant question?", "a": "Detailed answer 80-120 words..."}
-  ]
-}`;
-
-          try {
-            const expansionResponse = await openai.chat.completions.create({
-              model: model,
-              messages: [
-                {
-                  role: "system",
-                  content:
-                    "You are an expert Dubai travel content writer. Generate high-quality expansion content to meet word count requirements.",
-                },
-                { role: "user", content: expansionPrompt },
-              ],
-              ...(provider === "openai" ? { response_format: { type: "json_object" } } : {}),
-              max_tokens: 4000,
-            });
-
-            const expansion = safeParseJson(
-              expansionResponse.choices[0].message.content || "{}",
-              {}
-            );
-
-            if (expansion.additionalSections && generatedArticle.article?.sections) {
-              generatedArticle.article.sections = [
-                ...generatedArticle.article.sections,
-                ...expansion.additionalSections,
-              ];
-            }
-            if (expansion.additionalFaqs && generatedArticle.article?.faq) {
-              generatedArticle.article.faq = [
-                ...generatedArticle.article.faq,
-                ...expansion.additionalFaqs,
-              ];
-            }
-
-            wordCount = getArticleWordCount(generatedArticle);
-            addSystemLog("info", "ai", `After expansion ${attempts}: ${wordCount} words`);
-          } catch (expansionError) {
-            break;
-          }
-        }
-
-        if (wordCount < MIN_WORD_TARGET) {
-          addSystemLog(
-            "warning",
-            "ai",
-            `Article generated with only ${wordCount} words (minimum: ${MIN_WORD_TARGET})`,
-            { title: articleTitle }
-          );
-        } else {
-          addSystemLog("info", "ai", `Article meets word count requirement: ${wordCount} words`, {
-            title: articleTitle,
-          });
-        }
+        const { wordCount, attempts } = await expandArticleContent(
+          generatedArticle,
+          articleTitle,
+          openai,
+          model,
+          provider,
+          getArticleWordCount
+        );
 
         generatedArticle._generationStats = {
           wordCount,
-          meetsMinimum: wordCount >= MIN_WORD_TARGET,
+          meetsMinimum: wordCount >= 1800,
           expansionAttempts: attempts,
           sectionsCount: generatedArticle.article?.sections?.length || 0,
           faqCount: generatedArticle.article?.faq?.length || 0,
@@ -1387,44 +1462,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           return res.status(400).json({ error: `Invalid fieldType: ${fieldType}` });
         }
 
-        let content = "[]";
-        let lastError: Error | null = null;
-
-        for (const provider of sortedProviders) {
-          try {
-            const result = await provider.generateCompletion({
-              messages: [
-                {
-                  role: "system",
-                  content:
-                    "You are an expert SEO content writer specializing in Dubai travel content. Generate high-quality, optimized suggestions. Always return valid JSON arrays of strings.",
-                },
-                {
-                  role: "user",
-                  content: prompt,
-                },
-              ],
-              temperature: 0.8,
-              maxTokens: 1024,
-            });
-            content = result.content;
-            markProviderSuccess(provider.name);
-
-            break;
-          } catch (providerError: any) {
-            lastError =
-              providerError instanceof Error ? providerError : new Error(String(providerError));
-            const errorType = classifyProviderError(providerError);
-            markProviderFailed(
-              provider.name,
-              errorType === "no_credits" ? "no_credits" : "rate_limited"
-            );
-          }
-        }
-
-        if (content === "[]" && lastError) {
-          throw lastError;
-        }
+        const content = await tryUnifiedProvidersForField(sortedProviders, prompt);
 
         const suggestions = parseSuggestions(content, maxLength);
         res.json({ suggestions });
@@ -1533,7 +1571,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           const source = hasFreepik ? "freepik" : "unsplash";
           addSystemLog("info", "images", `No AI image API configured, using ${source} fallback`);
           const fallbackImages =
-            generateHero !== false ? [createFallbackImage(title, contentType)] : [];
+            generateHero === false ? [] : [createFallbackImage(title, contentType)];
           addSystemLog(
             "info",
             "images",
@@ -1581,27 +1619,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           images = [createFallbackImage(title, contentType)];
         }
 
-        const storedImages: GeneratedImage[] = [];
-
-        for (const image of images) {
-          try {
-            const result = await uploadImageFromUrl(image.url, image.filename, {
-              source: "ai",
-              altText: image.alt,
-              metadata: { type: image.type, originalUrl: image.url },
-            });
-
-            if (result.success) {
-              storedImages.push({
-                ...image,
-                url: result.image.url,
-              });
-            }
-          } catch (imgError) {
-            console.error(imgError);
-          }
-        }
-
+        const storedImages = await storeGeneratedImages(images);
         res.json({ images: storedImages, count: storedImages.length });
       } catch (error) {
         const message = error instanceof Error ? error.message : "Failed to generate images";

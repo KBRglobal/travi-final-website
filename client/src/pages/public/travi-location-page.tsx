@@ -185,11 +185,9 @@ function LocationHero({
               data-testid="button-book-tickets-hero"
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
-              {category === "attraction"
-                ? "Book Tickets"
-                : category === "hotel"
-                  ? "Book Now"
-                  : "Reserve a Table"}
+              {{ attraction: "Book Tickets", hotel: "Book Now", restaurant: "Reserve a Table" }[
+                category
+              ] || "Book Now"}
               <ExternalLink className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -285,11 +283,8 @@ function QuickInfoSidebar({
             data-testid="button-book-sidebar"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
-            {category === "attraction"
-              ? "Book Tickets"
-              : category === "hotel"
-                ? "Book Now"
-                : "Reserve"}
+            {{ attraction: "Book Tickets", hotel: "Book Now", restaurant: "Reserve" }[category] ||
+              "Book Now"}
             <ExternalLink className="w-3 h-3 ml-2" />
           </Button>
         </div>
@@ -547,11 +542,11 @@ function BookingCTASection({
             Ready to Visit {name}?
           </h2>
           <p className="text-white/80 mb-6 max-w-lg mx-auto">
-            {category === "attraction"
-              ? "Book your tickets now and skip the lines! Best prices guaranteed."
-              : category === "hotel"
-                ? "Reserve your stay and enjoy exclusive rates!"
-                : "Make a reservation and experience culinary excellence!"}
+            {{
+              attraction: "Book your tickets now and skip the lines! Best prices guaranteed.",
+              hotel: "Reserve your stay and enjoy exclusive rates!",
+              restaurant: "Make a reservation and experience culinary excellence!",
+            }[category] || "Book now!"}
           </p>
           <Button
             size="lg"
@@ -561,11 +556,11 @@ function BookingCTASection({
             data-testid="button-book-cta"
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
-            {category === "attraction"
-              ? "Book Tickets Now"
-              : category === "hotel"
-                ? "Book Your Stay"
-                : "Reserve a Table"}
+            {{
+              attraction: "Book Tickets Now",
+              hotel: "Book Your Stay",
+              restaurant: "Reserve a Table",
+            }[category] || "Book Now"}
             <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
         </CardContent>
@@ -578,11 +573,12 @@ function generateSchemaOrg(location: TraviLocation) {
   const baseSchema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type":
-      location.category === "hotel"
-        ? "Hotel"
-        : location.category === "restaurant"
-          ? "Restaurant"
-          : "TouristAttraction",
+      (
+        { hotel: "Hotel", restaurant: "Restaurant", attraction: "TouristAttraction" } as Record<
+          string,
+          string
+        >
+      )[location.category] || "TouristAttraction",
     name: location.name,
     description: location.content?.shortDescription || location.content?.metaDescription || "",
     address: {
@@ -591,7 +587,7 @@ function generateSchemaOrg(location: TraviLocation) {
       addressCountry: location.country || "",
       streetAddress: location.details?.address || "",
     },
-    url: globalThis.window !== undefined ? globalThis.location.href : "",
+    url: globalThis.window === undefined ? "" : globalThis.location.href,
   };
 
   if (location.details?.phone) {
@@ -682,7 +678,7 @@ export default function TraviLocationPage() {
         <meta property="og:type" content="website" />
         <link
           rel="canonical"
-          href={globalThis.window !== undefined ? globalThis.location.href : ""}
+          href={globalThis.window === undefined ? "" : globalThis.location.href}
         />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -696,11 +692,12 @@ export default function TraviLocationPage() {
             className="text-muted-foreground hover:text-foreground"
             onClick={() => {
               const categoryPath =
-                location.category === "attraction"
-                  ? "/attractions"
-                  : location.category === "hotel"
-                    ? "/hotels"
-                    : "/dining";
+                (
+                  { attraction: "/attractions", hotel: "/hotels", restaurant: "/dining" } as Record<
+                    string,
+                    string
+                  >
+                )[location.category] || "/attractions";
               globalThis.location.href = categoryPath;
             }}
             data-testid="button-back-to-category"

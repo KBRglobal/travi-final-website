@@ -140,12 +140,12 @@ export async function computeCoverageSummary(): Promise<CoverageSummary> {
     const totalContent = totalResult[0]?.count || 0;
 
     // Published content count
-    const publishedResult = await db
+    await db
       .select({ count: count() })
       .from(contents)
       .where(eq(contents.status, 'published'));
     // Content with AEO capsule
-    const aeoResult = await db
+    await db
       .select({ count: count() })
       .from(contents)
       .where(isNotNull(contents.answerCapsule));

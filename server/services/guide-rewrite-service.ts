@@ -137,8 +137,8 @@ const SECTION_ENHANCEMENTS: Record<string, string> = {
 // Helper function to strip HTML (used by fact extraction and parsing)
 function stripHtmlContent(html: string): string {
   return html
-    .replace(/<script[^>]*>.*?<\/script>/gis, "")
-    .replace(/<style[^>]*>.*?<\/style>/gis, "")
+    .replaceAll(/<script[^>]*>.*?<\/script>/gis, "")
+    .replaceAll(/<style[^>]*>.*?<\/style>/gis, "")
     .replaceAll(/<[^>]+>/g, " ")
     .replaceAll("&nbsp;", " ")
     .replaceAll("&amp;", "&")

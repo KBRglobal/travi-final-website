@@ -485,17 +485,17 @@ export function addLinkableContent(content: LinkableContent): void {
   // Add to appropriate array based on type
   if (content.type === "destination") {
     const existing = DESTINATION_LINKS.findIndex(d => d.id === content.id);
-    if (existing !== -1) {
-      DESTINATION_LINKS[existing] = content;
-    } else {
+    if (existing === -1) {
       DESTINATION_LINKS.push(content);
+    } else {
+      DESTINATION_LINKS[existing] = content;
     }
   } else {
     const existing = CATEGORY_LINKS.findIndex(c => c.id === content.id);
-    if (existing !== -1) {
-      CATEGORY_LINKS[existing] = content;
-    } else {
+    if (existing === -1) {
       CATEGORY_LINKS.push(content);
+    } else {
+      CATEGORY_LINKS[existing] = content;
     }
   }
 }

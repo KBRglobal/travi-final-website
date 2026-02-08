@@ -441,7 +441,7 @@ async function fetchSeoAutopilotStatus(config: BackgroundServicesConfig): Promis
     const { getAutopilot } = await import("../seo-engine/autopilot");
     const autopilot = getAutopilot();
     const status = autopilot.getStatus();
-    return status.mode !== "off" ? "running" : "paused";
+    return status.mode === "off" ? "paused" : "running";
   } catch (error) {
     console.error(error);
     return "stopped";

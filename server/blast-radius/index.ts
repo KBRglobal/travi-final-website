@@ -31,8 +31,6 @@ export function clearAll() {
   /* empty */
 }
 
-export type ImpactScope = string;
-export type ImpactSeverity = string;
 export type ImpactTarget = { type: string };
 export type ImpactMetrics = { affected: number };
 export type ImpactBreakdown = Record<string, unknown>;

@@ -520,7 +520,7 @@ function detectOverridePattern(outcomes: OutcomeRecord[]): LearningPattern | nul
 function detectExhaustionPattern(outcomes: OutcomeRecord[]): LearningPattern | null {
   // Look for blocks with budget exhaustion reasons
   const budgetBlocks = outcomes.filter(
-    o => o.decision === "BLOCK" && o.metadata?.reason?.toString().includes("budget")
+    o => o.decision === "BLOCK" && String(o.metadata?.reason ?? "").includes("budget")
   );
 
   if (budgetBlocks.length < 5) return null;

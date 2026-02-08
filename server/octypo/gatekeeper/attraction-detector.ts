@@ -303,7 +303,7 @@ export class AttractionDetector {
       const slug = detection.attractionName
         .toLowerCase()
         .replaceAll(/[^a-z0-9]+/g, "-")
-        .replaceAll(/^-|-$/g, "");
+        .replaceAll(/(?:^-|-$)/g, "");
 
       // Create draft attraction
       const [newAttraction] = await db

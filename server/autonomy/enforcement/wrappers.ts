@@ -51,7 +51,7 @@ function makeDegradedResponse<T>(
     isDegraded: true,
     reason,
     fallbackData,
-    ...(retryAfter !== undefined ? { retryAfter } : {}),
+    ...(retryAfter === undefined ? {} : { retryAfter }),
   } as DegradedResponse<T>;
 }
 

@@ -264,7 +264,6 @@ export function mergeIntentSignals(signals: IntentSignal[]): IntentSignal[] {
       typeSignals.reduce((sum, s) => sum + s.confidence, 0) / typeSignals.length;
     const latestTimestamp = Math.max(...typeSignals.map(s => s.timestamp));
     const hasSearchSource = typeSignals.some(s => s.source === "search");
-    const hasChatSource = typeSignals.some(s => s.source === "chat");
 
     merged.push({
       type,

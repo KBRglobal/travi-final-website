@@ -54,18 +54,11 @@ export const isRollingBack = () => false;
 // Types
 export type ChangePlan = { id: string };
 export type ChangeItem = { id: string };
-export type ChangeType = string;
-export type ChangeStatus = string;
-export type PlanStatus = string;
-export type PlanScope = string;
-export type RiskLevel = string;
-export type CreatedFrom = string;
 export type ImpactEstimate = { affected: number };
 export type DryRunResult = { success: boolean };
 export type DiffBlock = { content: string };
 export type ContentDiff = { blocks: DiffBlock[] };
 export type ChangePreview = { diff: ContentDiff };
-export type GuardType = string;
 export type GuardResult = { passed: boolean };
 export type GuardConfig = Record<string, unknown>;
 export type ExecutionContext = { planId: string };

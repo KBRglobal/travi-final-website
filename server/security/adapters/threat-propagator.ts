@@ -258,7 +258,7 @@ adapters.set("content_scheduler", contentSchedulerAdapter);
 
 class ThreatPropagator {
   private lastResponse: ThreatResponse | null = null;
-  private responseHistory: ThreatResponse[] = [];
+  private readonly responseHistory: ThreatResponse[] = [];
   private isInitialized = false;
 
   /**

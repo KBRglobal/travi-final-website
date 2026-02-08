@@ -160,7 +160,7 @@ async function getDecisionSummary(period: TimePeriod): Promise<DecisionSummary> 
  */
 async function getAllBudgetSummaries(): Promise<BudgetSummary[]> {
   try {
-    const summary = await getBudgetSummary();
+    await getBudgetSummary();
     const features: GuardedFeature[] = [
       "chat",
       "octopus",

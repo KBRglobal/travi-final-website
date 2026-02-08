@@ -35,7 +35,7 @@ const GATE1_SYSTEM_PROMPT = EVALUATOR_PROMPTS.SYSTEM;
 const GATE1_EVALUATION_PROMPT = EVALUATOR_PROMPTS.USER_TEMPLATE;
 
 export class Gate1Selector {
-  private config: GatekeeperConfig;
+  private readonly config: GatekeeperConfig;
 
   constructor(config: Partial<GatekeeperConfig> = {}) {
     this.config = { ...DEFAULT_GATEKEEPER_CONFIG, ...config };

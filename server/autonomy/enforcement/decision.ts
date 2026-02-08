@@ -111,7 +111,7 @@ async function checkOverride(
 
   // Check database for active override
   try {
-    const [override] = await db
+    await db
       .select()
       .from(autonomyDecisionLogs)
       .where(

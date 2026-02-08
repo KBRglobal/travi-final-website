@@ -379,7 +379,7 @@ export class TiqetsImportService {
     return title
       .toLowerCase()
       .replaceAll(/[^a-z0-9]+/g, "-")
-      .replaceAll(/^-|-$/g, "")
+      .replaceAll(/(?:^-|-$)/g, "")
       .substring(0, 200);
   }
 

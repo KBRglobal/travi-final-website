@@ -89,7 +89,7 @@ export function sanitizeText(text: string): string {
   // Escape HTML entities
   let result = escapeHtml(text);
   // Remove control characters except newlines and tabs
-  result = result.replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  result = result.replaceAll(new RegExp("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]", "g"), "");
   return result.trim();
 }
 
@@ -181,7 +181,7 @@ export function sanitizeFilename(filename: string): string {
   safe = safe.replaceAll(/[^a-zA-Z0-9._-]/g, "");
 
   // Remove leading/trailing dots and spaces
-  safe = safe.replaceAll(/^[\s.]+|[\s.]+$/g, "");
+  safe = safe.replaceAll(/(?:^[\s.]+|[\s.]+$)/g, "");
 
   // Limit length
   if (safe.length > 255) {
@@ -203,5 +203,5 @@ export function sanitizeFilename(filename: string): string {
 export function removeControlCharacters(text: string): string {
   if (!text) return "";
   // Remove ASCII control characters except \t (0x09), \n (0x0A), \r (0x0D)
-  return text.replaceAll(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  return text.replaceAll(new RegExp("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]", "g"), "");
 }

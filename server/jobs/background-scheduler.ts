@@ -91,10 +91,10 @@ const DEFAULT_CONFIG: SchedulerConfig = {
 };
 
 export class BackgroundScheduler {
-  private config: SchedulerConfig;
-  private jobQueue: Map<string, BackgroundJob>;
-  private processingJobs: Set<string>;
-  private metrics: SchedulerMetrics;
+  private readonly config: SchedulerConfig;
+  private readonly jobQueue: Map<string, BackgroundJob>;
+  private readonly processingJobs: Set<string>;
+  private readonly metrics: SchedulerMetrics;
   private isPaused: boolean;
   private pauseReason?: string;
   private processingTimer?: ReturnType<typeof setInterval>;

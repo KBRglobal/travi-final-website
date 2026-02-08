@@ -26,7 +26,7 @@ import { log } from "../../lib/logger";
 
 export class RealAutopilot {
   private state: AutopilotStateData | null = null;
-  private executors: Map<
+  private readonly executors: Map<
     AutopilotTaskType,
     (taskId: string, config: TaskConfig) => Promise<TaskResult>
   > = new Map();
@@ -54,7 +54,7 @@ export class RealAutopilot {
       };
     } else {
       // Create initial state
-      const [newState] = await db
+      await db
         .insert(autopilotState)
         .values({
           mode: "off",

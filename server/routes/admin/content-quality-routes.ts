@@ -217,7 +217,7 @@ export function registerAdminContentQualityRoutes(app: Express): void {
   // POST /api/admin/content-quality/publish-ready - Publish all attractions with 90+ score
   app.post("/api/admin/content-quality/publish-ready", requireAuth, async (req, res) => {
     try {
-      const result = await db
+      await db
         .update(tiqetsAttractions)
         .set({ status: "published" } as any)
         .where(

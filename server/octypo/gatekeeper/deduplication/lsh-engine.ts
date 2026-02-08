@@ -44,8 +44,8 @@ export interface DeduplicationResult {
 }
 
 export class DeduplicationEngine {
-  private similarityThreshold: number;
-  private enabled: boolean;
+  private readonly similarityThreshold: number;
+  private readonly enabled: boolean;
 
   constructor(
     options: {

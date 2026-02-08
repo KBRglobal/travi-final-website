@@ -83,7 +83,7 @@ async function handleWriteJob(
     const baseSlug = data.title
       .toLowerCase()
       .replaceAll(/[^a-z0-9]+/g, "-")
-      .replaceAll(/^-|-$/g, "")
+      .replaceAll(/(?:^-|-$)/g, "")
       .substring(0, 80);
     const slug = `${baseSlug}-${Date.now().toString(36)}`;
 
@@ -457,7 +457,7 @@ async function handleAttractionWriteJob(
     const baseSlug = data.attractionName
       .toLowerCase()
       .replaceAll(/[^a-z0-9]+/g, "-")
-      .replaceAll(/^-|-$/g, "")
+      .replaceAll(/(?:^-|-$)/g, "")
       .substring(0, 80);
     const slug = `${baseSlug}-${Date.now().toString(36)}`;
 

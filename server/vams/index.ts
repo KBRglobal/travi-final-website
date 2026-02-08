@@ -9,12 +9,6 @@
 import { Router } from "express";
 import {
   getVamsService,
-  VamsService,
-  enrichContentWithImages,
-  getContentHeroImage,
-  getContentCardImage,
-  getContentGalleryImages,
-  contentNeedsImages,
   getContentImages,
   type ImageSearchResult,
   type ContentImageRequirements,

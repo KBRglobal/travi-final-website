@@ -333,8 +333,8 @@ const GDPR_CONTROLS: ControlMapping[] = [
 // ============================================================================
 
 class EvidenceGenerator {
-  private evidenceStore: ComplianceEvidence[] = [];
-  private controlMappings: Map<ComplianceFramework, ControlMapping[]> = new Map();
+  private readonly evidenceStore: ComplianceEvidence[] = [];
+  private readonly controlMappings: Map<ComplianceFramework, ControlMapping[]> = new Map();
   private lastHash: string = "GENESIS";
 
   constructor() {

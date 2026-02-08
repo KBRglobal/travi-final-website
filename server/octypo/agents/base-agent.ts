@@ -117,7 +117,7 @@ export abstract class BaseAgent {
 }
 
 export class AgentRegistry {
-  private static agents: Map<string, BaseAgent> = new Map();
+  private static readonly agents: Map<string, BaseAgent> = new Map();
 
   static register(agent: BaseAgent): void {
     this.agents.set(agent.id, agent);
@@ -150,7 +150,7 @@ export class AgentRegistry {
 }
 
 export class MessageBus {
-  private static subscribers: Map<string, ((message: AgentMessage) => void)[]> = new Map();
+  private static readonly subscribers: Map<string, ((message: AgentMessage) => void)[]> = new Map();
 
   static subscribe(agentId: string, handler: (message: AgentMessage) => void): void {
     if (!this.subscribers.has(agentId)) {

@@ -56,7 +56,7 @@ export async function isDuplicate(
   const signature = generateMinHash(text);
 
   // Generate LSH bands for candidate filtering
-  const bands = generateLSHBands(signature, 16);
+  generateLSHBands(signature, 16);
 
   // Step 1: Quick exact match check
   const exactMatch = await db.query.contentFingerprints.findFirst({

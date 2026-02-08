@@ -30,8 +30,8 @@ const DEFAULT_CONFIG: ReleaseGuardConfig = {
 };
 
 class ReleaseGuard {
-  private config: ReleaseGuardConfig;
-  private enabled = false;
+  private readonly config: ReleaseGuardConfig;
+  private readonly enabled: boolean = false;
   private lastReport: SafetyReport | null = null;
 
   constructor(config?: Partial<ReleaseGuardConfig>) {

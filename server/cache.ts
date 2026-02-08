@@ -66,7 +66,7 @@ class MemoryCache {
   async keys(pattern: string): Promise<string[]> {
     // Security: escape regex meta-characters before converting glob wildcards
     // to prevent ReDoS from user-controlled or dynamic pattern input
-    const escaped = pattern.replace(/[.+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const escaped = pattern.replaceAll(/[.+?^${}()|[\]\\]/g, String.raw`\$&`);
     const regex = new RegExp("^" + escaped.replaceAll("*", ".*") + "$");
     return Array.from(this.cache.keys()).filter(key => regex.test(key));
   }

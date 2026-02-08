@@ -47,9 +47,9 @@ function dbToJob(row: typeof backgroundJobs.$inferSelect): Job {
 }
 
 class JobQueue {
-  private handlers: Map<JobType, JobHandler> = new Map();
-  private processing: Set<string> = new Set();
-  private maxConcurrent: number = 3;
+  private readonly handlers: Map<JobType, JobHandler> = new Map();
+  private readonly processing: Set<string> = new Set();
+  private readonly maxConcurrent: number = 3;
   private isRunning: boolean = false;
   private intervalId: NodeJS.Timeout | null = null;
   private lastProcessedAt: Date | null = null;

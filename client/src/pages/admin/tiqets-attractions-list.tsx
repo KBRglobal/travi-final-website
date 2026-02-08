@@ -64,7 +64,7 @@ const contentStatusConfig: Record<string, { label: string; color: string }> = {
   failed: { label: "Failed", color: "text-destructive" },
 };
 
-function AttractionTitleCell(attraction: TiqetsAttraction) {
+function AttractionTitleCell(attraction: Readonly<TiqetsAttraction>) {
   return (
     <div className="flex flex-col gap-1">
       <Link
@@ -79,7 +79,7 @@ function AttractionTitleCell(attraction: TiqetsAttraction) {
   );
 }
 
-function AttractionCityCell(attraction: TiqetsAttraction) {
+function AttractionCityCell(attraction: Readonly<TiqetsAttraction>) {
   return (
     <div className="flex items-center gap-1.5">
       <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
@@ -88,7 +88,7 @@ function AttractionCityCell(attraction: TiqetsAttraction) {
   );
 }
 
-function AttractionStatusCell(attraction: TiqetsAttraction) {
+function AttractionStatusCell(attraction: Readonly<TiqetsAttraction>) {
   const config = statusConfig[attraction.status] || statusConfig.imported;
   return (
     <Badge variant={config.variant} className="gap-1">
@@ -98,7 +98,7 @@ function AttractionStatusCell(attraction: TiqetsAttraction) {
   );
 }
 
-function AttractionContentStatusCell(attraction: TiqetsAttraction) {
+function AttractionContentStatusCell(attraction: Readonly<TiqetsAttraction>) {
   const status = attraction.contentGenerationStatus || "pending";
   const config = contentStatusConfig[status] || contentStatusConfig.pending;
   return (

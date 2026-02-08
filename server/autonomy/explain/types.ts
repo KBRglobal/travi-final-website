@@ -3,23 +3,22 @@
  * Explains autonomy decisions in human-readable language
  */
 
-import { GuardedFeature } from '../enforcement/types';
-type PolicyDecision = any;
-import { BudgetPeriod } from '../policy/types';
+import { GuardedFeature } from "../enforcement/types";
+import { type PolicyDecision, type BudgetPeriod } from "../policy/types";
 
 /**
  * Audience types for explanation customization
  */
 export type ExplanationAudience =
-  | 'executive'     // C-suite, non-technical
-  | 'manager'       // Team leads, some technical context
-  | 'developer'     // Engineers, full technical detail
-  | 'operator';     // Ops team, operational focus
+  | "executive" // C-suite, non-technical
+  | "manager" // Team leads, some technical context
+  | "developer" // Engineers, full technical detail
+  | "operator"; // Ops team, operational focus
 
 /**
  * Explanation format
  */
-export type ExplanationFormat = 'text' | 'structured' | 'markdown';
+export type ExplanationFormat = "text" | "structured" | "markdown";
 
 /**
  * A single decision explanation
@@ -37,16 +36,16 @@ export interface DecisionExplanation {
 
   // Context
   context: {
-    what: string;       // What was being done
-    why: string;        // Why was the decision made
-    impact: string;     // What's the impact
+    what: string; // What was being done
+    why: string; // Why was the decision made
+    impact: string; // What's the impact
     nextSteps?: string; // What can be done
   };
 
   // For executives
   businessImpact?: {
     costImplication: string;
-    riskLevel: 'low' | 'medium' | 'high';
+    riskLevel: "low" | "medium" | "high";
     userImpact: string;
   };
 
@@ -77,8 +76,8 @@ export interface ActivitySummary {
   highlights: {
     label: string;
     value: string;
-    trend?: 'up' | 'down' | 'stable';
-    sentiment?: 'positive' | 'neutral' | 'negative';
+    trend?: "up" | "down" | "stable";
+    sentiment?: "positive" | "neutral" | "negative";
   }[];
 
   // Feature summaries
@@ -89,7 +88,7 @@ export interface ActivitySummary {
 
   // Overall health assessment
   healthAssessment: {
-    status: 'healthy' | 'attention_needed' | 'critical';
+    status: "healthy" | "attention_needed" | "critical";
     explanation: string;
   };
 }
@@ -103,13 +102,13 @@ export interface FeatureSummary {
     blocked: string;
     cost: string;
   };
-  status: 'healthy' | 'attention_needed' | 'critical';
+  status: "healthy" | "attention_needed" | "critical";
   issues?: string[];
 }
 
 export interface ActionItem {
-  priority: 'high' | 'medium' | 'low';
-  category: 'budget' | 'policy' | 'incident' | 'optimization';
+  priority: "high" | "medium" | "low";
+  category: "budget" | "policy" | "incident" | "optimization";
   title: string;
   description: string;
   suggestedAction?: string;
@@ -121,7 +120,7 @@ export interface ActionItem {
  */
 export interface ExplanationRequest {
   // What to explain
-  type: 'decision' | 'summary' | 'comparison' | 'recommendation';
+  type: "decision" | "summary" | "comparison" | "recommendation";
 
   // Target audience
   audience: ExplanationAudience;
@@ -163,51 +162,54 @@ export interface ExplainerConfig {
 }
 
 export const DEFAULT_EXPLAINER_CONFIG: ExplainerConfig = {
-  enabled: process.env.ENABLE_AUTONOMY_EXPLAINER === 'true',
+  enabled: process.env.ENABLE_AUTONOMY_EXPLAINER === "true",
   maxExplanationsCache: 100,
   maxSummariesCache: 20,
-  defaultAudience: 'manager',
-  defaultFormat: 'text',
+  defaultAudience: "manager",
+  defaultFormat: "text",
 };
 
 /**
  * Feature display names for human-readable output
  */
 export const FEATURE_DISPLAY_NAMES: Record<GuardedFeature, string> = {
-  chat: 'AI Chat Assistant',
-  octopus: 'Content Generation',
-  search: 'Search Enhancement',
-  aeo: 'Answer Engine Optimization',
-  translation: 'Content Translation',
-  images: 'Image Processing',
-  content_enrichment: 'Content Enrichment',
-  seo_optimization: 'SEO Optimization',
-  internal_linking: 'Internal Linking',
-  background_job: 'Background Processing',
-  publishing: 'Content Publishing',
+  chat: "AI Chat Assistant",
+  octopus: "Content Generation",
+  search: "Search Enhancement",
+  aeo: "Answer Engine Optimization",
+  translation: "Content Translation",
+  images: "Image Processing",
+  content_enrichment: "Content Enrichment",
+  seo_optimization: "SEO Optimization",
+  internal_linking: "Internal Linking",
+  background_job: "Background Processing",
+  publishing: "Content Publishing",
 };
 
 /**
  * Decision explanations in plain language
  */
-export const DECISION_TEMPLATES: Record<PolicyDecision, {
-  executive: string;
-  manager: string;
-  developer: string;
-}> = {
+export const DECISION_TEMPLATES: Record<
+  PolicyDecision,
+  {
+    executive: string;
+    manager: string;
+    developer: string;
+  }
+> = {
   ALLOW: {
-    executive: 'The request was approved and completed successfully.',
-    manager: 'The system processed this request normally within policy limits.',
-    developer: 'Request passed policy evaluation and budget checks.',
+    executive: "The request was approved and completed successfully.",
+    manager: "The system processed this request normally within policy limits.",
+    developer: "Request passed policy evaluation and budget checks.",
   },
   WARN: {
-    executive: 'The request was completed but flagged for review.',
-    manager: 'The system processed this request but it approached policy limits.',
-    developer: 'Request allowed with warning - approaching budget thresholds.',
+    executive: "The request was completed but flagged for review.",
+    manager: "The system processed this request but it approached policy limits.",
+    developer: "Request allowed with warning - approaching budget thresholds.",
   },
   BLOCK: {
-    executive: 'The request was not completed to protect system resources.',
-    manager: 'The system prevented this request due to policy or budget constraints.',
-    developer: 'Request blocked by policy evaluation or budget exhaustion.',
+    executive: "The request was not completed to protect system resources.",
+    manager: "The system prevented this request due to policy or budget constraints.",
+    developer: "Request blocked by policy evaluation or budget exhaustion.",
   },
 };

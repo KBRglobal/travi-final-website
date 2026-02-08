@@ -35,6 +35,3 @@ export type CompetitionPair = { id1: string; id2: string };
 export type CompetitionAnalysis = { pairs: CompetitionPair[] };
 export type CompetitionCluster = { id: string };
 export type CompetitionStats = { total: number };
-export type CompetitionType = string;
-export type CompetitionSeverity = string;
-export type ResolutionStrategy = string;

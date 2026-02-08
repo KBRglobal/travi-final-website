@@ -382,8 +382,6 @@ interface LocaleBadgeProps {
 }
 
 function LocaleBadge({ locale, status }: Readonly<LocaleBadgeProps>) {
-  const localeInfo = getLocaleInfo(locale);
-
   return (
     <span
       className={cn(
