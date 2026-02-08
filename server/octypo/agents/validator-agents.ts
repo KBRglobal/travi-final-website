@@ -180,9 +180,9 @@ export class ValidatorAgent extends BaseAgent {
       });
     }
 
-    for (let i = 0; i < content.faqs.length; i++) {
+    for (const faq of content.faqs) {
       this.validateWordCount(
-        content.faqs[i].answer,
+        faq.answer,
         "faq",
         { min: reqs.faq.answerMin, max: reqs.faq.answerMax },
         `Expand FAQ answer to ${reqs.faq.answerMin} words using Answer Capsule method`,

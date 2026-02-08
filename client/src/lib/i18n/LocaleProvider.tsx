@@ -13,7 +13,7 @@ interface LocaleProviderProps {
 
 export function LocaleProvider({ children }: Readonly<LocaleProviderProps>) {
   const [location] = useLocation();
-  const [locale, setLocaleState] = useState<Locale>(() => {
+  const [locale, setLocale] = useState<Locale>(() => {
     // Try to get locale from URL first
     const urlLocale = globalThis.location.pathname.split("/").find(Boolean) as Locale;
     if (SUPPORTED_LOCALES.some(l => l.code === urlLocale)) {
@@ -64,7 +64,7 @@ export function LocaleProvider({ children }: Readonly<LocaleProviderProps>) {
 
   const handleSetLocale = useCallback(async (newLocale: Locale) => {
     await changeLanguage(newLocale);
-    setLocaleState(newLocale);
+    setLocale(newLocale);
   }, []);
 
   const localeInfo = SUPPORTED_LOCALES.find(l => l.code === locale);

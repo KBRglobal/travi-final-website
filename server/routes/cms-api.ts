@@ -27,7 +27,9 @@ type AuthRequest = Request & {
 // Keys that could cause prototype pollution
 const DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
-function isValidSettingValue(value: unknown): value is string | number | boolean | null {
+type SettingValue = string | number | boolean | null;
+
+function isValidSettingValue(value: unknown): value is SettingValue {
   return (
     value === null ||
     typeof value === "string" ||

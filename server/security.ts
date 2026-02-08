@@ -1026,7 +1026,7 @@ function escapeHtml(str: string): string {
 }
 
 // Regex to match ASCII control characters except tab, newline, carriage return
-const CONTROL_CHARS_RE = new RegExp("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]", "g");
+const CONTROL_CHARS_RE = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g; // NOSONAR - intentional control char matching
 
 // Remove null bytes and other dangerous characters
 function sanitizeString(value: string): string {

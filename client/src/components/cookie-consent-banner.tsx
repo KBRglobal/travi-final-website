@@ -71,6 +71,7 @@ export function CookieConsentBanner() {
         <dialog
           ref={dialogRef}
           open
+          role="dialog"
           aria-label={t("cookies.title")}
           aria-describedby="cookie-consent-description"
           aria-live="polite"

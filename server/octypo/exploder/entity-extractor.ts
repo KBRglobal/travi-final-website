@@ -198,10 +198,10 @@ export class EntityExtractor {
             typeof item === "object" && item !== null && typeof item.name === "string"
         )
         .map(item => ({
-          name: String(item.name),
-          type: this.normalizeEntityType(String(item.type || "attraction")),
-          description: item.description ? String(item.description) : undefined,
-          location: item.location ? String(item.location) : undefined,
+          name: item.name as string,
+          type: this.normalizeEntityType(typeof item.type === "string" ? item.type : "attraction"),
+          description: typeof item.description === "string" ? item.description : undefined,
+          location: typeof item.location === "string" ? item.location : undefined,
           attributes:
             typeof item.attributes === "object"
               ? (item.attributes as Record<string, unknown>)

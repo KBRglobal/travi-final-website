@@ -170,8 +170,7 @@ export interface LegacyGenerationResult {
 }
 
 /**
- * @deprecated Use server/ai/attraction-description-generator.ts instead
- * This function is kept for backwards compatibility only
+ * Generate attraction content using the Octypo pipeline
  */
 export async function generateAttractionWithOctypo(
   attraction: AttractionData

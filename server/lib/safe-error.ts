@@ -52,7 +52,12 @@ export function getSafeErrorMessage(
   context?: Record<string, unknown>
 ): string {
   // Log full error internally for debugging
-  const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorMessage =
+    error instanceof Error
+      ? error.message
+      : typeof error === "string"
+        ? error
+        : JSON.stringify(error);
   const errorStack = error instanceof Error ? error.stack : undefined;
 
   log.error(`[SafeError:${category}] ${errorMessage}`, undefined, {

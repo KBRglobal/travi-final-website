@@ -88,9 +88,8 @@ export type ContentRules = typeof contentRules.$inferSelect;
 
 // Default rules that will be seeded
 /**
- * @deprecated Use the AI Writers system instead (server/ai/writers/content-generator.ts)
- * This legacy content rules system is maintained for backward compatibility only.
- * New content generation should use writer-specific prompts and personalities.
+ * Legacy content rules used as fallback when no custom rules exist.
+ * Prefer the AI Writers system (server/ai/writers/content-generator.ts) for new content.
  */
 export const DEFAULT_CONTENT_RULES = {
   name: "dubai-seo-standard",

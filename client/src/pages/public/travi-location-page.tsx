@@ -309,18 +309,11 @@ function ImageGallery({ images }: Readonly<{ images: TraviLocationImage[] }>) {
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
         {displayImages.map((image, index) => (
-          <div
+          <button
             key={image.id}
-            role="button"
-            tabIndex={0}
-            className="relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group"
+            type="button"
+            className="relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group border-0 p-0 bg-transparent text-left"
             onClick={() => setSelectedIndex(index)}
-            onKeyDown={e => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setSelectedIndex(index);
-              }
-            }}
             data-testid={`gallery-image-${index}`}
           >
             <img
@@ -340,7 +333,7 @@ function ImageGallery({ images }: Readonly<{ images: TraviLocationImage[] }>) {
                 {image.attribution}
               </p>
             )}
-          </div>
+          </button>
         ))}
       </div>
 

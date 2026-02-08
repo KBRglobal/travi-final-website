@@ -614,26 +614,15 @@ export default function OctypoDashboardPage() {
                     {selectedFeeds.length} selected
                   </span>
                 </div>
-                <div
+                <fieldset
                   className="border rounded-lg max-h-[200px] overflow-y-auto"
-                  role="listbox"
                   aria-label="RSS Feeds"
                 >
                   {dialogFeeds?.feeds && dialogFeeds.feeds.length > 0 ? (
                     dialogFeeds.feeds.map(feed => (
-                      <div
+                      <label
                         key={feed.id}
-                        role="option"
-                        tabIndex={0}
-                        aria-selected={selectedFeeds.includes(feed.id)}
                         className="flex items-center gap-3 p-3 border-b last:border-b-0 hover:bg-muted/50 cursor-pointer"
-                        onClick={() => toggleFeedSelection(feed.id)}
-                        onKeyDown={e => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            toggleFeedSelection(feed.id);
-                          }
-                        }}
                         data-testid={`feed-item-${feed.id}`}
                       >
                         <Checkbox
@@ -656,7 +645,7 @@ export default function OctypoDashboardPage() {
                         ) : (
                           <Badge variant="secondary">Inactive</Badge>
                         )}
-                      </div>
+                      </label>
                     ))
                   ) : (
                     <div className="p-4 text-center text-muted-foreground">
@@ -664,7 +653,7 @@ export default function OctypoDashboardPage() {
                       <p>No RSS feeds available</p>
                     </div>
                   )}
-                </div>
+                </fieldset>
               </div>
             )}
 

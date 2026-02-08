@@ -27,7 +27,6 @@ import { liveChatStorage } from "./live-chat.storage";
 import { surveysStorage } from "./surveys.storage";
 import { referralsStorage } from "./referrals.storage";
 import { editorialPlacementsStorage } from "./editorial-placements.storage";
-import { vamsStorage } from "./vams.storage";
 
 // Export all storage classes and instances
 export { UsersStorage, usersStorage } from "./users.storage";

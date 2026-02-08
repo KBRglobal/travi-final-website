@@ -103,7 +103,7 @@ async function translateSingleEntry(
   overwrite: boolean,
   existingKeys: Set<string>,
   translateText: (...args: any[]) => Promise<{ translatedText: string }>
-): Promise<"skipped" | "translated" | string | null> {
+): Promise<string | null> {
   if (!engTrans.value || engTrans.value.trim() === "") return null;
 
   const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
@@ -362,8 +362,8 @@ export function registerAdminApiRoutes(app: Express): void {
 
   router.get("/homepage/available-images", requirePermission("canEdit"), async (req, res) => {
     try {
-      const fs = await import("fs").then(m => m.promises);
-      const pathModule = await import("path");
+      const fs = await import("node:fs").then(m => m.promises);
+      const pathModule = await import("node:path");
 
       const folder = (req.query.folder as string) || "hero";
       const allowedFolders = ["hero", "cards", "experiences", "regions"];
@@ -394,8 +394,8 @@ export function registerAdminApiRoutes(app: Express): void {
 
   router.get("/homepage/available-hero-images", requirePermission("canEdit"), async (req, res) => {
     try {
-      const fs = await import("fs").then(m => m.promises);
-      const path = await import("path");
+      const fs = await import("node:fs").then(m => m.promises);
+      const path = await import("node:path");
       const heroDir = path.join(process.cwd(), "client", "public", "hero");
 
       try {
@@ -427,8 +427,8 @@ export function registerAdminApiRoutes(app: Express): void {
           return res.status(400).json({ error: "No file uploaded" });
         }
 
-        const fs = await import("fs").then(m => m.promises);
-        const pathModule = await import("path");
+        const fs = await import("node:fs").then(m => m.promises);
+        const pathModule = await import("node:path");
 
         let customFilename = req.body.customFilename?.trim();
         const targetFolder = req.body.folder || "hero";

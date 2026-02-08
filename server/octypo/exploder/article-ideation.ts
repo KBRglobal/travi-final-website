@@ -261,16 +261,24 @@ Return ${maxIdeas} article ideas as a JSON array.`;
             typeof item === "object" && item !== null && typeof item.title === "string"
         )
         .map(item => ({
-          title: String(item.title),
-          description: String(item.description || ""),
-          articleType: this.normalizeArticleType(String(item.articleType || "guide"), allowedTypes),
+          title: item.title as string,
+          description: typeof item.description === "string" ? item.description : "",
+          articleType: this.normalizeArticleType(
+            typeof item.articleType === "string" ? item.articleType : "guide",
+            allowedTypes
+          ),
           targetKeywords: Array.isArray(item.targetKeywords) ? item.targetKeywords.map(String) : [],
           targetEntities: Array.isArray(item.targetEntities) ? item.targetEntities.map(String) : [],
           estimatedWordCount:
             typeof item.estimatedWordCount === "number" ? item.estimatedWordCount : 1500,
-          searchIntent: this.normalizeSearchIntent(String(item.searchIntent || "informational")),
-          seasonality: this.normalizeSeasonality(String(item.seasonality || "evergreen")),
-          audienceSegment: String(item.audienceSegment || "general travelers"),
+          searchIntent: this.normalizeSearchIntent(
+            typeof item.searchIntent === "string" ? item.searchIntent : "informational"
+          ),
+          seasonality: this.normalizeSeasonality(
+            typeof item.seasonality === "string" ? item.seasonality : "evergreen"
+          ),
+          audienceSegment:
+            typeof item.audienceSegment === "string" ? item.audienceSegment : "general travelers",
           priorityScore:
             typeof item.priorityScore === "number"
               ? Math.min(100, Math.max(1, item.priorityScore))

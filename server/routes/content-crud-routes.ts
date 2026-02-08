@@ -165,6 +165,78 @@ async function checkPublishGuards(
   return { blocked: false };
 }
 
+/** Check if content is being published and validate/authorize the publish action */
+async function validatePublishAction(
+  req: Request,
+  body: any,
+  existingContent: any
+): Promise<{ error?: { status: number; body: any }; isPublishing: boolean }> {
+  const newStatus = body.status;
+  const isPublishing =
+    (newStatus === "published" || newStatus === "scheduled") &&
+    existingContent.status !== "published" &&
+    existingContent.status !== "scheduled";
+
+  if (!isPublishing) return { isPublishing: false };
+
+  const validationErrors = validatePublishFields(body, existingContent);
+  if (validationErrors.length > 0 && process.env.STRICT_PUBLISH_VALIDATION === "true") {
+    return {
+      isPublishing: true,
+      error: {
+        status: 400,
+        body: {
+          error: "Content validation failed",
+          details: validationErrors,
+          message:
+            "Cannot publish content with missing required fields. Fix issues or disable STRICT_PUBLISH_VALIDATION.",
+        },
+      },
+    };
+  }
+
+  const canPublish = await checkPublishPermission(req);
+  if (!canPublish) {
+    return {
+      isPublishing: true,
+      error: {
+        status: 403,
+        body: { error: "Permission denied: You do not have permission to publish content" },
+      },
+    };
+  }
+
+  return { isPublishing: true };
+}
+
+/** Emit content lifecycle events after update */
+function emitContentLifecycleEvents(
+  contentId: string,
+  contentType: string,
+  fullContent: any,
+  existingStatus: string,
+  actionType: string
+): void {
+  if (actionType === "publish" && fullContent) {
+    emitContentPublished(
+      contentId,
+      contentType,
+      fullContent.title,
+      fullContent.slug,
+      existingStatus,
+      "manual"
+    );
+  } else if (fullContent?.status === "published") {
+    emitContentUpdated(
+      contentId,
+      contentType,
+      fullContent.title,
+      fullContent.slug,
+      fullContent.status
+    );
+  }
+}
+
 /**
  * Register all content CRUD routes
  */
@@ -514,30 +586,9 @@ export function registerContentCrudRoutes(app: Express): void {
         }
 
         // Check publish permission when changing status to "published" or "scheduled"
-        const newStatus = req.body.status;
-        const isPublishing =
-          (newStatus === "published" || newStatus === "scheduled") &&
-          existingContent.status !== "published" &&
-          existingContent.status !== "scheduled";
-
-        // TASK 3: Publish Validation Guard - prevent publishing broken content
-        if (isPublishing) {
-          const validationErrors = validatePublishFields(req.body, existingContent);
-          if (validationErrors.length > 0 && process.env.STRICT_PUBLISH_VALIDATION === "true") {
-            return res.status(400).json({
-              error: "Content validation failed",
-              details: validationErrors,
-              message:
-                "Cannot publish content with missing required fields. Fix issues or disable STRICT_PUBLISH_VALIDATION.",
-            });
-          }
-
-          const canPublish = await checkPublishPermission(req);
-          if (!canPublish) {
-            return res.status(403).json({
-              error: "Permission denied: You do not have permission to publish content",
-            });
-          }
+        const publishAction = await validatePublishAction(req, req.body, existingContent);
+        if (publishAction.error) {
+          return res.status(publishAction.error.status).json(publishAction.error.body);
         }
 
         // Auto-create version before update
@@ -585,16 +636,12 @@ export function registerContentCrudRoutes(app: Express): void {
         }
 
         // Auto-set publishedAt when content is being published for the first time
-        if (
-          contentData.status === "published" &&
-          existingContent.status !== "published" &&
-          !contentData.publishedAt
-        ) {
+        if (publishAction.isPublishing && !contentData.publishedAt) {
           contentData.publishedAt = new Date();
         }
 
         // Phase 16: Sanitize AI-generated content blocks to prevent XSS
-        if (contentData.blocks && Array.isArray(contentData.blocks)) {
+        if (Array.isArray(contentData.blocks)) {
           contentData.blocks = sanitizeContentBlocks(contentData.blocks);
         }
 
@@ -653,25 +700,13 @@ export function registerContentCrudRoutes(app: Express): void {
           .catch(err => {});
 
         // Phase 15A: Emit content lifecycle events (replaces direct indexer call)
-        // Event bus triggers: search indexing, AEO capsule generation, and future subscribers
-        if (actionType === "publish" && fullContent) {
-          emitContentPublished(
-            req.params.id,
-            existingContent.type,
-            fullContent.title,
-            fullContent.slug,
-            existingContent.status,
-            "manual"
-          );
-        } else if (fullContent?.status === "published") {
-          emitContentUpdated(
-            req.params.id,
-            existingContent.type,
-            fullContent.title,
-            fullContent.slug,
-            fullContent.status
-          );
-        }
+        emitContentLifecycleEvents(
+          req.params.id,
+          existingContent.type,
+          fullContent,
+          existingContent.status,
+          actionType
+        );
 
         res.json(fullContent);
       } catch {

@@ -28,7 +28,8 @@ export function cleanJsonFromMarkdown(content: string): string {
   // 1. Replace unescaped control characters in strings (newlines, tabs, etc.)
   // This regex finds strings and escapes control characters within them
   cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
-    return match.replaceAll(new RegExp("[\\x00-\\x1F\\x7F]", "g"), char => {
+    return match.replaceAll(/[\u0000-\u001f\u007f]/g, char => {
+      // NOSONAR - intentional control char handling
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`; // Tab
       if (code === 0x0a) return String.raw`\n`; // Newline

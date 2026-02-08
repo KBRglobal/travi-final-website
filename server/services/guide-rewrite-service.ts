@@ -877,17 +877,28 @@ YOUR COMPREHENSIVE REWRITE:`;
     return `\nFACT CHECKLIST - You MUST include all of these:\n${factLines}\n\nREQUIRED COUNTS: ${JSON.stringify(counts)}\n`;
   }
 
-  private async executeRewriteAttempt(
-    attempt: number,
-    destination: string,
-    section: { heading: string; content: string; type: string },
-    sectionEnhancement: any,
-    sourceWordCount: number,
-    sourceCharCount: number,
-    factChecklist: string,
-    facts: any[],
-    best: { response: string | null; ratio: number; coverage: number }
-  ): Promise<GuideSection | null> {
+  private async executeRewriteAttempt(opts: {
+    attempt: number;
+    destination: string;
+    section: { heading: string; content: string; type: string };
+    sectionEnhancement: any;
+    sourceWordCount: number;
+    sourceCharCount: number;
+    factChecklist: string;
+    facts: any[];
+    best: { response: string | null; ratio: number; coverage: number };
+  }): Promise<GuideSection | null> {
+    const {
+      attempt,
+      destination,
+      section,
+      sectionEnhancement,
+      sourceWordCount,
+      sourceCharCount,
+      factChecklist,
+      facts,
+      best,
+    } = opts;
     if (attempt === 3) {
       return this.attemptParagraphRewrite(
         section,
@@ -950,7 +961,7 @@ YOUR COMPREHENSIVE REWRITE:`;
     const best = { response: null as string | null, ratio: 0, coverage: 0 };
 
     for (let attempt = 1; attempt <= 3; attempt++) {
-      const result = await this.executeRewriteAttempt(
+      const result = await this.executeRewriteAttempt({
         attempt,
         destination,
         section,
@@ -959,8 +970,8 @@ YOUR COMPREHENSIVE REWRITE:`;
         sourceCharCount,
         factChecklist,
         facts,
-        best
-      );
+        best,
+      });
       if (result) return result;
       await this.sleep(500);
     }

@@ -17,7 +17,8 @@ async function buildSampleHotelResponse(
 ): Promise<{ hotel: any; source: string; aiGenerated: boolean }> {
   let description = defaultDescription;
   let seoTitle = `${sampleHotel.name} | ${sampleHotel.stars}-Star Luxury Hotel | TRAVI`;
-  let seoDescription = `Book ${sampleHotel.name}${sampleHotel.location?.city ? ` in ${sampleHotel.location.city}` : ""}. Premium amenities and exceptional service.`;
+  const cityPart = sampleHotel.location?.city ? ` in ${sampleHotel.location.city}` : "";
+  let seoDescription = `Book ${sampleHotel.name}${cityPart}. Premium amenities and exceptional service.`;
   let highlights: string[] = [];
   let aiGenerated = false;
 

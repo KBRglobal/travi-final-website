@@ -69,13 +69,16 @@ export interface ExecutiveDashboard {
   alerts: Alert[];
 }
 
+export type MetricTrend = "up" | "down" | "stable";
+export type MetricStatus = "good" | "warning" | "critical";
+
 export interface KeyMetric {
   name: string;
   value: number | string;
   unit?: string;
   change?: number;
-  trend?: "up" | "down" | "stable";
-  status: "good" | "warning" | "critical";
+  trend?: MetricTrend;
+  status: MetricStatus;
 }
 
 export interface Alert {

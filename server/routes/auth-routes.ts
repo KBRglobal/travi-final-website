@@ -77,6 +77,20 @@ function recordLoginFailure(
   });
 }
 
+/** Promise wrapper for req.login callback */
+function loginAsync(req: Request, sessionUser: unknown): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    (req as any).login(sessionUser, (err: any) => (err ? reject(err) : resolve()));
+  });
+}
+
+/** Promise wrapper for req.session.save callback */
+function saveSessionAsync(req: Request): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    req.session.save((err: any) => (err ? reject(err) : resolve()));
+  });
+}
+
 /** Check lockout status and return error response if locked */
 function checkAndHandleLockout(req: Request, res: Response, username: string, ip: string): any {
   const lockoutStatus = checkDualLockout(username.toLowerCase(), ip);
@@ -99,6 +113,56 @@ function checkAndHandleLockout(req: Request, res: Response, username: string, ip
     code: "ACCOUNT_LOCKED",
     lockType: lockoutStatus.lockType,
     remainingMinutes: lockoutStatus.remainingTime,
+  });
+}
+
+/** Handle MFA pre-auth flow: issue pre-auth token and return MFA-required response */
+async function handleMfaPreAuth(
+  user: any,
+  ip: string,
+  contextResult: { riskScore: number },
+  fingerprint: any,
+  isNewDevice: boolean,
+  deviceInfo: { isTrusted: boolean },
+  geo: { country?: string } | null | undefined,
+  req: Request,
+  res: Response
+) {
+  const preAuthResult = await createPreAuthToken(user.id, user.username || user.email, {
+    ipAddress: ip,
+    userAgent: req.get("User-Agent") || "",
+    riskScore: contextResult.riskScore,
+    deviceFingerprint: JSON.stringify(fingerprint),
+  });
+
+  logSecurityEvent({
+    action: "login",
+    resourceType: "auth",
+    userId: user.id,
+    userEmail: user.username || undefined,
+    ip,
+    userAgent: req.get("User-Agent"),
+    details: {
+      method: "password",
+      role: user.role,
+      isNewDevice,
+      riskScore: contextResult.riskScore,
+      mfaPending: true,
+      preAuthTokenIssued: true,
+    },
+  });
+
+  return res.json({
+    success: true,
+    requiresMfa: true,
+    preAuthToken: preAuthResult.token,
+    preAuthExpiresAt: preAuthResult.expiresAt,
+    isNewDevice,
+    riskScore: contextResult.riskScore,
+    securityContext: {
+      deviceTrusted: deviceInfo.isTrusted,
+      country: geo?.country,
+    },
   });
 }
 
@@ -226,49 +290,20 @@ export function registerAuthRoutes(app: Express): void {
           const isNewDevice = deviceInfo.loginCount === 1;
 
           // Check if MFA is required - ONLY if user has actually enrolled in 2FA
-          // Users who haven't set up 2FA should be able to log in normally
           const requiresMfa = Boolean(user.totpEnabled && user.totpSecret);
 
-          // P0-3 FIX: If MFA required, issue pre-auth token instead of creating session
-          // Session is only created AFTER TOTP verification in /api/totp/validate
           if (requiresMfa) {
-            const preAuthResult = await createPreAuthToken(user.id, user.username || user.email, {
-              ipAddress: ip,
-              userAgent: req.get("User-Agent") || "",
-              riskScore: contextResult.riskScore,
-              deviceFingerprint: JSON.stringify(fingerprint),
-            });
-
-            // Log pre-auth token issuance (not a full login yet) - use 'login' action with mfaPending flag
-            logSecurityEvent({
-              action: "login",
-              resourceType: "auth",
-              userId: user.id,
-              userEmail: user.username || undefined,
+            return handleMfaPreAuth(
+              user,
               ip,
-              userAgent: req.get("User-Agent"),
-              details: {
-                method: "password",
-                role: user.role,
-                isNewDevice,
-                riskScore: contextResult.riskScore,
-                mfaPending: true,
-                preAuthTokenIssued: true,
-              },
-            });
-
-            return res.json({
-              success: true,
-              requiresMfa: true,
-              preAuthToken: preAuthResult.token,
-              preAuthExpiresAt: preAuthResult.expiresAt,
+              contextResult,
+              fingerprint,
               isNewDevice,
-              riskScore: contextResult.riskScore,
-              securityContext: {
-                deviceTrusted: deviceInfo.isTrusted,
-                country: geo?.country,
-              },
-            });
+              deviceInfo,
+              geo,
+              req,
+              res
+            );
           }
 
           // No MFA required - create session immediately
@@ -277,12 +312,8 @@ export function registerAuthRoutes(app: Express): void {
             id: user.id,
           };
 
-          await new Promise<void>((resolve, reject) => {
-            req.login(sessionUser, (err: any) => (err ? reject(err) : resolve()));
-          });
-          await new Promise<void>((resolve, reject) => {
-            req.session.save((err: any) => (err ? reject(err) : resolve()));
-          });
+          await loginAsync(req, sessionUser);
+          await saveSessionAsync(req);
 
           // Enterprise Security: Reset backoff on successful login
           (res as any).resetBackoff?.();

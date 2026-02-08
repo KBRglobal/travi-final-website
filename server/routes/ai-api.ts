@@ -46,7 +46,8 @@ function cleanJsonFromMarkdown(content: string): string {
   }
   cleaned = cleaned.trim() || "{}";
   cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
-    return match.replaceAll(new RegExp("[\\x00-\\x1F\\x7F]", "g"), char => {
+    return match.replaceAll(/[\u0000-\u001f\u007f]/g, char => {
+      // NOSONAR - intentional control char handling
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;
       if (code === 0x0a) return String.raw`\n`;
@@ -196,6 +197,33 @@ interface ArticleImageResult {
   source: "library" | "freepik";
 }
 
+const VALID_IMAGE_CONTENT_TYPES = [
+  "hotel",
+  "attraction",
+  "article",
+  "dining",
+  "district",
+  "transport",
+  "event",
+  "itinerary",
+];
+
+function validateImageGenRequest(contentType: string, title: string): string | null {
+  if (!contentType || !title) {
+    addSystemLog("warning", "images", "AI image generation failed - missing content type or title");
+    return "Content type and title are required";
+  }
+  if (!VALID_IMAGE_CONTENT_TYPES.includes(contentType)) {
+    addSystemLog(
+      "warning",
+      "images",
+      `AI image generation failed - invalid content type: ${contentType}`
+    );
+    return "Invalid content type";
+  }
+  return null;
+}
+
 function createFallbackImage(title: string, contentType: string): GeneratedImage {
   const searchQuery = encodeURIComponent(`${title} ${contentType} dubai travel`.substring(0, 50));
   return {
@@ -204,6 +232,27 @@ function createFallbackImage(title: string, contentType: string): GeneratedImage
     type: "hero",
     alt: `${title} - Dubai Travel`,
     caption: `${title} - Dubai Travel Guide`,
+  };
+}
+
+function buildFallbackResponse(
+  title: string,
+  contentType: string,
+  generateHero: boolean | undefined,
+  hasFreepik: boolean
+) {
+  const source = hasFreepik ? "freepik" : "unsplash";
+  addSystemLog("info", "images", `No AI image API configured, using ${source} fallback`);
+  const fallbackImages = generateHero === false ? [] : [createFallbackImage(title, contentType)];
+  addSystemLog(
+    "info",
+    "images",
+    `Generated ${fallbackImages.length} fallback images for "${title}"`
+  );
+  return {
+    images: fallbackImages,
+    source,
+    message: "Using stock images (AI image generation not configured)",
   };
 }
 
@@ -1533,32 +1582,9 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           contentImageCount,
         } = req.body;
 
-        if (!contentType || !title) {
-          addSystemLog(
-            "warning",
-            "images",
-            "AI image generation failed - missing content type or title"
-          );
-          return res.status(400).json({ error: "Content type and title are required" });
-        }
-
-        const validContentTypes = [
-          "hotel",
-          "attraction",
-          "article",
-          "dining",
-          "district",
-          "transport",
-          "event",
-          "itinerary",
-        ];
-        if (!validContentTypes.includes(contentType)) {
-          addSystemLog(
-            "warning",
-            "images",
-            `AI image generation failed - invalid content type: ${contentType}`
-          );
-          return res.status(400).json({ error: "Invalid content type" });
+        const validationError = validateImageGenRequest(contentType, title);
+        if (validationError) {
+          return res.status(400).json({ error: validationError });
         }
 
         const hasOpenAI = !!(
@@ -1568,20 +1594,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
         const hasFreepik = !!process.env.FREEPIK_API_KEY;
 
         if (!hasOpenAI && !hasReplicate) {
-          const source = hasFreepik ? "freepik" : "unsplash";
-          addSystemLog("info", "images", `No AI image API configured, using ${source} fallback`);
-          const fallbackImages =
-            generateHero === false ? [] : [createFallbackImage(title, contentType)];
-          addSystemLog(
-            "info",
-            "images",
-            `Generated ${fallbackImages.length} fallback images for "${title}"`
-          );
-          return res.json({
-            images: fallbackImages,
-            source,
-            message: "Using stock images (AI image generation not configured)",
-          });
+          return res.json(buildFallbackResponse(title, contentType, generateHero, hasFreepik));
         }
 
         addSystemLog("info", "images", `Starting AI image generation for: "${title}"`, {

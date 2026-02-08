@@ -118,10 +118,10 @@ async function tryAddFileEntry(
 async function getFilesRecursive(
   dirPath: string,
   baseDir: string,
-  files: FileInfo[] = [],
+  files: FileInfo[],
   maxFiles = 1000
-): Promise<FileInfo[]> {
-  if (files.length >= maxFiles) return files;
+): Promise<void> {
+  if (files.length >= maxFiles) return;
 
   try {
     const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
@@ -139,8 +139,6 @@ async function getFilesRecursive(
   } catch (error) {
     log.warn(`[MediaLibrary] Cannot read directory: ${dirPath}`, error);
   }
-
-  return files;
 }
 
 /**

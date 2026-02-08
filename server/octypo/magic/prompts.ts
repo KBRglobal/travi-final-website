@@ -277,7 +277,7 @@ IMPORTANT:
 Entity: ${context.entityName}
 Type: ${context.entityType}
 ${context.destination ? `City/Region: ${context.destination}` : ""}
-${context.additionalContext?.address ? `Address: ${String(context.additionalContext.address)}` : ""}
+${typeof context.additionalContext?.address === "string" ? `Address: ${context.additionalContext.address}` : ""}
 
 Requirements:
 - Latitude: -90 to 90

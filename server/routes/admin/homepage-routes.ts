@@ -39,7 +39,7 @@ async function translateSingleHomepageEntry(
   overwrite: boolean,
   existingKeys: Set<string>,
   translateText: (...args: any[]) => Promise<{ translatedText: string }>
-): Promise<"skipped" | "translated" | string | null> {
+): Promise<string | null> {
   if (!engTrans.value || engTrans.value.trim() === "") return null;
   const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
   if (!overwrite && existingKeys.has(key)) return "skipped";
@@ -138,8 +138,8 @@ export function registerAdminHomepageRoutes(app: Express): void {
     requirePermission("canEdit"),
     async (req, res) => {
       try {
-        const fs = await import("fs").then(m => m.promises);
-        const pathModule = await import("path");
+        const fs = await import("node:fs").then(m => m.promises);
+        const pathModule = await import("node:path");
 
         const folder = (req.query.folder as string) || "hero";
         const allowedFolders = ["hero", "cards", "experiences", "regions"];
@@ -175,8 +175,8 @@ export function registerAdminHomepageRoutes(app: Express): void {
     requirePermission("canEdit"),
     async (req, res) => {
       try {
-        const fs = await import("fs").then(m => m.promises);
-        const path = await import("path");
+        const fs = await import("node:fs").then(m => m.promises);
+        const path = await import("node:path");
         const heroDir = path.join(process.cwd(), "client", "public", "hero");
 
         try {
@@ -210,8 +210,8 @@ export function registerAdminHomepageRoutes(app: Express): void {
           return res.status(400).json({ error: "No file uploaded" });
         }
 
-        const fs = await import("fs").then(m => m.promises);
-        const pathModule = await import("path");
+        const fs = await import("node:fs").then(m => m.promises);
+        const pathModule = await import("node:path");
 
         // Get custom filename from request body, or use original
         let customFilename = req.body.customFilename?.trim();

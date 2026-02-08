@@ -38,7 +38,7 @@ function normalizeHighlightsData(data: Record<string, unknown>): Record<string, 
           const t = item as { title?: string; description?: string };
           return t.description ? `${t.title}: ${t.description}` : t.title;
         }
-        return String(item);
+        return typeof item === "number" || typeof item === "boolean" ? `${item}` : "";
       })
       .join("\n");
     return { ...data, content };

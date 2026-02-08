@@ -3,12 +3,14 @@
  * Slack notifications, Google Search Console, Webhooks
  */
 
-import { log } from '../lib/logger';
-import { registerNotificationHandler } from './aeo-jobs';
+import { log } from "../lib/logger";
+import { registerNotificationHandler } from "./aeo-jobs";
 
 const aeoLogger = {
-  error: (msg: string, data?: Record<string, unknown>) => log.error(`[AEO Integrations] ${msg}`, undefined, data),
-  info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO Integrations] ${msg}`, data),
+  error: (msg: string, data?: Record<string, unknown>) =>
+    log.error(`[AEO Integrations] ${msg}`, undefined, data),
+  info: (msg: string, data?: Record<string, unknown>) =>
+    log.info(`[AEO Integrations] ${msg}`, data),
 };
 
 // ============================================================================
@@ -29,7 +31,7 @@ let slackConfig: SlackConfig | null = null;
  */
 export function configureSlack(config: SlackConfig): void {
   slackConfig = config;
-  aeoLogger.info('Slack integration configured');
+  aeoLogger.info("Slack integration configured");
 
   // Register as notification handler
   registerNotificationHandler(async (message, data) => {
@@ -51,9 +53,9 @@ export async function sendSlackNotification(
   try {
     const blocks: any[] = [
       {
-        type: 'section',
+        type: "section",
         text: {
-          type: 'mrkdwn',
+          type: "mrkdwn",
           text: `:robot_face: *AEO Alert*\n${message}`,
         },
       },
@@ -61,31 +63,33 @@ export async function sendSlackNotification(
 
     if (data) {
       blocks.push({
-        type: 'section',
-        fields: Object.entries(data).slice(0, 10).map(([key, value]) => ({
-          type: 'mrkdwn',
-          text: `*${key}:*\n${typeof value === 'object' ? JSON.stringify(value) : value}`,
-        })),
+        type: "section",
+        fields: Object.entries(data)
+          .slice(0, 10)
+          .map(([key, value]) => ({
+            type: "mrkdwn",
+            text: `*${key}:*\n${typeof value === "object" ? JSON.stringify(value) : value}`,
+          })),
       });
     }
 
     blocks.push({
-      type: 'context',
+      type: "context",
       elements: [
         {
-          type: 'mrkdwn',
+          type: "mrkdwn",
           text: `Sent at ${new Date().toISOString()}`,
         },
       ],
     });
 
     const response = await fetch(slackConfig.webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         channel: slackConfig.channel,
-        username: slackConfig.username || 'AEO Bot',
-        icon_emoji: slackConfig.iconEmoji || ':chart_with_upwards_trend:',
+        username: slackConfig.username || "AEO Bot",
+        icon_emoji: slackConfig.iconEmoji || ":chart_with_upwards_trend:",
         blocks,
       }),
     });
@@ -94,10 +98,10 @@ export async function sendSlackNotification(
       throw new Error(`Slack webhook failed: ${response.statusText}`);
     }
 
-    aeoLogger.info('Slack notification sent');
+    aeoLogger.info("Slack notification sent");
     return true;
   } catch (error) {
-    aeoLogger.error('Failed to send Slack notification', { error });
+    aeoLogger.error("Failed to send Slack notification", { error });
     return false;
   }
 }
@@ -122,7 +126,7 @@ let gscTokenExpiry: Date | null = null;
  */
 export function configureGSC(config: GSCConfig): void {
   gscConfig = config;
-  aeoLogger.info('Google Search Console integration configured');
+  aeoLogger.info("Google Search Console integration configured");
 }
 
 /**
@@ -136,28 +140,28 @@ async function getGSCAccessToken(): Promise<string | null> {
   }
 
   try {
-    const response = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    const response = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
         client_id: gscConfig.clientId,
         client_secret: gscConfig.clientSecret,
         refresh_token: gscConfig.refreshToken,
-        grant_type: 'refresh_token',
+        grant_type: "refresh_token",
       }),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to refresh GSC token');
+      throw new Error("Failed to refresh GSC token");
     }
 
     const data = await response.json();
     gscAccessToken = data.access_token;
-    gscTokenExpiry = new Date(Date.now() + (data.expires_in * 1000) - 60000);
+    gscTokenExpiry = new Date(Date.now() + data.expires_in * 1000 - 60000);
 
     return gscAccessToken;
   } catch (error) {
-    aeoLogger.error('Failed to get GSC access token', { error });
+    aeoLogger.error("Failed to get GSC access token", { error });
     return null;
   }
 }
@@ -168,25 +172,25 @@ async function getGSCAccessToken(): Promise<string | null> {
 export async function getGSCSearchAnalytics(
   startDate: string,
   endDate: string,
-  dimensions: ('query' | 'page' | 'country' | 'device')[] = ['query', 'page']
+  dimensions: ("query" | "page" | "country" | "device")[] = ["query", "page"]
 ): Promise<any> {
   if (!gscConfig) {
-    throw new Error('GSC not configured');
+    throw new Error("GSC not configured");
   }
 
   const accessToken = await getGSCAccessToken();
   if (!accessToken) {
-    throw new Error('Failed to get GSC access token');
+    throw new Error("Failed to get GSC access token");
   }
 
   try {
     const response = await fetch(
       `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(gscConfig.siteUrl)}/searchAnalytics/query`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           startDate,
@@ -204,7 +208,7 @@ export async function getGSCSearchAnalytics(
     const data = await response.json();
     return data.rows || [];
   } catch (error) {
-    aeoLogger.error('Failed to get GSC search analytics', { error });
+    aeoLogger.error("Failed to get GSC search analytics", { error });
     throw error;
   }
 }
@@ -215,8 +219,10 @@ export async function getGSCSearchAnalytics(
 export async function getAIRelatedQueries(
   startDate: string,
   endDate: string
-): Promise<Array<{ query: string; clicks: number; impressions: number; ctr: number; position: number }>> {
-  const allQueries = await getGSCSearchAnalytics(startDate, endDate, ['query']);
+): Promise<
+  Array<{ query: string; clicks: number; impressions: number; ctr: number; position: number }>
+> {
+  const allQueries = await getGSCSearchAnalytics(startDate, endDate, ["query"]);
 
   // Filter for AI-related patterns
   const aiPatterns = [
@@ -250,7 +256,7 @@ export async function getAIRelatedQueries(
 interface WebhookConfig {
   url: string;
   secret?: string;
-  events: ('citation' | 'capsule_generated' | 'crawler_visit' | 'alert')[];
+  events: ("citation" | "capsule_generated" | "crawler_visit" | "alert")[];
 }
 
 const webhooks: WebhookConfig[] = [];
@@ -260,7 +266,7 @@ const webhooks: WebhookConfig[] = [];
  */
 export function registerWebhook(config: WebhookConfig): void {
   webhooks.push(config);
-  aeoLogger.info('Webhook registered', { url: config.url, events: config.events });
+  aeoLogger.info("Webhook registered", { url: config.url, events: config.events });
 }
 
 /**
@@ -279,7 +285,7 @@ export function removeWebhook(url: string): boolean {
  * Send webhook event
  */
 export async function sendWebhookEvent(
-  eventType: 'citation' | 'capsule_generated' | 'crawler_visit' | 'alert',
+  eventType: "citation" | "capsule_generated" | "crawler_visit" | "alert",
   payload: Record<string, any>
 ): Promise<void> {
   const relevantWebhooks = webhooks.filter(w => w.events.includes(eventType));
@@ -293,33 +299,30 @@ export async function sendWebhookEvent(
       });
 
       const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       };
 
       // Add signature if secret is configured
       if (webhook.secret) {
-        const crypto = await import('crypto');
-        const signature = crypto
-          .createHmac('sha256', webhook.secret)
-          .update(body)
-          .digest('hex');
-        headers['X-AEO-Signature'] = signature;
+        const crypto = await import("node:crypto");
+        const signature = crypto.createHmac("sha256", webhook.secret).update(body).digest("hex");
+        headers["X-AEO-Signature"] = signature;
       }
 
       const response = await fetch(webhook.url, {
-        method: 'POST',
+        method: "POST",
         headers,
         body,
       });
 
       if (!response.ok) {
-        aeoLogger.error('Webhook delivery failed', {
+        aeoLogger.error("Webhook delivery failed", {
           url: webhook.url,
           status: response.status,
         });
       }
     } catch (error) {
-      aeoLogger.error('Webhook delivery error', { url: webhook.url, error });
+      aeoLogger.error("Webhook delivery error", { url: webhook.url, error });
     }
   }
 }
@@ -336,7 +339,7 @@ export function getWebhooks(): WebhookConfig[] {
 // ============================================================================
 
 interface EmailConfig {
-  provider: 'resend';
+  provider: "resend";
   apiKey: string;
   fromEmail: string;
   toEmails: string[];
@@ -349,11 +352,11 @@ let emailConfig: EmailConfig | null = null;
  */
 export function configureEmail(config: EmailConfig): void {
   emailConfig = config;
-  aeoLogger.info('Email notifications configured');
+  aeoLogger.info("Email notifications configured");
 
   // Register as notification handler
   registerNotificationHandler(async (message, data) => {
-    await sendEmailNotification('AEO Alert', message, data);
+    await sendEmailNotification("AEO Alert", message, data);
   });
 }
 
@@ -371,16 +374,16 @@ export async function sendEmailNotification(
     const htmlContent = `
       <h2>AEO Alert</h2>
       <p>${message}</p>
-      ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+      ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ""}
       <p><small>Sent at ${new Date().toISOString()}</small></p>
     `;
 
     // Using Resend API
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${emailConfig.apiKey}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${emailConfig.apiKey}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         from: emailConfig.fromEmail,
@@ -394,10 +397,10 @@ export async function sendEmailNotification(
       throw new Error(`Email send failed: ${response.statusText}`);
     }
 
-    aeoLogger.info('Email notification sent');
+    aeoLogger.info("Email notification sent");
     return true;
   } catch (error) {
-    aeoLogger.error('Failed to send email notification', { error });
+    aeoLogger.error("Failed to send email notification", { error });
     return false;
   }
 }

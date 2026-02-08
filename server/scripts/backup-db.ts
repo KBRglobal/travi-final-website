@@ -38,7 +38,7 @@ function getDatabaseUrl(): string {
   }
 
   // Reject URLs containing shell metacharacters that could enable injection
-  const dangerousChars = /[;|&$`!\\(){}\[\]<>]/;
+  const dangerousChars = /[;|&$`!\\(){}[\]<>]/;
   if (dangerousChars.test(url)) {
     throw new Error("DATABASE_URL contains potentially unsafe shell characters");
   }

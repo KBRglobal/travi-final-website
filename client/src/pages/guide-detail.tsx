@@ -220,7 +220,7 @@ function CinematicHero({
 }>) {
   const heroRef = useRef<HTMLDivElement>(null);
   const [imageError, setImageError] = useState(false);
-  const [_imageLoaded, setImageLoaded] = useState(false);
+  const [, setImageLoaded] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: heroRef,

@@ -74,28 +74,33 @@ function renderCaptionHtml(data: any): string {
   return data.caption ? `<figcaption>${escapeHtml(String(data.caption))}</figcaption>` : "";
 }
 
+/** Safely extract a string value from a Record<string, unknown> */
+function str(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value : fallback;
+}
+
 function renderBlock(block: ContentBlock): string {
   const data = block.data || {};
 
   switch (block.type) {
     case "hero": {
       const heroImg = data.imageUrl
-        ? `<img src="${escapeHtml(String(data.imageUrl))}" alt="${escapeHtml(String(data.title || data.alt || ""))}" loading="lazy">`
+        ? `<img src="${escapeHtml(str(data.imageUrl))}" alt="${escapeHtml(str(data.title, str(data.alt)))}" loading="lazy">`
         : "";
       return `<figure>${heroImg}${renderCaptionHtml(data)}</figure>`;
     }
 
     case "heading": {
       const level = Math.min(Math.max(Number(data.level) || 2, 1), 6);
-      return `<h${level}>${escapeHtml(String(data.text || ""))}</h${level}>`;
+      return `<h${level}>${escapeHtml(str(data.text))}</h${level}>`;
     }
 
     case "text":
     case "paragraph":
-      return `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`;
+      return `<p>${escapeHtml(str(data.text, str(data.content)))}</p>`;
 
     case "image":
-      return `<figure><img src="${escapeHtml(String(data.src || data.url || ""))}" alt="${escapeHtml(String(data.alt || ""))}" loading="lazy">${renderCaptionHtml(data)}</figure>`;
+      return `<figure><img src="${escapeHtml(str(data.src, str(data.url)))}" alt="${escapeHtml(str(data.alt))}" loading="lazy">${renderCaptionHtml(data)}</figure>`;
 
     case "gallery":
       return renderGalleryBlock(data);
@@ -109,8 +114,8 @@ function renderBlock(block: ContentBlock): string {
 
     case "quote":
     case "blockquote": {
-      const citeHtml = data.author ? `<cite>${escapeHtml(String(data.author))}</cite>` : "";
-      return `<blockquote><p>${escapeHtml(String(data.text || data.quote || ""))}</p>${citeHtml}</blockquote>`;
+      const citeHtml = data.author ? `<cite>${escapeHtml(str(data.author))}</cite>` : "";
+      return `<blockquote><p>${escapeHtml(str(data.text, str(data.quote)))}</p>${citeHtml}</blockquote>`;
     }
 
     case "divider":
@@ -118,7 +123,7 @@ function renderBlock(block: ContentBlock): string {
 
     default:
       return data.text || data.content
-        ? `<p>${escapeHtml(String(data.text || data.content || ""))}</p>`
+        ? `<p>${escapeHtml(str(data.text, str(data.content)))}</p>`
         : "";
   }
 }

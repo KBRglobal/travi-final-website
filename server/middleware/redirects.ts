@@ -105,7 +105,7 @@ function tryStaticRedirect(res: Response, path: string): boolean {
 
 /** Try to redirect old attraction URL format: /attractions/:city/:slug -> /:city/attractions/:slug */
 function tryOldAttractionRedirect(res: Response, path: string): boolean {
-  const match = path.match(/^\/attractions\/([^/]+)\/([^/]+)$/i);
+  const match = /^\/attractions\/([^/]+)\/([^/]+)$/i.exec(path);
   if (!match) return false;
   const cityLower = match[1].toLowerCase();
   if (!VALID_DESTINATIONS.has(cityLower)) return false;

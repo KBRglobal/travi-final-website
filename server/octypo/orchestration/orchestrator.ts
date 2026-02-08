@@ -36,7 +36,7 @@ function validateLocalePurity(
   _locale: string,
   _exemptions?: string[]
 ): { passed: boolean; score: number } {
-  return { passed: true, score: 1.0 };
+  return { passed: true, score: 1 };
 }
 function runQualityGates(
   _content: any,

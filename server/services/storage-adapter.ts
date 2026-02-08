@@ -69,22 +69,20 @@ export class R2StorageAdapter implements StorageAdapter {
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
 
-    if (this.initPromise === null) {
-      this.initPromise = (async () => {
-        const testKey = `.storage-test-${Date.now()}`;
-        try {
-          const res = await this.r2Fetch(testKey, "PUT", Buffer.from("test"), "text/plain");
-          if (!res.ok) {
-            const body = await res.text();
-            throw new Error(`Upload test failed (${res.status}): ${body}`);
-          }
-          await this.r2Fetch(testKey, "DELETE");
-          this.initialized = true;
-        } catch (error) {
-          throw new Error(`R2 connection test failed: ${error}`);
+    this.initPromise ??= (async () => {
+      const testKey = `.storage-test-${Date.now()}`;
+      try {
+        const res = await this.r2Fetch(testKey, "PUT", Buffer.from("test"), "text/plain");
+        if (!res.ok) {
+          const body = await res.text();
+          throw new Error(`Upload test failed (${res.status}): ${body}`);
         }
-      })();
-    }
+        await this.r2Fetch(testKey, "DELETE");
+        this.initialized = true;
+      } catch (error) {
+        throw new Error(`R2 connection test failed: ${error}`);
+      }
+    })();
 
     return this.initPromise;
   }
