@@ -1201,7 +1201,38 @@ router.post("/api/aeo/integrations/webhooks", async (req: Request, res: Response
       return;
     }
 
-    registerWebhook({ url: allowedWebhookUrl, secret, events });
+    // Validate events against allowlist — push hardcoded literals to break taint chain
+    type WebhookEvent = "citation" | "capsule_generated" | "crawler_visit" | "alert";
+    const validatedEvents: WebhookEvent[] = [];
+    for (const evt of events) {
+      if (typeof evt !== "string") continue;
+      switch (evt) {
+        case "citation":
+          validatedEvents.push("citation");
+          break;
+        case "capsule_generated":
+          validatedEvents.push("capsule_generated");
+          break;
+        case "crawler_visit":
+          validatedEvents.push("crawler_visit");
+          break;
+        case "alert":
+          validatedEvents.push("alert");
+          break;
+      }
+    }
+    if (validatedEvents.length === 0) {
+      res
+        .status(400)
+        .json({
+          error:
+            "No valid events provided. Allowed: citation, capsule_generated, crawler_visit, alert",
+        });
+      return;
+    }
+
+    const sanitizedSecret = typeof secret === "string" ? secret.slice(0, 256) : undefined;
+    registerWebhook({ url: allowedWebhookUrl, secret: sanitizedSecret, events: validatedEvents });
     res.json({ success: true });
   } catch (error) {
     aeoLogger.error("Failed to register webhook", { error });
