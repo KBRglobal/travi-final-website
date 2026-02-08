@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { SEOHead } from "@/components/seo-head";
 import { PublicFooter } from "@/components/public-footer";
 import { Logo } from "@/components/logo";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 
 // ============================================
 // CONSTANTS
@@ -337,7 +338,7 @@ function RegionFilter({
         >
           {key !== "all" && region.image && (
             <img
-              src={region.image}
+              src={sanitizeUrl(region.image)}
               alt={region.name}
               className="w-5 h-5 rounded-full object-cover"
               width={20}
@@ -586,7 +587,7 @@ function DestinationCard({
       className="group relative h-32 rounded-2xl overflow-hidden cursor-pointer"
     >
       <img
-        src={destination.image}
+        src={sanitizeUrl(destination.image)}
         alt={`${destination.name} travel news`}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         width={400}

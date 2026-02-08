@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { cinematicText, revealFromBlur } from "@/lib/animations";
 import type { DestinationHeroData, DestinationMood, HeroImage } from "@/types/destination";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 
 interface DestinationHeroProps extends DestinationHeroData {
   destinationName: string;
@@ -107,7 +108,7 @@ export function DestinationHero({
           return (
             <motion.img
               key={img.url}
-              src={img.url}
+              src={sanitizeUrl(img.url)}
               alt={img.alt}
               className="absolute inset-0 w-full h-full object-cover"
               loading={index === 0 ? "eager" : "lazy"}

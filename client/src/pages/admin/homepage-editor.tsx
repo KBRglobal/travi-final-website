@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 
 const AVAILABLE_LOCALES = [
   { code: "en", name: "English" },
@@ -667,7 +668,11 @@ function ServerImagePicker({
                 }`}
                 data-testid={`button-select-image-${img.filename}`}
               >
-                <img src={img.url} alt={img.name} className="w-full h-full object-cover" />
+                <img
+                  src={sanitizeUrl(img.url)}
+                  alt={img.name}
+                  className="w-full h-full object-cover"
+                />
                 {value === img.url && (
                   <div className="absolute inset-0 bg-blue-200 dark:bg-blue-900 flex items-center justify-center">
                     <Badge variant="default" className="text-xs">
@@ -1677,7 +1682,7 @@ function ExperienceCategoryItem({
           <div className="w-24 h-16 bg-muted rounded-md overflow-hidden flex-shrink-0">
             {category.image && (
               <img
-                src={category.image}
+                src={sanitizeUrl(category.image)}
                 alt={category.imageAlt || category.name || ""}
                 className="w-full h-full object-cover"
               />

@@ -4,6 +4,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -456,7 +457,11 @@ export default function GatekeeperDashboard() {
                               </Button>
                             )}
                             <Button size="sm" variant="ghost" asChild>
-                              <a href={item.url} target="_blank" rel="noopener noreferrer">
+                              <a
+                                href={sanitizeUrl(item.url)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                 <ExternalLink className="h-4 w-4" />
                               </a>
                             </Button>

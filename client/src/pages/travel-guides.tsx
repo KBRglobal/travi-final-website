@@ -13,6 +13,7 @@ import { PublicFooter } from "@/components/public-footer";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 
 const SUPPORTED_LANGUAGES = [
   { code: "en", label: "English", nativeName: "English" },
@@ -781,7 +782,7 @@ export default function TravelGuidesPage() {
                       <AnimatePresence mode="wait">
                         <motion.img
                           key={currentIndex}
-                          src={dest.image}
+                          src={sanitizeUrl(dest.image)}
                           alt={dest.alt}
                           title={dest.title}
                           width={1200}
@@ -857,7 +858,7 @@ export default function TravelGuidesPage() {
                           )}
                         >
                           <img
-                            src={guide.image}
+                            src={sanitizeUrl(guide.image)}
                             alt={`${guide.name} travel guide thumbnail`}
                             className="w-full h-full object-cover"
                             width={56}

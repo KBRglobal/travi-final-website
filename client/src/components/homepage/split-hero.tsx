@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { sanitizeUrl } from "@/lib/sanitize-url";
+import { sanitizeHTML } from "@/lib/sanitize";
 import {
   heroAnimationStyles,
   HERO_DESTINATIONS,
@@ -239,10 +241,12 @@ export function SplitHero({
             id="hero-description"
             className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-8 font-light leading-relaxed max-w-lg mx-auto lg:mx-0"
             dangerouslySetInnerHTML={{
-              __html: t("home.hero.description", {
-                destinations: `<span class="font-medium text-slate-700 dark:text-slate-300">${siteStats?.destinations || 17}</span>`,
-                attractions: `<span class="font-medium text-slate-700 dark:text-slate-300">${(siteStats?.attractions || 3000).toLocaleString()}</span>`,
-              }),
+              __html: sanitizeHTML(
+                t("home.hero.description", {
+                  destinations: `<span class="font-medium text-slate-700 dark:text-slate-300">${siteStats?.destinations || 17}</span>`,
+                  attractions: `<span class="font-medium text-slate-700 dark:text-slate-300">${(siteStats?.attractions || 3000).toLocaleString()}</span>`,
+                })
+              ),
             }}
           />
 
@@ -358,7 +362,7 @@ export function SplitHero({
                 transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
               >
                 <img
-                  src={dest.image}
+                  src={sanitizeUrl(dest.image)}
                   alt={dest.alt}
                   title={dest.title}
                   className="w-full h-full object-cover"

@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { MagicButton, MagicAllButton } from "@/components/magic-button";
 import { Image as ImageIcon, Save, Loader2, GripVertical, Palette } from "lucide-react";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 
 interface HeroImage {
   filename: string;
@@ -337,7 +338,11 @@ export default function DestinationHeroTab({
                 >
                   <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
                   <div className="w-20 h-14 rounded overflow-hidden bg-muted flex-shrink-0">
-                    <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
+                    <img
+                      src={sanitizeUrl(img.url)}
+                      alt={img.alt}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{img.filename}</p>

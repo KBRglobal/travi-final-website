@@ -38,6 +38,7 @@ import { useQuery } from "@tanstack/react-query";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 
 export default function Homepage() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
@@ -293,7 +294,7 @@ export default function Homepage() {
                           <div className="relative h-40 sm:h-48 overflow-hidden">
                             {category.image ? (
                               <img
-                                src={category.image}
+                                src={sanitizeUrl(category.image)}
                                 alt={
                                   category.imageAlt ||
                                   `${category.name} travel experiences and destinations`

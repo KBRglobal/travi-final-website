@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -430,7 +431,7 @@ export default function RssFeedsPage() {
                     <TableCell className="font-medium">{feed.name}</TableCell>
                     <TableCell>
                       <a
-                        href={feed.url}
+                        href={sanitizeUrl(feed.url)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:underline flex items-center gap-1 max-w-[200px] truncate"

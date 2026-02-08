@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { sanitizeUrl } from "@/lib/sanitize-url";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -497,7 +498,7 @@ export default function OctypoDashboardPage() {
                     <TableCell>
                       <div className="space-y-1">
                         <a
-                          href={item.url}
+                          href={sanitizeUrl(item.url)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="font-medium hover:text-primary hover:underline line-clamp-2"

@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet-async";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { PublicNav } from "@/components/public-nav";
 import { PublicFooter } from "@/components/public-footer";
+import { sanitizeUrl, sanitizeSlug } from "@/lib/sanitize-url";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -1014,14 +1015,14 @@ function DestinationAttractionsPage() {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                     href={localePath(
-                      `/${data.slug}/attractions/${attraction.seoSlug || attraction.slug || attraction.id}`
+                      `/${sanitizeSlug(data.slug)}/attractions/${sanitizeSlug(attraction.seoSlug || attraction.slug || String(attraction.id))}`
                     )}
                     className="flex-shrink-0 w-[300px] md:w-[340px] group"
                     data-testid={`top10-card-${attraction.id}`}
                   >
                     <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
                       <img
-                        src={attraction.image}
+                        src={sanitizeUrl(attraction.image)}
                         alt={`${attraction.name} - top attraction`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         width={400}
@@ -1107,7 +1108,7 @@ function DestinationAttractionsPage() {
                         >
                           <div className="aspect-[16/10] relative overflow-hidden">
                             <img
-                              src={attraction.image}
+                              src={sanitizeUrl(attraction.image)}
                               alt={`${attraction.name} - attraction to visit`}
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                               width={400}
@@ -1174,7 +1175,7 @@ function DestinationAttractionsPage() {
 
                             <a
                               href={localePath(
-                                `/${data.slug}/attractions/${attraction.seoSlug || attraction.slug || attraction.id}`
+                                `/${sanitizeSlug(data.slug)}/attractions/${sanitizeSlug(attraction.seoSlug || attraction.slug || String(attraction.id))}`
                               )}
                               className="flex items-center gap-1 text-[#6443F4] font-medium hover:underline transition-colors group/link"
                               data-testid={`link-details-${attraction.id}`}
@@ -1315,7 +1316,9 @@ function DestinationAttractionsPage() {
                   variant="outline"
                   className="border-white text-white hover:bg-white/10"
                   onClick={() =>
-                    (globalThis.location.href = localePath(`/destinations/${data.slug}`))
+                    (globalThis.location.href = localePath(
+                      `/destinations/${sanitizeSlug(data.slug)}`
+                    ))
                   }
                   data-testid="button-explore-destination"
                 >

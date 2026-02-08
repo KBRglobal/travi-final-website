@@ -29,6 +29,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import SubtleSkyBackground from "@/components/ui/subtle-sky-background";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { sanitizeUrl, sanitizeSlug } from "@/lib/sanitize-url";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 interface SearchResult {
   type: "city" | "attraction";
@@ -285,13 +287,13 @@ function DestinationChip({
       transition={{ delay: 0.3 + index * 0.05, duration: 0.4, ease: "easeOut" }}
       whileHover={shouldAnimate ? { scale: 1.05, y: -4 } : {}}
     >
-      <Link href={localePath(`/attractions/list/${destination.slug}`)}>
+      <Link href={localePath(`/attractions/list/${sanitizeSlug(destination.slug)}`)}>
         <div
           className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-100 dark:border-slate-700 rounded-full pl-1.5 pr-4 py-1.5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 transition-all duration-300 hover:shadow-xl hover:border-[#6443F4]/30 cursor-pointer group"
           data-testid={`chip-destination-${destination.slug}`}
         >
           <img
-            src={destination.image}
+            src={sanitizeUrl(destination.image)}
             alt={t("attractions.thingsToDoIn", {
               name: `${destination.name}, ${destination.country}`,
             })}
@@ -676,7 +678,9 @@ export default function Attractions() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.35 }}
-                      dangerouslySetInnerHTML={{ __html: t("attractions.hero.description") }}
+                      dangerouslySetInnerHTML={{
+                        __html: sanitizeHTML(t("attractions.hero.description")),
+                      }}
                     />
 
                     {/* Inline Stats Row (Homepage pattern) */}
@@ -786,7 +790,7 @@ export default function Attractions() {
                                 >
                                   {result.image && (
                                     <img
-                                      src={result.image}
+                                      src={sanitizeUrl(result.image)}
                                       alt={result.title}
                                       className="w-14 h-14 rounded-lg object-cover"
                                       width={56}
@@ -927,7 +931,7 @@ export default function Attractions() {
                         <AnimatePresence mode="wait">
                           <motion.img
                             key={currentIndex}
-                            src={dest.image}
+                            src={sanitizeUrl(dest.image)}
                             alt={dest.alt}
                             title={dest.title}
                             width={1200}
@@ -1005,7 +1009,9 @@ export default function Attractions() {
                                   {dest.price}
                                 </span>
                               </div>
-                              <Link href={localePath(`/attractions/list/${dest.slug}`)}>
+                              <Link
+                                href={localePath(`/attractions/list/${sanitizeSlug(dest.slug)}`)}
+                              >
                                 <button className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-[#6443F4]/10 hover:text-[#6443F4] transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform">
                                   {t("attractions.gallery.bookTickets")}
                                   <ArrowRight className="w-5 h-5" />
@@ -1041,7 +1047,7 @@ export default function Attractions() {
                             })}
                           >
                             <img
-                              src={attraction.image}
+                              src={sanitizeUrl(attraction.image)}
                               alt={`${attraction.name} ${attraction.city}`}
                               className="w-full h-full object-cover"
                               width={64}
@@ -1168,14 +1174,14 @@ export default function Attractions() {
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.05 }}
                     >
-                      <Link href={localePath(`/attractions/list/${dest.slug}`)}>
+                      <Link href={localePath(`/attractions/list/${sanitizeSlug(dest.slug)}`)}>
                         <Card
                           className="group overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 border-0"
                           data-testid={`destination-card-${dest.slug}`}
                         >
                           <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#6443F4]/20 to-[#8B5CF6]/20">
                             <img
-                              src={dest.image}
+                              src={sanitizeUrl(dest.image)}
                               alt={`Things to do in ${dest.name}, ${dest.country}`}
                               title={`${dest.name} attractions`}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -1467,7 +1473,7 @@ export default function Attractions() {
         <ul>
           {destinations.map(dest => (
             <li key={dest.slug}>
-              <a href={localePath(`/attractions/list/${dest.slug}`)}>
+              <a href={localePath(`/attractions/list/${sanitizeSlug(dest.slug)}`)}>
                 Things to do in {dest.name}, {dest.country} | {dest.count} attractions
               </a>
             </li>
@@ -1478,7 +1484,7 @@ export default function Attractions() {
         <ul>
           {HERO_ATTRACTIONS.map(attraction => (
             <li key={attraction.name}>
-              <a href={localePath(`/attractions/${attraction.slug}`)}>
+              <a href={localePath(`/attractions/${sanitizeSlug(attraction.slug)}`)}>
                 {attraction.title} - {attraction.tagline} in {attraction.city}
               </a>
             </li>
