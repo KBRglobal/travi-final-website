@@ -3,6 +3,7 @@
  * Allows testing different capsule variants to optimize for AI citations
  */
 
+import { randomUUID } from "node:crypto";
 import { db } from "../db";
 import { aeoAnswerCapsules, aeoCitations, contents } from "../../shared/schema";
 import { eq, and, gte } from "drizzle-orm";
@@ -80,7 +81,7 @@ export async function createABTest(
     throw new Error("Content must have an existing capsule before A/B testing");
   }
 
-  const testId = `abt_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+  const testId = `abt_${Date.now()}_${randomUUID().slice(0, 9)}`;
 
   // Create variant A (control - existing capsule)
   const variantA: CapsuleVariant = {

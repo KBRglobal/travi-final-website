@@ -39,6 +39,9 @@ RUN npm pkg delete scripts.prepare && \
 
 COPY --from=builder /app/dist ./dist
 
+# Run as non-root user for security (node user is provided by the base image)
+USER node
+
 EXPOSE 5000
 
 CMD ["node", "--max-old-space-size=4096", "dist/index.cjs"]

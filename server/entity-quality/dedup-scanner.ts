@@ -3,6 +3,7 @@
  * Identifies potential duplicate entities
  */
 
+import { randomUUID } from "node:crypto";
 import { createLogger } from "../lib/logger";
 import { ENTITY_QUALITY_CONFIG } from "./config";
 import { stringSimilarity, geoSimilarity, phoneSimilarity, websiteSimilarity } from "./normalizer";
@@ -121,7 +122,7 @@ export function scanForDuplicates(
 
       if (match.similarity >= minConfidence) {
         const suggestion: MergeSuggestion = {
-          id: `sug_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+          id: `sug_${Date.now()}_${randomUUID().slice(0, 6)}`,
           entityType,
           primaryEntity: entity1,
           duplicateEntity: entity2,

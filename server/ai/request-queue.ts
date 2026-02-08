@@ -12,6 +12,7 @@ import {
   AICompletionOptions,
   AICompletionResult,
 } from "./providers";
+import { randomInt } from "node:crypto";
 import pino from "pino";
 
 const logger = pino({ level: "info" });
@@ -166,8 +167,10 @@ function calculateBackoff(
   // Cap at max
   const cappedBackoff = Math.min(exponentialBackoff, maxBackoffMs);
 
-  // Add jitter: ±30%
-  const jitter = cappedBackoff * JITTER_FACTOR * (Math.random() * 2 - 1);
+  // Add jitter: ±30% (using crypto.randomInt for unpredictable jitter)
+  const jitterSign = randomInt(0, 2) === 0 ? -1 : 1;
+  const jitterMagnitude = randomInt(0, Math.max(1, Math.floor(cappedBackoff * JITTER_FACTOR)));
+  const jitter = jitterSign * jitterMagnitude;
 
   return Math.max(baseMs, Math.floor(cappedBackoff + jitter));
 }

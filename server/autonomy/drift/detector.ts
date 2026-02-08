@@ -3,6 +3,7 @@
  * Detects when policies are misaligned with operational reality
  */
 
+import { randomUUID } from "node:crypto";
 import {
   DriftSignal,
   DriftType,
@@ -315,7 +316,7 @@ export function runDriftDetection(features: GuardedFeature[]): DriftDetectionRes
       : 1;
 
   const result: DriftDetectionResult = {
-    id: `drift-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    id: `drift-${Date.now()}-${randomUUID().slice(0, 6)}`,
     ranAt: new Date(),
     duration: Date.now() - startTime,
     featuresAnalyzed: features.length,

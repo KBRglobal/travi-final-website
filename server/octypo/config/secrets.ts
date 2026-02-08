@@ -189,13 +189,11 @@ export function getSecretsPassword(): string {
     return envPassword;
   }
 
-  // For production, require environment variable
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("OCTYPO_SECRETS_PASSWORD environment variable required in production");
-  }
-
-  // Development fallback (not secure, but convenient)
-  return "octypo-dev-key-change-in-prod";
+  // Require explicit password in all environments
+  throw new Error(
+    "OCTYPO_SECRETS_PASSWORD environment variable is required. " +
+      "Set it via: export OCTYPO_SECRETS_PASSWORD=<your-secret>"
+  );
 }
 
 /**
@@ -364,7 +362,7 @@ function printSetupSummary(secrets: OctypoSecrets, providers: string[]): void {
     console.info(`   ${label}: ${hasKey ? "✅" : "❌"}`);
   }
   console.info("\n🚀 To use in production:");
-  console.info('   export OCTYPO_SECRETS_PASSWORD="your-password"');
+  console.info("   export OCTYPO_SECRETS_PASSWORD=<your-secret>");
   console.info("\n✅ Setup complete!\n");
 }
 

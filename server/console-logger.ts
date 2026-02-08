@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
 
 export type LogLevel = "info" | "warn" | "error" | "debug";
@@ -50,7 +51,7 @@ class ConsoleLogger extends EventEmitter {
     const { category, humanMessage } = this.translateMessage(rawMessage);
 
     const entry: ConsoleLogEntry = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+      id: `${Date.now()}-${randomUUID().slice(0, 9)}`,
       timestamp: new Date().toISOString(),
       level,
       category,
@@ -227,7 +228,7 @@ class ConsoleLogger extends EventEmitter {
 
   addManualLog(level: LogLevel, category: string, message: string) {
     const entry: ConsoleLogEntry = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+      id: `${Date.now()}-${randomUUID().slice(0, 9)}`,
       timestamp: new Date().toISOString(),
       level,
       category,

@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -17,11 +17,32 @@ function ensureBackupsDir(): void {
   }
 }
 
+/**
+ * Validate and return the DATABASE_URL.
+ * Strict validation prevents command injection when passed to pg_dump.
+ */
 function getDatabaseUrl(): string {
   const url = process.env.DATABASE_URL;
   if (!url) {
     throw new Error("DATABASE_URL environment variable is not set");
   }
+
+  // Validate it looks like a proper PostgreSQL connection URL
+  // Only allow characters valid in PostgreSQL connection URIs
+  const pgUrlPattern = /^postgres(ql)?:\/\/[^\s'"\\;|&$`!]+$/;
+  if (!pgUrlPattern.test(url)) {
+    throw new Error(
+      "DATABASE_URL contains invalid characters or format. " +
+        "Expected a valid PostgreSQL connection string."
+    );
+  }
+
+  // Reject URLs containing shell metacharacters that could enable injection
+  const dangerousChars = /[;|&$`!\\(){}\[\]<>]/;
+  if (dangerousChars.test(url)) {
+    throw new Error("DATABASE_URL contains potentially unsafe shell characters");
+  }
+
   return url;
 }
 
@@ -39,10 +60,19 @@ export async function createBackup(name?: string): Promise<BackupResult> {
 
     const databaseUrl = getDatabaseUrl();
 
-    execSync(`pg_dump "${databaseUrl}" --no-owner --no-acl | gzip > "${filepath}"`, {
+    // Use pg_dump with --file to avoid shell pipe, then gzip separately.
+    // This avoids passing the database URL through shell interpolation.
+    const dumpPath = filepath.replace(/\.gz$/, "");
+
+    execFileSync("pg_dump", [databaseUrl, "--no-owner", "--no-acl", "--file", dumpPath], {
       timeout: 300000, // 5 minute timeout
       stdio: ["pipe", "pipe", "pipe"],
       env: { ...process.env },
+    });
+
+    execFileSync("gzip", [dumpPath], {
+      timeout: 60000,
+      stdio: ["pipe", "pipe", "pipe"],
     });
 
     // Verify the file was created and is not empty

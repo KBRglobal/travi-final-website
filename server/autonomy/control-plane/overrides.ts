@@ -3,6 +3,7 @@
  * Temporary policy overrides with TTL and audit trail
  */
 
+import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { GuardedFeature, EnforcementOverride } from "../enforcement/types";
 
@@ -50,7 +51,7 @@ interface StoredOverride {
 const overrideStore = new Map<string, StoredOverride>();
 
 function generateOverrideId(): string {
-  return `ovr-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+  return `ovr-${Date.now()}-${randomUUID().slice(0, 9)}`;
 }
 
 function getCacheKey(targetKey: string, feature: GuardedFeature): string {

@@ -26,7 +26,7 @@ function generateVisitorId(): string {
   const stored = localStorage.getItem("liveChatVisitorId");
   if (stored) return stored;
 
-  const id = `visitor_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  const id = `visitor_${Date.now()}_${globalThis.crypto.randomUUID().slice(0, 7)}`;
   localStorage.setItem("liveChatVisitorId", id);
   return id;
 }

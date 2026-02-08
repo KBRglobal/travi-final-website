@@ -15,6 +15,7 @@
  * - Resume when tier returns to green
  */
 
+import { randomInt } from "node:crypto";
 import { log } from "../lib/logger";
 import { getLoadTierManager, type LoadTier } from "../system/load-tiers";
 
@@ -453,7 +454,7 @@ export class BackgroundScheduler {
    * Simulate async work for stub implementations
    */
   private async simulateWork(minMs: number, maxMs: number): Promise<void> {
-    const duration = Math.random() * (maxMs - minMs) + minMs;
+    const duration = randomInt(Math.floor(minMs), Math.floor(maxMs) + 1);
     await new Promise(resolve => setTimeout(resolve, duration));
   }
 

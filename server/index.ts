@@ -93,19 +93,13 @@ app.disable("x-powered-by");
 
 // Redirect www to non-www (preserve path and query string)
 // Fixes 404s for high-authority backlinks pointing to www.travi.world
+// Security: uses hardcoded canonical domain, never user-controlled host header (S5146)
+const CANONICAL_DOMAIN = process.env.CANONICAL_DOMAIN || "travi.world";
 app.use((req: Request, res: Response, next: NextFunction) => {
   const host = req.hostname || req.headers.host || "";
   if (host.startsWith("www.")) {
-    const newHost = host.replace(/^www\./, "").replace(/:\d+$/, "");
-    // Security: only redirect to known domains to prevent open-redirect
-    const allowedHosts = ["travi.world", "localhost"];
-    const baseHost = newHost.split(":")[0];
-    if (!allowedHosts.includes(baseHost)) {
-      return next();
-    }
-    // Security: ensure path is relative (starts with /) to prevent protocol-relative open redirects
     const safePath = req.originalUrl.startsWith("/") ? req.originalUrl : "/";
-    return res.redirect(301, `https://${newHost}${safePath}`);
+    return res.redirect(301, `https://${CANONICAL_DOMAIN}${safePath}`);
   }
   next();
 });

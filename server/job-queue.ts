@@ -4,6 +4,7 @@
  * Persists jobs to PostgreSQL for reliability
  */
 
+import { randomUUID, randomInt } from "node:crypto";
 import { db } from "./db";
 import { backgroundJobs } from "@shared/schema";
 import { eq, desc, and, lt, inArray, count } from "drizzle-orm";
@@ -93,7 +94,7 @@ class JobQueue {
     data: T,
     options?: { priority?: number; maxRetries?: number }
   ): string {
-    const id = `${type}-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    const id = `${type}-${Date.now()}-${randomUUID().slice(0, 9)}`;
 
     // Insert async
     db.insert(backgroundJobs)
@@ -315,9 +316,8 @@ class JobQueue {
         this.processing.delete(jobRow.id);
       }
 
-      // Clean up old completed/failed jobs periodically
-      if (Math.random() < 0.01) {
-        // 1% chance each run
+      // Clean up old completed/failed jobs periodically (1% chance each run)
+      if (randomInt(0, 100) === 0) {
         await this.cleanup();
       }
     } catch {

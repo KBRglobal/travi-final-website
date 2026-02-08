@@ -1,3 +1,4 @@
+import { randomInt } from "node:crypto";
 import { Resend } from "resend";
 import { storage } from "./storage";
 import type { User } from "@shared/schema";
@@ -47,7 +48,7 @@ export async function getResendClient() {
 }
 
 export function generateOtpCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return randomInt(100000, 1000000).toString();
 }
 
 export async function sendOtpEmail(email: string, code: string): Promise<boolean> {

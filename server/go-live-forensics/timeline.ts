@@ -2,6 +2,7 @@
  * Go-Live Timeline & Forensics - Core Timeline Logic
  */
 
+import { randomUUID } from "node:crypto";
 import { createLogger } from "../lib/logger";
 import { FORENSICS_CONFIG, isGoLiveForensicsEnabled } from "./config";
 import type {
@@ -59,7 +60,7 @@ export function recordEvent(
   }
 
   const baseEvent = {
-    id: `evt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    id: `evt_${Date.now()}_${randomUUID().slice(0, 6)}`,
     timestamp: new Date(),
     type,
     severity,

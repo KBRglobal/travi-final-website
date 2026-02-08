@@ -3,15 +3,16 @@
  * In-memory storage with bounded size (ring buffer behavior)
  */
 
-import { INCIDENTS_CONFIG } from './config';
+import { randomUUID } from "node:crypto";
+import { INCIDENTS_CONFIG } from "./config";
 import type {
   Incident,
   IncidentCreateInput,
   IncidentStatus,
   IncidentSummary,
   IncidentSource,
-  IncidentSeverity
-} from './types';
+  IncidentSeverity,
+} from "./types";
 
 // In-memory storage with bounded size
 const incidents: Incident[] = [];
@@ -22,13 +23,13 @@ const maxSize = INCIDENTS_CONFIG.maxIncidentsStored;
 // ============================================================================
 
 function generateId(): string {
-  return `inc_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  return `inc_${Date.now()}_${randomUUID().slice(0, 6)}`;
 }
 
 function enforceMaxSize(): void {
   while (incidents.length > maxSize) {
     // Remove oldest resolved incidents first
-    const resolvedIndex = incidents.findIndex(i => i.status === 'resolved');
+    const resolvedIndex = incidents.findIndex(i => i.status === "resolved");
     if (resolvedIndex >= 0) {
       incidents.splice(resolvedIndex, 1);
     } else {
@@ -47,7 +48,7 @@ export function createIncident(input: IncidentCreateInput): Incident {
     id: generateId(),
     source: input.source,
     severity: input.severity,
-    status: 'open',
+    status: "open",
     title: input.title,
     description: input.description,
     metadata: input.metadata,
@@ -92,15 +93,12 @@ export function getIncidents(options?: {
   return result.slice(offset, offset + limit);
 }
 
-export function acknowledgeIncident(
-  id: string,
-  acknowledgedBy: string
-): Incident | null {
+export function acknowledgeIncident(id: string, acknowledgedBy: string): Incident | null {
   const incident = incidents.find(i => i.id === id);
   if (!incident) return null;
-  if (incident.status !== 'open') return incident;
+  if (incident.status !== "open") return incident;
 
-  incident.status = 'acknowledged';
+  incident.status = "acknowledged";
   incident.acknowledgedAt = new Date();
   incident.acknowledgedBy = acknowledgedBy;
 
@@ -114,9 +112,9 @@ export function resolveIncident(
 ): Incident | null {
   const incident = incidents.find(i => i.id === id);
   if (!incident) return null;
-  if (incident.status === 'resolved') return incident;
+  if (incident.status === "resolved") return incident;
 
-  incident.status = 'resolved';
+  incident.status = "resolved";
   incident.resolvedAt = new Date();
   incident.resolvedBy = resolvedBy;
   incident.resolutionNotes = resolutionNotes;
@@ -125,7 +123,7 @@ export function resolveIncident(
 }
 
 export function findOpenIncidentBySource(source: IncidentSource): Incident | null {
-  return incidents.find(i => i.source === source && i.status !== 'resolved') || null;
+  return incidents.find(i => i.source === source && i.status !== "resolved") || null;
 }
 
 // ============================================================================
@@ -170,7 +168,7 @@ export function getIncidentSummary(): IncidentSummary {
 }
 
 export function getOpenCriticalCount(): number {
-  return incidents.filter(i => i.status !== 'resolved' && i.severity === 'critical').length;
+  return incidents.filter(i => i.status !== "resolved" && i.severity === "critical").length;
 }
 
 // ============================================================================

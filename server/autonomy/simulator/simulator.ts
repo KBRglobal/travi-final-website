@@ -4,6 +4,7 @@
  * Zero side effects - pure computation
  */
 
+import { randomUUID } from "node:crypto";
 import {
   HistoricalDecision,
   HypotheticalPolicy,
@@ -346,7 +347,7 @@ export async function runSimulation(request: SimulationRequest): Promise<Simulat
     throw new Error("Too many concurrent simulations");
   }
 
-  const simulationId = `sim-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const simulationId = `sim-${Date.now()}-${randomUUID().slice(0, 6)}`;
   activeSimulations.add(simulationId);
 
   try {

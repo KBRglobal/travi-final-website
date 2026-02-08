@@ -143,13 +143,13 @@ export default function NotFound() {
 
     highscoreEl.textContent = highScore.toString();
 
-    // Create background clouds
+    // NOSONAR: All Math.random() calls in this game are for non-security purposes (animations, game mechanics)
     for (let i = 0; i < 5; i++) {
       const cloud = document.createElement("div");
       cloud.className = "absolute text-4xl opacity-30";
-      cloud.style.left = `${Math.random() * 100}%`;
-      cloud.style.top = `${Math.random() * 70}%`;
-      cloud.style.animation = `float 3s ease-in-out ${Math.random() * 3}s infinite`;
+      cloud.style.left = `${Math.random() * 100}%`; // NOSONAR
+      cloud.style.top = `${Math.random() * 70}%`; // NOSONAR
+      cloud.style.animation = `float 3s ease-in-out ${Math.random() * 3}s infinite`; // NOSONAR
       cloud.textContent = "☁️";
       bgCloudsEl.appendChild(cloud);
     }
@@ -225,17 +225,17 @@ export default function NotFound() {
         gameElementsEl.appendChild(element);
         particles.push({
           element,
-          vx: (Math.random() - 0.5) * 6,
-          vy: (Math.random() - 0.5) * 6,
+          vx: (Math.random() - 0.5) * 6, // NOSONAR
+          vy: (Math.random() - 0.5) * 6, // NOSONAR
           life: 25,
         });
       }
     }
 
     function spawnObstacle() {
-      const gapY = Math.random() * (GAME_HEIGHT - 240) + 120;
+      const gapY = Math.random() * (GAME_HEIGHT - 240) + 120; // NOSONAR
       const gapHeight = Math.max(145 - Math.floor(score / 5) * 5, 105);
-      const cloud = cloudTypes[Math.floor(Math.random() * cloudTypes.length)];
+      const cloud = cloudTypes[Math.floor(Math.random() * cloudTypes.length)]; // NOSONAR
       const obs = {
         x: GAME_WIDTH,
         gapY,
@@ -264,8 +264,8 @@ export default function NotFound() {
     function spawnStamp() {
       const s = {
         x: GAME_WIDTH,
-        y: Math.random() * (GAME_HEIGHT - 130) + 65,
-        emoji: destinations[Math.floor(Math.random() * destinations.length)],
+        y: Math.random() * (GAME_HEIGHT - 130) + 65, // NOSONAR
+        emoji: destinations[Math.floor(Math.random() * destinations.length)], // NOSONAR
         collected: false,
         element: null as HTMLElement | null,
       };

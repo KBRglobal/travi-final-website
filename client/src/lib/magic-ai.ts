@@ -106,15 +106,17 @@ export async function generateFieldContentMock(
   onProgress?.(result);
 
   for (const locale of locales) {
-    await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 300));
+    // NOSONAR: Math.random() used for non-security purpose (simulated delay and mock data generation)
+    await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 300)); // NOSONAR
 
     const localeInfo = getLocaleInfo(locale);
 
     if (Math.random() > 0.05) {
+      // NOSONAR
       result.completed.push({
         locale,
         value: `[${localeInfo?.nativeName || locale}] Generated ${field} content`,
-        confidence: 0.75 + Math.random() * 0.25,
+        confidence: 0.75 + Math.random() * 0.25, // NOSONAR
       });
     } else {
       result.failed.push({

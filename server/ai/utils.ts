@@ -2,11 +2,13 @@
  * AI Module Utility Functions
  */
 
+import { randomUUID } from "node:crypto";
+
 /**
  * Generate a unique block ID for content blocks
  */
 export function generateBlockId(): string {
-  return Math.random().toString(36).substring(2, 9);
+  return randomUUID().slice(0, 7);
 }
 
 /**

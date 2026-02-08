@@ -3,6 +3,7 @@
  * Persistence layer for policies and decision logs
  */
 
+import { randomUUID } from "node:crypto";
 import { db } from "../../db";
 import { autonomyPolicies, autonomyDecisionLogs } from "@shared/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -241,7 +242,7 @@ export async function logDecision(
   if (!isEnabled()) return;
 
   const fullEntry: DecisionLogEntry = {
-    id: `decision-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    id: `decision-${Date.now()}-${randomUUID().slice(0, 6)}`,
     timestamp: new Date(),
     ...entry,
   };

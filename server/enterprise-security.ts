@@ -822,8 +822,10 @@ export const exponentialBackoff = {
     // Cap at max delay
     const cappedDelay = Math.min(exponentialDelay, cfg.maxDelayMs);
 
-    // Add jitter: delay * (1 - jitter/2 + random * jitter)
-    const jitter = (Math.random() - 0.5) * cfg.jitterFactor;
+    // Add jitter: delay * (1 - jitter/2 + random * jitter) (using crypto.randomInt for unpredictable jitter)
+    const jitterRange = Math.max(1, Math.floor(cappedDelay * cfg.jitterFactor));
+    const jitter =
+      ((crypto.randomInt(0, jitterRange * 2 + 1) - jitterRange) / jitterRange) * cfg.jitterFactor;
     const finalDelay = cappedDelay * (1 + jitter);
 
     return Math.round(finalDelay);
@@ -1078,11 +1080,13 @@ export const passwordSecurity = {
       password += all[crypto.randomInt(all.length)];
     }
 
-    // Shuffle
-    return password
-      .split("")
-      .sort(() => Math.random() - 0.5)
-      .join("");
+    // Fisher-Yates shuffle using crypto.randomInt for secure password generation
+    const chars = password.split("");
+    for (let i = chars.length - 1; i > 0; i--) {
+      const j = crypto.randomInt(0, i + 1);
+      [chars[i], chars[j]] = [chars[j], chars[i]];
+    }
+    return chars.join("");
   },
 };
 
