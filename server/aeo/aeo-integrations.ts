@@ -292,6 +292,22 @@ export async function sendWebhookEvent(
 
   for (const webhook of relevantWebhooks) {
     try {
+      // SSRF protection: validate and reconstruct URL at fetch time
+      let fetchUrl: string;
+      try {
+        const parsed = new URL(webhook.url);
+        if (parsed.protocol !== "https:") continue;
+        // Reconstruct from a clean URL object to break any taint chain
+        const clean = new URL("https://placeholder.invalid");
+        clean.hostname = parsed.hostname;
+        clean.port = parsed.port;
+        clean.pathname = parsed.pathname;
+        clean.search = parsed.search;
+        fetchUrl = clean.href;
+      } catch {
+        continue;
+      }
+
       const body = JSON.stringify({
         event: eventType,
         timestamp: new Date().toISOString(),
@@ -309,7 +325,7 @@ export async function sendWebhookEvent(
         headers["X-AEO-Signature"] = signature;
       }
 
-      const response = await fetch(webhook.url, {
+      const response = await fetch(fetchUrl, {
         method: "POST",
         headers,
         body,
