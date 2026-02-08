@@ -154,3 +154,13 @@ export function sanitizeErrorMessage(
   }
   return fallback;
 }
+
+/**
+ * Sanitize a value before interpolating into log strings (CWE-134 / log injection).
+ * Strips newlines, tabs, and carriage returns that could forge log entries,
+ * and truncates to 200 characters to prevent log flooding.
+ */
+export function safeLogValue(val: unknown): string {
+  const str = typeof val === "string" ? val : String(val ?? "");
+  return str.replace(/[\r\n\t]/g, " ").slice(0, 200);
+}

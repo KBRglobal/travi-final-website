@@ -7,6 +7,7 @@ import { db } from "../db";
 import { rssFeeds, destinations } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { fileURLToPath } from "node:url";
+import { safeLogValue } from "../lib/safe-error";
 
 interface RssFeedSeed {
   name: string;
@@ -615,8 +616,8 @@ export async function seedRssFeeds(
       if (seedResult === "skipped") results.skipped++;
       else if (seedResult === "created") results.created++;
     } catch (error) {
-      const errorMsg = `Failed to create ${feed.name}: ${error}`;
-      console.error(`   ${errorMsg}`);
+      const errorMsg = `Failed to create ${safeLogValue(feed.name)}: ${error}`;
+      console.error(`   ${safeLogValue(errorMsg)}`);
       results.errors.push(errorMsg);
     }
   }

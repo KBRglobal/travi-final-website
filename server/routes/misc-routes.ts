@@ -439,6 +439,8 @@ export function registerMiscRoutes(app: Express): void {
 
   // ============================================================================
   // DATABASE BACKUPS (Admin only)
+  // Access control: requirePermission("canManageSettings") ensures only
+  // authorized admins can access these endpoints (CWE-770 mitigation).
   // ============================================================================
 
   app.get("/api/admin/backups", requirePermission("canManageSettings"), async (req, res) => {

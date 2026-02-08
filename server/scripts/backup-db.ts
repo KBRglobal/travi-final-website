@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { safeLogValue } from "../lib/safe-error";
 
 export interface BackupResult {
   success: boolean;
@@ -50,6 +51,12 @@ export async function createBackup(name?: string): Promise<BackupResult> {
   try {
     ensureBackupsDir();
 
+    // Security (CWE-23): Sanitize the optional name to prevent path traversal.
+    // Only allow alphanumeric, hyphens, and underscores.
+    if (name && !/^[\w-]+$/.test(name)) {
+      return { success: false, error: "Backup name contains invalid characters" };
+    }
+
     const timestamp = new Date()
       .toISOString()
       .replaceAll(/[:.]/g, "-")
@@ -57,6 +64,16 @@ export async function createBackup(name?: string): Promise<BackupResult> {
       .slice(0, 19);
     const filename = name ? `backup-${name}-${timestamp}.sql.gz` : `backup-${timestamp}.sql.gz`;
     const filepath = path.join(BACKUPS_DIR, filename);
+
+    // Security (CWE-23): Verify resolved path is within the backup directory
+    const resolvedPath = path.resolve(filepath);
+    const resolvedBackupDir = path.resolve(BACKUPS_DIR);
+    if (
+      !resolvedPath.startsWith(resolvedBackupDir + path.sep) &&
+      resolvedPath !== resolvedBackupDir
+    ) {
+      return { success: false, error: "Backup path escapes the backup directory" };
+    }
 
     const databaseUrl = getDatabaseUrl();
 
@@ -85,12 +102,14 @@ export async function createBackup(name?: string): Promise<BackupResult> {
       };
     }
 
-    console.log(`[Backup] Created: ${filename} (${(stats.size / 1024 / 1024).toFixed(2)} MB)`);
+    console.log(
+      `[Backup] Created: ${safeLogValue(filename)} (${(stats.size / 1024 / 1024).toFixed(2)} MB)`
+    );
 
     return { success: true, filename };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error(`[Backup] Failed: ${message}`);
+    console.error(`[Backup] Failed: ${safeLogValue(message)}`);
     return { success: false, error: message };
   }
 }
@@ -116,13 +135,13 @@ export async function rotateBackups(): Promise<BackupResult> {
     const toDelete = files.slice(MAX_BACKUPS);
     for (const file of toDelete) {
       fs.unlinkSync(file.path);
-      console.log(`[Backup] Rotated out: ${file.name}`);
+      console.log(`[Backup] Rotated out: ${safeLogValue(file.name)}`);
     }
 
     return { success: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error(`[Backup] Rotation failed: ${message}`);
+    console.error(`[Backup] Rotation failed: ${safeLogValue(message)}`);
     return { success: false, error: message };
   }
 }

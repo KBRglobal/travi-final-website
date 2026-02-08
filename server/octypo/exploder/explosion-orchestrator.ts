@@ -12,6 +12,7 @@ import { getArticleIdeation } from "./article-ideation";
 import { getOctypoOrchestrator } from "../orchestration/orchestrator";
 import { ExplosionConfig, ExplosionResult, ExplosionJobProgress } from "./types";
 import { GeneratedAttractionContent } from "../types";
+import { safeLogValue } from "../../lib/safe-error";
 
 export class ExplosionOrchestrator {
   private readonly extractor = getEntityExtractor();
@@ -36,7 +37,7 @@ export class ExplosionOrchestrator {
 
     // Start processing asynchronously
     this.processExplosion(job.id, config).catch(error => {
-      console.error(`[ExplosionOrchestrator] Job ${job.id} failed:`, error);
+      console.error(`[ExplosionOrchestrator] Job ${safeLogValue(job.id)} failed:`, error);
       this.updateJobStatus(job.id, "failed", error.message);
     });
 
@@ -132,7 +133,10 @@ export class ExplosionOrchestrator {
               .where(eq(explosionJobs.id, jobId));
           }
         } catch (error) {
-          console.error(`[ExplosionOrchestrator] Failed to generate article ${articleId}:`, error);
+          console.error(
+            `[ExplosionOrchestrator] Failed to generate article ${safeLogValue(articleId)}:`,
+            error
+          );
           await db
             .update(explodedArticles)
             .set({

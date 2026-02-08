@@ -140,6 +140,7 @@ app.use(
   })
 );
 
+// HTTP server — HTTPS termination is handled by the reverse proxy (Replit/Railway)
 const httpServer = createServer(app);
 
 declare module "http" {

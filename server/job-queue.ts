@@ -8,6 +8,7 @@ import { randomUUID, randomInt } from "node:crypto";
 import { db } from "./db";
 import { backgroundJobs } from "@shared/schema";
 import { eq, desc, and, lt, inArray, count } from "drizzle-orm";
+import { safeLogValue } from "./lib/safe-error";
 
 export type JobStatus = "pending" | "processing" | "completed" | "failed";
 export type JobType = "translate" | "ai_generate" | "email" | "image_process" | "cleanup";
@@ -109,7 +110,7 @@ class JobQueue {
       } as any)
       .then(() => {})
       .catch(err => {
-        console.error(`[JobQueue] Failed to insert job ${id}:`, err);
+        console.error(`[JobQueue] Failed to insert job ${safeLogValue(id)}:`, err);
       });
 
     return id;

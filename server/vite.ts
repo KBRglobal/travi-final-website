@@ -31,6 +31,7 @@ export async function setupVite(server: Server, app: Express) {
 
   app.use(vite.middlewares);
 
+  // Dev-only SPA catch-all — no rate limiting needed; only runs in local development
   app.use("*", async (req, res, next) => {
     // Sanitize URL before passing to Vite to prevent XSS via reflected input
     // Only use pathname + search, strip script tags, HTML entities, and dangerous characters

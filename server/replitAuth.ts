@@ -284,10 +284,14 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/logout", (req, res) => {
     req.logout(() => {
+      // Security (CWE-601): Use hardcoded origin to prevent open redirect via
+      // spoofed Host / X-Forwarded-Proto headers.
+      const safeOrigin =
+        process.env.SITE_URL || `https://${process.env.REPLIT_DEV_DOMAIN || req.hostname}`;
       res.redirect(
         client.buildEndSessionUrl(config, {
           client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
+          post_logout_redirect_uri: safeOrigin,
         }).href
       );
     });
