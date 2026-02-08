@@ -71,6 +71,14 @@ function getCanonicalHost(host: string): string {
 // Allowed hosts for redirect destinations (prevents open-redirect attacks)
 const ALLOWED_REDIRECT_HOSTS = new Set(["travi.world", "localhost"]);
 
+/** Ensure a path is safe for redirects — single leading slash, no protocol */
+function sanitizeRedirectPath(raw: string): string {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//") || raw.includes("://")) {
+    return "/";
+  }
+  return raw;
+}
+
 /** Try to redirect www. hosts to canonical host */
 function tryWwwRedirect(req: Request, res: Response, host: string, fullUrl: string): boolean {
   if (!host.startsWith("www.")) return false;
@@ -78,17 +86,16 @@ function tryWwwRedirect(req: Request, res: Response, host: string, fullUrl: stri
   const baseHost = canonicalHost.split(":")[0];
   if (!ALLOWED_REDIRECT_HOSTS.has(baseHost)) return false;
   const protocol = getProtocol(req);
-  const safePath = fullUrl.startsWith("/") ? fullUrl : "/";
+  const safePath = sanitizeRedirectPath(fullUrl);
   res.redirect(301, `${protocol}://${canonicalHost}${safePath}`);
   return true;
 }
 
 /** Try to redirect bare "/" to "/en" */
-function tryRootRedirect(res: Response, path: string, fullUrl: string): boolean {
+function tryRootRedirect(res: Response, path: string): boolean {
   if (path !== "/") return false;
-  const queryIndex = fullUrl.indexOf("?");
-  const query = queryIndex === -1 ? "" : fullUrl.substring(queryIndex);
-  res.redirect(301, `/en${query}`);
+  // Redirect to /en without carrying over query params to prevent open redirect
+  res.redirect(301, "/en");
   return true;
 }
 
@@ -126,7 +133,7 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
   const fullUrl = req.originalUrl;
 
   if (tryWwwRedirect(req, res, host, fullUrl)) return;
-  if (tryRootRedirect(res, path, fullUrl)) return;
+  if (tryRootRedirect(res, path)) return;
 
   const normalizedSearchPath = path.toLowerCase().replace(/\/+$/, "") || "/";
   if (normalizedSearchPath === "/search" && req.query.q) {
@@ -186,8 +193,12 @@ export async function attractionSlugRedirectMiddleware(
 
     // If found by old slug and has a different seoSlug, redirect
     if (attraction.length && attraction[0].seoSlug && attraction[0].seoSlug !== slug) {
-      res.redirect(301, `/${cityLower}/attractions/${attraction[0].seoSlug}`);
-      return;
+      // Sanitize DB-sourced slug: allow only alphanumeric, hyphens, underscores
+      const safeSeoSlug = attraction[0].seoSlug.replaceAll(/[^a-zA-Z0-9_-]/g, "");
+      if (safeSeoSlug) {
+        res.redirect(301, `/${cityLower}/attractions/${safeSeoSlug}`);
+        return;
+      }
     }
   } catch (error) {
     // If DB error, just continue without redirect
