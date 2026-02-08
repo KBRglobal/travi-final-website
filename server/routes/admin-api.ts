@@ -32,6 +32,70 @@ import editorialPlacementsRouter from "./admin/editorial-placements-routes";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
+function validateFieldOwnership(
+  contractFields: Record<string, { owner: string }>,
+  routeOwner: string,
+  body: Record<string, unknown>
+): { status: number; body: Record<string, unknown> } | null {
+  for (const [fieldName, fieldConfig] of Object.entries(contractFields)) {
+    if (fieldConfig.owner !== routeOwner) {
+      return {
+        status: 500,
+        body: {
+          error: "Contract configuration error",
+          message: `Field ${fieldName} has mismatched ownership in contract`,
+          code: "CONTRACT_VIOLATION",
+        },
+      };
+    }
+  }
+
+  const allowedFields = new Set([
+    ...Object.keys(contractFields),
+    "pagePath",
+    "pageLabel",
+    "fieldOwner",
+  ]);
+  const invalidFields = Object.keys(body).filter(f => !allowedFields.has(f));
+  if (invalidFields.length > 0) {
+    return {
+      status: 403,
+      body: {
+        error: "Field ownership violation",
+        message: `Fields not allowed: ${invalidFields.join(", ")}. This route only manages page SEO fields defined in the ownership contract.`,
+        code: "FIELD_OWNERSHIP_VIOLATION",
+      },
+    };
+  }
+
+  return null;
+}
+
+function validateFieldCharLimits(
+  contractFields: Record<string, any>,
+  fieldValues: Record<string, string | null>
+): string[] {
+  const errors: string[] = [];
+  for (const [fieldName, fieldConfig] of Object.entries(contractFields)) {
+    const limits = fieldConfig.limits;
+    if (!limits || !fieldValues[fieldName]) continue;
+    const value = fieldValues[fieldName] as string;
+    const validation = validateCharacterLimits(value, limits);
+    if (!validation.valid) {
+      if (validation.tooShort) {
+        errors.push(
+          `${fieldName} must be at least ${limits.min} characters (current: ${value.length})`
+        );
+      } else if (validation.tooLong) {
+        errors.push(
+          `${fieldName} must be at most ${limits.max} characters (current: ${value.length})`
+        );
+      }
+    }
+  }
+  return errors;
+}
+
 export function registerAdminApiRoutes(app: Express): void {
   const router = Router();
 
@@ -1160,7 +1224,6 @@ export function registerAdminApiRoutes(app: Express): void {
             if (!engTrans.value || engTrans.value.trim() === "") continue;
 
             const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
-
             if (!overwrite && existingKeys.has(key)) {
               skippedCount++;
               continue;
@@ -1176,16 +1239,14 @@ export function registerAdminApiRoutes(app: Express): void {
                 },
                 { provider: "claude" }
               );
-
               await setTranslations(engTrans.entityType as any, engTrans.entityId, targetLocale, {
                 [engTrans.field]: result.translatedText,
               });
-
               translatedCount++;
-            } catch (error) {
-              const errMsg = `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`;
-
-              errors.push(errMsg);
+            } catch {
+              errors.push(
+                `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`
+              );
             }
           }
         }
@@ -1558,74 +1619,29 @@ export function registerAdminApiRoutes(app: Express): void {
           jsonLdSchema,
         } = req.body;
 
-        // Field Ownership Enforcement using shared/field-ownership.ts contract
-        // This route is the ONLY authorized writer for page_seo fields.
-        // Owner: /admin/page-seo (PageSeoEditor component)
+        // Field Ownership Enforcement
         const ROUTE_OWNER = "/admin/page-seo";
         const CONTRACT = DESTINATIONS_INDEX_SEO;
-
-        // Verify this route is the authorized owner per the contract
         const contractFields = CONTRACT.fields;
-        for (const [fieldName, fieldConfig] of Object.entries(contractFields)) {
-          if (fieldConfig.owner !== ROUTE_OWNER) {
-            return res.status(500).json({
-              error: "Contract configuration error",
-              message: `Field ${fieldName} has mismatched ownership in contract`,
-              code: "CONTRACT_VIOLATION",
-            });
-          }
+
+        // Verify ownership + validate fields
+        const ownershipError = validateFieldOwnership(contractFields, ROUTE_OWNER, req.body);
+        if (ownershipError) {
+          return res.status(ownershipError.status).json(ownershipError.body);
         }
 
-        // Build allowed fields from the contract
-        const ALLOWED_FIELDS = new Set([
-          ...Object.keys(contractFields),
-          "pagePath",
-          "pageLabel",
-          "fieldOwner", // Additional metadata fields
-        ]);
-
-        // Validate that only allowed fields are being submitted
-        const submittedFields = Object.keys(req.body);
-        const invalidFields = submittedFields.filter(f => !ALLOWED_FIELDS.has(f));
-        if (invalidFields.length > 0) {
-          return res.status(403).json({
-            error: "Field ownership violation",
-            message: `Fields not allowed: ${invalidFields.join(", ")}. This route only manages page SEO fields defined in the ownership contract.`,
-            code: "FIELD_OWNERSHIP_VIOLATION",
-          });
-        }
-
-        // Character limit validation using contract limits
-        const errors: string[] = [];
+        // Character limit validation
         const fieldValues: Record<string, string | null> = {
           metaTitle,
           metaDescription,
           ogTitle,
           ogDescription,
         };
-
-        for (const [fieldName, fieldConfig] of Object.entries(contractFields)) {
-          const limits = (fieldConfig as any).limits;
-          if (limits && fieldValues[fieldName]) {
-            const value = fieldValues[fieldName] as string;
-            const validation = validateCharacterLimits(value, limits);
-            if (!validation.valid) {
-              if (validation.tooShort) {
-                errors.push(
-                  `${fieldName} must be at least ${limits.min} characters (current: ${value.length})`
-                );
-              } else if (validation.tooLong) {
-                errors.push(
-                  `${fieldName} must be at most ${limits.max} characters (current: ${value.length})`
-                );
-              }
-            }
-          }
-        }
-        if (errors.length > 0) {
+        const charErrors = validateFieldCharLimits(contractFields, fieldValues);
+        if (charErrors.length > 0) {
           return res.status(400).json({
             error: "Validation failed",
-            details: errors,
+            details: charErrors,
             code: "CHARACTER_LIMIT_VIOLATION",
           });
         }

@@ -1015,30 +1015,18 @@ export function registerAdminHomepageRoutes(app: Express): void {
         let skippedCount = 0;
         const errors: string[] = [];
 
-        // Helper: check if a translation should be skipped
-        const shouldSkipTranslation = (
-          engTrans: (typeof englishTranslations)[number],
-          targetLocale: string
-        ): boolean => {
-          if (!engTrans.value || engTrans.value.trim() === "") return true;
-          if (overwrite) return false;
-          const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
-          return existingKeys.has(key);
-        };
-
         // Process translations for each target locale
         for (const targetLocale of targetLocales) {
           for (const engTrans of englishTranslations) {
-            if (shouldSkipTranslation(engTrans, targetLocale)) {
-              if (engTrans.value && engTrans.value.trim() !== "" && !overwrite) {
-                const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
-                if (existingKeys.has(key)) skippedCount++;
-              }
+            if (!engTrans.value || engTrans.value.trim() === "") continue;
+
+            const key = `${engTrans.entityType}:${engTrans.entityId}:${targetLocale}:${engTrans.field}`;
+            if (!overwrite && existingKeys.has(key)) {
+              skippedCount++;
               continue;
             }
 
             try {
-              // Translate using the translation service
               const result = await translateText(
                 {
                   text: engTrans.value,
@@ -1048,17 +1036,14 @@ export function registerAdminHomepageRoutes(app: Express): void {
                 },
                 { provider: "claude" }
               );
-
-              // Save the translation
               await setTranslations(engTrans.entityType as any, engTrans.entityId, targetLocale, {
                 [engTrans.field]: result.translatedText,
               });
-
               translatedCount++;
-            } catch (error) {
-              const errMsg = `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`;
-
-              errors.push(errMsg);
+            } catch {
+              errors.push(
+                `Failed to translate ${engTrans.entityType}:${engTrans.entityId}:${engTrans.field} to ${targetLocale}`
+              );
             }
           }
         }

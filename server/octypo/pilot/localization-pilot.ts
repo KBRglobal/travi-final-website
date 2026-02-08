@@ -29,11 +29,26 @@ import { eq, and } from "drizzle-orm";
 import { OctypoOrchestrator } from "../orchestration/orchestrator";
 import type { AttractionData, GeneratedAttractionContent } from "../types";
 import { EngineRegistry } from "../../services/engine-registry";
-import { getCulturalContext, getAllSupportedLocales } from "../../localization/cultural-contexts";
+// [REMOVED] Cultural contexts localization engine deleted in cleanup
+// Inline stubs to maintain function signatures
+function getCulturalContext(_locale: string): any {
+  return null;
+}
+function getAllSupportedLocales(): string[] {
+  return ["en", "ar", "fr"];
+}
 
 type PilotLocale = "en" | "ar" | "fr";
 
-import { getPrimaryScripts, SCRIPT_REGEX } from "../../localization/validators/script-validators";
+// [REMOVED] Script validators localization engine deleted in cleanup
+// Inline stubs for script validation
+function getPrimaryScripts(_locale: string): string[] {
+  return ["latin"];
+}
+const SCRIPT_REGEX: Record<string, RegExp> = {
+  latin: /[a-zA-ZàâäæçéèêëïîôœùûüÿÀÂÄÆÇÉÈÊËÏÎÔŒÙÛÜŸ]/g,
+  arabic: /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g,
+};
 
 // ============================================================================
 // LOCALIZATION SYSTEM STATUS

@@ -16,7 +16,7 @@ function tierToPriority(tier: string): number {
   return 4;
 }
 import { getOctypoOrchestrator } from "../orchestration/orchestrator";
-import { onContentStatusChange } from "../../localization/publish-hooks";
+// [REMOVED] Localization publish-hooks deleted in cleanup
 import { logger } from "../../lib/logger";
 
 // ============================================
@@ -245,16 +245,15 @@ async function handleReviewJob(
           } as any)
           .where(eq(contents.id, data.contentId));
 
-        // Trigger localization
-        await onContentStatusChange(data.contentId, "approved");
+        // [REMOVED] Localization trigger deleted in cleanup
         logger.info(
           { contentId: data.contentId },
-          "[Gatekeeper] Triggered localization for approved article"
+          "[Gatekeeper] Article approved (localization trigger removed)"
         );
       } catch (err) {
         logger.error(
           { contentId: data.contentId, error: err },
-          "[Gatekeeper] Failed to trigger localization"
+          "[Gatekeeper] Failed to update article status"
         );
       }
     }

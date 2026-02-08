@@ -3,7 +3,7 @@ import { registerContentRoutes } from "./content-routes";
 import { registerPublicApiRoutes } from "./public-api";
 import { registerAdminApiRoutes } from "./admin-api";
 import { registerAiApiRoutes } from "./ai-api";
-import { registerLocalizationApiRoutes } from "./localization-api";
+// [REMOVED] localization-api deleted in cleanup
 import { registerAutomationApiRoutes } from "./automation-api";
 import { registerCmsApiRoutes } from "./cms-api";
 import { registerMetricsRoutes } from "./metrics-routes";
@@ -56,8 +56,7 @@ export async function registerAllRoutes(app: Express): Promise<void> {
   // AI API routes
   registerAiApiRoutes(app);
 
-  // Localization API routes
-  registerLocalizationApiRoutes(app);
+  // [REMOVED] Localization API routes deleted in cleanup
 
   // Automation API routes
   registerAutomationApiRoutes(app);
@@ -163,6 +162,6 @@ export { registerContentRoutes } from "./content-routes";
 export { registerPublicApiRoutes } from "./public-api";
 export { registerAdminApiRoutes } from "./admin-api";
 export { registerAiApiRoutes } from "./ai-api";
-export { registerLocalizationApiRoutes } from "./localization-api";
+// [REMOVED] localization-api export deleted in cleanup
 export { registerAutomationApiRoutes } from "./automation-api";
 export { registerCmsApiRoutes } from "./cms-api";

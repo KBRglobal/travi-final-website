@@ -7,6 +7,86 @@ function hasMatchingAmenity(amenities: string[], filters: string[]): boolean {
   return filters.some(af => lowerAmenities.some(ha => ha.includes(af)));
 }
 
+/** Build a sample hotel response with optional AI-generated description */
+async function buildSampleHotelResponse(
+  sampleHotel: any,
+  enableAI: boolean,
+  lang: string,
+  defaultDescription: string,
+  facilities: string[]
+): Promise<{ hotel: any; source: string; aiGenerated: boolean }> {
+  let description = defaultDescription;
+  let seoTitle = `${sampleHotel.name} | ${sampleHotel.stars}-Star Luxury Hotel | TRAVI`;
+  let seoDescription = `Book ${sampleHotel.name}${sampleHotel.location?.city ? ` in ${sampleHotel.location.city}` : ""}. Premium amenities and exceptional service.`;
+  let highlights: string[] = [];
+  let aiGenerated = false;
+
+  if (enableAI) {
+    const aiContent = await generateHotelDescription(
+      {
+        id: String(sampleHotel.id),
+        name: sampleHotel.name,
+        stars: sampleHotel.stars,
+        location: sampleHotel.location,
+        amenities: sampleHotel.amenities,
+        rating: Number.parseFloat(sampleHotel.rating),
+        reviews: sampleHotel.reviews,
+      },
+      String(lang)
+    );
+    if (aiContent) {
+      description = aiContent.description;
+      seoTitle = aiContent.seoTitle;
+      seoDescription = aiContent.seoDescription;
+      highlights = aiContent.highlights;
+      aiGenerated = true;
+    }
+  }
+
+  return {
+    hotel: {
+      ...sampleHotel,
+      description,
+      seoTitle,
+      seoDescription,
+      highlights,
+      gallery: [
+        sampleHotel?.image ||
+          "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop&q=80",
+      ],
+      facilities,
+    },
+    source: "sample",
+    aiGenerated,
+  };
+}
+
+/** Apply price, rating, and amenity filters to hotel list */
+function applyHotelFilters(
+  hotels: any[],
+  filters: {
+    minPriceNum: number | null;
+    maxPriceNum: number | null;
+    minRatingNum: number | null;
+    amenitiesFilter: string[];
+  }
+): any[] {
+  let result = hotels;
+  if (filters.minPriceNum !== null)
+    result = result.filter((h: any) => h.price !== null && h.price >= filters.minPriceNum!);
+  if (filters.maxPriceNum !== null)
+    result = result.filter((h: any) => h.price !== null && h.price <= filters.maxPriceNum!);
+  if (filters.minRatingNum !== null)
+    result = result.filter(
+      (h: any) => h.rating !== null && Number.parseFloat(h.rating) >= filters.minRatingNum!
+    );
+  if (filters.amenitiesFilter.length > 0)
+    result = result.filter((h: any) =>
+      hasMatchingAmenity((h.amenities || []) as string[], filters.amenitiesFilter)
+    );
+  return result;
+}
+
 // Sample hotel data for fallback
 const sampleHotels = [
   {
@@ -230,22 +310,12 @@ export function registerHotelsRoutes(app: Express): void {
           };
         });
 
-      if (minPriceNum !== null) {
-        hotels = hotels.filter((h: any) => h.price !== null && h.price >= minPriceNum);
-      }
-      if (maxPriceNum !== null) {
-        hotels = hotels.filter((h: any) => h.price !== null && h.price <= maxPriceNum);
-      }
-      if (minRatingNum !== null) {
-        hotels = hotels.filter(
-          (h: any) => h.rating !== null && Number.parseFloat(h.rating) >= minRatingNum
-        );
-      }
-      if (amenitiesFilter.length > 0) {
-        hotels = hotels.filter((h: any) =>
-          hasMatchingAmenity((h.amenities || []) as string[], amenitiesFilter)
-        );
-      }
+      hotels = applyHotelFilters(hotels, {
+        minPriceNum,
+        maxPriceNum,
+        minRatingNum,
+        amenitiesFilter,
+      });
 
       const total = hotels.length;
       const totalPages = Math.ceil(total / pageSizeNum);
@@ -302,48 +372,13 @@ export function registerHotelsRoutes(app: Express): void {
           return res.status(404).json({ error: "Hotel not found" });
         }
 
-        let description =
-          "Experience luxury and comfort at this stunning property. Featuring world-class amenities, exceptional service, and breathtaking views, this hotel offers an unforgettable stay for discerning travelers.";
-        let seoTitle = `${sampleHotel.name} | ${sampleHotel.stars}-Star Luxury Hotel | TRAVI`;
-        let seoDescription = `Book ${sampleHotel.name}, a ${sampleHotel.stars}-star luxury hotel in ${sampleHotel.location.city}. Experience premium amenities and exceptional service.`;
-        let highlights: string[] = [];
-        let aiGenerated = false;
-
-        if (enableAI) {
-          const aiContent = await generateHotelDescription(
-            {
-              id: String(sampleHotel.id),
-              name: sampleHotel.name,
-              stars: sampleHotel.stars,
-              location: sampleHotel.location,
-              amenities: sampleHotel.amenities,
-              rating: Number.parseFloat(sampleHotel.rating),
-              reviews: sampleHotel.reviews,
-            },
-            String(lang)
-          );
-
-          if (aiContent) {
-            description = aiContent.description;
-            seoTitle = aiContent.seoTitle;
-            seoDescription = aiContent.seoDescription;
-            highlights = aiContent.highlights;
-            aiGenerated = true;
-          }
-        }
-
-        return res.json({
-          hotel: {
-            ...sampleHotel,
-            description,
-            seoTitle,
-            seoDescription,
-            highlights,
-            gallery: [
-              sampleHotel?.image ||
-                "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop&q=80",
-            ],
-            facilities: [
+        return res.json(
+          await buildSampleHotelResponse(
+            sampleHotel,
+            enableAI,
+            String(lang),
+            "Experience luxury and comfort at this stunning property. Featuring world-class amenities, exceptional service, and breathtaking views, this hotel offers an unforgettable stay for discerning travelers.",
+            [
               "WiFi",
               "Pool",
               "Spa",
@@ -352,11 +387,9 @@ export function registerHotelsRoutes(app: Express): void {
               "Parking",
               "Room Service",
               "Concierge",
-            ],
-          },
-          source: "sample",
-          aiGenerated,
-        });
+            ]
+          )
+        );
       }
 
       const url = `http://engine.hotellook.com/api/v2/static/hotels.json?hotelIds=${hotelId}&lang=${lang}&token=${tpoToken}`;
@@ -370,49 +403,15 @@ export function registerHotelsRoutes(app: Express): void {
         if (!sampleHotel) {
           return res.status(404).json({ error: "Hotel not found" });
         }
-
-        let description = "Experience luxury and comfort at this stunning property.";
-        let seoTitle = `${sampleHotel.name} | ${sampleHotel.stars}-Star Luxury Hotel | TRAVI`;
-        let seoDescription = `Book ${sampleHotel.name} in ${sampleHotel.location.city}. Premium amenities and exceptional service.`;
-        let highlights: string[] = [];
-        let aiGenerated = false;
-
-        if (enableAI) {
-          const aiContent = await generateHotelDescription(
-            {
-              id: String(sampleHotel.id),
-              name: sampleHotel.name,
-              stars: sampleHotel.stars,
-              location: sampleHotel.location,
-              amenities: sampleHotel.amenities,
-              rating: Number.parseFloat(sampleHotel.rating),
-              reviews: sampleHotel.reviews,
-            },
-            String(lang)
-          );
-
-          if (aiContent) {
-            description = aiContent.description;
-            seoTitle = aiContent.seoTitle;
-            seoDescription = aiContent.seoDescription;
-            highlights = aiContent.highlights;
-            aiGenerated = true;
-          }
-        }
-
-        return res.json({
-          hotel: {
-            ...sampleHotel,
-            description,
-            seoTitle,
-            seoDescription,
-            highlights,
-            gallery: [sampleHotel?.image],
-            facilities: ["WiFi", "Pool", "Spa", "Restaurant", "Fitness Center"],
-          },
-          source: "sample",
-          aiGenerated,
-        });
+        return res.json(
+          await buildSampleHotelResponse(
+            sampleHotel,
+            enableAI,
+            String(lang),
+            "Experience luxury and comfort at this stunning property.",
+            ["WiFi", "Pool", "Spa", "Restaurant", "Fitness Center"]
+          )
+        );
       }
 
       const data = await response.json();

@@ -96,6 +96,99 @@ function addSystemLog(
   }
 }
 
+function classifyProviderError(err: any): "no_credits" | "rate_limited" | "other" {
+  const isCredits =
+    err?.status === 402 ||
+    err?.message?.includes("credits") ||
+    err?.message?.includes("Insufficient Balance") ||
+    err?.message?.includes("insufficient_funds");
+  if (isCredits) return "no_credits";
+
+  const isRateLimit =
+    err?.status === 429 ||
+    err?.code === "insufficient_quota" ||
+    err?.message?.includes("quota") ||
+    err?.message?.includes("429");
+  if (isRateLimit) return "rate_limited";
+
+  return "other";
+}
+
+async function tryProvidersForCompletion(
+  aiProviders: Array<{ client: any; provider: string; model: string }>,
+  messages: Array<{ role: string; content: string }>,
+  maxTokens: number
+): Promise<
+  | { article: any; provider: string; client: any; model: string }
+  | { error: string; lastError: Error; triedProviders: string[] }
+> {
+  let lastError: Error | null = null;
+
+  for (const aiProvider of aiProviders) {
+    const { client: openai, provider, model } = aiProvider;
+    try {
+      addSystemLog("info", "ai", `Trying AI provider: ${provider} with model: ${model}`);
+      const response = await openai.chat.completions.create({
+        model,
+        messages,
+        ...(provider === "openai" ? { response_format: { type: "json_object" } } : {}),
+        max_tokens: maxTokens,
+      });
+      const article = safeParseJson(response.choices[0].message.content || "{}", {});
+      markProviderSuccess(provider);
+      addSystemLog("info", "ai", `Successfully generated with ${provider}`);
+      return { article, provider, client: openai, model };
+    } catch (providerError: any) {
+      lastError = providerError;
+      const errorType = classifyProviderError(providerError);
+      addSystemLog(
+        "warning",
+        "ai",
+        `Provider ${provider} failed: ${providerError?.message || "Unknown error"}`,
+        {
+          status: providerError?.status,
+          isRateLimit: errorType === "rate_limited",
+          isCredits: errorType === "no_credits",
+        }
+      );
+      if (errorType !== "other") {
+        markProviderFailed(provider, errorType);
+        addSystemLog(
+          "info",
+          "ai",
+          `Marked ${provider} as ${errorType === "no_credits" ? "out of credits" : "temporarily unavailable"}, trying next provider...`
+        );
+      }
+    }
+  }
+
+  return {
+    error: lastError?.message || "All AI providers failed",
+    lastError: lastError!,
+    triedProviders: aiProviders.map(p => p.provider),
+  };
+}
+
+function parseSuggestions(content: string, maxLength?: number): string[] {
+  let suggestions: string[];
+  try {
+    const parsed = JSON.parse(content);
+    if (!Array.isArray(parsed)) throw new TypeError("Not an array");
+    suggestions = parsed;
+  } catch {
+    suggestions = content
+      .split("\n")
+      .filter(s => s.trim().length > 0)
+      .slice(0, 3);
+  }
+  if (maxLength) {
+    suggestions = suggestions.map(s =>
+      s.length > maxLength ? s.substring(0, maxLength - 3) + "..." : s
+    );
+  }
+  return suggestions;
+}
+
 interface ArticleImageResult {
   url: string;
   altText: string;
@@ -621,87 +714,28 @@ CRITICAL WORD COUNT REQUIREMENTS:
 
 Return valid JSON only.`;
 
-        let generatedArticle: any = null;
-        let successfulProvider: string | null = null;
-        let lastError: Error | null = null;
+        const providerResult = await tryProvidersForCompletion(
+          aiProviders,
+          [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          8000
+        );
 
-        for (const aiProvider of aiProviders) {
-          const { client: openai, provider, model } = aiProvider;
-
-          try {
-            addSystemLog("info", "ai", `Trying AI provider: ${provider} with model: ${model}`);
-
-            const response = await openai.chat.completions.create({
-              model: model,
-              messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt },
-              ],
-              ...(provider === "openai" ? { response_format: { type: "json_object" } } : {}),
-              max_tokens: 8000,
-            });
-
-            generatedArticle = safeParseJson(response.choices[0].message.content || "{}", {});
-            successfulProvider = provider;
-            markProviderSuccess(provider);
-            addSystemLog("info", "ai", `Successfully generated with ${provider}`);
-            break;
-          } catch (providerError: any) {
-            lastError = providerError;
-            const isRateLimitError =
-              providerError?.status === 429 ||
-              providerError?.code === "insufficient_quota" ||
-              providerError?.message?.includes("quota") ||
-              providerError?.message?.includes("429");
-            const isCreditsError =
-              providerError?.status === 402 ||
-              providerError?.message?.includes("credits") ||
-              providerError?.message?.includes("Insufficient Balance") ||
-              providerError?.message?.includes("insufficient_funds");
-
-            addSystemLog(
-              "warning",
-              "ai",
-              `Provider ${provider} failed: ${providerError?.message || "Unknown error"}`,
-              {
-                status: providerError?.status,
-                isRateLimit: isRateLimitError,
-                isCredits: isCreditsError,
-              }
-            );
-
-            if (isCreditsError) {
-              markProviderFailed(provider, "no_credits");
-              addSystemLog(
-                "info",
-                "ai",
-                `Marked ${provider} as out of credits, trying next provider...`
-              );
-            } else if (isRateLimitError) {
-              markProviderFailed(provider, "rate_limited");
-              addSystemLog(
-                "info",
-                "ai",
-                `Marked ${provider} as temporarily unavailable, trying next provider...`
-              );
-            }
-          }
-        }
-
-        if (!generatedArticle || !successfulProvider) {
-          const errorMsg = lastError?.message || "All AI providers failed";
-          addSystemLog("error", "ai", `All AI providers failed: ${errorMsg}`);
+        if ("error" in providerResult) {
+          addSystemLog("error", "ai", `All AI providers failed: ${providerResult.error}`);
           return res.status(503).json({
             error: "All AI providers failed. Please check API quotas and try again later.",
-            details: errorMsg,
-            triedProviders: aiProviders.map(p => p.provider),
+            details: providerResult.error,
+            triedProviders: providerResult.triedProviders,
           });
         }
 
-        const successfulClient = aiProviders.find(p => p.provider === successfulProvider);
-        const openai = successfulClient!.client;
-        const provider = successfulClient!.provider;
-        const model = successfulClient!.model;
+        let generatedArticle = providerResult.article;
+        const openai = providerResult.client;
+        const provider = providerResult.provider;
+        const model = providerResult.model;
 
         const countWords = (text: string): number =>
           text
@@ -1380,11 +1414,11 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           } catch (providerError: any) {
             lastError =
               providerError instanceof Error ? providerError : new Error(String(providerError));
-            const isCreditsError =
-              providerError?.status === 402 ||
-              providerError?.message?.includes("credits") ||
-              providerError?.message?.includes("Insufficient Balance");
-            markProviderFailed(provider.name, isCreditsError ? "no_credits" : "rate_limited");
+            const errorType = classifyProviderError(providerError);
+            markProviderFailed(
+              provider.name,
+              errorType === "no_credits" ? "no_credits" : "rate_limited"
+            );
           }
         }
 
@@ -1392,25 +1426,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           throw lastError;
         }
 
-        let suggestions: string[];
-        try {
-          suggestions = JSON.parse(content);
-          if (!Array.isArray(suggestions)) {
-            throw new TypeError("Response is not an array");
-          }
-        } catch (parseError) {
-          suggestions = content
-            .split("\n")
-            .filter(s => s.trim().length > 0)
-            .slice(0, 3);
-        }
-
-        if (maxLength) {
-          suggestions = suggestions.map(s =>
-            s.length > maxLength ? s.substring(0, maxLength - 3) + "..." : s
-          );
-        }
-
+        const suggestions = parseSuggestions(content, maxLength);
         res.json({ suggestions });
       } catch (error) {
         const message =

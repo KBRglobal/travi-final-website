@@ -24,6 +24,38 @@ type AuthRequest = Request & {
   };
 };
 
+// Keys that could cause prototype pollution
+const DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
+function isValidSettingValue(value: unknown): value is string | number | boolean | null {
+  return (
+    value === null ||
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  );
+}
+
+function extractValidSettings(
+  settings: Record<string, unknown>,
+  allowedCategories: Set<string>
+): Array<{ category: string; key: string; value: string | number | boolean | null }> {
+  const result: Array<{ category: string; key: string; value: string | number | boolean | null }> =
+    [];
+  for (const [category, values] of Object.entries(settings)) {
+    if (DANGEROUS_KEYS.has(category)) continue;
+    if (!allowedCategories.has(category)) continue;
+    if (typeof values !== "object" || values === null || Array.isArray(values)) continue;
+    for (const [key, value] of Object.entries(values as Record<string, unknown>)) {
+      if (DANGEROUS_KEYS.has(key)) continue;
+      if (typeof key !== "string" || key.trim() === "") continue;
+      if (!isValidSettingValue(value)) continue;
+      result.push({ category, key: key.trim(), value });
+    }
+  }
+  return result;
+}
+
 // Role checking middleware
 function requireRole(role: UserRole | UserRole[]) {
   return async (req: Request, res: Response, next: Function): Promise<void> => {
@@ -106,7 +138,6 @@ export function registerCmsApiRoutes(app: Express): void {
           return res.status(400).json({ error: "Settings object required" });
         }
 
-        // Validate allowed categories
         const allowedCategories = new Set(["site", "api", "content", "notifications", "security"]);
         const invalidCategories = Object.keys(settings).filter(c => !allowedCategories.has(c));
         if (invalidCategories.length > 0) {
@@ -116,40 +147,12 @@ export function registerCmsApiRoutes(app: Express): void {
         }
 
         const userId = getUserId(req);
+        const validEntries = extractValidSettings(settings, allowedCategories);
         const updated: any[] = [];
 
-        // Dangerous keys that could cause prototype pollution
-        const dangerousKeys = new Set(["__proto__", "constructor", "prototype"]);
-
-        for (const [category, values] of Object.entries(settings)) {
-          // Skip dangerous keys to prevent prototype pollution
-          if (dangerousKeys.has(category)) {
-            continue;
-          }
-          if (typeof values !== "object" || values === null || Array.isArray(values)) {
-            continue;
-          }
-          for (const [key, value] of Object.entries(values as Record<string, unknown>)) {
-            // Skip dangerous keys to prevent prototype pollution
-            if (dangerousKeys.has(key)) {
-              continue;
-            }
-            // Validate key is a non-empty string
-            if (typeof key !== "string" || key.trim() === "") {
-              continue;
-            }
-            // Validate value is a primitive (string, number, boolean) or null
-            if (
-              value !== null &&
-              typeof value !== "string" &&
-              typeof value !== "number" &&
-              typeof value !== "boolean"
-            ) {
-              continue;
-            }
-            const setting = await storage.upsertSetting(key.trim(), value, category, userId);
-            updated.push(setting);
-          }
+        for (const { category, key, value } of validEntries) {
+          const setting = await storage.upsertSetting(key, value, category, userId);
+          updated.push(setting);
         }
 
         await (logAuditEvent as any)(

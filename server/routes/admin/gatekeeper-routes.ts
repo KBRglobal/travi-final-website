@@ -435,14 +435,8 @@ router.get("/pipeline/stats", async (req, res) => {
       // RSS scheduler not available
     }
 
-    // Native content generation stats
-    let nativeContentStats: any = { available: false };
-    try {
-      const { getNativeContentStats } = await import("../../localization/native-content-handler");
-      nativeContentStats = { available: true, ...getNativeContentStats() };
-    } catch {
-      // Native content handler not registered yet
-    }
+    // [REMOVED] Native content generation stats (localization engine deleted)
+    const nativeContentStats: any = { available: false };
 
     // Background services status
     let backgroundStatus: any = { started: false };

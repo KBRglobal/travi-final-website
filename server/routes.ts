@@ -93,13 +93,8 @@ import chatRouter from "./routes/chat";
 import { registerAllRoutes } from "./routes/index.js";
 // AEO (Answer Engine Optimization) routes
 import { aeoRoutes, aeoTrackingMiddleware } from "./aeo";
-// Localization Engine (Translation Queue + AEO)
-import localizationRoutes from "./localization/routes";
-// Localization Governance (Multi-locale content management)
-import {
-  localizationGovernanceRoutes,
-  isLocalizationGovernanceEnabled,
-} from "./localization-governance";
+// [REMOVED] Localization Engine deleted in cleanup
+// [REMOVED] Localization Governance deleted in cleanup
 // Simulation Mode removed during cleanup
 // Content Scheduling (Calendar + Auto-publish)
 import { registerSchedulingRoutes } from "./scheduling";
@@ -885,20 +880,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   // Register AEO routes (includes robots.txt, llms.txt, and API endpoints)
   app.use(aeoRoutes);
 
-  // ============================================================================
-  // LOCALIZATION ENGINE ROUTES
-  // Translation queue management, AEO generation, and publish hooks
-  // ============================================================================
-  app.use("/api/localization", localizationRoutes);
-
-  // ============================================================================
-  // LOCALIZATION GOVERNANCE
-  // Multi-locale content management and translation status tracking
-  // ============================================================================
-  if (isLocalizationGovernanceEnabled()) {
-    app.use("/api/localization/governance", localizationGovernanceRoutes);
-    log.info("[Routes] Localization governance routes ENABLED");
-  }
+  // [REMOVED] Localization Engine routes deleted in cleanup
+  // [REMOVED] Localization Governance routes deleted in cleanup
 
   // ============================================================================
   // SIMULATION MODE removed during cleanup

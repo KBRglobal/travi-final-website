@@ -868,6 +868,63 @@ YOUR COMPREHENSIVE REWRITE:`;
    * Rewrite a single section with COMPREHENSIVE content preservation
    * Uses two-pass system: 1) Extract facts, 2) Rewrite with validation
    */
+  private buildFactChecklist(
+    facts: Array<{ sourceText: string; category: string }>,
+    counts: Record<string, number>
+  ): string {
+    if (facts.length === 0) return "";
+    const factLines = facts.map(f => `- ${f.sourceText} (${f.category})`).join("\n");
+    return `\nFACT CHECKLIST - You MUST include all of these:\n${factLines}\n\nREQUIRED COUNTS: ${JSON.stringify(counts)}\n`;
+  }
+
+  private async executeRewriteAttempt(
+    attempt: number,
+    destination: string,
+    section: { heading: string; content: string; type: string },
+    sectionEnhancement: any,
+    sourceWordCount: number,
+    sourceCharCount: number,
+    factChecklist: string,
+    facts: any[],
+    best: { response: string | null; ratio: number; coverage: number }
+  ): Promise<GuideSection | null> {
+    if (attempt === 3) {
+      return this.attemptParagraphRewrite(
+        section,
+        sectionEnhancement,
+        sourceWordCount,
+        facts,
+        best
+      );
+    }
+
+    const model = attempt >= 2 ? MODELS.premium : MODELS.primary;
+    const userPrompt = this.buildRewritePrompt(
+      destination,
+      section,
+      sourceWordCount,
+      sourceCharCount,
+      factChecklist,
+      sectionEnhancement
+    );
+
+    try {
+      return await this.attemptModelRewrite({
+        model,
+        userPrompt,
+        section,
+        attempt,
+        maxRetries: 3,
+        sourceWordCount,
+        facts,
+        best,
+      });
+    } catch (error) {
+      log(`[GuideRewrite] Attempt ${attempt} failed for ${section.heading}: ${error}`);
+      return null;
+    }
+  }
+
   private async rewriteSection(
     destination: string,
     section: { heading: string; content: string; type: string }
@@ -887,55 +944,24 @@ YOUR COMPREHENSIVE REWRITE:`;
       );
     }
 
-    const factLines = facts.map(f => "- " + f.sourceText + " (" + f.category + ")").join("\n");
-    const factChecklist =
-      facts.length > 0
-        ? `\nFACT CHECKLIST - You MUST include all of these:\n${factLines}\n\nREQUIRED COUNTS: ${JSON.stringify(counts)}\n`
-        : "";
+    const factChecklist = this.buildFactChecklist(facts, counts);
 
     // PASS 2: Rewrite with retries
-    const MAX_RETRIES = 3;
     const best = { response: null as string | null, ratio: 0, coverage: 0 };
 
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-      if (attempt === 3) {
-        const result = await this.attemptParagraphRewrite(
-          section,
-          sectionEnhancement,
-          sourceWordCount,
-          facts,
-          best
-        );
-        if (result) return result;
-        continue;
-      }
-
-      const model = attempt >= 2 ? MODELS.premium : MODELS.primary;
-      const userPrompt = this.buildRewritePrompt(
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const result = await this.executeRewriteAttempt(
+        attempt,
         destination,
         section,
+        sectionEnhancement,
         sourceWordCount,
         sourceCharCount,
         factChecklist,
-        sectionEnhancement
+        facts,
+        best
       );
-
-      try {
-        const result = await this.attemptModelRewrite({
-          model,
-          userPrompt,
-          section,
-          attempt,
-          maxRetries: MAX_RETRIES,
-          sourceWordCount,
-          facts,
-          best,
-        });
-        if (result) return result;
-      } catch (error) {
-        log(`[GuideRewrite] Attempt ${attempt} failed for ${section.heading}: ${error}`);
-      }
-
+      if (result) return result;
       await this.sleep(500);
     }
 

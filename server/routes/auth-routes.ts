@@ -56,6 +56,27 @@ function getUserId(req: AuthRequest): string {
   return req.user!.claims!.sub;
 }
 
+function recordLoginFailure(
+  req: Request,
+  res: Response,
+  ip: string,
+  username: string,
+  eventType: SecurityEventType,
+  errorMessage: string,
+  details: Record<string, unknown>
+): void {
+  recordFailedAttempt(ip);
+  recordDualLockoutFailure(username.toLowerCase(), ip);
+  (res as any).recordFailure?.();
+  logSecurityEventFromRequest(req, eventType, {
+    success: false,
+    resource: "auth",
+    action: "login",
+    errorMessage,
+    details,
+  });
+}
+
 export function registerAuthRoutes(app: Express): void {
   // Admin credentials from environment variables (hashed password stored in env)
   const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
@@ -317,47 +338,42 @@ export function registerAuthRoutes(app: Express): void {
         // Check database for user
         const user = await storage.getUserByUsername(username);
         if (!user?.passwordHash) {
-          recordFailedAttempt(ip);
-          recordDualLockoutFailure(username.toLowerCase(), ip); // Dual lockout tracking
-          (res as any).recordFailure?.(); // Enterprise Security: Exponential backoff
-          // Security audit: Log failed login attempt (user not found)
-          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-            success: false,
-            resource: "auth",
-            action: "login",
-            errorMessage: "User not found or no password",
-            details: { attemptedUsername: username ? username.substring(0, 3) + "***" : "[empty]" },
-          });
+          recordLoginFailure(
+            req,
+            res,
+            ip,
+            username,
+            SecurityEventType.LOGIN_FAILED,
+            "User not found or no password",
+            { attemptedUsername: username ? username.substring(0, 3) + "***" : "[empty]" }
+          );
           return res.status(401).json({ error: "Invalid username or password" });
         }
 
         if (!user.isActive) {
-          recordFailedAttempt(ip);
-          recordDualLockoutFailure(username.toLowerCase(), ip); // Dual lockout tracking
-          // Security audit: Log failed login attempt (account deactivated)
-          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-            success: false,
-            resource: "auth",
-            action: "login",
-            errorMessage: "Account deactivated",
-            details: { userId: user.id },
-          });
+          recordLoginFailure(
+            req,
+            res,
+            ip,
+            username,
+            SecurityEventType.LOGIN_FAILED,
+            "Account deactivated",
+            { userId: user.id }
+          );
           return res.status(401).json({ error: "Account is deactivated" });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.passwordHash);
         if (!passwordMatch) {
-          recordFailedAttempt(ip);
-          recordDualLockoutFailure(username.toLowerCase(), ip); // Dual lockout tracking
-          (res as any).recordFailure?.(); // Enterprise Security: Exponential backoff
-          // Security audit: Log failed login attempt (wrong password)
-          logSecurityEventFromRequest(req, SecurityEventType.LOGIN_FAILED, {
-            success: false,
-            resource: "auth",
-            action: "login",
-            errorMessage: "Invalid password",
-            details: { userId: user.id },
-          });
+          recordLoginFailure(
+            req,
+            res,
+            ip,
+            username,
+            SecurityEventType.LOGIN_FAILED,
+            "Invalid password",
+            { userId: user.id }
+          );
           return res.status(401).json({ error: "Invalid username or password" });
         }
 

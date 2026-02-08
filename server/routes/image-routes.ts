@@ -56,6 +56,32 @@ const upload = multer({
 /**
  * Register all image routes
  */
+async function processBatchPrompts(
+  prompts: Array<string | { prompt: string; filename?: string }>,
+  options: any,
+  contentId?: number
+): Promise<{ successful: StoredImage[]; failed: Array<{ prompt: string; error: string }> }> {
+  const externalImageService = getExternalImageService();
+  const successful: StoredImage[] = [];
+  const failed: Array<{ prompt: string; error: string }> = [];
+
+  for (const item of prompts) {
+    const prompt = typeof item === "string" ? item : item.prompt;
+    const filename = typeof item === "string" ? `ai-${Date.now()}.jpg` : item.filename;
+    const result = await externalImageService.generateAndStoreAIImage(prompt, filename, {
+      ...options,
+      contentId,
+    });
+    if (result.success) {
+      successful.push(result.image);
+    } else {
+      failed.push({ prompt, error: (result as UploadError).error });
+    }
+  }
+
+  return { successful, failed };
+}
+
 export function registerImageRoutes(app: Express) {
   const imageService = getImageService();
   const externalImageService = getExternalImageService();
@@ -286,29 +312,8 @@ export function registerImageRoutes(app: Express) {
           return res.status(400).json({ error: "Maximum 5 prompts per batch" });
         }
 
-        const results: {
-          successful: StoredImage[];
-          failed: Array<{ prompt: string; error: string }>;
-        } = {
-          successful: [],
-          failed: [],
-        };
-
-        for (const item of prompts) {
-          const prompt = typeof item === "string" ? item : item.prompt;
-          const filename = typeof item === "string" ? `ai-${Date.now()}.jpg` : item.filename;
-
-          const result = await externalImageService.generateAndStoreAIImage(prompt, filename, {
-            ...options,
-            contentId: contentId ? Number.parseInt(contentId) : undefined,
-          });
-
-          if (result.success) {
-            results.successful.push(result.image);
-          } else {
-            results.failed.push({ prompt, error: (result as UploadError).error });
-          }
-        }
+        const parsedContentId = contentId ? Number.parseInt(contentId) : undefined;
+        const results = await processBatchPrompts(prompts, options, parsedContentId);
 
         res.json({
           success: true,

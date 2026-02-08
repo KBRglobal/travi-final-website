@@ -107,35 +107,9 @@ function getConfig(): BackgroundServicesConfig {
 // TRANSLATION SERVICES
 // ============================================================================
 
-async function startTranslationServices(config: BackgroundServicesConfig): Promise<void> {
-  if (!config.enableTranslationQueue && !config.enableTranslationWorker) {
-    log.info("[BackgroundServices] Translation services DISABLED via environment");
-    return;
-  }
-
-  try {
-    // Start translation queue
-    if (config.enableTranslationQueue) {
-      const { startQueue, stopQueue } = await import("../localization/translation-queue");
-      startQueue();
-      shutdownHandlers.push(stopQueue);
-      log.info("[BackgroundServices] Translation queue STARTED");
-    }
-
-    // Start translation worker in background
-    if (config.enableTranslationWorker) {
-      const { runWorkerLoop } = await import("../localization/translation-worker");
-
-      // Run worker loop in background (don't await)
-      runWorkerLoop().catch(err => {
-        log.error(`[BackgroundServices] Translation worker error: ${err}`);
-      });
-
-      log.info("[BackgroundServices] Translation worker STARTED");
-    }
-  } catch (error) {
-    log.error(`[BackgroundServices] Failed to start translation services: ${error}`);
-  }
+async function startTranslationServices(_config: BackgroundServicesConfig): Promise<void> {
+  // [REMOVED] Translation services (localization engine) deleted in cleanup
+  log.info("[BackgroundServices] Translation services REMOVED (localization engine deleted)");
 }
 
 // ============================================================================
@@ -172,27 +146,9 @@ async function startRSSSchedulerService(config: BackgroundServicesConfig): Promi
 // LOCALIZATION GOVERNANCE
 // ============================================================================
 
-async function startLocalizationGovernance(config: BackgroundServicesConfig): Promise<void> {
-  if (!config.enableLocalizationGovernance) {
-    log.info("[BackgroundServices] Localization governance DISABLED via environment");
-    return;
-  }
-
-  try {
-    // Import and initialize the governance module
-    const governance = await import("../localization-governance");
-
-    // Check if the module exports an initialization function
-    if (typeof governance.initializeGovernance === "function") {
-      await governance.initializeGovernance();
-      log.info("[BackgroundServices] Localization governance INITIALIZED");
-    } else {
-      log.info("[BackgroundServices] Localization governance module loaded (no init function)");
-    }
-  } catch (error) {
-    // Module may not exist or have errors - that's okay
-    log.info(`[BackgroundServices] Localization governance not available: ${error}`);
-  }
+async function startLocalizationGovernance(_config: BackgroundServicesConfig): Promise<void> {
+  // [REMOVED] Localization governance deleted in cleanup
+  log.info("[BackgroundServices] Localization governance REMOVED (localization engine deleted)");
 }
 
 // ============================================================================
@@ -475,16 +431,8 @@ async function fetchRssSchedulerStatus(): Promise<any> {
 }
 
 async function fetchTranslationQueueStatus(): Promise<string> {
-  try {
-    const { getQueueStatus } = await import("../localization/translation-queue");
-    const qStatus = await getQueueStatus();
-    if (qStatus.isRunning) return "running";
-    if (qStatus.isPaused) return "paused";
-    return "idle";
-  } catch (error) {
-    console.error(error);
-    return "not_started";
-  }
+  // [REMOVED] Translation queue (localization engine) deleted in cleanup
+  return "removed";
 }
 
 async function fetchSeoAutopilotStatus(config: BackgroundServicesConfig): Promise<string> {

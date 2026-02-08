@@ -12,7 +12,14 @@ import {
   AttractionData,
 } from "../types";
 import { buildAttractionPrompt } from "../prompts/content-prompts";
-import { getCulturalContext, getWriterPromptAdditions } from "../../localization/cultural-contexts";
+// [REMOVED] Cultural contexts localization engine deleted in cleanup
+// Inline stubs to maintain function signatures
+function getCulturalContext(_locale: string): any {
+  return null;
+}
+function getWriterPromptAdditions(_locale: string): string {
+  return "";
+}
 
 const WRITER_PERSONAS: AgentPersona[] = [
   {

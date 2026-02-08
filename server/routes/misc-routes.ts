@@ -28,6 +28,130 @@ function getResendClient(): Resend | null {
   return new Resend(apiKey);
 }
 
+function buildLeadEmailHtml(
+  lead: { id: string | number },
+  fields: {
+    name: string;
+    email: string;
+    phone?: string;
+    propertyType?: string;
+    budget?: string;
+    paymentMethod?: string;
+    preferredAreas?: string[];
+    timeline?: string;
+    message?: string;
+  }
+): string {
+  const phoneRow = fields.phone
+    ? `<tr><td style="padding: 12px 0; border-bottom: 1px solid #D3CFD8;">
+        <span style="color: #A79FB2; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Phone</span><br>
+        <a href="tel:${fields.phone}" style="color: #6443F4; font-size: 16px; text-decoration: none; font-weight: 500;">${fields.phone}</a>
+      </td></tr>`
+    : "";
+
+  const prefRows: string[] = [];
+  if (fields.propertyType) {
+    prefRows.push(
+      `<tr><td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px;">Property Type</td><td style="padding: 10px 0; color: #24103E; font-size: 14px; font-weight: 500;">${fields.propertyType}</td></tr>`
+    );
+  }
+  if (fields.budget) {
+    prefRows.push(
+      `<tr><td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px;">Budget</td><td style="padding: 10px 0;"><span style="background: linear-gradient(135deg, #FF9327, #FFD112); color: #24103E; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;">${fields.budget}</span></td></tr>`
+    );
+  }
+  if (fields.paymentMethod) {
+    prefRows.push(
+      `<tr><td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px;">Payment Method</td><td style="padding: 10px 0;"><span style="background: #6443F4; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 500;">${fields.paymentMethod}</span></td></tr>`
+    );
+  }
+  if (fields.preferredAreas?.length) {
+    const badges = fields.preferredAreas
+      .map(
+        (area: string) =>
+          `<span style="display: inline-block; background: #FEECF4; color: #F94498; padding: 4px 10px; border-radius: 20px; font-size: 12px; margin: 2px 4px 2px 0;">${area}</span>`
+      )
+      .join("");
+    prefRows.push(
+      `<tr><td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px; vertical-align: top;">Preferred Areas</td><td style="padding: 10px 0;">${badges}</td></tr>`
+    );
+  }
+  if (fields.timeline) {
+    prefRows.push(
+      `<tr><td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px;">Timeline</td><td style="padding: 10px 0; color: #24103E; font-size: 14px; font-weight: 500;">${fields.timeline}</td></tr>`
+    );
+  }
+
+  const messageBlock = fields.message
+    ? `<tr><td style="padding: 0 40px 30px 40px;"><h3 style="margin: 0 0 10px 0; color: #24103E; font-size: 16px; font-weight: 600;">Message</h3><p style="margin: 0; padding: 15px; background: #f8f5fc; border-radius: 8px; color: #504065; font-size: 14px; line-height: 1.6;">${fields.message}</p></td></tr>`
+    : "";
+
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin: 0; padding: 0; background-color: #f8f5fc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f5fc; padding: 40px 20px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(100,67,244,0.1);">
+        <tr><td style="background: linear-gradient(135deg, #6443F4 0%, #F94498 100%); padding: 30px 40px; text-align: center;">
+          <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700;">New Property Lead</h1>
+          <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">Dubai Off-Plan Investment Inquiry</p>
+        </td></tr>
+        <tr><td style="background-color: #FEECF4; padding: 20px 40px; border-bottom: 1px solid #FDA9E5;">
+          <p style="margin: 0; color: #504065; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Lead Name</p>
+          <h2 style="margin: 5px 0 0 0; color: #24103E; font-size: 22px; font-weight: 600;">${fields.name.trim()}</h2>
+        </td></tr>
+        <tr><td style="padding: 30px 40px;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding: 12px 0; border-bottom: 1px solid #D3CFD8;">
+              <span style="color: #A79FB2; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Email</span><br>
+              <a href="mailto:${fields.email.trim()}" style="color: #6443F4; font-size: 16px; text-decoration: none; font-weight: 500;">${fields.email.trim()}</a>
+            </td></tr>
+            ${phoneRow}
+          </table>
+        </td></tr>
+        <tr><td style="padding: 0 40px 30px 40px;">
+          <h3 style="margin: 0 0 15px 0; color: #24103E; font-size: 16px; font-weight: 600; padding-bottom: 10px; border-bottom: 2px solid #F94498;">Property Preferences</h3>
+          <table width="100%" cellpadding="0" cellspacing="0">${prefRows.join("")}</table>
+        </td></tr>
+        ${messageBlock}
+        <tr><td style="background: #24103E; padding: 25px 40px; text-align: center;">
+          <p style="margin: 0 0 5px 0; color: #A79FB2; font-size: 11px;">Lead ID: ${lead.id}</p>
+          <p style="margin: 0; color: #A79FB2; font-size: 11px;">Submitted: ${new Date().toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short" })}</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+async function sendLeadNotificationEmail(
+  lead: { id: string | number },
+  fields: {
+    name: string;
+    email: string;
+    phone?: string;
+    propertyType?: string;
+    budget?: string;
+    paymentMethod?: string;
+    preferredAreas?: string[];
+    timeline?: string;
+    message?: string;
+  }
+): Promise<void> {
+  const resend = getResendClient();
+  if (!resend) return;
+
+  const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL || "info@travi.world";
+  await resend.emails.send({
+    from: "Travi Leads <leads@travi.world>",
+    to: notificationEmail,
+    subject: `New Property Lead: ${fields.name.trim()} - Dubai Off-Plan`,
+    html: buildLeadEmailHtml(lead, fields),
+  });
+}
+
 // ============================================================================
 // REGISTER MISCELLANEOUS ROUTES
 // ============================================================================
@@ -195,155 +319,19 @@ export function registerMiscRoutes(app: Express): void {
       });
 
       // Send email notification to admin
-      const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL;
-      if (notificationEmail) {
-        const resend = getResendClient();
-        if (resend) {
-          try {
-            await resend.emails.send({
-              from: "Dubai Off-Plan <onboarding@resend.dev>",
-              to: notificationEmail,
-              subject: `New Property Lead: ${name.trim()}`,
-              html: `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="margin: 0; padding: 0; background-color: #f8f5fc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f5fc; padding: 40px 20px;">
-    <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(100,67,244,0.1);">
-          <!-- Header -->
-          <tr>
-            <td style="background: linear-gradient(135deg, #6443F4 0%, #F94498 100%); padding: 30px 40px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700;">New Property Lead</h1>
-              <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">Dubai Off-Plan Investment Inquiry</p>
-            </td>
-          </tr>
-
-          <!-- Lead Name Banner -->
-          <tr>
-            <td style="background-color: #FEECF4; padding: 20px 40px; border-bottom: 1px solid #FDA9E5;">
-              <p style="margin: 0; color: #504065; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Lead Name</p>
-              <h2 style="margin: 5px 0 0 0; color: #24103E; font-size: 22px; font-weight: 600;">${name.trim()}</h2>
-            </td>
-          </tr>
-
-          <!-- Contact Details -->
-          <tr>
-            <td style="padding: 30px 40px;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #D3CFD8;">
-                    <span style="color: #A79FB2; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Email</span><br>
-                    <a href="mailto:${email.trim()}" style="color: #6443F4; font-size: 16px; text-decoration: none; font-weight: 500;">${email.trim()}</a>
-                  </td>
-                </tr>
-                ${
-                  phone
-                    ? `
-                <tr>
-                  <td style="padding: 12px 0; border-bottom: 1px solid #D3CFD8;">
-                    <span style="color: #A79FB2; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Phone</span><br>
-                    <a href="tel:${phone}" style="color: #6443F4; font-size: 16px; text-decoration: none; font-weight: 500;">${phone}</a>
-                  </td>
-                </tr>`
-                    : ""
-                }
-              </table>
-            </td>
-          </tr>
-
-          <!-- Property Preferences -->
-          <tr>
-            <td style="padding: 0 40px 30px 40px;">
-              <h3 style="margin: 0 0 15px 0; color: #24103E; font-size: 16px; font-weight: 600; padding-bottom: 10px; border-bottom: 2px solid #F94498;">Property Preferences</h3>
-              <table width="100%" cellpadding="0" cellspacing="0">
-                ${
-                  propertyType
-                    ? `
-                <tr>
-                  <td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px;">Property Type</td>
-                  <td style="padding: 10px 0; color: #24103E; font-size: 14px; font-weight: 500;">${propertyType}</td>
-                </tr>`
-                    : ""
-                }
-                ${
-                  budget
-                    ? `
-                <tr>
-                  <td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px;">Budget</td>
-                  <td style="padding: 10px 0;"><span style="background: linear-gradient(135deg, #FF9327, #FFD112); color: #24103E; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;">${budget}</span></td>
-                </tr>`
-                    : ""
-                }
-                ${
-                  paymentMethod
-                    ? `
-                <tr>
-                  <td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px;">Payment Method</td>
-                  <td style="padding: 10px 0;"><span style="background: #6443F4; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 500;">${paymentMethod}</span></td>
-                </tr>`
-                    : ""
-                }
-                ${
-                  preferredAreas?.length
-                    ? `
-                <tr>
-                  <td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px; vertical-align: top;">Preferred Areas</td>
-                  <td style="padding: 10px 0;">${preferredAreas.map((area: string) => `<span style="display: inline-block; background: #FEECF4; color: #F94498; padding: 4px 10px; border-radius: 20px; font-size: 12px; margin: 2px 4px 2px 0;">${area}</span>`).join("")}</td>
-                </tr>`
-                    : ""
-                }
-                ${
-                  timeline
-                    ? `
-                <tr>
-                  <td width="40%" style="padding: 10px 0; color: #504065; font-size: 14px;">Timeline</td>
-                  <td style="padding: 10px 0; color: #24103E; font-size: 14px; font-weight: 500;">${timeline}</td>
-                </tr>`
-                    : ""
-                }
-              </table>
-            </td>
-          </tr>
-
-          ${
-            message
-              ? `
-          <!-- Message -->
-          <tr>
-            <td style="padding: 0 40px 30px 40px;">
-              <h3 style="margin: 0 0 10px 0; color: #24103E; font-size: 16px; font-weight: 600;">Message</h3>
-              <p style="margin: 0; padding: 15px; background: #f8f5fc; border-radius: 8px; color: #504065; font-size: 14px; line-height: 1.6;">${message}</p>
-            </td>
-          </tr>`
-              : ""
-          }
-
-          <!-- Footer -->
-          <tr>
-            <td style="background: #24103E; padding: 25px 40px; text-align: center;">
-              <p style="margin: 0 0 5px 0; color: #A79FB2; font-size: 11px;">Lead ID: ${lead.id}</p>
-              <p style="margin: 0; color: #A79FB2; font-size: 11px;">Submitted: ${new Date().toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short" })}</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-              `,
-            });
-          } catch (emailError) {
-            miscLog.error({ err: emailError }, "Failed to send lead notification email");
-          }
-        }
-      }
+      await sendLeadNotificationEmail(lead, {
+        name,
+        email,
+        phone,
+        propertyType,
+        budget,
+        paymentMethod,
+        preferredAreas,
+        timeline,
+        message,
+      }).catch(emailError => {
+        miscLog.error({ err: emailError }, "Failed to send lead notification email");
+      });
 
       res.json({
         success: true,
