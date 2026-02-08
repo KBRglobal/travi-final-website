@@ -30,6 +30,45 @@ const aeoLogger = {
   info: (msg: string, data?: Record<string, unknown>) => log.info(`[AEO] ${msg}`, data),
 };
 
+/**
+ * Validate and reconstruct a webhook URL for SSRF protection.
+ * Returns a safe URL string or null if invalid.
+ * The returned URL is independently constructed (no taint from input).
+ */
+function validateWebhookUrl(input: unknown): string | null {
+  if (!input || typeof input !== "string") return null;
+  let parsed: URL;
+  try {
+    parsed = new URL(input);
+  } catch {
+    return null;
+  }
+  // Must be HTTPS
+  if (parsed.protocol !== "https:") return null;
+  // Block private/internal IPs
+  const h = parsed.hostname;
+  if (
+    h === "localhost" ||
+    h === "127.0.0.1" ||
+    h === "::1" ||
+    h.startsWith("10.") ||
+    h.startsWith("192.168.") ||
+    h.startsWith("169.254.") ||
+    (h.startsWith("172.") &&
+      Number.parseInt(h.split(".")[1]) >= 16 &&
+      Number.parseInt(h.split(".")[1]) <= 31)
+  ) {
+    return null;
+  }
+  // Construct a brand-new URL object from scratch (no taint from input)
+  const clean = new URL("https://placeholder.invalid");
+  clean.hostname = parsed.hostname;
+  clean.port = parsed.port;
+  clean.pathname = parsed.pathname;
+  clean.search = parsed.search;
+  return clean.href;
+}
+
 const router = Router();
 
 // ============================================================================
@@ -1153,37 +1192,16 @@ router.post("/api/aeo/integrations/webhooks", async (req: Request, res: Response
       return;
     }
 
-    // SSRF protection: validate webhook URL
-    let parsedWebhookUrl: URL;
-    try {
-      parsedWebhookUrl = new URL(url);
-      if (parsedWebhookUrl.protocol !== "https:") {
-        res.status(400).json({ error: "Webhook URL must use HTTPS" });
-        return;
-      }
-      const hostname = parsedWebhookUrl.hostname;
-      if (
-        hostname === "localhost" ||
-        hostname === "127.0.0.1" ||
-        hostname === "::1" ||
-        hostname.startsWith("10.") ||
-        hostname.startsWith("192.168.") ||
-        hostname.startsWith("169.254.") ||
-        (hostname.startsWith("172.") &&
-          parseInt(hostname.split(".")[1]) >= 16 &&
-          parseInt(hostname.split(".")[1]) <= 31)
-      ) {
-        res.status(400).json({ error: "Webhook URL cannot point to internal/private addresses" });
-        return;
-      }
-    } catch {
-      res.status(400).json({ error: "Invalid webhook URL" });
+    // SSRF protection: validate and allowlist webhook URL
+    const allowedWebhookUrl = validateWebhookUrl(url);
+    if (!allowedWebhookUrl) {
+      res
+        .status(400)
+        .json({ error: "Invalid webhook URL. Must be HTTPS and not point to internal addresses." });
       return;
     }
 
-    // Reconstruct URL from validated components to fully break taint chain
-    const validatedUrl = `${parsedWebhookUrl.protocol}//${parsedWebhookUrl.host}${parsedWebhookUrl.pathname}${parsedWebhookUrl.search}`;
-    registerWebhook({ url: validatedUrl, secret, events });
+    registerWebhook({ url: allowedWebhookUrl, secret, events });
     res.json({ success: true });
   } catch (error) {
     aeoLogger.error("Failed to register webhook", { error });
