@@ -21,6 +21,91 @@ import { requirePermission, getBlockedIps } from "../security";
 import { getPerformanceMetrics } from "../monitoring";
 import { jobQueue } from "../job-queue";
 
+/** Helper: Create a block with auto-incrementing order */
+function makeBlock(type: string, data: any, orderRef: { value: number }): any {
+  return {
+    id: `${type}-${Date.now()}-${orderRef.value}`,
+    type,
+    data,
+    order: orderRef.value++,
+  };
+}
+
+/** Check if an array field is non-empty */
+function isNonEmptyArray(val: unknown): val is any[] {
+  return Array.isArray(val) && val.length > 0;
+}
+
+/** Extract blocks from attraction data */
+function extractAttractionBlocks(attr: any, orderRef: { value: number }): any[] {
+  const blocks: any[] = [];
+  if (attr.introText) blocks.push(makeBlock("text", { content: attr.introText }, orderRef));
+  if (attr.expandedIntroText && attr.expandedIntroText !== attr.introText) {
+    blocks.push(makeBlock("text", { content: attr.expandedIntroText }, orderRef));
+  }
+  if (isNonEmptyArray(attr.highlights))
+    blocks.push(makeBlock("highlights", { items: attr.highlights }, orderRef));
+  if (isNonEmptyArray(attr.visitorTips))
+    blocks.push(makeBlock("tips", { items: attr.visitorTips }, orderRef));
+  if (isNonEmptyArray(attr.faq)) {
+    for (const faqItem of attr.faq) {
+      blocks.push(
+        makeBlock("faq", { question: faqItem.question, answer: faqItem.answer }, orderRef)
+      );
+    }
+  }
+  if (isNonEmptyArray(attr.gallery))
+    blocks.push(makeBlock("gallery", { images: attr.gallery }, orderRef));
+  return blocks;
+}
+
+/** Extract blocks from hotel data */
+function extractHotelBlocks(hotel: any, orderRef: { value: number }): any[] {
+  const blocks: any[] = [];
+  if (hotel.description) blocks.push(makeBlock("text", { content: hotel.description }, orderRef));
+  if (isNonEmptyArray(hotel.highlights))
+    blocks.push(makeBlock("highlights", { items: hotel.highlights }, orderRef));
+  if (isNonEmptyArray(hotel.faq)) {
+    for (const faqItem of hotel.faq) {
+      blocks.push(
+        makeBlock("faq", { question: faqItem.question, answer: faqItem.answer }, orderRef)
+      );
+    }
+  }
+  return blocks;
+}
+
+/** Build migration blocks for a content item */
+function buildMigrationBlocks(content: any): any[] {
+  const blocks: any[] = [];
+  const orderRef = { value: 0 };
+
+  if (content.heroImage) {
+    blocks.push(
+      makeBlock(
+        "hero",
+        {
+          image: content.heroImage,
+          alt: content.heroImageAlt || content.title,
+          title: content.title,
+        },
+        orderRef
+      )
+    );
+  }
+
+  const contentWithData = content as any;
+  if (content.type === "attraction" && contentWithData.attractionData) {
+    blocks.push(...extractAttractionBlocks(contentWithData.attractionData, orderRef));
+  } else if (content.type === "hotel" && contentWithData.hotelData) {
+    blocks.push(...extractHotelBlocks(contentWithData.hotelData, orderRef));
+  } else if (content.type === "article" && contentWithData.articleData?.body) {
+    blocks.push(makeBlock("text", { content: contentWithData.articleData.body }, orderRef));
+  }
+
+  return blocks;
+}
+
 export function registerAdminJobsRoutes(app: Express): void {
   // Get blocked IPs (admin only)
   app.get("/api/admin/blocked-ips", requirePermission("canPublish"), (req, res) => {
@@ -122,143 +207,11 @@ export function registerAdminJobsRoutes(app: Express): void {
       let migratedCount = 0;
 
       for (const content of allContents) {
-        // Skip if already has blocks
         if (content.blocks && Array.isArray(content.blocks) && content.blocks.length > 0) {
           continue;
         }
 
-        const blocks: any[] = [];
-        let blockOrder = 0;
-
-        // Add hero block if there's a hero image
-        if (content.heroImage) {
-          blocks.push({
-            id: `hero-${Date.now()}-${blockOrder}`,
-            type: "hero",
-            data: {
-              image: content.heroImage,
-              alt: content.heroImageAlt || content.title,
-              title: content.title,
-            },
-            order: blockOrder++,
-          });
-        }
-
-        // Get type-specific data (using type assertion since getContents doesn't join related tables)
-        const contentWithData = content as any;
-        if (content.type === "attraction" && contentWithData.attractionData) {
-          const attr = contentWithData.attractionData;
-
-          // Add intro text block
-          if (attr.introText) {
-            blocks.push({
-              id: `text-${Date.now()}-${blockOrder}`,
-              type: "text",
-              data: { content: attr.introText },
-              order: blockOrder++,
-            });
-          }
-
-          // Add expanded intro if different
-          if (attr.expandedIntroText && attr.expandedIntroText !== attr.introText) {
-            blocks.push({
-              id: `text-${Date.now()}-${blockOrder}`,
-              type: "text",
-              data: { content: attr.expandedIntroText },
-              order: blockOrder++,
-            });
-          }
-
-          // Add highlights block
-          if (attr.highlights && Array.isArray(attr.highlights) && attr.highlights.length > 0) {
-            blocks.push({
-              id: `highlights-${Date.now()}-${blockOrder}`,
-              type: "highlights",
-              data: { items: attr.highlights },
-              order: blockOrder++,
-            });
-          }
-
-          // Add visitor tips
-          if (attr.visitorTips && Array.isArray(attr.visitorTips) && attr.visitorTips.length > 0) {
-            blocks.push({
-              id: `tips-${Date.now()}-${blockOrder}`,
-              type: "tips",
-              data: { items: attr.visitorTips },
-              order: blockOrder++,
-            });
-          }
-
-          // Add FAQ items
-          if (attr.faq && Array.isArray(attr.faq) && attr.faq.length > 0) {
-            for (const faqItem of attr.faq) {
-              blocks.push({
-                id: `faq-${Date.now()}-${blockOrder}`,
-                type: "faq",
-                data: { question: faqItem.question, answer: faqItem.answer },
-                order: blockOrder++,
-              });
-            }
-          }
-
-          // Add gallery
-          if (attr.gallery && Array.isArray(attr.gallery) && attr.gallery.length > 0) {
-            blocks.push({
-              id: `gallery-${Date.now()}-${blockOrder}`,
-              type: "gallery",
-              data: { images: attr.gallery },
-              order: blockOrder++,
-            });
-          }
-        } else if (content.type === "hotel" && contentWithData.hotelData) {
-          const hotel = contentWithData.hotelData;
-
-          // Add description
-          if (hotel.description) {
-            blocks.push({
-              id: `text-${Date.now()}-${blockOrder}`,
-              type: "text",
-              data: { content: hotel.description },
-              order: blockOrder++,
-            });
-          }
-
-          // Add highlights
-          if (hotel.highlights && Array.isArray(hotel.highlights) && hotel.highlights.length > 0) {
-            blocks.push({
-              id: `highlights-${Date.now()}-${blockOrder}`,
-              type: "highlights",
-              data: { items: hotel.highlights },
-              order: blockOrder++,
-            });
-          }
-
-          // Add FAQ
-          if (hotel.faq && Array.isArray(hotel.faq) && hotel.faq.length > 0) {
-            for (const faqItem of hotel.faq) {
-              blocks.push({
-                id: `faq-${Date.now()}-${blockOrder}`,
-                type: "faq",
-                data: { question: faqItem.question, answer: faqItem.answer },
-                order: blockOrder++,
-              });
-            }
-          }
-        } else if (content.type === "article" && contentWithData.articleData) {
-          const article = contentWithData.articleData;
-
-          // Add body content
-          if (article.body) {
-            blocks.push({
-              id: `text-${Date.now()}-${blockOrder}`,
-              type: "text",
-              data: { content: article.body },
-              order: blockOrder++,
-            });
-          }
-        }
-
-        // Update content with generated blocks if any were created
+        const blocks = buildMigrationBlocks(content);
         if (blocks.length > 0) {
           await storage.updateContent(content.id, { blocks });
           migratedCount++;

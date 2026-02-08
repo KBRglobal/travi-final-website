@@ -813,16 +813,17 @@ YOUR COMPREHENSIVE REWRITE:`;
   }
 
   /** Attempt a single model-based rewrite */
-  private async attemptModelRewrite(
-    model: string,
-    userPrompt: string,
-    section: { heading: string; content: string; type: string },
-    attempt: number,
-    maxRetries: number,
-    sourceWordCount: number,
-    facts: FactItem[],
-    best: { response: string | null; ratio: number; coverage: number }
-  ): Promise<GuideSection | null> {
+  private async attemptModelRewrite(opts: {
+    model: string;
+    userPrompt: string;
+    section: { heading: string; content: string; type: string };
+    attempt: number;
+    maxRetries: number;
+    sourceWordCount: number;
+    facts: FactItem[];
+    best: { response: string | null; ratio: number; coverage: number };
+  }): Promise<GuideSection | null> {
+    const { model, userPrompt, section, attempt, maxRetries, sourceWordCount, facts, best } = opts;
     log(
       `[GuideRewrite] Pass 2 (attempt ${attempt}/${maxRetries}): Rewriting ${section.heading} with ${model}...`
     );
@@ -920,16 +921,16 @@ YOUR COMPREHENSIVE REWRITE:`;
       );
 
       try {
-        const result = await this.attemptModelRewrite(
+        const result = await this.attemptModelRewrite({
           model,
           userPrompt,
           section,
           attempt,
-          MAX_RETRIES,
+          maxRetries: MAX_RETRIES,
           sourceWordCount,
           facts,
-          best
-        );
+          best,
+        });
         if (result) return result;
       } catch (error) {
         log(`[GuideRewrite] Attempt ${attempt} failed for ${section.heading}: ${error}`);
@@ -965,7 +966,7 @@ YOUR COMPREHENSIVE REWRITE:`;
     ];
     const allMatches: string[] = [];
     for (const tag of blockTags) {
-      const regex = new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\\/${tag}>`, "gi");
+      const regex = new RegExp(String.raw`<${tag}[^>]*>[\s\S]*?<\/${tag}>`, "gi");
       for (const m of content.matchAll(regex)) {
         allMatches.push(m[0]);
       }

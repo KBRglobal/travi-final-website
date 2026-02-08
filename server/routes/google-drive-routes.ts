@@ -35,6 +35,115 @@ function sanitizePathSegment(name: string): string {
     .replaceAll(/(?:^\.+)|(?:\.+$)/g, ""); // Remove leading/trailing dots
 }
 
+/** Validate and get a sanitized city name from a destination folder */
+function getValidCityName(destFolder: any, report: any): string | null {
+  if (destFolder.mimeType !== "application/vnd.google-apps.folder" || !destFolder.id) return null;
+
+  if (!destFolder.name || !isValidPathSegment(destFolder.name)) {
+    report.errors.push({
+      city: destFolder.name || "unknown",
+      error: `Invalid folder name (potential security issue): ${destFolder.name}`,
+    });
+    return null;
+  }
+
+  const cityName = sanitizePathSegment(destFolder.name);
+  if (!cityName || cityName.length === 0) {
+    report.errors.push({ city: destFolder.name, error: "Folder name sanitized to empty string" });
+    return null;
+  }
+
+  return cityName;
+}
+
+/** Process a single file within a city folder */
+async function processCityFile(
+  file: any,
+  cityName: string,
+  cityPath: string,
+  imageMimeTypes: Set<string>,
+  report: any
+): Promise<void> {
+  if (!file.id || !file.name) return;
+
+  if (!isValidPathSegment(file.name)) {
+    report.skipped.push({
+      city: cityName,
+      file: file.name,
+      reason: "Invalid file name (security validation failed)",
+    });
+    return;
+  }
+
+  if (!imageMimeTypes.has(file.mimeType || "")) {
+    report.skipped.push({
+      city: cityName,
+      file: file.name,
+      reason: `Unsupported mime type: ${file.mimeType}`,
+    });
+    return;
+  }
+
+  const safeFileName =
+    sanitizePathSegment(file.name.replace(/\.[^.]+$/, "")) +
+    file.name.substring(file.name.lastIndexOf("."));
+  const filePath = path.join(cityPath, safeFileName);
+
+  try {
+    await fs.promises.access(filePath);
+    report.skipped.push({ city: cityName, file: file.name, reason: "File already exists" });
+    return;
+  } catch {
+    // File doesn't exist, proceed with download
+  }
+
+  try {
+    const buffer = await downloadFile(file.id);
+    await fs.promises.writeFile(filePath, buffer);
+    report.downloaded.push({
+      city: cityName,
+      file: safeFileName,
+      path: `/images/destinations/${cityName}/${safeFileName}`,
+    });
+  } catch (error: unknown) {
+    report.errors.push({
+      city: cityName,
+      file: file.name,
+      error: error instanceof Error ? error.message : "Download failed",
+    });
+  }
+}
+
+/** Process a single destination folder from Google Drive */
+async function processDestinationFolder(
+  destFolder: any,
+  baseDestPath: string,
+  imageMimeTypes: Set<string>,
+  report: any
+): Promise<void> {
+  const cityName = getValidCityName(destFolder, report);
+  if (!cityName) return;
+
+  const cityPath = path.join(baseDestPath, cityName);
+  try {
+    await fs.promises.access(cityPath);
+  } catch {
+    await fs.promises.mkdir(cityPath, { recursive: true });
+  }
+
+  try {
+    const cityFiles = await listFilesInFolder(destFolder.id);
+    for (const file of cityFiles) {
+      await processCityFile(file, cityName, cityPath, imageMimeTypes, report);
+    }
+  } catch (error_: unknown) {
+    report.errors.push({
+      city: cityName,
+      error: error_ instanceof Error ? error_.message : "Failed to list city folder contents",
+    });
+  }
+}
+
 export function registerGoogleDriveRoutes(app: Express): void {
   // Google Drive Asset Sync (Admin-only)
   app.post(
@@ -85,105 +194,7 @@ export function registerGoogleDriveRoutes(app: Express): void {
         }
 
         for (const destFolder of destinationFolders) {
-          if (destFolder.mimeType !== "application/vnd.google-apps.folder" || !destFolder.id) {
-            continue;
-          }
-
-          // SECURITY: Validate folder name to prevent path traversal
-          if (!destFolder.name || !isValidPathSegment(destFolder.name)) {
-            report.errors.push({
-              city: destFolder.name || "unknown",
-              error: `Invalid folder name (potential security issue): ${destFolder.name}`,
-            });
-            continue;
-          }
-
-          const cityName = sanitizePathSegment(destFolder.name);
-
-          // Extra validation: ensure sanitized name is not empty
-          if (!cityName || cityName.length === 0) {
-            report.errors.push({
-              city: destFolder.name,
-              error: "Folder name sanitized to empty string",
-            });
-            continue;
-          }
-
-          const cityPath = path.join(baseDestPath, cityName);
-
-          try {
-            await fs.promises.access(cityPath);
-          } catch {
-            await fs.promises.mkdir(cityPath, { recursive: true });
-          }
-
-          try {
-            const cityFiles = await listFilesInFolder(destFolder.id);
-
-            for (const file of cityFiles) {
-              if (!file.id || !file.name) continue;
-
-              // SECURITY: Validate file name to prevent path traversal
-              if (!isValidPathSegment(file.name)) {
-                report.skipped.push({
-                  city: cityName,
-                  file: file.name,
-                  reason: "Invalid file name (security validation failed)",
-                });
-                continue;
-              }
-
-              if (!imageMimeTypes.has(file.mimeType || "")) {
-                report.skipped.push({
-                  city: cityName,
-                  file: file.name,
-                  reason: `Unsupported mime type: ${file.mimeType}`,
-                });
-                continue;
-              }
-
-              // SECURITY: Sanitize file name before using in path
-              const safeFileName =
-                sanitizePathSegment(file.name.replace(/\.[^.]+$/, "")) +
-                file.name.substring(file.name.lastIndexOf("."));
-
-              const filePath = path.join(cityPath, safeFileName);
-
-              try {
-                await fs.promises.access(filePath);
-                report.skipped.push({
-                  city: cityName,
-                  file: file.name,
-                  reason: "File already exists",
-                });
-                continue;
-              } catch {
-                // File doesn't exist, proceed with download
-              }
-
-              try {
-                const buffer = await downloadFile(file.id);
-                await fs.promises.writeFile(filePath, buffer);
-                report.downloaded.push({
-                  city: cityName,
-                  file: safeFileName,
-                  path: `/images/destinations/${cityName}/${safeFileName}`,
-                });
-              } catch (error: unknown) {
-                report.errors.push({
-                  city: cityName,
-                  file: file.name,
-                  error: error instanceof Error ? error.message : "Download failed",
-                });
-              }
-            }
-          } catch (error_: unknown) {
-            report.errors.push({
-              city: cityName,
-              error:
-                error_ instanceof Error ? error_.message : "Failed to list city folder contents",
-            });
-          }
+          await processDestinationFolder(destFolder, baseDestPath, imageMimeTypes, report);
         }
 
         report.success = report.errors.length === 0;

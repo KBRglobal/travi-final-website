@@ -69,35 +69,57 @@ function getCanonicalHost(host: string): string {
 // Allowed hosts for redirect destinations (prevents open-redirect attacks)
 const ALLOWED_REDIRECT_HOSTS = new Set(["travi.world", "localhost"]);
 
+/** Try to redirect www. hosts to canonical host */
+function tryWwwRedirect(req: Request, res: Response, host: string, fullUrl: string): boolean {
+  if (!host.startsWith("www.")) return false;
+  const canonicalHost = getCanonicalHost(host);
+  const baseHost = canonicalHost.split(":")[0];
+  if (!ALLOWED_REDIRECT_HOSTS.has(baseHost)) return false;
+  const protocol = getProtocol(req);
+  const safePath = fullUrl.startsWith("/") ? fullUrl : "/";
+  res.redirect(301, `${protocol}://${canonicalHost}${safePath}`);
+  return true;
+}
+
+/** Try to redirect bare "/" to "/en" */
+function tryRootRedirect(res: Response, path: string, fullUrl: string): boolean {
+  if (path !== "/") return false;
+  const queryIndex = fullUrl.indexOf("?");
+  const query = queryIndex === -1 ? "" : fullUrl.substring(queryIndex);
+  res.redirect(301, `/en${query}`);
+  return true;
+}
+
+/** Try static redirect rules */
+function tryStaticRedirect(res: Response, path: string): boolean {
+  const normalizedPath = path.toLowerCase().replace(/\/+$/, "") || "/";
+  for (const rule of STATIC_REDIRECTS) {
+    const normalizedFrom = rule.from.toLowerCase().replace(/\/+$/, "") || "/";
+    if (rule.exact && normalizedPath === normalizedFrom) {
+      res.redirect(301, rule.to);
+      return true;
+    }
+  }
+  return false;
+}
+
+/** Try to redirect old attraction URL format: /attractions/:city/:slug -> /:city/attractions/:slug */
+function tryOldAttractionRedirect(res: Response, path: string): boolean {
+  const match = path.match(/^\/attractions\/([^/]+)\/([^/]+)$/i);
+  if (!match) return false;
+  const cityLower = match[1].toLowerCase();
+  if (!VALID_DESTINATIONS.has(cityLower)) return false;
+  res.redirect(301, `/${cityLower}/attractions/${match[2]}`);
+  return true;
+}
+
 export function redirectMiddleware(req: Request, res: Response, next: NextFunction): void {
   const host = req.get("host") || "";
   const path = req.path;
   const fullUrl = req.originalUrl;
 
-  if (host.startsWith("www.")) {
-    const canonicalHost = getCanonicalHost(host);
-    // Security: only redirect to known hosts to prevent open-redirect
-    const baseHost = canonicalHost.split(":")[0];
-    if (!ALLOWED_REDIRECT_HOSTS.has(baseHost)) {
-      return next();
-    }
-    const protocol = getProtocol(req);
-    // Security: ensure path starts with / to prevent protocol-relative open redirects
-    const safePath = fullUrl.startsWith("/") ? fullUrl : "/";
-    const newUrl = `${protocol}://${canonicalHost}${safePath}`;
-
-    res.redirect(301, newUrl);
-    return;
-  }
-
-  // Server-side 301 redirect for bare "/" to "/en" (replaces slow client-side redirect)
-  // Preserves query strings (e.g., ?ref=betalist) for tracking/attribution
-  if (path === "/") {
-    const queryIndex = fullUrl.indexOf("?");
-    const query = queryIndex === -1 ? "" : fullUrl.substring(queryIndex);
-    res.redirect(301, `/en${query}`);
-    return;
-  }
+  if (tryWwwRedirect(req, res, host, fullUrl)) return;
+  if (tryRootRedirect(res, path, fullUrl)) return;
 
   const normalizedSearchPath = path.toLowerCase().replace(/\/+$/, "") || "/";
   if (normalizedSearchPath === "/search" && req.query.q) {
@@ -105,29 +127,8 @@ export function redirectMiddleware(req: Request, res: Response, next: NextFuncti
     return;
   }
 
-  for (const rule of STATIC_REDIRECTS) {
-    const normalizedPath = path.toLowerCase().replace(/\/+$/, "") || "/";
-    const normalizedFrom = rule.from.toLowerCase().replace(/\/+$/, "") || "/";
-
-    if (rule.exact && normalizedPath === normalizedFrom) {
-      res.redirect(301, rule.to);
-      return;
-    }
-  }
-
-  // Handle old attraction URL format: /attractions/:city/:slug -> /:city/attractions/:slug
-  const oldAttractionMatch = path.match(/^\/attractions\/([^/]+)\/([^/]+)$/i);
-  if (oldAttractionMatch) {
-    const [, city, slug] = oldAttractionMatch;
-    const cityLower = city.toLowerCase();
-
-    // Check if it's a valid destination
-    if (VALID_DESTINATIONS.has(cityLower)) {
-      const newUrl = `/${cityLower}/attractions/${slug}`;
-      res.redirect(301, newUrl);
-      return;
-    }
-  }
+  if (tryStaticRedirect(res, path)) return;
+  if (tryOldAttractionRedirect(res, path)) return;
 
   next();
 }

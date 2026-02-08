@@ -341,45 +341,36 @@ export function registerContentCrudRoutes(app: Express): void {
 
         const content = await storage.createContent(parsed as InsertContent);
 
-        if (parsed.type === "attraction" && req.body.attraction) {
-          await storage.createAttraction({ ...req.body.attraction, contentId: content.id });
-        } else if (parsed.type === "hotel" && req.body.hotel) {
-          await storage.createHotel({ ...req.body.hotel, contentId: content.id });
-        } else if (parsed.type === "article" && req.body.article) {
-          await storage.createArticle({ ...req.body.article, contentId: content.id });
-        } else if (parsed.type === "event" && req.body.event) {
-          await storage.createEvent({ ...req.body.event, contentId: content.id });
-        } else if (parsed.type === "itinerary" && req.body.itinerary) {
-          const itineraryData = (insertItinerarySchema as any)
-            .omit({ contentId: true })
-            .parse(req.body.itinerary);
-          await storage.createItinerary({
-            ...(itineraryData as Record<string, unknown>),
-            contentId: content.id,
-          });
-        } else if (parsed.type === "dining" && req.body.dining) {
-          await storage.createDining({ ...req.body.dining, contentId: content.id });
-        } else if (parsed.type === "district" && req.body.district) {
-          await storage.createDistrict({ ...req.body.district, contentId: content.id });
-        } else if (parsed.type === "transport" && req.body.transport) {
-          await storage.createTransport({ ...req.body.transport, contentId: content.id });
-        } else if (parsed.type === "attraction") {
-          // Create empty type-specific record if data not provided
-          await storage.createAttraction({ contentId: content.id });
-        } else if (parsed.type === "hotel") {
-          await storage.createHotel({ contentId: content.id });
-        } else if (parsed.type === "article") {
-          await storage.createArticle({ contentId: content.id });
-        } else if (parsed.type === "event") {
-          await storage.createEvent({ contentId: content.id });
-        } else if (parsed.type === "itinerary") {
-          await storage.createItinerary({ contentId: content.id });
-        } else if (parsed.type === "dining") {
-          await storage.createDining({ contentId: content.id });
-        } else if (parsed.type === "district") {
-          await storage.createDistrict({ contentId: content.id });
-        } else if (parsed.type === "transport") {
-          await storage.createTransport({ contentId: content.id });
+        const typeCreatorMap: Record<string, (data: any) => Promise<any>> = {
+          attraction: data => storage.createAttraction(data),
+          hotel: data => storage.createHotel(data),
+          article: data => storage.createArticle(data),
+          event: data => storage.createEvent(data),
+          itinerary: data => {
+            if (req.body.itinerary) {
+              const itineraryData = (insertItinerarySchema as any)
+                .omit({ contentId: true })
+                .parse(req.body.itinerary);
+              return storage.createItinerary({
+                ...(itineraryData as Record<string, unknown>),
+                contentId: content.id,
+              });
+            }
+            return storage.createItinerary(data);
+          },
+          dining: data => storage.createDining(data),
+          district: data => storage.createDistrict(data),
+          transport: data => storage.createTransport(data),
+        };
+
+        const creator = typeCreatorMap[parsed.type];
+        if (creator) {
+          const bodyData = req.body[parsed.type];
+          if (bodyData && parsed.type !== "itinerary") {
+            await creator({ ...bodyData, contentId: content.id });
+          } else {
+            await creator({ contentId: content.id });
+          }
         }
 
         const fullContent = await storage.getContent(content.id);
@@ -575,23 +566,23 @@ export function registerContentCrudRoutes(app: Express): void {
 
         const updatedContent = await storage.updateContent(req.params.id, contentData);
 
-        // Update content-type-specific data
-        if (existingContent.type === "attraction" && attraction) {
-          await storage.updateAttraction(req.params.id, attraction);
-        } else if (existingContent.type === "hotel" && hotel) {
-          await storage.updateHotel(req.params.id, hotel);
-        } else if (existingContent.type === "article" && article) {
-          await storage.updateArticle(req.params.id, article);
-        } else if (existingContent.type === "event" && req.body.event) {
-          await storage.updateEvent(req.params.id, req.body.event);
-        } else if (existingContent.type === "itinerary" && itinerary) {
-          await storage.updateItinerary(req.params.id, itinerary);
-        } else if (existingContent.type === "dining" && dining) {
-          await storage.updateDining(req.params.id, dining);
-        } else if (existingContent.type === "district" && district) {
-          await storage.updateDistrict(req.params.id, district);
-        } else if (existingContent.type === "transport" && transport) {
-          await storage.updateTransport(req.params.id, transport);
+        // Update content-type-specific data via lookup
+        const typeUpdateMap: Record<
+          string,
+          { data: any; updater: (id: string, data: any) => Promise<any> }
+        > = {
+          attraction: { data: attraction, updater: storage.updateAttraction.bind(storage) },
+          hotel: { data: hotel, updater: storage.updateHotel.bind(storage) },
+          article: { data: article, updater: storage.updateArticle.bind(storage) },
+          event: { data: req.body.event, updater: storage.updateEvent.bind(storage) },
+          itinerary: { data: itinerary, updater: storage.updateItinerary.bind(storage) },
+          dining: { data: dining, updater: storage.updateDining.bind(storage) },
+          district: { data: district, updater: storage.updateDistrict.bind(storage) },
+          transport: { data: transport, updater: storage.updateTransport.bind(storage) },
+        };
+        const typeUpdate = typeUpdateMap[existingContent.type];
+        if (typeUpdate?.data) {
+          await typeUpdate.updater(req.params.id, typeUpdate.data);
         }
 
         const fullContent = await storage.getContent(req.params.id);

@@ -165,16 +165,20 @@ async function runQualityGatesForGenerated(
 }
 
 /** Build the DB row for native localized content */
-function buildNativeContentRow(
-  data: NativeContentJobData,
-  content: any,
-  generated: GeneratedAttractionContent,
-  destination: string,
-  writerId: string,
-  localePurityScore: number,
-  sourceHash: string,
-  result: any
-) {
+interface BuildNativeContentRowOptions {
+  data: NativeContentJobData;
+  content: any;
+  generated: GeneratedAttractionContent;
+  destination: string;
+  writerId: string;
+  localePurityScore: number;
+  sourceHash: string;
+  result: any;
+}
+
+function buildNativeContentRow(opts: BuildNativeContentRowOptions) {
+  const { data, content, generated, destination, writerId, localePurityScore, sourceHash, result } =
+    opts;
   return {
     entityType: (data.entityType || "attraction") as any,
     entityId: data.contentId,
@@ -308,16 +312,16 @@ async function handleNativeContentJob(data: NativeContentJobData): Promise<JobRe
       .join(" ");
     const wordCount = allText.split(/\s+/).filter((w: string) => w.length > 0).length;
 
-    const row = buildNativeContentRow(
+    const row = buildNativeContentRow({
       data,
       content,
       generated,
       destination,
       writerId,
-      purity.score,
+      localePurityScore: purity.score,
       sourceHash,
-      result
-    );
+      result,
+    });
 
     if (existing) {
       await db

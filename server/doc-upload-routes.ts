@@ -21,9 +21,56 @@ function sanitizeForLog(input: string): string {
 
 /** Map contentType to default article category */
 function defaultCategoryForType(contentType: string): string {
-  if (contentType === "dining") return "Dining";
-  if (contentType === "district") return "Districts";
-  return "General";
+  const categoryMap: Record<string, string> = { dining: "Dining", district: "Districts" };
+  return categoryMap[contentType] || "General";
+}
+
+/** Insert parsed document content into the appropriate database table */
+async function insertDocContent(
+  content: {
+    title: string;
+    slug: string;
+    metaTitle: string;
+    metaDescription: string;
+    summary: string;
+    content: any;
+  },
+  contentType: DocContentType,
+  locale: string
+): Promise<number> {
+  const base = {
+    title: content.title,
+    slug: content.slug,
+    locale,
+    status: "draft",
+    metaTitle: content.metaTitle,
+    metaDescription: content.metaDescription,
+    summary: content.summary,
+    content: content.content,
+  };
+
+  if (contentType === "hotel") {
+    const [row] = await db
+      .insert(hotels)
+      .values({ ...base, starRating: 5, priceRange: "$$$$", location: "" } as any)
+      .returning({ id: hotels.id });
+    return Number(row.id);
+  }
+
+  if (contentType === "attraction") {
+    const [row] = await db
+      .insert(attractions)
+      .values({ ...base, category: "Landmarks", location: "" } as any)
+      .returning({ id: attractions.id });
+    return Number(row.id);
+  }
+
+  // article, dining, district all go into articles table
+  const [row] = await db
+    .insert(articles)
+    .values({ ...base, category: defaultCategoryForType(contentType) } as any)
+    .returning({ id: articles.id });
+  return Number(row.id);
 }
 
 // SECURITY: Define valid file types - MIME type MUST match expected extension
@@ -250,87 +297,22 @@ export function registerDocUploadRoutes(app: Express) {
         const failed: Array<{ filename: string; error: string }> = [];
 
         for (const result of results) {
-          if (result.success && result.content) {
-            try {
-              let insertedId: number = 0;
+          if (!result.success || !result.content) {
+            failed.push({ filename: result.filename, error: result.error || "Processing failed" });
+            continue;
+          }
 
-              if (contentType === "hotel") {
-                const [hotelResult] = await db
-                  .insert(hotels)
-                  .values({
-                    title: result.content.title,
-                    slug: result.content.slug,
-                    locale,
-                    status: "draft",
-                    metaTitle: result.content.metaTitle,
-                    metaDescription: result.content.metaDescription,
-                    summary: result.content.summary,
-                    content: result.content.content,
-                    starRating: 5,
-                    priceRange: "$$$$",
-                    location: "",
-                  } as any)
-                  .returning({ id: hotels.id });
-                insertedId = Number(hotelResult.id);
-              } else if (
-                contentType === "article" ||
-                contentType === "dining" ||
-                contentType === "district"
-              ) {
-                const [articleResult] = await db
-                  .insert(articles)
-                  .values({
-                    title: result.content.title,
-                    slug: result.content.slug,
-                    locale,
-                    status: "draft",
-                    metaTitle: result.content.metaTitle,
-                    metaDescription: result.content.metaDescription,
-                    summary: result.content.summary,
-                    content: result.content.content,
-                    category:
-                      contentType === "dining"
-                        ? "Dining"
-                        : contentType === "district"
-                          ? "Districts"
-                          : "General",
-                  } as any)
-                  .returning({ id: articles.id });
-                insertedId = Number(articleResult.id);
-              } else if (contentType === "attraction") {
-                const [attractionResult] = await db
-                  .insert(attractions)
-                  .values({
-                    title: result.content.title,
-                    slug: result.content.slug,
-                    locale,
-                    status: "draft",
-                    metaTitle: result.content.metaTitle,
-                    metaDescription: result.content.metaDescription,
-                    summary: result.content.summary,
-                    content: result.content.content,
-                    category: "Landmarks",
-                    location: "",
-                  } as any)
-                  .returning({ id: attractions.id });
-                insertedId = Number(attractionResult.id);
-              }
-
-              imported.push({
-                filename: result.filename,
-                id: insertedId,
-                title: result.content.title,
-              });
-            } catch (dbError) {
-              failed.push({
-                filename: result.filename,
-                error: dbError instanceof Error ? dbError.message : "Database error",
-              });
-            }
-          } else {
+          try {
+            const insertedId = await insertDocContent(result.content, contentType, locale);
+            imported.push({
+              filename: result.filename,
+              id: insertedId,
+              title: result.content.title,
+            });
+          } catch (dbError) {
             failed.push({
               filename: result.filename,
-              error: result.error || "Processing failed",
+              error: dbError instanceof Error ? dbError.message : "Database error",
             });
           }
         }

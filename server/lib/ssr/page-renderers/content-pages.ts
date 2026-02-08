@@ -224,12 +224,11 @@ export async function renderCategoryPage(
     normalizedItems = await fetchContentItems(contentType);
   }
 
+  const isPaginated = contentType === "attraction";
   const baseUrlPath = `/${contentType}s`;
   // For attractions with pagination, include page in canonical URL (except page 1)
   const urlPath =
-    contentType === "attraction" && currentPage > 1
-      ? `${baseUrlPath}?page=${currentPage}`
-      : baseUrlPath;
+    isPaginated && currentPage > 1 ? `${baseUrlPath}?page=${currentPage}` : baseUrlPath;
 
   const titles: Record<string, string> = {
     article: "Travel Articles & Guides",
@@ -250,18 +249,14 @@ export async function renderCategoryPage(
   };
 
   const title = titles[contentType] || `${capitalizeFirst(contentType)}s`;
-  // Add page number to description for SEO if paginated
   const baseDescription = descriptions[contentType] || `Browse all ${contentType}s on TRAVI.`;
-  const description =
-    contentType === "attraction" && currentPage > 1
-      ? `${baseDescription} Page ${currentPage} of ${totalPages}.`
-      : baseDescription;
-
-  // Page title with pagination
-  const pageTitle =
-    contentType === "attraction" && currentPage > 1
-      ? `${title} - Page ${currentPage} | ${SITE_NAME}`
-      : `${title} | ${SITE_NAME}`;
+  const showPagination = isPaginated && currentPage > 1;
+  const description = showPagination
+    ? `${baseDescription} Page ${currentPage} of ${totalPages}.`
+    : baseDescription;
+  const pageTitle = showPagination
+    ? `${title} - Page ${currentPage} | ${SITE_NAME}`
+    : `${title} | ${SITE_NAME}`;
 
   const metaTags = generateMetaTags({
     title: pageTitle,
@@ -272,7 +267,7 @@ export async function renderCategoryPage(
   });
 
   // Build list items for ItemList structured data (use /attractions/ path for attractions)
-  const itemUrlPrefix = contentType === "attraction" ? "/attractions" : `/${contentType}`;
+  const itemUrlPrefix = isPaginated ? "/attractions" : `/${contentType}`;
   const listItems = normalizedItems.slice(0, 20).map(item => ({
     name: item.title,
     url: getCanonicalUrl(`${itemUrlPrefix}/${item.slug}`, locale),

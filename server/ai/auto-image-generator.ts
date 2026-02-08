@@ -274,6 +274,45 @@ async function generateSectionImage(
   return { image: newImage, cost: sectionCost };
 }
 
+async function generateNeededSectionImages(
+  destination: any,
+  destinationId: string,
+  neededSections: number,
+  existingImages: DestinationImage[]
+): Promise<{ cost: number; count: number; images: DestinationImage[] }> {
+  if (neededSections <= 0) return { cost: 0, count: 0, images: [] };
+
+  const sectionTypes = ["attractions", "hotels", "restaurants", "districts"];
+  const sectionsToGenerate = sectionTypes.slice(0, neededSections);
+  logger.info({ destinationId, sections: sectionsToGenerate }, "Generating section images");
+
+  let cost = 0;
+  let count = 0;
+  const newImages: DestinationImage[] = [];
+
+  for (const section of sectionsToGenerate) {
+    const sectionResult = await generateSectionImage(destination, destinationId, section);
+    if (sectionResult) {
+      cost += sectionResult.cost;
+      newImages.push(sectionResult.image);
+      count++;
+    }
+  }
+
+  if (newImages.length > 0) {
+    await db
+      .update(destinations)
+      .set({
+        images: [...existingImages, ...newImages],
+        lastImageGenerated: new Date(),
+        updatedAt: new Date(),
+      } as any)
+      .where(eq(destinations.id, Number(destinationId)));
+  }
+
+  return { cost, count, images: newImages };
+}
+
 export async function generateDestinationImages(
   destinationId: string,
   config: AutoImageConfig = defaultAutoImageConfig
@@ -329,33 +368,15 @@ export async function generateDestinationImages(
     }
 
     // Generate section images if needed
-    if (neededSections > 0) {
-      const sectionTypes = ["attractions", "hotels", "restaurants", "districts"];
-      const sectionsToGenerate = sectionTypes.slice(0, neededSections);
-      logger.info({ destinationId, sections: sectionsToGenerate }, "Generating section images");
-
-      const newImages: DestinationImage[] = [];
-      for (const section of sectionsToGenerate) {
-        const sectionResult = await generateSectionImage(destination, destinationId, section);
-        if (sectionResult) {
-          totalCost += sectionResult.cost;
-          newImages.push(sectionResult.image);
-          result.sectionImagesGenerated++;
-        }
-      }
-
-      if (newImages.length > 0) {
-        await db
-          .update(destinations)
-          .set({
-            images: [...existingImages, ...newImages],
-            lastImageGenerated: new Date(),
-            updatedAt: new Date(),
-          } as any)
-          .where(eq(destinations.id, Number(destinationId)));
-        result.sectionImages = newImages;
-      }
-    }
+    const sectionGenResult = await generateNeededSectionImages(
+      destination,
+      destinationId,
+      neededSections,
+      existingImages
+    );
+    totalCost += sectionGenResult.cost;
+    result.sectionImagesGenerated = sectionGenResult.count;
+    result.sectionImages = sectionGenResult.images;
 
     await db
       .update(destinations)

@@ -143,128 +143,67 @@ export class SEOAutoFixer {
   /**
    * Automatically fix SEO issues in article
    */
-  autoFix(article: Record<string, unknown>): AutoFixResult {
-    logger.seo.info("Starting SEO auto-fix...");
+  /** Apply a simple field fix: check condition, run fixer, apply result */
+  private applyFieldFix(
+    fixedArticle: Record<string, unknown>,
+    fixes: FixResult[],
+    needsFix: boolean,
+    fixer: () => FixResult,
+    applier: (fixedValue: string) => void
+  ): void {
+    if (!needsFix) return;
+    const result = fixer();
+    fixes.push(result);
+    if (result.success) applier(result.fixedValue);
+  }
 
-    const fixedArticle = { ...article };
-    const fixes: FixResult[] = [];
-
-    // Fix Meta Title
-    if (!this.isValidMetaTitle(fixedArticle)) {
-      const result = this.fixMetaTitle(fixedArticle);
-      fixes.push(result);
-      if (result.success) {
-        fixedArticle.metaTitle = result.fixedValue;
-      }
+  /** Fix hero image alt text */
+  private applyHeroAltFix(fixedArticle: Record<string, unknown>, fixes: FixResult[]): void {
+    if (this.hasValidAltText(fixedArticle)) return;
+    const result = this.fixHeroAltText(fixedArticle);
+    fixes.push(result);
+    if (!result.success) return;
+    const heroImage = fixedArticle.heroImage || fixedArticle.image;
+    if (typeof heroImage === "object" && heroImage) {
+      (heroImage as Record<string, unknown>).altText = result.fixedValue;
+    } else {
+      fixedArticle.heroImage = { url: heroImage as string, altText: result.fixedValue };
     }
+  }
 
-    // Fix Meta Description
-    if (!this.isValidMetaDescription(fixedArticle)) {
-      const result = this.fixMetaDescription(fixedArticle);
-      fixes.push(result);
-      if (result.success) {
-        fixedArticle.metaDescription = result.fixedValue;
-      }
-    }
-
-    // Fix Primary Keyword
-    if (!fixedArticle.primaryKeyword) {
-      const result = this.fixPrimaryKeyword(fixedArticle);
-      fixes.push(result);
-      if (result.success) {
-        fixedArticle.primaryKeyword = result.fixedValue;
-      }
-    }
-
-    // Fix Secondary Keywords
-    const secondaryKeywords = fixedArticle.secondaryKeywords as string[] | undefined;
-    if (!secondaryKeywords || secondaryKeywords.length < 3) {
-      const result = this.fixSecondaryKeywords(fixedArticle);
-      fixes.push(result);
-      if (result.success) {
-        fixedArticle.secondaryKeywords = result.fixedValue.split(", ");
-      }
-    }
-
-    // Fix Hero Image Alt Text
-    if (!this.hasValidAltText(fixedArticle)) {
-      const result = this.fixHeroAltText(fixedArticle);
-      fixes.push(result);
-      if (result.success) {
-        const heroImage = fixedArticle.heroImage || fixedArticle.image;
-        if (typeof heroImage === "object" && heroImage) {
-          (heroImage as Record<string, unknown>).altText = result.fixedValue;
-        } else {
-          fixedArticle.heroImage = { url: heroImage as string, altText: result.fixedValue };
-        }
-      }
-    }
-
-    // Fix All Images Alt Text
+  /** Fix all image alt texts */
+  private applyImageAltFixes(fixedArticle: Record<string, unknown>, fixes: FixResult[]): void {
     const images = (fixedArticle.images || []) as Array<Record<string, unknown>>;
     for (let i = 0; i < images.length; i++) {
       const img = images[i];
-      if (!img.altText && !img.alt) {
-        const result = this.fixImageAltText(fixedArticle, i, img);
-        fixes.push(result);
-        if (result.success) {
-          images[i].altText = result.fixedValue;
-        }
-      }
-    }
-    if (images.length > 0) {
-      fixedArticle.images = images;
-    }
-
-    // Fix Open Graph Tags
-    if (!this.hasValidOgTags(fixedArticle)) {
-      const result = this.fixOgTags(fixedArticle);
+      if (img.altText || img.alt) continue;
+      const result = this.fixImageAltText(fixedArticle, i, img);
       fixes.push(result);
-      if (result.success) {
-        try {
-          fixedArticle.ogTags = JSON.parse(result.fixedValue);
-        } catch (error) {
-          console.error(error);
-          // If parsing fails, create a simple object
-          fixedArticle.ogTags = {
-            "og:title": fixedArticle.metaTitle || fixedArticle.title,
-            "og:description": fixedArticle.metaDescription,
-            "og:image": (fixedArticle.heroImage as Record<string, unknown>)?.url || "",
-          };
-        }
-      }
+      if (result.success) images[i].altText = result.fixedValue;
     }
+    if (images.length > 0) fixedArticle.images = images;
+  }
 
-    // Fix Canonical URL
-    if (!fixedArticle.canonicalUrl) {
-      const result = this.fixCanonicalUrl(fixedArticle);
-      fixes.push(result);
-      if (result.success) {
-        fixedArticle.canonicalUrl = result.fixedValue;
-      }
+  /** Fix Open Graph tags */
+  private applyOgTagsFix(fixedArticle: Record<string, unknown>, fixes: FixResult[]): void {
+    if (this.hasValidOgTags(fixedArticle)) return;
+    const result = this.fixOgTags(fixedArticle);
+    fixes.push(result);
+    if (!result.success) return;
+    try {
+      fixedArticle.ogTags = JSON.parse(result.fixedValue);
+    } catch (error) {
+      console.error(error);
+      fixedArticle.ogTags = {
+        "og:title": fixedArticle.metaTitle || fixedArticle.title,
+        "og:description": fixedArticle.metaDescription,
+        "og:image": (fixedArticle.heroImage as Record<string, unknown>)?.url || "",
+      };
     }
+  }
 
-    // Fix Breadcrumb
-    if (!fixedArticle.breadcrumb) {
-      const result = this.fixBreadcrumb(fixedArticle);
-      fixes.push(result);
-      if (result.success) {
-        fixedArticle.breadcrumb = result.fixedValue.split(" > ");
-      }
-    }
-
-    // Fix Dates
-    if (!fixedArticle.publishedAt || !fixedArticle.updatedAt) {
-      const result = this.fixDates(fixedArticle);
-      fixes.push(result);
-      if (result.success) {
-        const now = new Date().toISOString();
-        if (!fixedArticle.publishedAt) fixedArticle.publishedAt = now;
-        fixedArticle.updatedAt = now;
-      }
-    }
-
-    // Fix Internal Links in content body
+  /** Fix link injection (internal + external) */
+  private applyLinkFixes(fixedArticle: Record<string, unknown>, fixes: FixResult[]): void {
     const internalLinksResult = this.fixInternalLinksInBlocks(fixedArticle);
     if (internalLinksResult.fixed) {
       fixes.push({
@@ -278,7 +217,6 @@ export class SEOAutoFixer {
       fixedArticle.blocks = internalLinksResult.blocks;
     }
 
-    // Fix External Links in content body
     const externalLinksResult = this.fixExternalLinksInBlocks(fixedArticle);
     if (externalLinksResult.fixed) {
       fixes.push({
@@ -291,6 +229,92 @@ export class SEOAutoFixer {
       });
       fixedArticle.blocks = externalLinksResult.blocks;
     }
+  }
+
+  autoFix(article: Record<string, unknown>): AutoFixResult {
+    logger.seo.info("Starting SEO auto-fix...");
+
+    const fixedArticle = { ...article };
+    const fixes: FixResult[] = [];
+
+    this.applyFieldFix(
+      fixedArticle,
+      fixes,
+      !this.isValidMetaTitle(fixedArticle),
+      () => this.fixMetaTitle(fixedArticle),
+      v => {
+        fixedArticle.metaTitle = v;
+      }
+    );
+
+    this.applyFieldFix(
+      fixedArticle,
+      fixes,
+      !this.isValidMetaDescription(fixedArticle),
+      () => this.fixMetaDescription(fixedArticle),
+      v => {
+        fixedArticle.metaDescription = v;
+      }
+    );
+
+    this.applyFieldFix(
+      fixedArticle,
+      fixes,
+      !fixedArticle.primaryKeyword,
+      () => this.fixPrimaryKeyword(fixedArticle),
+      v => {
+        fixedArticle.primaryKeyword = v;
+      }
+    );
+
+    const secondaryKeywords = fixedArticle.secondaryKeywords as string[] | undefined;
+    this.applyFieldFix(
+      fixedArticle,
+      fixes,
+      !secondaryKeywords || secondaryKeywords.length < 3,
+      () => this.fixSecondaryKeywords(fixedArticle),
+      v => {
+        fixedArticle.secondaryKeywords = v.split(", ");
+      }
+    );
+
+    this.applyHeroAltFix(fixedArticle, fixes);
+    this.applyImageAltFixes(fixedArticle, fixes);
+    this.applyOgTagsFix(fixedArticle, fixes);
+
+    this.applyFieldFix(
+      fixedArticle,
+      fixes,
+      !fixedArticle.canonicalUrl,
+      () => this.fixCanonicalUrl(fixedArticle),
+      v => {
+        fixedArticle.canonicalUrl = v;
+      }
+    );
+
+    this.applyFieldFix(
+      fixedArticle,
+      fixes,
+      !fixedArticle.breadcrumb,
+      () => this.fixBreadcrumb(fixedArticle),
+      v => {
+        fixedArticle.breadcrumb = v.split(" > ");
+      }
+    );
+
+    this.applyFieldFix(
+      fixedArticle,
+      fixes,
+      !fixedArticle.publishedAt || !fixedArticle.updatedAt,
+      () => this.fixDates(fixedArticle),
+      _v => {
+        const now = new Date().toISOString();
+        if (!fixedArticle.publishedAt) fixedArticle.publishedAt = now;
+        fixedArticle.updatedAt = now;
+      }
+    );
+
+    this.applyLinkFixes(fixedArticle, fixes);
 
     // Count results
     const applied = fixes.filter(f => f.success).length;

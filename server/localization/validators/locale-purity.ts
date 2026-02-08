@@ -21,7 +21,7 @@ import { getQualityThresholds } from "../cultural-contexts";
 const CURRENCY_CODES = "AED|USD|EUR|GBP|JPY|CNY|INR|RUB|SAR|QAR|BHD|OMR|KWD";
 const MEASUREMENT_UNITS = "km|mi|ft|min|hr|hours?|minutes?|kg|lb|cm|inch|mm";
 const MEASUREMENTS_PATTERN = new RegExp(
-  `\\b\\d+[.,]?\\d*\\s*(${CURRENCY_CODES}|${MEASUREMENT_UNITS}|m)\\b`,
+  String.raw`\b\d+[.,]?\d*\s*(${CURRENCY_CODES}|${MEASUREMENT_UNITS}|m)\b`,
   "gi"
 );
 

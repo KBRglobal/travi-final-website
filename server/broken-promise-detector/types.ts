@@ -56,7 +56,7 @@ export const PROMISE_PATTERNS: { pattern: RegExp; type: PromiseType; description
   // Split numbered-list words to reduce regex complexity
   {
     pattern: new RegExp(
-      `(\\d+)\\s+(${["tips?", "ways?", "steps?", "methods?", "strategies?", "reasons?", "examples?", "ideas?"].join("|")})`,
+      String.raw`(\d+)\s+(${["tips?", "ways?", "steps?", "methods?", "strategies?", "reasons?", "examples?", "ideas?"].join("|")})`,
       "i"
     ),
     type: "title",

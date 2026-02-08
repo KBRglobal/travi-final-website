@@ -498,6 +498,28 @@ interface FallbackMetrics {
   destinationsPatched: number;
 }
 
+/** Log which fallback sections were applied */
+function logFallbackMetrics(metrics: FallbackMetrics): void {
+  const hasAny = Object.values(metrics).some(v => v === true || (typeof v === "number" && v > 0));
+  if (!hasAny) return;
+
+  const sectionMap: Record<string, boolean> = {
+    quickCategories: metrics.quickCategoriesReplaced,
+    experienceCategories: metrics.experienceCategoriesReplaced,
+    regionLinks: metrics.regionLinksReplaced,
+    featuredDestinations: metrics.destinationsReplaced,
+    "hero.slides": metrics.heroSlidesReplaced,
+  };
+  const appliedSections = Object.entries(sectionMap)
+    .filter(([, v]) => v)
+    .map(([k]) => k);
+
+  log.info("[Homepage Fallbacks] Applied server-side fallbacks", {
+    sectionsReplaced: appliedSections,
+    destinationsPatched: metrics.destinationsPatched,
+  });
+}
+
 /**
  * Ensures the homepage config is render-safe by applying fallbacks.
  *
@@ -563,22 +585,7 @@ export function makeRenderSafeHomepageConfig<T extends HomepageDbResult>(dbResul
   }
 
   // Log fallback usage (once per request, only when fallbacks applied)
-  const fallbacksApplied = Object.values(metrics).some(
-    v => v === true || (typeof v === "number" && v > 0)
-  );
-  if (fallbacksApplied) {
-    const appliedSections: string[] = [];
-    if (metrics.quickCategoriesReplaced) appliedSections.push("quickCategories");
-    if (metrics.experienceCategoriesReplaced) appliedSections.push("experienceCategories");
-    if (metrics.regionLinksReplaced) appliedSections.push("regionLinks");
-    if (metrics.destinationsReplaced) appliedSections.push("featuredDestinations");
-    if (metrics.heroSlidesReplaced) appliedSections.push("hero.slides");
-
-    log.info("[Homepage Fallbacks] Applied server-side fallbacks", {
-      sectionsReplaced: appliedSections,
-      destinationsPatched: metrics.destinationsPatched,
-    });
-  }
+  logFallbackMetrics(metrics);
 
   return result as T;
 }

@@ -359,6 +359,153 @@ function filterGuides(guides: Guide[] | undefined, query: string): Guide[] {
   );
 }
 
+function GuidesLoadingSkeleton() {
+  return (
+    <div className="space-y-8">
+      <Skeleton className="h-96 w-full rounded-3xl" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.from({ length: 6 }, (_, i) => `gs-${i}`).map(id => (
+          <div key={id} className="rounded-2xl overflow-hidden bg-white shadow-lg">
+            <Skeleton className="h-56 w-full" />
+            <div className="p-5 space-y-3">
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GuidesErrorCard() {
+  return (
+    <Card className="p-12 text-center bg-white shadow-xl rounded-3xl">
+      <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
+        <BookOpen className="h-8 w-8 text-red-500" />
+      </div>
+      <h3 className="text-xl font-bold text-slate-900 mb-2">Unable to Load Guides</h3>
+      <p className="text-slate-600 mb-6">
+        We encountered an issue loading the travel guides. Please try again.
+      </p>
+      <Button
+        onClick={() => globalThis.location.reload()}
+        className="bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white"
+      >
+        Refresh Page
+      </Button>
+    </Card>
+  );
+}
+
+function GuidesEmptyCard({
+  searchQuery,
+  setSearchQuery,
+}: {
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+}) {
+  return (
+    <Card className="p-12 text-center bg-gradient-to-br from-purple-50 to-pink-50 border-0 shadow-xl rounded-3xl">
+      <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-[#6443F4]/20 to-[#E84C9A]/20 flex items-center justify-center">
+        <BookOpen className="h-8 w-8 text-purple-600" />
+      </div>
+      <h3 className="text-xl font-bold text-slate-900 mb-2">
+        {searchQuery ? "No Guides Found" : "Guides Coming Soon"}
+      </h3>
+      <p className="text-slate-600 mb-6">
+        {searchQuery
+          ? `No guides match "${searchQuery}". Try a different search term.`
+          : "Travel guides are being prepared. Check back soon for comprehensive destination guides!"}
+      </p>
+      {searchQuery && (
+        <Button
+          variant="outline"
+          onClick={() => setSearchQuery("")}
+          data-testid="clear-search-button"
+        >
+          Clear Search
+        </Button>
+      )}
+    </Card>
+  );
+}
+
+function GuidesContentSection({
+  isLoading,
+  error,
+  filteredGuides,
+  featuredGuide,
+  otherGuides,
+  selectedLocale,
+  searchQuery,
+  setSearchQuery,
+  totalGuides,
+}: {
+  isLoading: boolean;
+  error: any;
+  filteredGuides: Guide[];
+  featuredGuide: Guide | undefined;
+  otherGuides: Guide[];
+  selectedLocale: string;
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+  totalGuides: number;
+}) {
+  if (isLoading) return <GuidesLoadingSkeleton />;
+  if (error) return <GuidesErrorCard />;
+  if (filteredGuides.length === 0)
+    return <GuidesEmptyCard searchQuery={searchQuery} setSearchQuery={setSearchQuery} />;
+
+  return (
+    <div className="space-y-16">
+      {featuredGuide && (
+        <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-8"
+          >
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">Featured Guide</h2>
+            <p className="text-slate-600">
+              Start your exploration with our top recommended destination
+            </p>
+          </motion.div>
+          <FeaturedGuideCard guide={featuredGuide} locale={selectedLocale} />
+        </div>
+      )}
+      {otherGuides.length > 0 && (
+        <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-8 flex items-center justify-between"
+          >
+            <div>
+              <h2 className="text-3xl font-bold text-slate-900 mb-2">All Destinations</h2>
+              <p className="text-slate-600">
+                Explore {otherGuides.length} comprehensive travel guides
+              </p>
+            </div>
+            <Badge variant="outline" className="hidden sm:flex">
+              <Globe className="h-3 w-3 mr-1.5" />
+              {totalGuides} Total Guides
+            </Badge>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {otherGuides.map((guide, index) => (
+              <GuideCard key={guide.id} guide={guide} locale={selectedLocale} index={index} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function TravelGuidesPage() {
   const [location] = useLocation();
   const [selectedLocale, setSelectedLocale] = useState("en");
@@ -731,118 +878,17 @@ export default function TravelGuidesPage() {
         {/* Content Section */}
         <section className="relative bg-white dark:bg-slate-950 py-16">
           <div className="max-w-7xl mx-auto px-6 lg:px-12 pb-24">
-            {isLoading ? (
-              <div className="space-y-8">
-                {/* Featured skeleton */}
-                <Skeleton className="h-96 w-full rounded-3xl" />
-                {/* Grid skeleton */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {Array.from({ length: 6 }, (_, i) => `gs-${i}`).map(id => (
-                    <div key={id} className="rounded-2xl overflow-hidden bg-white shadow-lg">
-                      <Skeleton className="h-56 w-full" />
-                      <div className="p-5 space-y-3">
-                        <Skeleton className="h-5 w-3/4" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-2/3" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : error ? (
-              <Card className="p-12 text-center bg-white shadow-xl rounded-3xl">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
-                  <BookOpen className="h-8 w-8 text-red-500" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">Unable to Load Guides</h3>
-                <p className="text-slate-600 mb-6">
-                  We encountered an issue loading the travel guides. Please try again.
-                </p>
-                <Button
-                  onClick={() => globalThis.location.reload()}
-                  className="bg-gradient-to-r from-[#6443F4] to-[#E84C9A] text-white"
-                >
-                  Refresh Page
-                </Button>
-              </Card>
-            ) : filteredGuides.length === 0 ? (
-              <Card className="p-12 text-center bg-gradient-to-br from-purple-50 to-pink-50 border-0 shadow-xl rounded-3xl">
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r from-[#6443F4]/20 to-[#E84C9A]/20 flex items-center justify-center">
-                  <BookOpen className="h-8 w-8 text-purple-600" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">
-                  {searchQuery ? "No Guides Found" : "Guides Coming Soon"}
-                </h3>
-                <p className="text-slate-600 mb-6">
-                  {searchQuery
-                    ? `No guides match "${searchQuery}". Try a different search term.`
-                    : "Travel guides are being prepared. Check back soon for comprehensive destination guides!"}
-                </p>
-                {searchQuery && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setSearchQuery("")}
-                    data-testid="clear-search-button"
-                  >
-                    Clear Search
-                  </Button>
-                )}
-              </Card>
-            ) : (
-              <div className="space-y-16">
-                {/* Featured Guide Spotlight */}
-                {featuredGuide && (
-                  <div>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      className="mb-8"
-                    >
-                      <h2 className="text-3xl font-bold text-slate-900 mb-2">Featured Guide</h2>
-                      <p className="text-slate-600">
-                        Start your exploration with our top recommended destination
-                      </p>
-                    </motion.div>
-                    <FeaturedGuideCard guide={featuredGuide} locale={selectedLocale} />
-                  </div>
-                )}
-
-                {/* All Guides Grid */}
-                {otherGuides.length > 0 && (
-                  <div>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      className="mb-8 flex items-center justify-between"
-                    >
-                      <div>
-                        <h2 className="text-3xl font-bold text-slate-900 mb-2">All Destinations</h2>
-                        <p className="text-slate-600">
-                          Explore {otherGuides.length} comprehensive travel guides
-                        </p>
-                      </div>
-                      <Badge variant="outline" className="hidden sm:flex">
-                        <Globe className="h-3 w-3 mr-1.5" />
-                        {data?.total || 0} Total Guides
-                      </Badge>
-                    </motion.div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {otherGuides.map((guide, index) => (
-                        <GuideCard
-                          key={guide.id}
-                          guide={guide}
-                          locale={selectedLocale}
-                          index={index}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            <GuidesContentSection
+              isLoading={isLoading}
+              error={error}
+              filteredGuides={filteredGuides}
+              featuredGuide={featuredGuide}
+              otherGuides={otherGuides}
+              selectedLocale={selectedLocale}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              totalGuides={data?.total || 0}
+            />
           </div>
         </section>
 

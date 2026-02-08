@@ -636,9 +636,7 @@ class UnifiedEvidenceCollector {
       "",
       `Overall Status: ${bundle.summary.overallStatus.toUpperCase()}`,
       `Security Score: ${bundle.summary.securityScore}/100`,
-      ""
-    );
-    lines.push(
+      "",
       "Key Metrics:",
       ...Object.entries(bundle.summary.metrics).map(([key, value]) => `  - ${key}: ${value}`),
       "",

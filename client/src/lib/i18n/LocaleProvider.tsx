@@ -101,7 +101,7 @@ export function LocaleProvider({ children }: Readonly<LocaleProviderProps>) {
 // Hook to get localized URL
 // Build locale prefix pattern dynamically from supported locales
 const LOCALE_PREFIX_PATTERN = new RegExp(
-  `^\\/(${SUPPORTED_LOCALES.map(l => l.code).join("|")})\\/`
+  String.raw`^\/(${SUPPORTED_LOCALES.map(l => l.code).join("|")})\/`
 );
 
 export function useLocalizedUrl() {

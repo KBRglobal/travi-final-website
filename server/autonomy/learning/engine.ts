@@ -243,28 +243,30 @@ export function detectPatterns(
 /**
  * Generate recommendations based on patterns and metrics
  */
-function makeRecommendation(
-  id: string,
-  type: RecommendationType,
-  priority: "critical" | "high" | "medium" | "low",
-  confidence: number,
-  description: string,
-  rationale: string,
-  suggestedChange: LearningRecommendation["suggestedChange"],
-  estimatedImpact: LearningRecommendation["estimatedImpact"],
-  now: Date
-): LearningRecommendation {
+interface MakeRecommendationOptions {
+  id: string;
+  type: RecommendationType;
+  priority: "critical" | "high" | "medium" | "low";
+  confidence: number;
+  description: string;
+  rationale: string;
+  suggestedChange: LearningRecommendation["suggestedChange"];
+  estimatedImpact: LearningRecommendation["estimatedImpact"];
+  now: Date;
+}
+
+function makeRecommendation(opts: MakeRecommendationOptions): LearningRecommendation {
   return {
-    id,
-    type,
-    priority,
-    confidence,
-    description,
-    rationale,
-    suggestedChange,
-    estimatedImpact,
-    createdAt: now,
-    expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+    id: opts.id,
+    type: opts.type,
+    priority: opts.priority,
+    confidence: opts.confidence,
+    description: opts.description,
+    rationale: opts.rationale,
+    suggestedChange: opts.suggestedChange,
+    estimatedImpact: opts.estimatedImpact,
+    createdAt: opts.now,
+    expiresAt: new Date(opts.now.getTime() + 7 * 24 * 60 * 60 * 1000),
     status: "pending",
   };
 }
@@ -279,29 +281,29 @@ function buildLoosenRecommendation(
   const confidence = Math.min(0.95, 0.5 + metrics.overBlockingRate);
   if (confidence < threshold) return null;
 
-  return makeRecommendation(
-    `rec-loosen-${feature}-${now.getTime()}`,
-    "loosen_budget",
-    metrics.overBlockingRate > 0.3 ? "high" : "medium",
+  return makeRecommendation({
+    id: `rec-loosen-${feature}-${now.getTime()}`,
+    type: "loosen_budget",
+    priority: metrics.overBlockingRate > 0.3 ? "high" : "medium",
     confidence,
-    `Consider loosening budget for ${feature}`,
-    `${(metrics.overBlockingRate * 100).toFixed(1)}% of blocks were overridden, suggesting over-blocking`,
-    {
+    description: `Consider loosening budget for ${feature}`,
+    rationale: `${(metrics.overBlockingRate * 100).toFixed(1)}% of blocks were overridden, suggesting over-blocking`,
+    suggestedChange: {
       targetFeature: feature,
       field: "budgetLimits.maxActions",
       currentValue: 100,
       suggestedValue: Math.round(100 * (1 + metrics.overBlockingRate)),
       delta: metrics.overBlockingRate,
     },
-    {
+    estimatedImpact: {
       blocksChange: -metrics.overBlockingRate * 100,
       incidentsChange: 5,
       costChange: 10,
       overridesChange: -50,
       confidence: confidence * 0.8,
     },
-    now
-  );
+    now,
+  });
 }
 
 function buildTightenRecommendation(
@@ -314,29 +316,29 @@ function buildTightenRecommendation(
   const confidence = Math.min(0.95, 0.6 + metrics.incidentRate * 2);
   if (confidence < threshold) return null;
 
-  return makeRecommendation(
-    `rec-tighten-${feature}-${now.getTime()}`,
-    "tighten_budget",
-    metrics.incidentRate > 0.15 ? "critical" : "high",
+  return makeRecommendation({
+    id: `rec-tighten-${feature}-${now.getTime()}`,
+    type: "tighten_budget",
+    priority: metrics.incidentRate > 0.15 ? "critical" : "high",
     confidence,
-    `Consider tightening budget for ${feature}`,
-    `${(metrics.incidentRate * 100).toFixed(1)}% of allowed operations caused incidents`,
-    {
+    description: `Consider tightening budget for ${feature}`,
+    rationale: `${(metrics.incidentRate * 100).toFixed(1)}% of allowed operations caused incidents`,
+    suggestedChange: {
       targetFeature: feature,
       field: "budgetLimits.maxActions",
       currentValue: 100,
       suggestedValue: Math.round(100 * (1 - metrics.incidentRate)),
       delta: -metrics.incidentRate,
     },
-    {
+    estimatedImpact: {
       blocksChange: 20,
       incidentsChange: -metrics.incidentRate * 100,
       costChange: -15,
       overridesChange: 10,
       confidence: confidence * 0.85,
     },
-    now
-  );
+    now,
+  });
 }
 
 function buildTimeWindowRecommendation(
@@ -348,28 +350,28 @@ function buildTimeWindowRecommendation(
   const timePattern = patterns.find(p => p.type === "time_cluster");
   if (!timePattern || timePattern.confidence < threshold) return null;
 
-  return makeRecommendation(
-    `rec-window-${feature}-${now.getTime()}`,
-    "shorten_window",
-    "medium",
-    timePattern.confidence,
-    `Adjust time window for ${feature}`,
-    timePattern.description,
-    {
+  return makeRecommendation({
+    id: `rec-window-${feature}-${now.getTime()}`,
+    type: "shorten_window",
+    priority: "medium",
+    confidence: timePattern.confidence,
+    description: `Adjust time window for ${feature}`,
+    rationale: timePattern.description,
+    suggestedChange: {
       targetFeature: feature,
       field: "allowedHours",
       currentValue: { startHour: 0, endHour: 24 },
       suggestedValue: { startHour: 9, endHour: 18 },
     },
-    {
+    estimatedImpact: {
       blocksChange: -10,
       incidentsChange: 0,
       costChange: -20,
       overridesChange: -15,
       confidence: timePattern.confidence * 0.7,
     },
-    now
-  );
+    now,
+  });
 }
 
 function storeRecommendations(recommendations: LearningRecommendation[], max: number): void {

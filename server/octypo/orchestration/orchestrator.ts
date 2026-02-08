@@ -76,24 +76,13 @@ export class OctypoOrchestrator {
 
     while (retryCount < this.config.maxRetries) {
       try {
-        const content =
-          retryCount === 0
-            ? await writer.execute({
-                attractionData: attraction,
-                sections: [
-                  "introduction",
-                  "whatToExpect",
-                  "visitorTips",
-                  "howToGetThere",
-                  "faq",
-                  "answerCapsule",
-                  "metaTitle",
-                  "metaDescription",
-                ],
-                targetWordCount: 2500, // Target 2,200-3,000 words for long-form SEO content
-                locale: "en",
-              })
-            : await this.regenerateWithCorrections(attraction, lastContent!, lastValidationResults);
+        const content = await this.generateOrCorrect(
+          writer,
+          attraction,
+          retryCount,
+          lastContent,
+          lastValidationResults
+        );
 
         content.schemaPayload = schemaGenerator.generateTouristAttractionSchema(
           attraction,
@@ -107,24 +96,9 @@ export class OctypoOrchestrator {
         lastQualityScore = qualityScore;
         lastValidationResults = validationResults;
 
-        // Use passed flag directly - it already encapsulates all quality criteria
         if (qualityScore.passed) {
           const linkResult = await this.runLinkProcessor(attraction, content);
-
-          if (linkResult.success && linkResult.linksAdded > 0) {
-            if (linkResult.processedContent.introduction) {
-              content.introduction = linkResult.processedContent.introduction;
-            }
-            if (linkResult.processedContent.whatToExpect) {
-              content.whatToExpect = linkResult.processedContent.whatToExpect;
-            }
-            if (linkResult.processedContent.visitorTips) {
-              content.visitorTips = linkResult.processedContent.visitorTips;
-            }
-            if (linkResult.processedContent.howToGetThere) {
-              content.howToGetThere = linkResult.processedContent.howToGetThere;
-            }
-          }
+          this.applyLinkResults(content, linkResult);
 
           return {
             success: true,
@@ -142,7 +116,6 @@ export class OctypoOrchestrator {
         retryCount++;
       } catch (error) {
         retryCount++;
-
         if (retryCount >= this.config.maxRetries) {
           return {
             success: false,
@@ -155,7 +128,6 @@ export class OctypoOrchestrator {
             generationTimeMs: Date.now() - startTime,
           };
         }
-
         await new Promise(resolve => setTimeout(resolve, 2000));
       }
     }
@@ -441,6 +413,43 @@ export class OctypoOrchestrator {
           BLUEPRINT_REQUIREMENTS.honestLimitations.min - 1,
       },
     };
+  }
+
+  private async generateOrCorrect(
+    writer: any,
+    attraction: AttractionData,
+    retryCount: number,
+    lastContent: GeneratedAttractionContent | undefined,
+    lastValidationResults: ValidationResult[]
+  ): Promise<GeneratedAttractionContent> {
+    if (retryCount === 0) {
+      return writer.execute({
+        attractionData: attraction,
+        sections: [
+          "introduction",
+          "whatToExpect",
+          "visitorTips",
+          "howToGetThere",
+          "faq",
+          "answerCapsule",
+          "metaTitle",
+          "metaDescription",
+        ],
+        targetWordCount: 2500,
+        locale: "en",
+      });
+    }
+    return this.regenerateWithCorrections(attraction, lastContent!, lastValidationResults);
+  }
+
+  private applyLinkResults(content: GeneratedAttractionContent, linkResult: any): void {
+    if (!linkResult.success || linkResult.linksAdded <= 0) return;
+    const fields = ["introduction", "whatToExpect", "visitorTips", "howToGetThere"] as const;
+    for (const field of fields) {
+      if (linkResult.processedContent[field]) {
+        (content as any)[field] = linkResult.processedContent[field];
+      }
+    }
   }
 
   private async regenerateWithCorrections(

@@ -103,6 +103,49 @@ interface ArticleImageResult {
   source: "library" | "freepik";
 }
 
+function createFallbackImage(title: string, contentType: string): GeneratedImage {
+  const searchQuery = encodeURIComponent(`${title} ${contentType} dubai travel`.substring(0, 50));
+  return {
+    url: `https://source.unsplash.com/1200x800/?${searchQuery}`,
+    filename: `hero-${Date.now()}.jpg`,
+    type: "hero",
+    alt: `${title} - Dubai Travel`,
+    caption: `${title} - Dubai Travel Guide`,
+  };
+}
+
+async function findImageBySearchConditions(
+  aiGeneratedImages: any,
+  searchConditions: any[],
+  category: string
+): Promise<any> {
+  if (searchConditions.length > 0) {
+    const approvedImages = await db
+      .select()
+      .from(aiGeneratedImages)
+      .where(and(eq(aiGeneratedImages.isApproved, true), or(...searchConditions)))
+      .orderBy(desc(aiGeneratedImages.usageCount))
+      .limit(1);
+    if (approvedImages.length > 0) return approvedImages[0];
+
+    const anyImages = await db
+      .select()
+      .from(aiGeneratedImages)
+      .where(or(...searchConditions))
+      .orderBy(desc(aiGeneratedImages.createdAt))
+      .limit(1);
+    if (anyImages.length > 0) return anyImages[0];
+  }
+
+  const categoryImages = await db
+    .select()
+    .from(aiGeneratedImages)
+    .where(eq(aiGeneratedImages.category, category))
+    .orderBy(desc(aiGeneratedImages.isApproved), desc(aiGeneratedImages.createdAt))
+    .limit(1);
+  return categoryImages[0] || null;
+}
+
 async function findOrCreateArticleImage(
   topic: string,
   keywords: string[],
@@ -120,44 +163,11 @@ async function findOrCreateArticleImage(
       )
     );
 
-    let foundImage = null;
-
-    if (searchConditions.length > 0) {
-      const approvedImages = await db
-        .select()
-        .from(aiGeneratedImages)
-        .where(and(eq(aiGeneratedImages.isApproved, true), or(...searchConditions)))
-        .orderBy(desc(aiGeneratedImages.usageCount))
-        .limit(1);
-
-      if (approvedImages.length > 0) {
-        foundImage = approvedImages[0];
-      } else {
-        const anyImages = await db
-          .select()
-          .from(aiGeneratedImages)
-          .where(or(...searchConditions))
-          .orderBy(desc(aiGeneratedImages.createdAt))
-          .limit(1);
-
-        if (anyImages.length > 0) {
-          foundImage = anyImages[0];
-        }
-      }
-    }
-
-    if (!foundImage) {
-      const categoryImages = await db
-        .select()
-        .from(aiGeneratedImages)
-        .where(eq(aiGeneratedImages.category, category))
-        .orderBy(desc(aiGeneratedImages.isApproved), desc(aiGeneratedImages.createdAt))
-        .limit(1);
-
-      if (categoryImages.length > 0) {
-        foundImage = categoryImages[0];
-      }
-    }
+    const foundImage = await findImageBySearchConditions(
+      aiGeneratedImages,
+      searchConditions,
+      category
+    );
 
     if (foundImage) {
       await db
@@ -699,31 +709,23 @@ Return valid JSON only.`;
             .split(/\s+/)
             .filter(w => w.length > 0).length;
 
+        const sumWords = (items: any[] | undefined, field?: string): number =>
+          (items || []).reduce(
+            (sum, item) => sum + countWords(field ? item[field] || "" : item || ""),
+            0
+          );
+
         const getArticleWordCount = (article: any): number => {
-          let totalWords = 0;
-          if (article.article?.intro) totalWords += countWords(article.article.intro);
-          if (article.article?.sections) {
-            for (const section of article.article.sections) {
-              if (section.body) totalWords += countWords(section.body);
-            }
-          }
-          if (article.article?.proTips) {
-            for (const tip of article.article.proTips) {
-              totalWords += countWords(tip);
-            }
-          }
-          if (article.article?.goodToKnow) {
-            for (const item of article.article.goodToKnow) {
-              totalWords += countWords(item);
-            }
-          }
-          if (article.article?.faq) {
-            for (const faq of article.article.faq) {
-              if (faq.a) totalWords += countWords(faq.a);
-            }
-          }
-          if (article.article?.closing) totalWords += countWords(article.article.closing);
-          return totalWords;
+          const a = article.article;
+          if (!a) return 0;
+          return (
+            countWords(a.intro || "") +
+            sumWords(a.sections, "body") +
+            sumWords(a.proTips) +
+            sumWords(a.goodToKnow) +
+            sumWords(a.faq?.map((f: any) => f.a)) +
+            countWords(a.closing || "")
+          );
         };
 
         const MIN_WORD_TARGET = 1800;
@@ -1512,28 +1514,10 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
         const hasFreepik = !!process.env.FREEPIK_API_KEY;
 
         if (!hasOpenAI && !hasReplicate) {
-          addSystemLog(
-            "info",
-            "images",
-            `No AI image API configured, using ${hasFreepik ? "Freepik" : "Unsplash"} fallback`
-          );
-
-          const searchQuery = encodeURIComponent(
-            `${title} ${contentType} dubai travel`.substring(0, 50)
-          );
-          const fallbackImages: GeneratedImage[] = [];
-
-          if (generateHero !== false) {
-            const heroUrl = `https://source.unsplash.com/1200x800/?${searchQuery}`;
-            fallbackImages.push({
-              url: heroUrl,
-              filename: `hero-${Date.now()}.jpg`,
-              type: "hero",
-              alt: `${title} - Dubai Travel`,
-              caption: `${title} - Dubai Travel Guide`,
-            });
-          }
-
+          const source = hasFreepik ? "freepik" : "unsplash";
+          addSystemLog("info", "images", `No AI image API configured, using ${source} fallback`);
+          const fallbackImages =
+            generateHero !== false ? [createFallbackImage(title, contentType)] : [];
           addSystemLog(
             "info",
             "images",
@@ -1541,7 +1525,7 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           );
           return res.json({
             images: fallbackImages,
-            source: hasFreepik ? "freepik" : "unsplash",
+            source,
             message: "Using stock images (AI image generation not configured)",
           });
         }
@@ -1573,34 +1557,12 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
             "images",
             `AI image generation error: ${genError instanceof Error ? genError.message : "Unknown error"}`
           );
-          const searchQuery = encodeURIComponent(
-            `${title} ${contentType} dubai travel`.substring(0, 50)
-          );
-          images = [
-            {
-              url: `https://source.unsplash.com/1200x800/?${searchQuery}`,
-              filename: `hero-${Date.now()}.jpg`,
-              type: "hero",
-              alt: `${title} - Dubai Travel`,
-              caption: `${title} - Dubai Travel Guide`,
-            },
-          ];
+          images = [createFallbackImage(title, contentType)];
         }
 
         if (images.length === 0) {
           addSystemLog("warning", "images", `No images generated for "${title}", using fallback`);
-          const searchQuery = encodeURIComponent(
-            `${title} ${contentType} dubai travel`.substring(0, 50)
-          );
-          images = [
-            {
-              url: `https://source.unsplash.com/1200x800/?${searchQuery}`,
-              filename: `hero-${Date.now()}.jpg`,
-              type: "hero",
-              alt: `${title} - Dubai Travel`,
-              caption: `${title} - Dubai Travel Guide`,
-            },
-          ];
+          images = [createFallbackImage(title, contentType)];
         }
 
         const storedImages: GeneratedImage[] = [];

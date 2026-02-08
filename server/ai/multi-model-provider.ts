@@ -213,6 +213,49 @@ export class MultiModelProvider {
     this.providers.push({ name, available: false, priority, reason });
   }
 
+  private initializeSingleKeyProvider(
+    name: string,
+    priority: number,
+    model: string,
+    key: string | null | undefined,
+    factory: (key: string) => void
+  ): void {
+    if (!key) {
+      this.addDisabledProvider(name, priority, "No API key configured");
+      return;
+    }
+    try {
+      factory(key);
+      this.providers.push({ name, available: true, priority, model });
+      logger.info(`${name} provider initialized successfully`);
+    } catch (error) {
+      logger.warn({ error: String(error) }, `Failed to initialize ${name} provider`);
+    }
+  }
+
+  private initializeMultiKeyProvider(
+    name: string,
+    priority: number,
+    model: string,
+    keys: string[],
+    factory: (keys: string[]) => void
+  ): void {
+    if (keys.length === 0) {
+      this.addDisabledProvider(name, priority, "No API key configured");
+      return;
+    }
+    try {
+      factory(keys);
+      this.providers.push({ name, available: true, priority, model });
+      logger.info(
+        { keyCount: keys.length },
+        `${name} provider initialized with ${keys.length} parallel API keys`
+      );
+    } catch (error) {
+      logger.warn({ error: String(error) }, `Failed to initialize ${name} provider`);
+    }
+  }
+
   private async initializeProviders(): Promise<void> {
     this.providers = [];
 
@@ -225,64 +268,24 @@ export class MultiModelProvider {
     // Priority 1: Anthropic
     const anthropicKeys = this.getAllAnthropicKeys();
     const anthropicBaseUrl = process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL;
-    if (anthropicKeys.length > 0) {
-      try {
-        this.anthropicClients = anthropicKeys.map(
-          key => new AnthropicCtor({ apiKey: key, baseURL: anthropicBaseUrl || undefined })
-        );
-        this.providers.push({
-          name: "anthropic",
-          available: true,
-          priority: 1,
-          model: "claude-sonnet-4-5",
-        });
-        logger.info(
-          { keyCount: anthropicKeys.length },
-          `Anthropic provider initialized with ${anthropicKeys.length} parallel API keys`
-        );
-      } catch (error) {
-        logger.warn({ error: String(error) }, "Failed to initialize Anthropic provider");
-      }
-    } else {
-      this.addDisabledProvider("anthropic", 1, "No API key configured");
-    }
+    this.initializeMultiKeyProvider("anthropic", 1, "claude-sonnet-4-5", anthropicKeys, keys => {
+      this.anthropicClients = keys.map(
+        key => new AnthropicCtor({ apiKey: key, baseURL: anthropicBaseUrl || undefined })
+      );
+    });
 
     // Priority 2: OpenAI
     const openaiKey = this.getOpenAIKey();
-    const openaiBaseUrl = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
-    if (openaiKey) {
-      try {
-        this.openaiClient = new OpenAICtor({
-          apiKey: openaiKey,
-          baseURL: openaiBaseUrl || undefined,
-        });
-        this.providers.push({ name: "openai", available: true, priority: 2, model: "gpt-4o" });
-        logger.info("OpenAI provider initialized successfully");
-      } catch (error) {
-        logger.warn({ error: String(error) }, "Failed to initialize OpenAI provider");
-      }
-    } else {
-      this.addDisabledProvider("openai", 2, "No API key configured");
-    }
+    this.initializeSingleKeyProvider("openai", 2, "gpt-4o", openaiKey, key => {
+      const openaiBaseUrl = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
+      this.openaiClient = new OpenAICtor({ apiKey: key, baseURL: openaiBaseUrl || undefined });
+    });
 
     // Priority 3: Gemini
     const geminiKey = this.getGeminiKey();
-    if (geminiKey) {
-      try {
-        this.geminiClient = new GoogleGenAICtor(geminiKey);
-        this.providers.push({
-          name: "gemini",
-          available: true,
-          priority: 3,
-          model: "gemini-1.5-pro",
-        });
-        logger.info("Gemini provider initialized successfully");
-      } catch (error) {
-        logger.warn({ error: String(error) }, "Failed to initialize Gemini provider");
-      }
-    } else {
-      this.addDisabledProvider("gemini", 3, "No API key configured");
-    }
+    this.initializeSingleKeyProvider("gemini", 3, "gemini-1.5-pro", geminiKey, key => {
+      this.geminiClient = new GoogleGenAICtor(key);
+    });
 
     // Priority 4: OpenRouter
     this.openrouterClient = this.initializeSimpleOpenAIProvider(
@@ -323,46 +326,17 @@ export class MultiModelProvider {
 
     // Priority 9: Helicone
     const heliconeKeys = this.getAllHeliconeKeys();
-    if (heliconeKeys.length > 0) {
-      try {
-        this.heliconeClients = heliconeKeys.map(
-          key => new OpenAICtor({ apiKey: key, baseURL: "https://ai-gateway.helicone.ai" })
-        );
-        this.providers.push({
-          name: "helicone",
-          available: true,
-          priority: 9,
-          model: "gpt-4o-mini",
-        });
-        logger.info(
-          { keyCount: heliconeKeys.length },
-          `Helicone provider initialized with ${heliconeKeys.length} parallel API keys`
-        );
-      } catch (error) {
-        logger.warn({ error: String(error) }, "Failed to initialize Helicone provider");
-      }
-    } else {
-      this.addDisabledProvider("helicone", 9, "No API key configured");
-    }
+    this.initializeMultiKeyProvider("helicone", 9, "gpt-4o-mini", heliconeKeys, keys => {
+      this.heliconeClients = keys.map(
+        key => new OpenAICtor({ apiKey: key, baseURL: "https://ai-gateway.helicone.ai" })
+      );
+    });
 
     // Priority 10: Eden AI
     const edenKey = process.env.EDEN_API_KEY;
-    if (edenKey) {
-      try {
-        this.edenClient = { apiKey: edenKey };
-        this.providers.push({
-          name: "eden",
-          available: true,
-          priority: 10,
-          model: "openai/gpt-4o",
-        });
-        logger.info("Eden AI provider initialized successfully");
-      } catch (error) {
-        logger.warn({ error: String(error) }, "Failed to initialize Eden AI provider");
-      }
-    } else {
-      this.addDisabledProvider("eden", 10, "No API key configured");
-    }
+    this.initializeSingleKeyProvider("eden", 10, "openai/gpt-4o", edenKey, key => {
+      this.edenClient = { apiKey: key };
+    });
 
     this.providers.sort((a, b) => a.priority - b.priority);
     const availableCount = this.providers.filter(p => p.available).length;

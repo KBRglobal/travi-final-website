@@ -355,8 +355,7 @@ export class SEOValidationAgent {
     const primaryKeyword = content.primaryKeyword || "";
     const checks: SEOCheck[] = [];
 
-    checks.push(this.checkMetaTitle(content, primaryKeyword));
-    checks.push(this.checkMetaDescription(content));
+    checks.push(this.checkMetaTitle(content, primaryKeyword), this.checkMetaDescription(content));
 
     // 3. Primary Keyword defined
     const hasPrimaryKeyword = !!content.primaryKeyword && content.primaryKeyword.length > 2;
@@ -415,18 +414,18 @@ export class SEOValidationAgent {
     // 7. H2 Structure (3-8 H2s)
     const h2Count = this.countH2Sections(content);
     const h2Valid = h2Count >= 3 && h2Count <= 8;
-    checks.push({
-      name: "h2_structure",
-      tier: "tier1_critical",
-      passed: h2Valid,
-      message: `H2 Headers: ${h2Count} (need 3-8)`,
-      currentValue: h2Count,
-      requiredValue: "3-8",
-      autoFixable: false,
-    });
-
-    // 8-9. Image checks
-    checks.push(...this.checkImageAltTexts(content));
+    checks.push(
+      {
+        name: "h2_structure",
+        tier: "tier1_critical",
+        passed: h2Valid,
+        message: `H2 Headers: ${h2Count} (need 3-8)`,
+        currentValue: h2Count,
+        requiredValue: "3-8",
+        autoFixable: false,
+      },
+      ...this.checkImageAltTexts(content)
+    );
 
     return checks;
   }
@@ -751,12 +750,14 @@ export class SEOValidationAgent {
       content.content || "",
     ];
 
-    parts.push(...this.collectBlockText(content.blocks));
-    if (content.quickFacts) parts.push(content.quickFacts.join(" "));
-    parts.push(...this.collectSectionText(content.mainSections));
-    parts.push(...this.collectFaqText(content.faq));
-    parts.push(...this.collectTipsText(content));
-    if (content.conclusion) parts.push(content.conclusion);
+    parts.push(
+      ...this.collectBlockText(content.blocks),
+      ...(content.quickFacts ? [content.quickFacts.join(" ")] : []),
+      ...this.collectSectionText(content.mainSections),
+      ...this.collectFaqText(content.faq),
+      ...this.collectTipsText(content),
+      ...(content.conclusion ? [content.conclusion] : [])
+    );
 
     return parts.filter(Boolean).join(" ");
   }

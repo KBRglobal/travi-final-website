@@ -426,26 +426,27 @@ function fixArticleMeta(result: any): void {
 /**
  * Remove clichés from article sections, pro tips, and FAQs
  */
+function removeClichesFromSections(sections: any[]): void {
+  for (const section of sections) {
+    if (section.heading) section.heading = removeClichesFromText(section.heading);
+    if (section.body) section.body = removeClichesFromText(section.body);
+  }
+}
+
+function removeClichesFromFaqs(faqs: any[]): void {
+  for (const faq of faqs) {
+    if (faq.q) faq.q = removeClichesFromText(faq.q);
+    if (faq.a) faq.a = removeClichesFromText(faq.a);
+  }
+}
+
 function fixArticleContent(result: any): void {
-  if (result.article?.sections && Array.isArray(result.article.sections)) {
-    for (const section of result.article.sections) {
-      if (section.heading) section.heading = removeClichesFromText(section.heading);
-      if (section.body) section.body = removeClichesFromText(section.body);
-    }
-  }
+  const article = result.article;
+  if (!article) return;
 
-  if (result.article?.proTips && Array.isArray(result.article.proTips)) {
-    result.article.proTips = result.article.proTips.map((tip: string) =>
-      removeClichesFromText(tip)
-    );
-  }
-
-  if (result.article?.faq && Array.isArray(result.article.faq)) {
-    for (const faq of result.article.faq) {
-      if (faq.q) faq.q = removeClichesFromText(faq.q);
-      if (faq.a) faq.a = removeClichesFromText(faq.a);
-    }
-  }
+  if (Array.isArray(article.sections)) removeClichesFromSections(article.sections);
+  if (Array.isArray(article.proTips)) article.proTips = article.proTips.map(removeClichesFromText);
+  if (Array.isArray(article.faq)) removeClichesFromFaqs(article.faq);
 }
 
 /**

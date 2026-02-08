@@ -145,8 +145,7 @@ export function validatePasswordStrength(
     errors.push(`Password must be at least ${PASSWORD_POLICY.minLength} characters long`);
   }
 
-  errors.push(...checkCharacterRequirements(password));
-  errors.push(...checkWeakPatterns(password));
+  errors.push(...checkCharacterRequirements(password), ...checkWeakPatterns(password));
 
   // Use zxcvbn for comprehensive strength analysis
   const strengthResult = zxcvbn(password, userInputs || []);

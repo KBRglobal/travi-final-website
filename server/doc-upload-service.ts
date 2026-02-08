@@ -96,6 +96,36 @@ function isHeading(text: string): boolean {
  * Parse a TXT file buffer into structured content
  * Uses conservative heading detection to preserve paragraph structure
  */
+/** Process a single paragraph into sections, updating title as needed */
+function processParagraph(
+  paragraph: string,
+  sections: Array<{ heading: string; content: string; level: number }>,
+  getTitle: () => string,
+  setTitle: (t: string) => void
+): void {
+  if (isHeading(paragraph)) {
+    const heading = paragraph.split("\n")[0].replace(/:$/, "").trim();
+    const remainingContent = paragraph.split("\n").slice(1).join("\n").trim();
+    if (sections.length === 0) setTitle(heading);
+    sections.push({ heading, content: remainingContent, level: sections.length === 0 ? 1 : 2 });
+    return;
+  }
+
+  if (sections.length > 0) {
+    const lastSection = sections.at(-1)!;
+    lastSection.content = lastSection.content
+      ? lastSection.content + "\n\n" + paragraph
+      : paragraph;
+    return;
+  }
+
+  // Content before first heading
+  const firstLine = paragraph.split("\n")[0];
+  const title = firstLine.length < 80 ? firstLine : "Imported Document";
+  setTitle(title);
+  sections.push({ heading: title, content: paragraph, level: 1 });
+}
+
 export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
   const rawText = buffer.toString("utf-8");
   const wordCount = rawText.split(/\s+/).filter(Boolean).length;
@@ -110,35 +140,14 @@ export async function parseTxtFile(buffer: Buffer): Promise<ParsedDocContent> {
   let title = "Untitled Document";
 
   for (const paragraph of paragraphs) {
-    if (isHeading(paragraph)) {
-      const heading = paragraph.split("\n")[0].replace(/:$/, "").trim();
-      const remainingContent = paragraph.split("\n").slice(1).join("\n").trim();
-
-      if (sections.length === 0) {
-        title = heading;
+    processParagraph(
+      paragraph,
+      sections,
+      () => title,
+      t => {
+        title = t;
       }
-
-      sections.push({
-        heading,
-        content: remainingContent,
-        level: sections.length === 0 ? 1 : 2,
-      });
-    } else if (sections.length > 0) {
-      // Append to last section
-      const lastSection = sections.at(-1)!;
-      lastSection.content = lastSection.content
-        ? lastSection.content + "\n\n" + paragraph
-        : paragraph;
-    } else {
-      // Content before first heading - use first line as title
-      const firstLine = paragraph.split("\n")[0];
-      title = firstLine.length < 80 ? firstLine : "Imported Document";
-      sections.push({
-        heading: title,
-        content: paragraph,
-        level: 1,
-      });
-    }
+    );
   }
 
   // If no sections found, create one with all content
@@ -356,6 +365,35 @@ function stripHtml(html: string): string {
 /**
  * Convert parsed document to CMS content blocks
  */
+const TIP_PATTERN = /^(visit|try|book|avoid|don't|make sure|remember|tip:|pro tip:)/i;
+
+/** Categorize list items into tips, facts, and FAQs */
+function categorizeListItems(lists: Array<{ items: string[] }>): {
+  tips: string[];
+  facts: string[];
+  faqs: Array<{ question: string; answer: string }>;
+} {
+  const tips: string[] = [];
+  const facts: string[] = [];
+  const faqs: Array<{ question: string; answer: string }> = [];
+
+  for (const list of lists) {
+    for (const item of list.items) {
+      if (TIP_PATTERN.exec(item) || item.length > 100) {
+        tips.push(item);
+      } else if (item.length < 100 && !item.includes("?")) {
+        facts.push(item);
+      } else if (item.includes("?")) {
+        const parts = item.split("?");
+        if (parts.length >= 2) {
+          faqs.push({ question: parts[0].trim() + "?", answer: parts.slice(1).join("?").trim() });
+        }
+      }
+    }
+  }
+  return { tips, facts, faqs };
+}
+
 export function convertToContentBlocks(
   parsed: ParsedDocContent,
   contentType: DocContentType
@@ -393,36 +431,8 @@ export function convertToContentBlocks(
     }
   }
 
-  // 3. Extract tips from lists (if any list has "tip" in context or items start with action words)
-  const tips: string[] = [];
-  const facts: string[] = [];
-  const faqs: Array<{ question: string; answer: string }> = [];
-
-  for (const list of parsed.lists) {
-    for (const item of list.items) {
-      // Detect tips (action-oriented items)
-      if (
-        /^(visit|try|book|avoid|don't|make sure|remember|tip:|pro tip:)/i.exec(item) ||
-        item.length > 100
-      ) {
-        tips.push(item);
-      }
-      // Detect facts (short informational items)
-      else if (item.length < 100 && !item.includes("?")) {
-        facts.push(item);
-      }
-      // Detect Q&A format
-      else if (item.includes("?")) {
-        const parts = item.split("?");
-        if (parts.length >= 2) {
-          faqs.push({
-            question: parts[0].trim() + "?",
-            answer: parts.slice(1).join("?").trim(),
-          });
-        }
-      }
-    }
-  }
+  // 3. Extract tips, facts, and FAQs from lists
+  const { tips, facts, faqs } = categorizeListItems(parsed.lists);
 
   // 4. Add tips block if we have tips
   if (tips.length > 0) {
