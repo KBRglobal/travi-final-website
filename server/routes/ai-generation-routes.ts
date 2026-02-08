@@ -33,7 +33,7 @@ function cleanJsonFromMarkdown(content: string): string {
   cleaned = cleaned.trim() || "{}";
 
   cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
-    return match.replaceAll(new RegExp(String.raw`[\x00-\x1f\x7f]`, "g"), char => {
+    return match.replaceAll(/[\u0000-\u001f\u007f]/g, char => {
       // NOSONAR - intentional control char handling
       const code = char.codePointAt(0)!;
       if (code === 0x09) return String.raw`\t`;

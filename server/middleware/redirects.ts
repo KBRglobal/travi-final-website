@@ -115,7 +115,8 @@ function tryOldAttractionRedirect(res: Response, path: string): boolean {
   const safeSlug = match[2].replaceAll(/[^a-zA-Z0-9_-]/g, "");
   if (!safeSlug) return false;
   const safePath = `/${cityLower}/attractions/${safeSlug}`;
-  res.redirect(301, `https://${CANONICAL_DOMAIN}${safePath}`);
+  // Use relative path to avoid open-redirect via CANONICAL_DOMAIN env var
+  res.redirect(301, safePath);
   return true;
 }
 

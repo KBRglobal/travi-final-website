@@ -324,6 +324,72 @@ async function handleMfaPreAuth(opts: {
   });
 }
 
+/** Core password login logic extracted from the route handler to reduce cognitive complexity */
+async function handlePasswordLogin(
+  req: Request,
+  res: Response,
+  adminUsername: string,
+  adminPasswordHash: string | undefined
+): Promise<void> {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    res.status(400).json({ error: "Username and password are required" });
+    return;
+  }
+
+  const ip = req.ip || req.socket.remoteAddress || "unknown";
+
+  // SECURITY: Check dual lockout (IP + username) BEFORE any password verification
+  const lockoutResponse = checkAndHandleLockout(req, res, username, ip);
+  if (lockoutResponse) return;
+
+  // Enterprise Security: Threat Intelligence Check
+  const threatAnalysis = threatIntelligence.analyzeRequest(req);
+  if (threatAnalysis.isThreat && threatAnalysis.riskScore >= 70) {
+    res.status(403).json({ error: "Request blocked for security reasons" });
+    return;
+  }
+
+  const fingerprint = deviceFingerprint.extractFromRequest(req);
+  const completeLogin = (user: any) => completeLoginWithSecurity(user, ip, fingerprint, req, res);
+
+  // Check for admin from environment first
+  const envAdminResult = await tryEnvAdminLogin(
+    username,
+    password,
+    adminUsername,
+    adminPasswordHash,
+    completeLogin
+  );
+  if (envAdminResult) return;
+
+  // Check database for user
+  const user = await storage.getUserByUsername(username);
+  if (!user?.passwordHash) {
+    const masked = username ? username.substring(0, 3) + "***" : "[empty]";
+    recordLoginFailure(
+      req,
+      res,
+      ip,
+      username,
+      SecurityEventType.LOGIN_FAILED,
+      "User not found or no password",
+      { attemptedUsername: masked }
+    );
+    res.status(401).json({ error: "Invalid username or password" });
+    return;
+  }
+
+  const dbError = await validateDbUser(user, password, req, res, ip, username);
+  if (dbError) return;
+
+  // Clear lockout on successful password validation
+  clearDualLockout(username.toLowerCase(), ip);
+
+  await completeLogin(user);
+}
+
 export function registerAuthRoutes(app: Express): void {
   // Admin credentials from environment variables (hashed password stored in env)
   const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
@@ -389,61 +455,7 @@ export function registerAuthRoutes(app: Express): void {
     exponentialBackoff.middleware("auth:login"),
     async (req: Request, res: Response) => {
       try {
-        const { username, password } = req.body;
-
-        if (!username || !password) {
-          return res.status(400).json({ error: "Username and password are required" });
-        }
-
-        const ip = req.ip || req.socket.remoteAddress || "unknown";
-
-        // SECURITY: Check dual lockout (IP + username) BEFORE any password verification
-        const lockoutResponse = checkAndHandleLockout(req, res, username, ip);
-        if (lockoutResponse) return lockoutResponse;
-
-        // Enterprise Security: Threat Intelligence Check
-        const threatAnalysis = threatIntelligence.analyzeRequest(req);
-        if (threatAnalysis.isThreat && threatAnalysis.riskScore >= 70) {
-          return res.status(403).json({ error: "Request blocked for security reasons" });
-        }
-
-        const fingerprint = deviceFingerprint.extractFromRequest(req);
-        const completeLogin = (user: any) =>
-          completeLoginWithSecurity(user, ip, fingerprint, req, res);
-
-        // Check for admin from environment first
-        const envAdminResult = await tryEnvAdminLogin(
-          username,
-          password,
-          ADMIN_USERNAME,
-          ADMIN_PASSWORD_HASH,
-          completeLogin
-        );
-        if (envAdminResult) return;
-
-        // Check database for user
-        const user = await storage.getUserByUsername(username);
-        if (!user?.passwordHash) {
-          const masked = username ? username.substring(0, 3) + "***" : "[empty]";
-          recordLoginFailure(
-            req,
-            res,
-            ip,
-            username,
-            SecurityEventType.LOGIN_FAILED,
-            "User not found or no password",
-            { attemptedUsername: masked }
-          );
-          return res.status(401).json({ error: "Invalid username or password" });
-        }
-
-        const dbError = await validateDbUser(user, password, req, res, ip, username);
-        if (dbError) return dbError;
-
-        // Clear lockout on successful password validation
-        clearDualLockout(username.toLowerCase(), ip);
-
-        await completeLogin(user);
+        await handlePasswordLogin(req, res, ADMIN_USERNAME, ADMIN_PASSWORD_HASH);
       } catch {
         res.status(500).json({ error: "Login failed" });
       }

@@ -75,9 +75,10 @@ export function CookieConsentBanner() {
           aria-label={t("cookies.title")}
           aria-describedby="cookie-consent-description"
           aria-live="polite"
+          onKeyDown={handleKeyDown}
           className="max-w-2xl mx-auto bg-card border shadow-lg rounded-lg pointer-events-auto relative block"
         >
-          <div onKeyDown={handleKeyDown} role="presentation">
+          <div role="presentation">
             {showManage ? (
               <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-4">
