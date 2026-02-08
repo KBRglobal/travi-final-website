@@ -10,36 +10,8 @@ import enCommon from "../../locales/en/common.json";
 type TranslationResource = Record<string, unknown>;
 
 // Dynamic import map for lazy-loaded locale files.
-// Vite will code-split each import into its own chunk.
-const localeImporters: Record<string, () => Promise<{ default: TranslationResource }>> = {
-  ar: () => import("../../locales/ar/common.json"),
-  hi: () => import("../../locales/hi/common.json"),
-  zh: () => import("../../locales/zh/common.json"),
-  ru: () => import("../../locales/ru/common.json"),
-  ur: () => import("../../locales/ur/common.json"),
-  fr: () => import("../../locales/fr/common.json"),
-  id: () => import("../../locales/id/common.json"),
-  de: () => import("../../locales/de/common.json"),
-  fa: () => import("../../locales/fa/common.json"),
-  bn: () => import("../../locales/bn/common.json"),
-  fil: () => import("../../locales/fil/common.json"),
-  th: () => import("../../locales/th/common.json"),
-  vi: () => import("../../locales/vi/common.json"),
-  ms: () => import("../../locales/ms/common.json"),
-  es: () => import("../../locales/es/common.json"),
-  tr: () => import("../../locales/tr/common.json"),
-  it: () => import("../../locales/it/common.json"),
-  ja: () => import("../../locales/ja/common.json"),
-  ko: () => import("../../locales/ko/common.json"),
-  he: () => import("../../locales/he/common.json"),
-  pt: () => import("../../locales/pt/common.json"),
-  nl: () => import("../../locales/nl/common.json"),
-  pl: () => import("../../locales/pl/common.json"),
-  sv: () => import("../../locales/sv/common.json"),
-  el: () => import("../../locales/el/common.json"),
-  cs: () => import("../../locales/cs/common.json"),
-  uk: () => import("../../locales/uk/common.json"),
-};
+// Locale bundles removed — will be re-added when localization is rebuilt.
+const localeImporters: Record<string, () => Promise<{ default: TranslationResource }>> = {};
 
 // Track which locales have already been loaded to avoid redundant fetches
 const loadedLocales = new Set<string>(["en"]);
