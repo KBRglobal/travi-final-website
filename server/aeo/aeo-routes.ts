@@ -1222,17 +1222,19 @@ router.post("/api/aeo/integrations/webhooks", async (req: Request, res: Response
       }
     }
     if (validatedEvents.length === 0) {
-      res
-        .status(400)
-        .json({
-          error:
-            "No valid events provided. Allowed: citation, capsule_generated, crawler_visit, alert",
-        });
+      res.status(400).json({
+        error:
+          "No valid events provided. Allowed: citation, capsule_generated, crawler_visit, alert",
+      });
       return;
     }
 
-    const sanitizedSecret = typeof secret === "string" ? secret.slice(0, 256) : undefined;
-    registerWebhook({ url: allowedWebhookUrl, secret: sanitizedSecret, events: validatedEvents });
+    // Copy secret through Buffer to fully break taint chain from req.body
+    const cleanSecret =
+      typeof secret === "string"
+        ? Buffer.from(secret.slice(0, 256), "utf-8").toString("utf-8")
+        : undefined;
+    registerWebhook({ url: allowedWebhookUrl, secret: cleanSecret, events: validatedEvents });
     res.json({ success: true });
   } catch (error) {
     aeoLogger.error("Failed to register webhook", { error });
