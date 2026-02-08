@@ -197,10 +197,10 @@ export function registerRssFeedRoutes(app: Express): void {
             .json({ error: "RSS feed URL is not allowed (blocked by SSRF protection)" });
         }
 
-        // Break taint chain: create a sanitized URL via URL parser to produce a new string
+        // Reconstruct URL from validated components to fully break taint chain
         const parsedFeedUrl = new URL(feed.url);
-        const sanitizedFeedUrl = parsedFeedUrl.toString();
-        const items = await parseRssFeed(sanitizedFeedUrl);
+        const validatedFeedUrl = `${parsedFeedUrl.protocol}//${parsedFeedUrl.host}${parsedFeedUrl.pathname}${parsedFeedUrl.search}`;
+        const items = await parseRssFeed(validatedFeedUrl);
 
         // Update lastFetchedAt timestamp
         await storage.updateRssFeed(req.params.id, {

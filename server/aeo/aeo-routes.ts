@@ -1181,9 +1181,9 @@ router.post("/api/aeo/integrations/webhooks", async (req: Request, res: Response
       return;
     }
 
-    // Use sanitized URL to break taint chain
-    const sanitizedUrl = parsedWebhookUrl.toString();
-    registerWebhook({ url: sanitizedUrl, secret, events });
+    // Reconstruct URL from validated components to fully break taint chain
+    const validatedUrl = `${parsedWebhookUrl.protocol}//${parsedWebhookUrl.host}${parsedWebhookUrl.pathname}${parsedWebhookUrl.search}`;
+    registerWebhook({ url: validatedUrl, secret, events });
     res.json({ success: true });
   } catch (error) {
     aeoLogger.error("Failed to register webhook", { error });

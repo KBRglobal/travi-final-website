@@ -8,6 +8,7 @@ import { isApprovedBot } from "../security";
 import { renderSSR } from "./ssr-renderer";
 import type { Locale } from "@shared/schema";
 import { SUPPORTED_LOCALES } from "@shared/schema";
+import DOMPurify from "isomorphic-dompurify";
 
 const VALID_LOCALES = SUPPORTED_LOCALES.map(l => l.code);
 
@@ -228,8 +229,12 @@ async function handleSSR(req: Request, res: Response, next: NextFunction): Promi
       "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' https: data:; connect-src 'self' https:"
     );
 
-    // Sanitize the rendered HTML to ensure no reflected XSS from URL
-    const sanitizedHtml = String(result.html);
+    // Sanitize the rendered HTML with DOMPurify to prevent reflected XSS
+    const sanitizedHtml = DOMPurify.sanitize(result.html, {
+      WHOLE_DOCUMENT: true,
+      ADD_TAGS: ["link", "meta", "style", "script"],
+      ADD_ATTR: ["content", "property", "rel", "href", "name", "charset", "http-equiv"],
+    });
     res.send(sanitizedHtml);
   } catch {
     next();
