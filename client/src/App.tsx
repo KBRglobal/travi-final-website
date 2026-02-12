@@ -52,7 +52,7 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 const Login = lazy(() => import("@/pages/login"));
 const AccessDenied = lazy(() => import("@/pages/access-denied"));
 
-const AdminLayout = lazy(() => import("@/routes/admin-module"));
+const AdminLayout = lazy(() => import("@/routes/cms-module"));
 
 function PageLoader() {
   return (
