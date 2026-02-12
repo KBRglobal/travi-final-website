@@ -2,11 +2,9 @@ import { useMemo, useEffect, Suspense, lazy } from "react";
 import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { initGA } from "@/lib/analytics";
-import { Loader2 } from "lucide-react";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { FavoritesProvider } from "@/hooks/use-favorites";
 import { CookieConsentProvider } from "@/contexts/cookie-consent-context";
@@ -29,6 +27,10 @@ const PWAInstallPrompt = lazy(() =>
       console.error("[LazyLoad] Failed to load PWAInstallPrompt:", err);
       throw err;
     })
+);
+
+const LazyToaster = lazy(() =>
+  import("@/components/ui/toaster").then(m => ({ default: m.Toaster }))
 );
 
 const Homepage = lazy(() => import("@/pages/homepage"));
@@ -64,7 +66,7 @@ function PageLoader() {
         height={64}
         className="w-16 h-16 object-contain animate-bounce"
       />
-      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
     </div>
   );
 }
@@ -277,8 +279,8 @@ function App() {
                   )}
                 </main>
               </Suspense>
-              <Toaster />
               <Suspense fallback={null}>
+                <LazyToaster />
                 <CookieConsentBanner />
                 <PWAInstallPrompt />
               </Suspense>

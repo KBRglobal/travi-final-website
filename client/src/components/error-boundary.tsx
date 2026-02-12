@@ -1,8 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { AlertTriangle, RefreshCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Props {
   children: ReactNode;
@@ -20,8 +17,10 @@ interface State {
 }
 
 /**
- * Error Boundary component to catch React errors and display a fallback UI
- * Prevents the entire app from crashing on component errors
+ * Error Boundary component to catch React errors and display a fallback UI.
+ * Uses plain HTML/inline styles to avoid importing heavy UI components
+ * (Card, Button, lucide icons) which would pull large page chunks into
+ * the entry bundle and create circular dependencies.
  */
 export class ErrorBoundary extends Component<Props, State> {
   public state: State = {
@@ -61,29 +60,44 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-[400px] flex items-center justify-center p-4">
-          <Card className="max-w-lg w-full">
-            <CardHeader className="text-center">
+          <div className="max-w-lg w-full rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+            <div className="text-center mb-4">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
-                <AlertTriangle className="h-6 w-6 text-destructive" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-6 w-6 text-destructive"
+                >
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                  <path d="M12 9v4" />
+                  <path d="M12 17h.01" />
+                </svg>
               </div>
-              <CardTitle>{title}</CardTitle>
-              <CardDescription>{message}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {process.env.NODE_ENV === "development" && this.state.error && (
-                <div className="rounded-md bg-muted p-3 text-sm font-mono text-muted-foreground overflow-auto max-h-32">
-                  {this.state.error.message}
-                </div>
-              )}
-              <div className="flex gap-2 justify-center">
-                <Button variant="outline" onClick={this.handleRetry}>
-                  <RefreshCcw className="mr-2 h-4 w-4" />
-                  {tryAgain}
-                </Button>
-                <Button onClick={this.handleReload}>{reload}</Button>
-              </div>
-            </CardContent>
-          </Card>
+              <h3 className="text-lg font-semibold">{title}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{message}</p>
+            </div>
+            <div className="flex gap-2 justify-center">
+              <button
+                onClick={this.handleRetry}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4"
+              >
+                {tryAgain}
+              </button>
+              <button
+                onClick={this.handleReload}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4"
+              >
+                {reload}
+              </button>
+            </div>
+          </div>
         </div>
       );
     }

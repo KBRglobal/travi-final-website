@@ -57,7 +57,15 @@ const VENDOR_CHUNKS: Array<{ patterns: string[]; chunk: string }> = [
     ],
     chunk: "react-vendor",
   },
-  { patterns: ["node_modules/@radix-ui/"], chunk: "ui-vendor" },
+  {
+    patterns: [
+      "node_modules/@radix-ui/",
+      "node_modules/clsx/",
+      "node_modules/tailwind-merge/",
+      "node_modules/class-variance-authority/",
+    ],
+    chunk: "ui-vendor",
+  },
   {
     patterns: ["node_modules/react-hook-form/", "node_modules/@hookform/", "node_modules/zod/"],
     chunk: "form-vendor",
@@ -100,49 +108,49 @@ function matchAdminChunk(id: string): string {
 }
 
 /**
- * Shared UI components used by both the entry chunk and page chunks.
- * MUST be checked BEFORE page chunks to prevent Rollup from placing these
- * into large page chunks (e.g., attractions at 377KB), which would force
- * the entry point to statically import those heavy chunks on every page load.
+ * Entry-level dependencies: providers, contexts, and utilities imported by App.tsx.
+ * These MUST NOT include UI components (Card, Button, etc.) to avoid circular deps.
+ * Keeps the entry chunk from statically loading heavy page chunks (attractions 356KB).
  */
-const SHARED_UI_PATTERNS: string[] = [
-  "/components/ui/card",
-  "/components/ui/button",
-  "/components/ui/badge",
-  "/components/ui/toast",
-  "/components/ui/skeleton",
-  "/components/ui/input",
-  "/components/ui/label",
-  "/components/ui/textarea",
-  "/components/ui/select",
-  "/components/ui/switch",
-  "/components/ui/tabs",
-  "/components/ui/tooltip",
-  "/components/ui/toaster",
-  "/hooks/use-toast",
-  "/lib/utils",
-  "/lib/sanitize-url",
-  "/lib/sanitize",
+const ENTRY_CORE_PATTERNS: string[] = [
   "/lib/queryClient",
   "/contexts/cookie-consent",
   "/lib/i18n/",
+  "/components/ui/tooltip",
+  "/hooks/use-favorites",
   "/hooks/use-analytics",
   "/lib/analytics",
-  "/hooks/use-favorites",
-  "/components/error-boundary",
-  "/types/destination",
   "/lib/navigation-aliases",
-  "/components/ui/sheet",
-  "/components/ui/dialog",
-  "/components/ui/dropdown-menu",
-  "/components/ui/scroll-area",
+  "/types/destination",
+  "/components/error-boundary",
+  "/lib/utils",
+  // shared/schema/locales defines SUPPORTED_LOCALES & RTL_LOCALES used by i18n providers.
+  // Without this, Rollup places them in 'attractions' (largest consumer) causing circular dep.
+  "shared/schema/locales",
+];
+
+/**
+ * Shared public components used across multiple pages (homepage, attractions, destinations).
+ * Without a dedicated chunk, Rollup places these in 'attractions' (the largest consumer),
+ * forcing homepage to download 310KB of attractions code for a few shared components.
+ */
+const SHARED_PUBLIC_PATTERNS: string[] = [
+  "/components/public-nav",
+  "/components/public-footer",
+  "/components/seo-head",
+  "/components/language-switcher",
+  "/lib/sanitize-url",
+  "/lib/sanitize", // sanitizeHTML (DOMPurify wrapper)
+  "/components/ui/card",
+  "/components/ui/button",
+  "/components/ui/input",
   "/components/ui/skip-link",
   "/components/ui/subtle-sky-background",
-  "/components/public-footer",
-  "/components/public-nav",
-  "/components/public-layout",
-  "/components/seo-head",
-  "/components/logo",
+  "/components/ui/sheet",
+  "/components/ui/dropdown-menu",
+  "/components/ui/scroll-area",
+  "/components/ui/safe-image",
+  "/hooks/use-toast",
 ];
 
 /** App page patterns: maps path fragments to chunk names */
@@ -162,8 +170,11 @@ function fixedManualChunks(id: string): string | undefined {
   const vendor = matchVendorChunk(id);
   if (vendor) return vendor;
 
-  // Shared UI components — check BEFORE page chunks to avoid cross-chunk deps
-  if (SHARED_UI_PATTERNS.some(p => id.includes(p))) return "shared-ui";
+  // Entry-level core deps — check BEFORE page chunks
+  if (ENTRY_CORE_PATTERNS.some(p => id.includes(p))) return "entry-core";
+
+  // Shared public components — check BEFORE page chunks so they get their own chunk
+  if (SHARED_PUBLIC_PATTERNS.some(p => id.includes(p))) return "shared-public";
 
   if (id.includes("/pages/admin/")) return matchAdminChunk(id);
 
