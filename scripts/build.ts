@@ -80,21 +80,23 @@ function matchVendorChunk(id: string): string | undefined {
   return undefined;
 }
 
-/** Admin page sub-routing: map admin paths to specific chunks */
+/** Admin page sub-routing: map admin paths to specific chunks.
+ * IMPORTANT: Chunk names must NOT contain "admin" — Cloudflare WAF blocks
+ * requests to /assets/admin-*.js with a 403 challenge response. */
 const ADMIN_SUB_CHUNKS: Array<{ pattern: string; chunk: string }> = [
-  { pattern: "/admin/destinations/", chunk: "admin-destinations" },
-  { pattern: "/admin/gatekeeper/", chunk: "admin-gatekeeper" },
-  { pattern: "/admin/octypo/", chunk: "admin-octypo" },
-  { pattern: "/admin/tiqets", chunk: "admin-tiqets" },
-  { pattern: "/admin/homepage-editor", chunk: "admin-content" },
-  { pattern: "/admin/static-page-editor", chunk: "admin-content" },
+  { pattern: "/admin/destinations/", chunk: "cms-destinations" },
+  { pattern: "/admin/gatekeeper/", chunk: "cms-gatekeeper" },
+  { pattern: "/admin/octypo/", chunk: "cms-octypo" },
+  { pattern: "/admin/tiqets", chunk: "cms-tiqets" },
+  { pattern: "/admin/homepage-editor", chunk: "cms-content" },
+  { pattern: "/admin/static-page-editor", chunk: "cms-content" },
 ];
 
 function matchAdminChunk(id: string): string {
   for (const { pattern, chunk } of ADMIN_SUB_CHUNKS) {
     if (id.includes(pattern)) return chunk;
   }
-  return "admin-pages";
+  return "cms-pages";
 }
 
 /** App page patterns: maps path fragments to chunk names */
@@ -144,10 +146,7 @@ async function buildApp() {
     build: {
       outDir: path.resolve(import.meta.dirname, "../dist/public"),
       emptyOutDir: true,
-      // Disable modulepreload to prevent browser from fetching admin/unused chunks on public pages.
-      // Without this, Vite injects <link rel="modulepreload"> for lazy chunks like admin-content,
-      // admin-pages, analytics-vendor, travel-details, and form-vendor — causing 403 errors from
-      // Cloudflare and ~167KB of wasted JS on the homepage.
+      // Disable modulepreload to prevent browser from fetching unused chunks on public pages.
       modulePreload: false,
       // Use esbuild for faster minification
       minify: "esbuild",
