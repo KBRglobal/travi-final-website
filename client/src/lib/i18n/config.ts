@@ -1,7 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
-import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
+import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema/locales";
 
 // Only English is bundled statically - all other languages are lazy-loaded on demand.
 // This saves ~1.3MB from the initial bundle (28 language JSON files).

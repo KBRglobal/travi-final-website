@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
+import { SUPPORTED_LOCALES, type Locale } from "@shared/schema/locales";
 
 export interface SEOHeadProps {
   title: string;

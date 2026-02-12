@@ -1,11 +1,11 @@
 /**
  * Locale Context - Separated from LocaleProvider to avoid circular dependencies
  * This module only contains the context and types, not the provider implementation
- * 
+ *
  * Uses lazy context creation to avoid circular dependency issues in production builds
  */
 import { createContext, useContext, type Context } from "react";
-import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
+import { SUPPORTED_LOCALES, type Locale } from "@shared/schema/locales";
 
 export interface LocaleContextType {
   locale: Locale;
@@ -34,7 +34,7 @@ export const LocaleContext = {
   },
   get Consumer() {
     return getLocaleContext().Consumer;
-  }
+  },
 };
 
 export function useLocale() {

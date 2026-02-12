@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useCallback, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { I18nextProvider } from "react-i18next";
 import i18n, { isRTL, changeLanguage } from "./config";
-import { SUPPORTED_LOCALES, type Locale } from "@shared/schema";
+import { SUPPORTED_LOCALES, type Locale } from "@shared/schema/locales";
 import { getLocaleContext, useLocale, type LocaleContextType } from "./locale-context";
 
 export { useLocale } from "./locale-context";

@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema";
+import { SUPPORTED_LOCALES, RTL_LOCALES, type Locale } from "@shared/schema/locales";
 import { cn } from "@/lib/utils";
 
 const POPULAR_LOCALES = new Set<Locale>([
