@@ -39,6 +39,9 @@ RUN npm pkg delete scripts.prepare && \
 
 COPY --from=builder /app/dist ./dist
 
+# Create writable directories for the non-root user
+RUN mkdir -p /app/uploads && chown node:node /app/uploads
+
 # Run as non-root user for security (node user is provided by the base image)
 USER node
 

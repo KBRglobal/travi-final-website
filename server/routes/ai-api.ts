@@ -1,8 +1,6 @@
 import type { Express } from "express";
 import { Router } from "express";
 import { storage } from "../storage";
-import { db } from "../db";
-import { eq, like, or, desc, and } from "drizzle-orm";
 import {
   safeMode,
   rateLimiters,
@@ -10,713 +8,42 @@ import {
   requireAuth,
   requirePermission,
 } from "../security";
-import {
-  generateContentImages,
-  generateImage,
-  type GeneratedImage,
-  type ImageGenerationOptions,
-} from "../ai";
-import type OpenAI from "openai";
+import { generateContentImages, generateImage, type ImageGenerationOptions } from "../ai";
+import type { GeneratedImage } from "../ai/types";
 import {
   getAIClient,
   getAllAIClients,
-  getAllUnifiedProviders,
-  markProviderFailed,
-  markProviderSuccess,
   getOpenAIClient,
   getProviderStatus,
-  type AIProvider,
-  type UnifiedAIProvider,
+  markProviderSuccess,
 } from "../ai/providers";
 import { enforceArticleSEO, enforceWriterEngineSEO } from "../seo-enforcement";
-import { getStorageManager } from "../services/storage-adapter";
 import { uploadImageFromUrl } from "../services/image-service";
 import { sanitizeAIPrompt } from "../lib/sanitize-ai-output";
 
-function cleanJsonFromMarkdown(content: string): string {
-  let cleaned = content.trim();
-  const jsonMatch = /```(?:json)?\s*([\s\S]*?)```/.exec(cleaned);
-  if (jsonMatch) {
-    cleaned = jsonMatch[1].trim();
-  } else {
-    if (cleaned.startsWith("```json")) {
-      cleaned = cleaned.substring(7);
-    } else if (cleaned.startsWith("```")) {
-      cleaned = cleaned.substring(3);
-    }
-    if (cleaned.endsWith("```")) {
-      cleaned = cleaned.substring(0, cleaned.length - 3);
-    }
-  }
-  cleaned = cleaned.trim() || "{}";
-  cleaned = cleaned.replaceAll(/"([^"\\]|\\.)*"/g, match => {
-    return match.replaceAll(/[\u0000-\u001f\u007f]/g, char => {
-      // NOSONAR - intentional control char handling
-      const code = char.codePointAt(0)!;
-      if (code === 0x09) return String.raw`\t`;
-      if (code === 0x0a) return String.raw`\n`;
-      if (code === 0x0d) return String.raw`\r`;
-      return String.raw`\u` + code.toString(16).padStart(4, "0");
-    });
-  });
-  return cleaned;
-}
-
-function safeParseJson(
-  content: string,
-  fallback: Record<string, unknown> = {}
-): Record<string, unknown> {
-  try {
-    const cleaned = cleanJsonFromMarkdown(content);
-    return JSON.parse(cleaned) as Record<string, unknown>;
-  } catch {
-    return fallback;
-  }
-}
-
-function getModelForProvider(provider: string, task: "chat" | "image" = "chat"): string {
-  if (task === "image") {
-    if (provider === "openai") return "dall-e-3";
-    return "dall-e-3";
-  }
-  switch (provider) {
-    case "openai":
-      return process.env.OPENAI_MODEL || "gpt-4o-mini";
-    case "gemini":
-      return "gemini-1.5-flash";
-    case "openrouter":
-      return "google/gemini-flash-1.5";
-    default:
-      return "gpt-4o-mini";
-  }
-}
-
-function addSystemLog(
-  level: string,
-  category: string,
-  message: string,
-  _details?: Record<string, unknown>
-): void {
-  // globalThis is dynamically extended at runtime; typed access is not feasible here
-  const g = globalThis as Record<string, unknown>;
-  if (typeof g.addSystemLog === "function") {
-    (g.addSystemLog as (l: string, c: string, m: string, d?: Record<string, unknown>) => void)(
-      level,
-      category,
-      message,
-      _details
-    );
-  }
-}
-
-function classifyProviderError(err: unknown): "no_credits" | "rate_limited" | "other" {
-  const error = err as { status?: number; code?: string; message?: string } | null;
-  const isCredits =
-    error?.status === 402 ||
-    error?.message?.includes("credits") ||
-    error?.message?.includes("Insufficient Balance") ||
-    error?.message?.includes("insufficient_funds");
-  if (isCredits) return "no_credits";
-
-  const isRateLimit =
-    error?.status === 429 ||
-    error?.code === "insufficient_quota" ||
-    error?.message?.includes("quota") ||
-    error?.message?.includes("429");
-  if (isRateLimit) return "rate_limited";
-
-  return "other";
-}
-
-interface ProviderCompletionSuccess {
-  article: Record<string, unknown>;
-  provider: string;
-  client: OpenAI;
-  model: string;
-}
-
-interface ProviderCompletionFailure {
-  error: string;
-  lastError: Error;
-  triedProviders: string[];
-}
-
-async function tryProvidersForCompletion(
-  aiProviders: AIProvider[],
-  messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
-  maxTokens: number
-): Promise<ProviderCompletionSuccess | ProviderCompletionFailure> {
-  let lastError: Error | null = null;
-
-  for (const aiProvider of aiProviders) {
-    const { client: openai, provider, model } = aiProvider;
-    try {
-      addSystemLog("info", "ai", `Trying AI provider: ${provider} with model: ${model}`);
-      const response = await openai.chat.completions.create({
-        model,
-        messages,
-        ...(provider === "openai" ? { response_format: { type: "json_object" } } : {}),
-        max_tokens: maxTokens,
-      });
-      const article = safeParseJson(response.choices[0].message.content || "{}", {});
-      markProviderSuccess(provider);
-      addSystemLog("info", "ai", `Successfully generated with ${provider}`);
-      return { article, provider, client: openai, model };
-    } catch (providerError: unknown) {
-      lastError = providerError instanceof Error ? providerError : new Error(String(providerError));
-      const errorType = classifyProviderError(providerError);
-      const errMsg = lastError.message || "Unknown error";
-      const errStatus = (providerError as { status?: number })?.status;
-      addSystemLog("warning", "ai", `Provider ${provider} failed: ${errMsg}`, {
-        status: errStatus,
-        isRateLimit: errorType === "rate_limited",
-        isCredits: errorType === "no_credits",
-      });
-      if (errorType !== "other") {
-        markProviderFailed(provider, errorType);
-        addSystemLog(
-          "info",
-          "ai",
-          `Marked ${provider} as ${errorType === "no_credits" ? "out of credits" : "temporarily unavailable"}, trying next provider...`
-        );
-      }
-    }
-  }
-
-  return {
-    error: lastError?.message || "All AI providers failed",
-    lastError: lastError!,
-    triedProviders: aiProviders.map(p => p.provider),
-  };
-}
-
-function parseSuggestions(content: string, maxLength?: number): string[] {
-  let suggestions: string[];
-  try {
-    const parsed = JSON.parse(content);
-    if (!Array.isArray(parsed)) throw new TypeError("Not an array");
-    suggestions = parsed;
-  } catch {
-    suggestions = content
-      .split("\n")
-      .filter(s => s.trim().length > 0)
-      .slice(0, 3);
-  }
-  if (maxLength) {
-    suggestions = suggestions.map(s =>
-      s.length > maxLength ? s.substring(0, maxLength - 3) + "..." : s
-    );
-  }
-  return suggestions;
-}
-
-interface ArticleImageResult {
-  url: string;
-  altText: string;
-  imageId: string;
-  source: "library" | "freepik";
-}
-
-const VALID_IMAGE_CONTENT_TYPES = new Set([
-  "hotel",
-  "attraction",
-  "article",
-  "dining",
-  "district",
-  "transport",
-  "event",
-  "itinerary",
-]);
-
-function validateImageGenRequest(contentType: string, title: string): string | null {
-  if (!contentType || !title) {
-    addSystemLog("warning", "images", "AI image generation failed - missing content type or title");
-    return "Content type and title are required";
-  }
-  if (!VALID_IMAGE_CONTENT_TYPES.has(contentType)) {
-    addSystemLog(
-      "warning",
-      "images",
-      `AI image generation failed - invalid content type: ${contentType}`
-    );
-    return "Invalid content type";
-  }
-  return null;
-}
-
-function createFallbackImage(title: string, contentType: string): GeneratedImage {
-  const searchQuery = encodeURIComponent(`${title} ${contentType} dubai travel`.substring(0, 50));
-  return {
-    url: `https://source.unsplash.com/1200x800/?${searchQuery}`,
-    filename: `hero-${Date.now()}.jpg`,
-    type: "hero",
-    alt: `${title} - Dubai Travel`,
-    caption: `${title} - Dubai Travel Guide`,
-  };
-}
-
-interface FallbackImageResponse {
-  images: GeneratedImage[];
-  source: string;
-  message: string;
-}
-
-function buildFallbackResponse(
-  title: string,
-  contentType: string,
-  generateHero: boolean | undefined,
-  hasFreepik: boolean
-): FallbackImageResponse {
-  const source = hasFreepik ? "freepik" : "unsplash";
-  addSystemLog("info", "images", `No AI image API configured, using ${source} fallback`);
-  const fallbackImages = generateHero === false ? [] : [createFallbackImage(title, contentType)];
-  addSystemLog(
-    "info",
-    "images",
-    `Generated ${fallbackImages.length} fallback images for "${title}"`
-  );
-  return {
-    images: fallbackImages,
-    source,
-    message: "Using stock images (AI image generation not configured)",
-  };
-}
-
-// Drizzle table and SQL condition types are deeply generic; using `typeof` import
-// to get the exact table type without coupling to Drizzle's internal type machinery
-type AiGeneratedImagesTable = Awaited<typeof import("@shared/schema")>["aiGeneratedImages"];
-type AiGeneratedImageRow = AiGeneratedImagesTable["$inferSelect"];
-type AiGeneratedImageInsert = AiGeneratedImagesTable["$inferInsert"];
-type DrizzleSQLCondition = ReturnType<typeof or>;
-
-async function findImageBySearchConditions(
-  aiGeneratedImages: AiGeneratedImagesTable,
-  searchConditions: DrizzleSQLCondition[],
-  category: string
-): Promise<AiGeneratedImageRow | null> {
-  if (searchConditions.length > 0) {
-    const approvedImages = await db
-      .select()
-      .from(aiGeneratedImages)
-      .where(and(eq(aiGeneratedImages.isApproved, true), or(...searchConditions)))
-      .orderBy(desc(aiGeneratedImages.usageCount))
-      .limit(1);
-    if (approvedImages.length > 0) return approvedImages[0];
-
-    const anyImages = await db
-      .select()
-      .from(aiGeneratedImages)
-      .where(or(...searchConditions))
-      .orderBy(desc(aiGeneratedImages.createdAt))
-      .limit(1);
-    if (anyImages.length > 0) return anyImages[0];
-  }
-
-  const categoryImages = await db
-    .select()
-    .from(aiGeneratedImages)
-    .where(eq(aiGeneratedImages.category, category))
-    .orderBy(desc(aiGeneratedImages.isApproved), desc(aiGeneratedImages.createdAt))
-    .limit(1);
-  return categoryImages[0] || null;
-}
-
-async function findOrCreateArticleImage(
-  topic: string,
-  keywords: string[],
-  category: string
-): Promise<ArticleImageResult | null> {
-  try {
-    const { aiGeneratedImages } = await import("@shared/schema");
-
-    const searchTerms = [topic, ...keywords].filter(Boolean);
-    const searchConditions = searchTerms.map(term =>
-      or(
-        like(aiGeneratedImages.topic, `%${term}%`),
-        like(aiGeneratedImages.altText, `%${term}%`),
-        like(aiGeneratedImages.category, `%${term}%`)
-      )
-    );
-
-    const foundImage = await findImageBySearchConditions(
-      aiGeneratedImages,
-      searchConditions,
-      category
-    );
-
-    if (foundImage) {
-      await db
-        .update(aiGeneratedImages)
-        // Drizzle ORM update types may not align with runtime column shapes; cast required
-        .set({
-          usageCount: (foundImage.usageCount || 0) + 1,
-          updatedAt: new Date(),
-        } as Partial<AiGeneratedImageInsert>)
-        .where(eq(aiGeneratedImages.id, foundImage.id));
-
-      return {
-        url: foundImage.url,
-        altText: foundImage.altText || `${topic} - Dubai Travel`,
-        imageId: foundImage.id,
-        source: "library",
-      };
-    }
-
-    const freepikApiKey = process.env.FREEPIK_API_KEY;
-    if (!freepikApiKey) {
-      return null;
-    }
-
-    const searchQuery = `dubai ${topic} tourism`.substring(0, 100);
-    const searchUrl = new URL("https://api.freepik.com/v1/resources");
-    searchUrl.searchParams.set("term", searchQuery);
-    searchUrl.searchParams.set("page", "1");
-    searchUrl.searchParams.set("limit", "5");
-    searchUrl.searchParams.set("filters[content_type][photo]", "1");
-
-    const freepikResponse = await fetch(searchUrl.toString(), {
-      headers: {
-        "Accept-Language": "en-US",
-        Accept: "application/json",
-        "x-freepik-api-key": freepikApiKey,
-      },
-    });
-
-    if (!freepikResponse.ok) {
-      return null;
-    }
-
-    const freepikData = await freepikResponse.json();
-    const results = freepikData.data || [];
-
-    if (results.length === 0) {
-      try {
-        const safeTopic = sanitizeAIPrompt(topic);
-        const aiImages: GeneratedImage[] = await generateContentImages({
-          contentType: "article",
-          title: safeTopic,
-          description: `Dubai travel article about ${safeTopic}`,
-          style: "photorealistic",
-          generateHero: true,
-          generateContentImages: false,
-        });
-
-        if (Array.isArray(aiImages) && aiImages.length > 0) {
-          const aiImage = aiImages[0];
-
-          const [savedImage] = await db
-            .insert(aiGeneratedImages)
-            // Drizzle insert schema may differ from runtime columns; cast to partial row type
-            .values({
-              filename: aiImage.filename,
-              url: aiImage.url,
-              topic: topic,
-              category: category || "general",
-              imageType: "hero",
-              source: "openai" as const,
-              prompt: `Dubai travel image for: ${topic}`,
-              keywords: keywords.slice(0, 10),
-              altText: aiImage.alt || `${topic} - Dubai Travel`,
-              caption: aiImage.caption || topic,
-              size: 0,
-              usageCount: 1,
-            } as AiGeneratedImageInsert)
-            .returning();
-
-          return {
-            url: aiImage.url,
-            altText: aiImage.alt || `${topic} - Dubai Travel`,
-            imageId: savedImage.id,
-            source: "library" as const,
-          };
-        }
-      } catch (aiError) {
-        console.error(aiError);
-      }
-
-      return null;
-    }
-
-    const bestResult = results[0];
-    const imageUrl =
-      bestResult.image?.source?.url || bestResult.preview?.url || bestResult.thumbnail?.url;
-
-    if (!imageUrl) {
-      return null;
-    }
-
-    const imageResponse = await fetch(imageUrl);
-    if (!imageResponse.ok) {
-      return null;
-    }
-
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const filename = `freepik-${Date.now()}.jpg`;
-
-    const storageManager = getStorageManager();
-    const storagePath = `public/images/${filename}`;
-    const result = await storageManager.upload(storagePath, Buffer.from(imageBuffer));
-    const persistedUrl = result.url;
-
-    const altText = bestResult.title || `${topic} - Dubai Travel`;
-
-    const [savedImage] = await db
-      .insert(aiGeneratedImages)
-      // Drizzle insert schema may differ from runtime columns; cast to partial row type
-      .values({
-        filename,
-        url: persistedUrl,
-        topic: topic,
-        category: category || "general",
-        imageType: "hero",
-        source: "freepik" as const,
-        prompt: null,
-        keywords: keywords.slice(0, 10),
-        altText: altText,
-        caption: bestResult.title || topic,
-        size: imageBuffer.byteLength,
-        usageCount: 1,
-      } as AiGeneratedImageInsert)
-      .returning();
-
-    return {
-      url: persistedUrl,
-      altText: altText,
-      imageId: savedImage.id,
-      source: "freepik",
-    };
-  } catch {
-    return null;
-  }
-}
-
-/** Store generated images by uploading them */
-async function storeGeneratedImages(images: GeneratedImage[]): Promise<GeneratedImage[]> {
-  const stored: GeneratedImage[] = [];
-  for (const image of images) {
-    try {
-      const result = await uploadImageFromUrl(image.url, image.filename, {
-        source: "ai",
-        altText: image.alt,
-        metadata: { type: image.type, originalUrl: image.url },
-      });
-      if (result.success) {
-        stored.push({ ...image, url: result.image.url });
-      }
-    } catch (imgError) {
-      console.error(imgError);
-    }
-  }
-  return stored;
-}
-
-/** Get AI providers sorted with Gemini preferred first */
-function getSortedUnifiedProviders(): UnifiedAIProvider[] {
-  const providers = getAllUnifiedProviders();
-  return [...providers].sort((a, b) => {
-    if (a.name === "gemini") return -1;
-    if (b.name === "gemini") return 1;
-    return 0;
-  });
-}
-
-/** Try unified providers for field generation */
-async function tryUnifiedProvidersForField(
-  sortedProviders: UnifiedAIProvider[],
-  prompt: string
-): Promise<string> {
-  let content = "[]";
-  let lastError: Error | null = null;
-
-  for (const provider of sortedProviders) {
-    try {
-      const result = await provider.generateCompletion({
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are an expert SEO content writer specializing in Dubai travel content. Generate high-quality, optimized suggestions. Always return valid JSON arrays of strings.",
-          },
-          { role: "user", content: prompt },
-        ],
-        temperature: 0.8,
-        maxTokens: 1024,
-      });
-      content = result.content;
-      markProviderSuccess(provider.name);
-      break;
-    } catch (providerError: unknown) {
-      lastError = providerError instanceof Error ? providerError : new Error(String(providerError));
-      const errorType = classifyProviderError(providerError);
-      markProviderFailed(provider.name, errorType === "no_credits" ? "no_credits" : "rate_limited");
-    }
-  }
-
-  if (content === "[]" && lastError) {
-    throw lastError;
-  }
-  return content;
-}
-
-/** Shape of AI-generated article JSON (parsed from provider responses) */
-interface GeneratedArticleShape {
-  article?: {
-    intro?: string;
-    sections?: Array<{ heading: string; body: string }>;
-    proTips?: string[];
-    goodToKnow?: string[];
-    faq?: Array<{ q: string; a: string }>;
-    closing?: string;
-  };
-  meta?: {
-    keywords?: string[];
-    [key: string]: unknown;
-  };
-  analysis?: {
-    category?: string;
-    [key: string]: unknown;
-  };
-  suggestions?: Record<string, unknown>;
-  _generationStats?: Record<string, unknown>;
-  [key: string]: unknown;
-}
-
-/** Count words in a text string */
-function countWords(text: string): number {
-  return text
-    .trim()
-    .split(/\s+/)
-    .filter(w => w.length > 0).length;
-}
-
-/** Sum word counts across an array of items, optionally extracting a named field */
-function sumWords(
-  items: Array<Record<string, string>> | string[] | undefined,
-  field?: string
-): number {
-  return (items || []).reduce(
-    (sum: number, item: Record<string, string> | string) =>
-      sum +
-      countWords(field ? (item as Record<string, string>)[field] || "" : (item as string) || ""),
-    0
-  );
-}
-
-/** Calculate total word count of a generated article */
-function getArticleWordCount(article: GeneratedArticleShape): number {
-  const a = article.article;
-  if (!a) return 0;
-  return (
-    countWords(a.intro || "") +
-    sumWords(a.sections as Array<Record<string, string>> | undefined, "body") +
-    sumWords(a.proTips) +
-    sumWords(a.goodToKnow) +
-    sumWords(a.faq?.map(f => f.a)) +
-    countWords(a.closing || "")
-  );
-}
-
-/** Expand article content to meet word count minimum */
-async function expandArticleContent(
-  generatedArticle: GeneratedArticleShape,
-  articleTitle: string,
-  openai: OpenAI,
-  model: string,
-  provider: string,
-  getWordCount: (article: GeneratedArticleShape) => number
-): Promise<{ wordCount: number; attempts: number }> {
-  const MIN_WORD_TARGET = 1800;
-  const MAX_EXPANSION_ATTEMPTS = 3;
-  let wordCount = getWordCount(generatedArticle);
-  let attempts = 0;
-
-  addSystemLog("info", "ai", `Initial generation: ${wordCount} words`, { title: articleTitle });
-
-  while (wordCount < MIN_WORD_TARGET && attempts < MAX_EXPANSION_ATTEMPTS) {
-    attempts++;
-    const wordsNeeded = MIN_WORD_TARGET - wordCount;
-    addSystemLog(
-      "info",
-      "ai",
-      `Expanding content: attempt ${attempts}, need ${wordsNeeded} more words`
-    );
-
-    const expansionPrompt = `The article below has only ${wordCount} words but needs at least ${MIN_WORD_TARGET} words.
-
-Current sections: ${generatedArticle.article?.sections?.map(s => s.heading).join(", ") || "none"}
-
-Please generate ${Math.max(3, Math.ceil(wordsNeeded / 200))} additional sections to expand this article about "${articleTitle}".
-Each section should have 250-400 words of detailed, valuable content.
-
-IMPORTANT: Generate NEW, UNIQUE sections that add value - do NOT repeat existing content.
-Focus on practical tips, insider information, comparisons, or detailed guides.
-
-Return JSON only:
-{
-  "additionalSections": [
-    {"heading": "H2 Section Title", "body": "Detailed paragraph content 250-400 words..."}
-  ],
-  "additionalFaqs": [
-    {"q": "Relevant question?", "a": "Detailed answer 80-120 words..."}
-  ]
-}`;
-
-    try {
-      const expansionResponse = await openai.chat.completions.create({
-        model: model,
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are an expert Dubai travel content writer. Generate high-quality expansion content to meet word count requirements.",
-          },
-          { role: "user", content: expansionPrompt },
-        ],
-        ...(provider === "openai" ? { response_format: { type: "json_object" } } : {}),
-        max_tokens: 4000,
-      });
-
-      const expansion = safeParseJson(expansionResponse.choices[0].message.content || "{}", {});
-
-      const additionalSections = expansion.additionalSections as
-        | Array<{ heading: string; body: string }>
-        | undefined;
-      const additionalFaqs = expansion.additionalFaqs as
-        | Array<{ q: string; a: string }>
-        | undefined;
-
-      if (additionalSections && generatedArticle.article?.sections) {
-        generatedArticle.article.sections = [
-          ...generatedArticle.article.sections,
-          ...additionalSections,
-        ];
-      }
-      if (additionalFaqs && generatedArticle.article?.faq) {
-        generatedArticle.article.faq = [...generatedArticle.article.faq, ...additionalFaqs];
-      }
-
-      wordCount = getWordCount(generatedArticle);
-      addSystemLog("info", "ai", `After expansion ${attempts}: ${wordCount} words`);
-    } catch {
-      break;
-    }
-  }
-
-  if (wordCount < MIN_WORD_TARGET) {
-    addSystemLog(
-      "warning",
-      "ai",
-      `Article generated with only ${wordCount} words (minimum: ${MIN_WORD_TARGET})`,
-      { title: articleTitle }
-    );
-  } else {
-    addSystemLog("info", "ai", `Article meets word count requirement: ${wordCount} words`, {
-      title: articleTitle,
-    });
-  }
-
-  return { wordCount, attempts };
-}
+// Extracted helper modules
+import { safeParseJson } from "./helpers/json-utils";
+import { addSystemLog } from "./helpers/ai-logging";
+import {
+  getModelForProvider,
+  classifyProviderError,
+  tryProvidersForCompletion,
+  getSortedUnifiedProviders,
+  tryUnifiedProvidersForField,
+  parseSuggestions,
+} from "./helpers/ai-provider-helpers";
+import {
+  type GeneratedArticleShape,
+  getArticleWordCount,
+  expandArticleContent,
+} from "./helpers/ai-content-helpers";
+import {
+  validateImageGenRequest,
+  createFallbackImage,
+  buildFallbackResponse,
+  findOrCreateArticleImage,
+  storeGeneratedImages,
+} from "./helpers/ai-image-helpers";
 
 export function registerAiApiRoutes(app: Express): void {
   const router = Router();
@@ -1668,25 +995,8 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
           return res.status(400).json({ error: validationError });
         }
 
-        const hasOpenAI = !!(
-          process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY
-        );
-        const hasReplicate = !!process.env.REPLICATE_API_KEY;
-        const hasFreepik = !!process.env.FREEPIK_API_KEY;
-
-        if (!hasOpenAI && !hasReplicate) {
-          return res.json(buildFallbackResponse(title, contentType, generateHero, hasFreepik));
-        }
-
-        addSystemLog("info", "images", `Starting AI image generation for: "${title}"`, {
-          contentType,
-          generateHero,
-          hasOpenAI,
-          hasReplicate,
-        });
-
-        // Build a completely new options object from sanitized individual fields
-        // to break Snyk's taint chain from req.body
+        // Sanitize all user inputs immediately after validation
+        // to ensure every code path uses sanitized values
         const sanitizedTitle = sanitizeAIPrompt(String(title || ""));
         const sanitizedDescription = sanitizeAIPrompt(String(description || ""));
         const sanitizedLocation = sanitizeAIPrompt(String(location || ""));
@@ -1694,6 +1004,30 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
         const validatedGenerateHero = generateHero !== false;
         const validatedGenContentImages = genContentImages === true;
         const validatedContentImageCount = Math.min(Number(contentImageCount) || 0, 5);
+
+        const hasOpenAI = !!(
+          process.env.AI_INTEGRATIONS_OPENAI_API_KEY || process.env.OPENAI_API_KEY
+        );
+        const hasReplicate = !!process.env.REPLICATE_API_KEY;
+        const hasFreepik = !!process.env.FREEPIK_API_KEY;
+
+        if (!hasOpenAI && !hasReplicate) {
+          return res.json(
+            buildFallbackResponse(
+              sanitizedTitle,
+              validatedContentType,
+              validatedGenerateHero,
+              hasFreepik
+            )
+          );
+        }
+
+        addSystemLog("info", "images", `Starting AI image generation for: "${sanitizedTitle}"`, {
+          contentType: validatedContentType,
+          generateHero: validatedGenerateHero,
+          hasOpenAI,
+          hasReplicate,
+        });
 
         const options: ImageGenerationOptions = {
           contentType: validatedContentType,
@@ -1715,12 +1049,16 @@ Format: Return ONLY a JSON array of 3 different sets. Each element is a string w
             "images",
             `AI image generation error: ${genError instanceof Error ? genError.message : "Unknown error"}`
           );
-          images = [createFallbackImage(title, contentType)];
+          images = [createFallbackImage(sanitizedTitle, validatedContentType)];
         }
 
         if (images.length === 0) {
-          addSystemLog("warning", "images", `No images generated for "${title}", using fallback`);
-          images = [createFallbackImage(title, contentType)];
+          addSystemLog(
+            "warning",
+            "images",
+            `No images generated for "${sanitizedTitle}", using fallback`
+          );
+          images = [createFallbackImage(sanitizedTitle, validatedContentType)];
         }
 
         const storedImages = await storeGeneratedImages(images);
