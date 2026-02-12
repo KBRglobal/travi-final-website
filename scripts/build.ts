@@ -217,6 +217,11 @@ async function buildApp() {
       rollupOptions: {
         output: {
           manualChunks: fixedManualChunks,
+          // Prevent Rollup from hoisting transitive imports to the entry chunk.
+          // Without this, every chunk needed by ANY lazy-loaded page gets a bare
+          // `import"./chunk.js"` in index.js, defeating code splitting entirely
+          // (attractions 289KB, animation-vendor 120KB, etc. all load on every page).
+          hoistTransitiveImports: false,
         },
       },
       chunkSizeWarningLimit: 600,
