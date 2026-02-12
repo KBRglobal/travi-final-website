@@ -33,14 +33,16 @@ export const CURRENT_YEAR = new Date().getFullYear();
 // ANIMATION STYLES
 // ============================================
 export const heroAnimationStyles = `
-  @keyframes blob-pulse-1 {
-    0%, 100% { transform: scale(1); opacity: 0.3; }
-    50% { transform: scale(1.1); opacity: 0.4; }
-  }
+  @media (min-width: 768px) {
+    @keyframes blob-pulse-1 {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.1); opacity: 0.4; }
+    }
 
-  @keyframes blob-pulse-2 {
-    0%, 100% { transform: scale(1); opacity: 0.25; }
-    50% { transform: scale(1.15); opacity: 0.35; }
+    @keyframes blob-pulse-2 {
+      0%, 100% { transform: scale(1); opacity: 0.25; }
+      50% { transform: scale(1.15); opacity: 0.35; }
+    }
   }
 
   @keyframes float-badge {
@@ -86,6 +88,15 @@ export const heroAnimationStyles = `
 
   .animate-bounce-in {
     animation: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes hero-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .animate-hero-fade-in {
+    animation: hero-fade-in 0.5s ease-out both;
   }
 
   .animated-gradient-text {

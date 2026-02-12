@@ -66,16 +66,12 @@ export function CategoriesSection() {
           {CATEGORY_CARDS.map((card, index) => {
             const IconComponent = card.icon;
             return (
-              <div
-                key={card.id}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${index * 80}ms` }}
-              >
+              <div key={card.id}>
                 <Link href={localePath(card.linkUrl)} title={card.description}>
                   <article
                     className={cn(
-                      "group relative p-6 rounded-2xl transition-all duration-300 cursor-pointer h-full",
-                      "hover:shadow-2xl hover:-translate-y-2",
+                      "group relative p-6 rounded-2xl transition-shadow duration-300 cursor-pointer h-full",
+                      "hover:shadow-2xl",
                       card.bgColor,
                       card.hoverGlow
                     )}

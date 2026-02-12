@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { MapPin, ArrowRight, Star, Ticket } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -30,13 +29,6 @@ export function SplitHero({
   const { t } = useTranslation();
   const { localePath } = useLocale();
   const [isAnimating, setIsAnimating] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    setPrefersReducedMotion(
-      globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
-    );
-  }, []);
   const dest = HERO_DESTINATIONS[currentIndex];
 
   useEffect(() => {
@@ -194,17 +186,17 @@ export function SplitHero({
 
       {/* Decorative blobs */}
       <div
-        className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/20 via-pink-200/10 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-1"
+        className="hidden md:block absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-purple-300/20 via-pink-200/10 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-1 will-change-transform"
         aria-hidden="true"
       />
       <div
-        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-200/30 via-purple-100/20 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-2"
+        className="hidden md:block absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-blue-200/30 via-purple-100/20 to-transparent rounded-full blur-3xl pointer-events-none blob-animate-2 will-change-transform"
         aria-hidden="true"
       />
 
       {/* Rotating gradient ring */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rotate-slow opacity-10 dark:opacity-20 pointer-events-none"
+        className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rotate-slow opacity-10 dark:opacity-20 pointer-events-none"
         aria-hidden="true"
       >
         <div
@@ -352,34 +344,27 @@ export function SplitHero({
             className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20"
             role="tabpanel"
           >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIndex}
-                className="absolute inset-0"
-                initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 1.05 }}
-                transition={{ duration: prefersReducedMotion ? 0 : 0.7 }}
-              >
-                <img
-                  src={sanitizeUrl(dest.image)}
-                  alt={dest.alt}
-                  title={dest.title}
-                  className="w-full h-full object-cover"
-                  width={800}
-                  height={1000}
-                  loading={currentIndex === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  {...({
-                    fetchpriority: currentIndex === 0 ? "high" : "auto",
-                  } as React.ImgHTMLAttributes<HTMLImageElement>)}
-                />
-                <div
-                  className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"
-                  aria-hidden="true"
-                />
-              </motion.div>
-            </AnimatePresence>
+            <div key={currentIndex} className="absolute inset-0 animate-hero-fade-in">
+              <img
+                src={sanitizeUrl(dest.image)}
+                alt={dest.alt}
+                title={dest.title}
+                className="w-full h-full object-cover"
+                width={800}
+                height={1000}
+                loading={currentIndex === 0 ? "eager" : "lazy"}
+                decoding="async"
+                srcSet={`${sanitizeUrl(dest.image)}?w=400 400w, ${sanitizeUrl(dest.image)}?w=600 600w, ${sanitizeUrl(dest.image)} 800w`}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                {...({
+                  fetchpriority: currentIndex === 0 ? "high" : "auto",
+                } as React.ImgHTMLAttributes<HTMLImageElement>)}
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"
+                aria-hidden="true"
+              />
+            </div>
 
             {/* Location badge */}
             <div

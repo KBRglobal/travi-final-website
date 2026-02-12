@@ -18,6 +18,8 @@ interface SafeImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "onEr
   alt: string;
   fallbackSrc?: string;
   fallbackElement?: React.ReactNode;
+  srcSet?: string;
+  sizes?: string;
   "data-testid"?: string;
 }
 
@@ -28,6 +30,8 @@ export function SafeImage({
   alt,
   fallbackSrc = DEFAULT_FALLBACK,
   fallbackElement,
+  srcSet,
+  sizes,
   className,
   "data-testid": testId,
   ...props
@@ -54,26 +58,20 @@ export function SafeImage({
   }
 
   return (
-    <>
-      {isLoading && !hasError && (
-        <div
-          className={`${className || ""} bg-muted animate-pulse`}
-          style={{ aspectRatio: "inherit" }}
-          aria-hidden="true"
-        />
-      )}
-      <img
-        src={displaySrc}
-        alt={alt}
-        className={`${className || ""} ${isLoading ? "opacity-0 absolute" : "opacity-100"}`}
-        onError={handleError}
-        onLoad={handleLoad}
-        data-testid={testId}
-        loading="lazy"
-        decoding="async"
-        {...props}
-      />
-    </>
+    <img
+      src={displaySrc}
+      alt={alt}
+      srcSet={hasError ? undefined : srcSet}
+      sizes={hasError ? undefined : sizes}
+      className={`${className || ""} transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
+      style={{ backgroundColor: isLoading ? "var(--muted, #e2e8f0)" : undefined }}
+      onError={handleError}
+      onLoad={handleLoad}
+      data-testid={testId}
+      loading="lazy"
+      decoding="async"
+      {...props}
+    />
   );
 }
 

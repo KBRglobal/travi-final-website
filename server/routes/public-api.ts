@@ -705,6 +705,7 @@ export function registerPublicApiRoutes(app: Express): void {
       };
 
       const renderSafeConfig = makeRenderSafeHomepageConfig(rawConfig);
+      res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
       res.json(renderSafeConfig);
     } catch (error) {
       log.error("[homepage-config] Error:", error);
@@ -722,6 +723,7 @@ export function registerPublicApiRoutes(app: Express): void {
         featuredDestinations: [],
         featuredArticles: [],
       };
+      res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
       res.json(fallbackConfig);
     }
   });
@@ -1274,6 +1276,7 @@ export function registerPublicApiRoutes(app: Express): void {
         .from(contents)
         .where(eq(contents.status, "published"));
 
+      res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
       res.json({
         destinations: destinationCount?.count || 0,
         attractions: attractionCount?.count || 0,

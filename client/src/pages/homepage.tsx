@@ -11,7 +11,6 @@ import {
   SplitHero,
   CategoriesSection,
   FAQSection,
-  LoadingScreen,
   TraviMascotHelper,
   AnimatedSection,
   NewsletterSection,
@@ -46,8 +45,21 @@ export default function Homepage() {
   const { t } = useTranslation();
   const { localePath } = useLocale();
 
-  const { data: config, isLoading } = useQuery<HomepageConfig>({
+  const { data: config } = useQuery<HomepageConfig>({
     queryKey: ["/api/public/homepage-config"],
+    placeholderData: {
+      locale: "en",
+      sections: {},
+      sectionsList: [],
+      hero: { slides: [] },
+      quickCategories: [],
+      experienceCategories: [],
+      regionLinks: [],
+      cta: null,
+      seoMeta: null,
+      featuredDestinations: [],
+      featuredArticles: [],
+    } as unknown as HomepageConfig,
   });
 
   const { data: siteStats } = useQuery<{
@@ -64,10 +76,6 @@ export default function Homepage() {
       globalThis.location.replace(cleanPath);
     }
   }, [location]);
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
 
   const sections = config?.sections || {};
   const cta = config?.cta;
@@ -180,16 +188,12 @@ export default function Homepage() {
                 {featuredDestinations
                   .slice(0, 8)
                   .map((dest: FeaturedDestination, index: number) => (
-                    <article
-                      key={dest.id}
-                      className="animate-fade-in-up"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
+                    <article key={dest.id}>
                       <Link
                         href={dest.slug || `/destinations/${dest.id}`}
                         title={`${dest.name} Travel Guide - Hotels, Attractions & Things to Do`}
                       >
-                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-slate-900 h-full">
+                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-2xl transition-shadow duration-300 bg-white dark:bg-slate-900 h-full">
                           <div className="relative h-48 sm:h-56 overflow-hidden bg-slate-100 dark:bg-slate-800">
                             {dest.cardImage ? (
                               <img
@@ -199,7 +203,7 @@ export default function Homepage() {
                                   `${dest.name} travel guide - top attractions and hotels`
                                 }
                                 title={`${dest.name}, ${dest.country} - Travel Guide`}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 loading="lazy"
                                 width={400}
                                 height={300}
@@ -281,16 +285,12 @@ export default function Homepage() {
                 {experienceCategories.map((category: ExperienceCategory, index: number) => {
                   const IconComponent = getIconComponent(category.icon || null);
                   return (
-                    <article
-                      key={category.id}
-                      className="animate-fade-in-up"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
+                    <article key={category.id}>
                       <Link
                         href={category.href || `/${category.slug}`}
                         title={`${category.name} - Complete Travel Guide ${CURRENT_YEAR}`}
                       >
-                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 bg-white dark:bg-slate-900 h-full">
+                        <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-slate-900 h-full">
                           <div className="relative h-40 sm:h-48 overflow-hidden">
                             {category.image ? (
                               <img
@@ -300,7 +300,7 @@ export default function Homepage() {
                                   `${category.name} travel experiences and destinations`
                                 }
                                 title={category.name}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 loading="lazy"
                                 width={400}
                                 height={250}
@@ -382,12 +382,8 @@ export default function Homepage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {regionLinks.map((region: RegionLink, index: number) => (
-                  <div
-                    key={region.id}
-                    className="animate-fade-in-up"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
+                {regionLinks.map((region: RegionLink) => (
+                  <div key={region.id}>
                     <Card className="bg-white dark:bg-slate-800 border-0 shadow-sm p-6 h-full">
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 font-chillax">
                         <Globe className="w-5 h-5 text-[#6443F4]" aria-hidden="true" />

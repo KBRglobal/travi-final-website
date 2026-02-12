@@ -44,11 +44,7 @@ export function FAQSection() {
 
         <div className="space-y-4">
           {FAQ_ITEMS.map((faq, index) => (
-            <div
-              key={faq.q}
-              className="animate-fade-in-up"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
+            <div key={faq.q}>
               <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}

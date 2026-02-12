@@ -4,8 +4,7 @@
  * and glass card overlay. CMS-editable contents.
  */
 
-import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Sparkles } from "lucide-react";
@@ -39,11 +38,6 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
   const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { toast } = useToast();
-
-  const prefersReducedMotion = useMemo(() => {
-    if (globalThis.window === undefined) return false;
-    return globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,20 +103,9 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
 
       {/* Content Container - Positioned left to keep character visible on right */}
       <div className="relative z-10 container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{
-            duration: prefersReducedMotion ? 0 : 0.8,
-            ease: [0.4, 0, 0.2, 1],
-          }}
-          className="max-w-xl ml-0 md:ml-8 lg:ml-16 mr-auto"
-        >
-          {/* Glass Card - Reduced blur for better character visibility */}
-          <motion.div
-            whileHover={prefersReducedMotion ? {} : { scale: 1.01 }}
-            transition={{ duration: 0.3 }}
+        <div className="max-w-xl ml-0 md:ml-8 lg:ml-16 mr-auto">
+          {/* Glass Card */}
+          <div
             className="relative rounded-3xl p-8 md:p-10"
             style={{
               background: "rgba(255, 255, 255, 0.85)",
@@ -135,66 +118,43 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
           >
             {/* Eyebrow */}
             {eyebrow && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1, duration: 0.5 }}
-                className="flex items-center justify-center gap-2 mb-4"
-              >
+              <div className="flex items-center justify-center gap-2 mb-4">
                 <Sparkles className="w-4 h-4 text-amber-500" />
                 <span className="text-sm font-semibold tracking-widest uppercase text-slate-700">
                   {eyebrow}
                 </span>
                 <Sparkles className="w-4 h-4 text-amber-500" />
-              </motion.div>
+              </div>
             )}
 
             {/* Headline */}
-            <motion.h2
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+            <h2
               className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-3 text-slate-800 font-chillax"
               data-testid="newsletter-headline"
             >
               {headline}
-            </motion.h2>
+            </h2>
 
             {/* Subheadline */}
             {subheadline && (
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
+              <p
                 className="text-center text-slate-600 mb-8 text-base md:text-lg"
                 data-testid="newsletter-subheadline"
               >
                 {subheadline}
-              </motion.p>
+              </p>
             )}
 
             {/* Form */}
             {isSubscribed ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-4"
-                data-testid="newsletter-success"
-              >
+              <div className="text-center py-4" data-testid="newsletter-success">
                 <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500/20 text-green-700 font-medium">
                   <Sparkles className="w-5 h-5" />
                   You're subscribed! Check your inbox.
                 </div>
-              </motion.div>
+              </div>
             ) : (
-              <motion.form
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.5 }}
+              <form
                 onSubmit={handleSubmit}
                 className="flex flex-col sm:flex-row gap-3"
                 data-testid="newsletter-form"
@@ -213,18 +173,14 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="h-12 sm:h-14 px-8 rounded-full text-base font-semibold transition-all duration-300 bg-[#6443F4] hover:bg-[#5539d4] text-white"
+                  className="h-12 sm:h-14 px-8 rounded-full text-base font-semibold transition-opacity duration-300 bg-[#6443F4] hover:bg-[#5539d4] text-white"
                   style={{
                     boxShadow: "0 4px 20px rgba(100, 67, 244, 0.3)",
                   }}
                   data-testid="button-newsletter-subscribe"
                 >
                   {isLoading ? (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                    />
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
                       {buttonText}
@@ -232,10 +188,10 @@ export function NewsletterSection({ config = defaultConfig }: Readonly<Newslette
                     </>
                   )}
                 </Button>
-              </motion.form>
+              </form>
             )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );

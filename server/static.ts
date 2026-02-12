@@ -12,6 +12,67 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Add Link preload headers for critical resources on HTML responses
+  app.use((req, res, next) => {
+    const originalSendFile = res.sendFile.bind(res);
+    res.sendFile = function (filePath: string, ...args: any[]) {
+      if (typeof filePath === "string" && filePath.endsWith("index.html")) {
+        res.setHeader(
+          "Link",
+          [
+            '</fonts/Satoshi-Bold_1767041885349.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin',
+            '</fonts/Satoshi-Regular_1767041885349.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin',
+          ].join(", ")
+        );
+      }
+      return originalSendFile(filePath, ...args);
+    } as any;
+    next();
+  });
+
+  // Serve pre-compressed Brotli/Gzip files for static assets
+  app.use((req, res, next) => {
+    if (req.method !== "GET" && req.method !== "HEAD") return next();
+
+    const acceptEncoding = req.headers["accept-encoding"] || "";
+    const urlPath = req.path;
+
+    // Only try for JS/CSS files
+    if (!/\.(js|css)$/.test(urlPath)) return next();
+
+    const filePath = path.join(distPath, urlPath);
+
+    if (typeof acceptEncoding === "string" && acceptEncoding.includes("br")) {
+      const brPath = filePath + ".br";
+      if (fs.existsSync(brPath)) {
+        res.setHeader("Content-Encoding", "br");
+        res.setHeader(
+          "Content-Type",
+          urlPath.endsWith(".js") ? "application/javascript" : "text/css"
+        );
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+        res.setHeader("Vary", "Accept-Encoding");
+        return res.sendFile(brPath);
+      }
+    }
+
+    if (typeof acceptEncoding === "string" && acceptEncoding.includes("gzip")) {
+      const gzPath = filePath + ".gz";
+      if (fs.existsSync(gzPath)) {
+        res.setHeader("Content-Encoding", "gzip");
+        res.setHeader(
+          "Content-Type",
+          urlPath.endsWith(".js") ? "application/javascript" : "text/css"
+        );
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+        res.setHeader("Vary", "Accept-Encoding");
+        return res.sendFile(gzPath);
+      }
+    }
+
+    next();
+  });
+
   // Serve documentation files (markdown)
   if (fs.existsSync(docsPath)) {
     app.use(
