@@ -99,6 +99,52 @@ function matchAdminChunk(id: string): string {
   return "cms-pages";
 }
 
+/**
+ * Shared UI components used by both the entry chunk and page chunks.
+ * MUST be checked BEFORE page chunks to prevent Rollup from placing these
+ * into large page chunks (e.g., attractions at 377KB), which would force
+ * the entry point to statically import those heavy chunks on every page load.
+ */
+const SHARED_UI_PATTERNS: string[] = [
+  "/components/ui/card",
+  "/components/ui/button",
+  "/components/ui/badge",
+  "/components/ui/toast",
+  "/components/ui/skeleton",
+  "/components/ui/input",
+  "/components/ui/label",
+  "/components/ui/textarea",
+  "/components/ui/select",
+  "/components/ui/switch",
+  "/components/ui/tabs",
+  "/components/ui/tooltip",
+  "/components/ui/toaster",
+  "/hooks/use-toast",
+  "/lib/utils",
+  "/lib/sanitize-url",
+  "/lib/sanitize",
+  "/lib/queryClient",
+  "/contexts/cookie-consent",
+  "/lib/i18n/",
+  "/hooks/use-analytics",
+  "/lib/analytics",
+  "/hooks/use-favorites",
+  "/components/error-boundary",
+  "/types/destination",
+  "/lib/navigation-aliases",
+  "/components/ui/sheet",
+  "/components/ui/dialog",
+  "/components/ui/dropdown-menu",
+  "/components/ui/scroll-area",
+  "/components/ui/skip-link",
+  "/components/ui/subtle-sky-background",
+  "/components/public-footer",
+  "/components/public-nav",
+  "/components/public-layout",
+  "/components/seo-head",
+  "/components/logo",
+];
+
 /** App page patterns: maps path fragments to chunk names */
 const PAGE_CHUNKS: Array<{ patterns: string[]; chunk: string }> = [
   { patterns: ["/pages/homepage", "/components/homepage/"], chunk: "homepage" },
@@ -115,6 +161,9 @@ const PAGE_CHUNKS: Array<{ patterns: string[]; chunk: string }> = [
 function fixedManualChunks(id: string): string | undefined {
   const vendor = matchVendorChunk(id);
   if (vendor) return vendor;
+
+  // Shared UI components — check BEFORE page chunks to avoid cross-chunk deps
+  if (SHARED_UI_PATTERNS.some(p => id.includes(p))) return "shared-ui";
 
   if (id.includes("/pages/admin/")) return matchAdminChunk(id);
 

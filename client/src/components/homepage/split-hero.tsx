@@ -176,7 +176,14 @@ export function SplitHero({
       <style>{heroAnimationStyles}</style>
 
       <Helmet>
-        <link rel="preload" as="image" href="/hero/dubai-hero.webp" fetchPriority="high" />
+        <link
+          rel="preload"
+          as="image"
+          href="/hero/dubai-hero-mobile.webp"
+          imageSrcSet="/hero/dubai-hero-mobile.webp 640w, /hero/dubai-hero.webp 1638w"
+          imageSizes="(max-width: 768px) 640px, 800px"
+          fetchPriority="high"
+        />
         <script type="application/ld+json">{websiteSchema}</script>
         <script type="application/ld+json">{organizationSchema}</script>
         <script type="application/ld+json">{breadcrumbSchema}</script>
@@ -322,10 +329,10 @@ export function SplitHero({
               >
                 <span
                   className={cn(
-                    "h-2.5 rounded-full transition-all duration-500 block",
+                    "h-2.5 rounded-full transition-opacity duration-300 block w-2.5",
                     currentIndex === i
-                      ? "w-8 bg-gradient-to-r from-travi-purple to-[#8B5CF6]"
-                      : "w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300"
+                      ? "bg-gradient-to-r from-travi-purple to-[#8B5CF6] opacity-100"
+                      : "bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 opacity-60"
                   )}
                 />
               </button>
@@ -354,8 +361,8 @@ export function SplitHero({
                 height={1000}
                 loading={currentIndex === 0 ? "eager" : "lazy"}
                 decoding="async"
-                srcSet={`${sanitizeUrl(dest.image)}?w=400 400w, ${sanitizeUrl(dest.image)}?w=600 600w, ${sanitizeUrl(dest.image)} 800w`}
-                sizes="(max-width: 768px) 100vw, 50vw"
+                srcSet={`${sanitizeUrl(dest.image.replace(".webp", "-mobile.webp"))} 640w, ${sanitizeUrl(dest.image)} 1638w`}
+                sizes="(max-width: 768px) 640px, 800px"
                 {...({
                   fetchpriority: currentIndex === 0 ? "high" : "auto",
                 } as React.ImgHTMLAttributes<HTMLImageElement>)}

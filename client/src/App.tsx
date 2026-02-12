@@ -58,8 +58,10 @@ function PageLoader() {
   return (
     <div className="min-h-[400px] flex flex-col items-center justify-center gap-4">
       <img
-        src="/logos/Mascot_for_Dark_Background.png"
+        src="/logos/mascot-128.png"
         alt="TRAVI"
+        width={64}
+        height={64}
         className="w-16 h-16 object-contain animate-bounce"
       />
       <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

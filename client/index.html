@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Preconnect to critical external origins (early in head for maximum benefit) -->
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.travi.world" crossorigin>
 
     <!-- DNS prefetch for analytics/tag origins (non-critical, loaded later) -->
     <link rel="dns-prefetch" href="https://images.unsplash.com">
     <link rel="dns-prefetch" href="https://us.i.posthog.com">
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://emrld.ltd">
 
     <!-- Performance: Preload hero font (critical for LCP) -->
     <link rel="preload" href="/fonts/Satoshi-Bold_1767041885349.woff2" as="font" type="font/woff2" crossorigin>
@@ -94,23 +93,25 @@
       });
     </script>
 
-    <!-- Travelpayouts Affiliate Verification Script - deferred via requestIdleCallback/setTimeout -->
+    <!-- Travelpayouts Affiliate Verification Script - heavily deferred to avoid blocking LCP/TBT -->
     <script>
-      if (typeof requestIdleCallback === 'undefined') {
-        setTimeout(function() {
-          var s = document.createElement("script");
-          s.async = 1;
-          s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
-          document.head.appendChild(s);
-        }, 3000);
-      } else {
-        requestIdleCallback(function() {
-          var s = document.createElement("script");
-          s.async = 1;
-          s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
-          document.head.appendChild(s);
-        });
+      function _loadAffiliate() {
+        var s = document.createElement("script");
+        s.async = 1;
+        s.src = 'https://emrld.ltd/NDg0MjMy.js?t=484232';
+        document.head.appendChild(s);
       }
+      // Load affiliate script only after 15s OR after user interaction (whichever comes first)
+      var _affTimer = setTimeout(_loadAffiliate, 15000);
+      ['click','scroll','touchstart','keydown'].forEach(function(evt) {
+        document.addEventListener(evt, function _affEvt() {
+          clearTimeout(_affTimer);
+          ['click','scroll','touchstart','keydown'].forEach(function(e) {
+            document.removeEventListener(e, _affEvt);
+          });
+          setTimeout(_loadAffiliate, 100);
+        }, { once: true, passive: true });
+      });
     </script>
   </body>
 </html>

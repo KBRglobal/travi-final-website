@@ -124,9 +124,9 @@ export function serveStatic(app: Express) {
         else if (/\.(woff|woff2|ttf|eot)$/i.test(filePath)) {
           res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
         }
-        // Images — 1 day cache
+        // Images — 30 day cache with stale-while-revalidate
         else if (/\.(png|jpg|jpeg|gif|webp|avif|svg|ico)$/i.test(filePath)) {
-          res.setHeader("Cache-Control", "public, max-age=86400");
+          res.setHeader("Cache-Control", "public, max-age=2592000, stale-while-revalidate=604800");
         }
         // HTML — no cache, always revalidate
         else if (filePath.endsWith(".html")) {
